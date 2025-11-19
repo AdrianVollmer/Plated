@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+
+{% block title %}{{ recipe.title }} - Plated{% endblock %}
+
+{% block content %}
+<div class="row mb-3">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'recipe_list' %}">Recipes</a></li>
+                <li class="breadcrumb-item active">{{ recipe.title }}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1 class="display-5">{{ recipe.title }}</h1>
+    </div>
+    <div class="col-md-4 text-md-end">
+        <a href="{% url 'recipe_update' recipe.pk %}" class="btn btn-outline-primary me-2">Edit</a>
+        <a href="{% url 'recipe_delete' recipe.pk %}" class="btn btn-outline-danger">Delete</a>
+    </div>
+</div>
+
+{% if recipe.images.all %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <div id="recipeCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                {% for image in recipe.images.all %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <img src="{{ image.image.url }}" class="d-block w-100" alt="{{ image.caption|default:recipe.title }}" style="max-height: 500px; object-fit: cover;">
+                    {% if image.caption %}
+                    <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
+                        <p>{{ image.caption }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% if recipe.images.count > 1 %}
+            <button class="carousel-control-prev" type="button" data-bs-target="#recipeCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#recipeCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Recipe Info</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <strong>Servings:</strong> {{ recipe.servings }}
+                    </li>
+                    {% if recipe.prep_time %}
+                    <li class="mb-2">
+                        <strong>Prep Time:</strong> {{ recipe.prep_time }}
+                    </li>
+                    {% endif %}
+                    {% if recipe.wait_time %}
+                    <li class="mb-2">
+                        <strong>Cook Time:</strong> {{ recipe.wait_time }}
+                    </li>
+                    {% endif %}
+                    {% if recipe.keywords %}
+                    <li class="mb-2">
+                        <strong>Keywords:</strong>
+                        <div class="mt-1">
+                            {% for keyword in recipe.keywords.split:',' %}
+                            <span class="badge bg-secondary">{{ keyword.strip }}</span>
+                            {% endfor %}
+                        </div>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="row mb-4">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Recipe Info</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <strong>Servings:</strong> {{ recipe.servings }}
+                    </li>
+                    {% if recipe.prep_time %}
+                    <li class="mb-2">
+                        <strong>Prep Time:</strong> {{ recipe.prep_time }}
+                    </li>
+                    {% endif %}
+                    {% if recipe.wait_time %}
+                    <li class="mb-2">
+                        <strong>Cook Time:</strong> {{ recipe.wait_time }}
+                    </li>
+                    {% endif %}
+                    {% if recipe.keywords %}
+                    <li class="mb-2">
+                        <strong>Keywords:</strong>
+                        <div class="mt-1">
+                            {% for keyword in recipe.keywords.split:',' %}
+                            <span class="badge bg-secondary">{{ keyword.strip }}</span>
+                            {% endfor %}
+                        </div>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if recipe.description %}
+<div class="row mb-4">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Description</h5>
+                <p class="card-text">{{ recipe.description }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row mb-4">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Ingredients</h5>
+                {% if recipe.ingredients.all %}
+                <ul class="list-group list-group-flush">
+                    {% for ingredient in recipe.ingredients.all %}
+                    <li class="list-group-item">
+                        {% if ingredient.amount %}{{ ingredient.amount }}{% endif %}
+                        {% if ingredient.unit %}{{ ingredient.unit }}{% endif %}
+                        <strong>{{ ingredient.name }}</strong>
+                        {% if ingredient.note %}<em class="text-muted">({{ ingredient.note }})</em>{% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted">No ingredients listed.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Instructions</h5>
+                {% if recipe.steps.all %}
+                <ol class="list-group list-group-numbered">
+                    {% for step in recipe.steps.all %}
+                    <li class="list-group-item">{{ step.content|linebreaks }}</li>
+                    {% endfor %}
+                </ol>
+                {% else %}
+                <p class="text-muted">No instructions provided.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if recipe.special_equipment %}
+<div class="row mb-4">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Special Equipment</h5>
+                <p class="card-text">{{ recipe.special_equipment|linebreaks }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if recipe.notes %}
+<div class="row mb-4">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Notes</h5>
+                <p class="card-text">{{ recipe.notes|linebreaks }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if recipe.url %}
+<div class="row mb-4">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Source</h5>
+                <a href="{{ recipe.url }}" target="_blank" class="card-link">{{ recipe.url }}</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row mb-4">
+    <div class="col-md-8 offset-md-2 text-muted small">
+        <p class="mb-0">Created: {{ recipe.created_at|date:"F j, Y, g:i a" }}</p>
+        <p>Last updated: {{ recipe.updated_at|date:"F j, Y, g:i a" }}</p>
+    </div>
+</div>
+{% endblock %}

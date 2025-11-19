@@ -5,86 +5,189 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Recipe',
+            name="Recipe",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=200)),
-                ('description', models.TextField(blank=True)),
-                ('servings', models.PositiveIntegerField(default=1)),
-                ('keywords', models.CharField(blank=True, help_text='Comma-separated keywords', max_length=500)),
-                ('prep_time', models.DurationField(blank=True, help_text='Time to prepare ingredients', null=True)),
-                ('wait_time', models.DurationField(blank=True, help_text='Time for cooking/baking/waiting', null=True)),
-                ('url', models.URLField(blank=True, help_text='Source URL if recipe is from the web')),
-                ('notes', models.TextField(blank=True)),
-                ('special_equipment', models.TextField(blank=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=200)),
+                ("description", models.TextField(blank=True)),
+                ("servings", models.PositiveIntegerField(default=1)),
+                (
+                    "keywords",
+                    models.CharField(
+                        blank=True, help_text="Comma-separated keywords", max_length=500
+                    ),
+                ),
+                (
+                    "prep_time",
+                    models.DurationField(
+                        blank=True, help_text="Time to prepare ingredients", null=True
+                    ),
+                ),
+                (
+                    "wait_time",
+                    models.DurationField(
+                        blank=True,
+                        help_text="Time for cooking/baking/waiting",
+                        null=True,
+                    ),
+                ),
+                (
+                    "url",
+                    models.URLField(
+                        blank=True, help_text="Source URL if recipe is from the web"
+                    ),
+                ),
+                ("notes", models.TextField(blank=True)),
+                ("special_equipment", models.TextField(blank=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
             ],
             options={
-                'ordering': ['-created_at'],
+                "ordering": ["-created_at"],
             },
         ),
         migrations.CreateModel(
-            name='Ingredient',
+            name="Ingredient",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('amount', models.CharField(blank=True, help_text="e.g., '2', '1/2', '1-2'", max_length=50)),
-                ('unit', models.CharField(blank=True, help_text="e.g., 'cups', 'tbsp', 'g'", max_length=50)),
-                ('name', models.CharField(max_length=200)),
-                ('note', models.CharField(blank=True, help_text="e.g., 'chopped', 'room temperature'", max_length=200)),
-                ('order', models.PositiveIntegerField(default=0)),
-                ('recipe', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='ingredients', to='recipes.recipe')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "amount",
+                    models.CharField(
+                        blank=True, help_text="e.g., '2', '1/2', '1-2'", max_length=50
+                    ),
+                ),
+                (
+                    "unit",
+                    models.CharField(
+                        blank=True, help_text="e.g., 'cups', 'tbsp', 'g'", max_length=50
+                    ),
+                ),
+                ("name", models.CharField(max_length=200)),
+                (
+                    "note",
+                    models.CharField(
+                        blank=True,
+                        help_text="e.g., 'chopped', 'room temperature'",
+                        max_length=200,
+                    ),
+                ),
+                ("order", models.PositiveIntegerField(default=0)),
+                (
+                    "recipe",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="ingredients",
+                        to="recipes.recipe",
+                    ),
+                ),
             ],
             options={
-                'ordering': ['order'],
+                "ordering": ["order"],
             },
         ),
         migrations.CreateModel(
-            name='RecipeCollection',
+            name="RecipeCollection",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=200)),
-                ('description', models.TextField(blank=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('recipes', models.ManyToManyField(blank=True, related_name='collections', to='recipes.recipe')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=200)),
+                ("description", models.TextField(blank=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "recipes",
+                    models.ManyToManyField(
+                        blank=True, related_name="collections", to="recipes.recipe"
+                    ),
+                ),
             ],
             options={
-                'ordering': ['name'],
+                "ordering": ["name"],
             },
         ),
         migrations.CreateModel(
-            name='RecipeImage',
+            name="RecipeImage",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(upload_to='recipes/%Y/%m/%d/')),
-                ('order', models.PositiveIntegerField(default=0)),
-                ('caption', models.CharField(blank=True, max_length=200)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('recipe', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='images', to='recipes.recipe')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("image", models.ImageField(upload_to="recipes/%Y/%m/%d/")),
+                ("order", models.PositiveIntegerField(default=0)),
+                ("caption", models.CharField(blank=True, max_length=200)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "recipe",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="images",
+                        to="recipes.recipe",
+                    ),
+                ),
             ],
             options={
-                'ordering': ['order'],
+                "ordering": ["order"],
             },
         ),
         migrations.CreateModel(
-            name='Step',
+            name="Step",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('order', models.PositiveIntegerField(default=0)),
-                ('content', models.TextField(help_text='Markdown supported')),
-                ('recipe', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='steps', to='recipes.recipe')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("order", models.PositiveIntegerField(default=0)),
+                ("content", models.TextField(help_text="Markdown supported")),
+                (
+                    "recipe",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="steps",
+                        to="recipes.recipe",
+                    ),
+                ),
             ],
             options={
-                'ordering': ['order'],
+                "ordering": ["order"],
             },
         ),
     ]
