@@ -10,6 +10,7 @@ from typing import Any, cast
 from django import forms
 from django.contrib import messages
 from django.core.files.uploadedfile import UploadedFile
+from django.db import models as django_models
 from django.db import transaction
 from django.forms import inlineformset_factory
 from django.http import HttpRequest, HttpResponse, JsonResponse
@@ -24,7 +25,7 @@ from django.views.generic import (
 )
 
 from .forms import RecipeForm
-from .models import Ingredient, Recipe, RecipeImage, Step
+from .models import Ingredient, Recipe, RecipeCollection, RecipeImage, Step
 from .schema import deserialize_recipe, serialize_recipe, validate_recipe_data
 
 
@@ -488,3 +489,240 @@ def download_recipe_pdf(request: HttpRequest, pk: int) -> HttpResponse:
         response["Content-Disposition"] = f'attachment; filename="{safe_title}.pdf"'
 
         return response
+
+
+# Recipe Collection Views
+
+
+class CollectionListView(ListView):
+    """Display a list of all recipe collections."""
+
+    model = RecipeCollection
+    template_name = "recipes/collection_list.html"
+    context_object_name = "collections"
+    paginate_by = 20
+
+
+class CollectionDetailView(DetailView):
+    """Display a single collection with all its recipes."""
+
+    model = RecipeCollection
+    template_name = "recipes/collection_detail.html"
+    context_object_name = "collection"
+
+
+class CollectionCreateView(CreateView):
+    """Create a new recipe collection."""
+
+    model = RecipeCollection
+    fields = ["name", "description", "recipes"]
+    template_name = "recipes/collection_form.html"
+
+    def get_form(
+        self, form_class: type[forms.ModelForm] | None = None
+    ) -> forms.ModelForm:  # type: ignore[override]
+        """Customize the form to add Bootstrap classes."""
+        form = super().get_form(form_class)
+        form.fields["name"].widget.attrs.update({"class": "form-control"})
+        form.fields["description"].widget.attrs.update(
+            {"class": "form-control", "rows": 3}
+        )
+        form.fields["recipes"].widget.attrs.update(
+            {"class": "form-select", "size": "10"}
+        )
+        form.fields["recipes"].help_text = "Hold Ctrl/Cmd to select multiple recipes"
+        return form
+
+    def form_valid(self, form: forms.ModelForm) -> HttpResponse:  # type: ignore[override]
+        """Save the collection and show success message."""
+        messages.success(
+            self.request,
+            f"Collection '{form.instance.name}' created successfully!",
+        )
+        return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        """Redirect to collection detail page."""
+        assert self.object is not None
+        return str(reverse_lazy("collection_detail", kwargs={"pk": self.object.pk}))
+
+
+class CollectionUpdateView(UpdateView):
+    """Update an existing recipe collection."""
+
+    model = RecipeCollection
+    fields = ["name", "description", "recipes"]
+    template_name = "recipes/collection_form.html"
+
+    def get_form(
+        self, form_class: type[forms.ModelForm] | None = None
+    ) -> forms.ModelForm:  # type: ignore[override]
+        """Customize the form to add Bootstrap classes."""
+        form = super().get_form(form_class)
+        form.fields["name"].widget.attrs.update({"class": "form-control"})
+        form.fields["description"].widget.attrs.update(
+            {"class": "form-control", "rows": 3}
+        )
+        form.fields["recipes"].widget.attrs.update(
+            {"class": "form-select", "size": "10"}
+        )
+        form.fields["recipes"].help_text = "Hold Ctrl/Cmd to select multiple recipes"
+        return form
+
+    def form_valid(self, form: forms.ModelForm) -> HttpResponse:  # type: ignore[override]
+        """Save the collection and show success message."""
+        messages.success(
+            self.request,
+            f"Collection '{form.instance.name}' updated successfully!",
+        )
+        return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        """Redirect to collection detail page."""
+        assert self.object is not None
+        return str(reverse_lazy("collection_detail", kwargs={"pk": self.object.pk}))
+
+
+class CollectionDeleteView(DeleteView):
+    """Delete a collection after confirmation."""
+
+    model = RecipeCollection
+    template_name = "recipes/collection_confirm_delete.html"
+    success_url = reverse_lazy("collection_list")
+
+    def delete(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        """Delete the collection and show a success message."""
+        collection = self.get_object()
+        messages.success(
+            request, f"Collection '{collection.name}' deleted successfully!"
+        )
+        return super().delete(request, *args, **kwargs)
+
+
+# Ingredient and Unit Management Views
+
+
+def manage_ingredient_names(request: HttpRequest) -> HttpResponse:
+    """View and manage distinct ingredient names."""
+    # Get all distinct ingredient names with usage counts
+    ingredients = (
+        Ingredient.objects.values("name")
+        .annotate(usage_count=django_models.Count("id"))
+        .order_by("name")
+    )
+
+    # Handle search query
+    query = request.GET.get("q")
+    if query:
+        ingredients = ingredients.filter(name__icontains=query)
+
+    return render(
+        request,
+        "recipes/manage_ingredient_names.html",
+        {"ingredients": ingredients, "query": query},
+    )
+
+
+def rename_ingredient_name(request: HttpRequest) -> HttpResponse:
+    """Rename an ingredient name across all recipes."""
+    if request.method == "POST":
+        old_name = request.POST.get("old_name", "").strip()
+        new_name = request.POST.get("new_name", "").strip()
+
+        if not old_name or not new_name:
+            messages.error(request, "Both old and new names are required.")
+            return redirect("manage_ingredient_names")
+
+        if old_name == new_name:
+            messages.warning(request, "Old and new names are the same.")
+            return redirect("manage_ingredient_names")
+
+        # Check if old name exists
+        count = Ingredient.objects.filter(name=old_name).count()
+        if count == 0:
+            messages.error(request, f"No ingredients found with name '{old_name}'.")
+            return redirect("manage_ingredient_names")
+
+        # Update all ingredients with the old name
+        with transaction.atomic():
+            updated = Ingredient.objects.filter(name=old_name).update(name=new_name)
+
+        plural = "" if updated == 1 else "s"
+        messages.success(
+            request,
+            f"Renamed '{old_name}' to '{new_name}' in {updated} ingredient{plural}.",
+        )
+        return redirect("manage_ingredient_names")
+
+    # GET request - show rename form
+    old_name = request.GET.get("name", "")
+    usage_count = Ingredient.objects.filter(name=old_name).count() if old_name else 0
+
+    return render(
+        request,
+        "recipes/rename_ingredient_name.html",
+        {"old_name": old_name, "usage_count": usage_count},
+    )
+
+
+def manage_units(request: HttpRequest) -> HttpResponse:
+    """View and manage distinct units."""
+    # Get all distinct units with usage counts
+    units = (
+        Ingredient.objects.exclude(unit="")
+        .values("unit")
+        .annotate(usage_count=django_models.Count("id"))
+        .order_by("unit")
+    )
+
+    # Handle search query
+    query = request.GET.get("q")
+    if query:
+        units = units.filter(unit__icontains=query)
+
+    return render(
+        request, "recipes/manage_units.html", {"units": units, "query": query}
+    )
+
+
+def rename_unit(request: HttpRequest) -> HttpResponse:
+    """Rename a unit across all recipes."""
+    if request.method == "POST":
+        old_unit = request.POST.get("old_unit", "").strip()
+        new_unit = request.POST.get("new_unit", "").strip()
+
+        if not old_unit:
+            messages.error(request, "Old unit name is required.")
+            return redirect("manage_units")
+
+        if old_unit == new_unit:
+            messages.warning(request, "Old and new units are the same.")
+            return redirect("manage_units")
+
+        # Check if old unit exists
+        count = Ingredient.objects.filter(unit=old_unit).count()
+        if count == 0:
+            messages.error(request, f"No ingredients found with unit '{old_unit}'.")
+            return redirect("manage_units")
+
+        # Update all ingredients with the old unit
+        with transaction.atomic():
+            updated = Ingredient.objects.filter(unit=old_unit).update(unit=new_unit)
+
+        plural = "" if updated == 1 else "s"
+        msg = (
+            f"Renamed unit '{old_unit}' to '{new_unit}' "
+            f"in {updated} ingredient{plural}."
+        )
+        messages.success(request, msg)
+        return redirect("manage_units")
+
+    # GET request - show rename form
+    old_unit = request.GET.get("unit", "")
+    usage_count = Ingredient.objects.filter(unit=old_unit).count() if old_unit else 0
+
+    return render(
+        request,
+        "recipes/rename_unit.html",
+        {"old_unit": old_unit, "usage_count": usage_count},
+    )

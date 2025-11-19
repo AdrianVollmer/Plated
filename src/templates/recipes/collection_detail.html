@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}{{ collection.name }} - Plated{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-start mb-4">
+            <div>
+                <h1>{{ collection.name }}</h1>
+                {% if collection.description %}
+                <p class="lead text-muted">{{ collection.description }}</p>
+                {% endif %}
+                <p class="text-muted">
+                    <small>
+                        <i class="bi bi-calendar"></i> Created {{ collection.created_at|date:"F j, Y" }}
+                        {% if collection.updated_at != collection.created_at %}
+                        | Updated {{ collection.updated_at|date:"F j, Y" }}
+                        {% endif %}
+                    </small>
+                </p>
+            </div>
+            <div class="btn-group" role="group">
+                <a href="{% url 'collection_update' collection.pk %}" class="btn btn-outline-primary">
+                    <i class="bi bi-pencil"></i> Edit
+                </a>
+                <a href="{% url 'collection_delete' collection.pk %}" class="btn btn-outline-danger">
+                    <i class="bi bi-trash"></i> Delete
+                </a>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2 class="mb-3">Recipes ({{ collection.recipes.count }})</h2>
+
+        {% if collection.recipes.all %}
+        <div class="row">
+            {% for recipe in collection.recipes.all %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    {% with recipe.images.first as first_image %}
+                    {% if first_image %}
+                    <img src="{{ first_image.image.url }}" class="card-img-top" alt="{{ recipe.title }}" style="height: 200px; object-fit: cover;">
+                    {% endif %}
+                    {% endwith %}
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <a href="{% url 'recipe_detail' recipe.pk %}" class="text-decoration-none">
+                                {{ recipe.title }}
+                            </a>
+                        </h5>
+                        {% if recipe.description %}
+                        <p class="card-text text-muted">{{ recipe.description|truncatewords:15 }}</p>
+                        {% endif %}
+                        <div class="d-flex gap-2 text-muted small">
+                            {% if recipe.prep_time %}
+                            <span><i class="bi bi-clock"></i> {{ recipe.prep_time }}</span>
+                            {% endif %}
+                            {% if recipe.servings %}
+                            <span><i class="bi bi-people"></i> {{ recipe.servings }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <p class="mb-0">No recipes in this collection yet. <a href="{% url 'collection_update' collection.pk %}">Edit the collection</a> to add recipes.</p>
+        </div>
+        {% endif %}
+
+        <div class="mt-4">
+            <a href="{% url 'collection_list' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Collections
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

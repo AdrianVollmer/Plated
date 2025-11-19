@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Rename Unit - Plated{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <h1>Rename Unit</h1>
+        <hr>
+
+        {% if old_unit %}
+        <div class="alert alert-info">
+            <h5 class="alert-heading">
+                <i class="bi bi-info-circle"></i> About to rename: <strong>{{ old_unit }}</strong>
+            </h5>
+            <p class="mb-0">This unit is used in <strong>{{ usage_count }}</strong> ingredient{{ usage_count|pluralize }} across your recipes.</p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="old_unit" value="{{ old_unit }}">
+
+            <div class="mb-3">
+                <label for="old_unit_display" class="form-label">Current Unit</label>
+                <input type="text" class="form-control" id="old_unit_display" value="{{ old_unit }}" disabled>
+            </div>
+
+            <div class="mb-3">
+                <label for="new_unit" class="form-label">New Unit</label>
+                <input type="text" class="form-control" id="new_unit" name="new_unit" autofocus>
+                <small class="form-text text-muted">All {{ usage_count }} occurrence{{ usage_count|pluralize }} will be updated. Leave blank to remove the unit.</small>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-pencil"></i> Rename Unit
+                </button>
+                <a href="{% url 'manage_units' %}" class="btn btn-secondary">
+                    <i class="bi bi-x-circle"></i> Cancel
+                </a>
+            </div>
+        </form>
+        {% else %}
+        <div class="alert alert-warning">
+            <p class="mb-0">No unit specified. <a href="{% url 'manage_units' %}">Go back to units</a>.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

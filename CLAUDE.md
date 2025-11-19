@@ -109,7 +109,8 @@ later.
 
 ### Issue 1
 
-Add views to manage ingredients and units as well as recipe collections.
+Add a `settings` view. Move the `Admin` button there, as well as the
+theme picker.
 
 ### Issue 2
 
@@ -137,8 +138,4 @@ sense.
 
 ### Issue 5
 
-Improve the layout asthetics. Use less cards, try to make it not look
-like a bootstrap app from some tutorial. Make it unique, modern,
-splashy, cool, elegant.
-
-Add support for color themes while we are at it.
+Fix minor color issues in dark theme.

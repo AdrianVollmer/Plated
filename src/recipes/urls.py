@@ -28,4 +28,39 @@ urlpatterns = [
     path(
         "api/ingredient-units/", views.get_ingredient_units, name="api_ingredient_units"
     ),
+    # Collection management
+    path("collections/", views.CollectionListView.as_view(), name="collection_list"),
+    path(
+        "collections/<int:pk>/",
+        views.CollectionDetailView.as_view(),
+        name="collection_detail",
+    ),
+    path(
+        "collections/new/",
+        views.CollectionCreateView.as_view(),
+        name="collection_create",
+    ),
+    path(
+        "collections/<int:pk>/edit/",
+        views.CollectionUpdateView.as_view(),
+        name="collection_update",
+    ),
+    path(
+        "collections/<int:pk>/delete/",
+        views.CollectionDeleteView.as_view(),
+        name="collection_delete",
+    ),
+    # Ingredient and Unit management
+    path(
+        "manage/ingredient-names/",
+        views.manage_ingredient_names,
+        name="manage_ingredient_names",
+    ),
+    path(
+        "manage/ingredient-names/rename/",
+        views.rename_ingredient_name,
+        name="rename_ingredient_name",
+    ),
+    path("manage/units/", views.manage_units, name="manage_units"),
+    path("manage/units/rename/", views.rename_unit, name="rename_unit"),
 ]

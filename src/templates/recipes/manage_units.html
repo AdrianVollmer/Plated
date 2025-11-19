@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Units - Plated{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1>Manage Units</h1>
+        <p class="lead text-muted">View all distinct measurement units used across your recipes.</p>
+        <hr>
+
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <form method="get" class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="Search units..." value="{{ query|default:'' }}">
+                    <button type="submit" class="btn btn-outline-primary">
+                        <i class="bi bi-search"></i> Search
+                    </button>
+                    {% if query %}
+                    <a href="{% url 'manage_units' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-x"></i> Clear
+                    </a>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+
+        {% if units %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> Found {{ units|length }} distinct unit{{ units|length|pluralize }}.
+            Use consistent units to help with autocomplete when creating recipes.
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Unit</th>
+                        <th class="text-end">Usage Count</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for unit in units %}
+                    <tr>
+                        <td>{{ unit.unit }}</td>
+                        <td class="text-end">
+                            <span class="badge bg-secondary">{{ unit.usage_count }} time{{ unit.usage_count|pluralize }}</span>
+                        </td>
+                        <td class="text-end">
+                            <a href="{% url 'rename_unit' %}?unit={{ unit.unit|urlencode }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-pencil"></i> Rename
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-warning">
+            {% if query %}
+            <p class="mb-0">No units found matching "{{ query }}".</p>
+            {% else %}
+            <p class="mb-0">No units found in your recipes yet.</p>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <div class="mt-4">
+            <a href="{% url 'recipe_list' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Recipes
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
