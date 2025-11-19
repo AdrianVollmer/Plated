@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Import Recipe - Plated{% endblock %}
+
+{% block content %}
+<div class="row mb-3">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'recipe_list' %}">Recipes</a></li>
+                <li class="breadcrumb-item active">Import Recipe</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <h1 class="display-5 mb-4">Import Recipe</h1>
+
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Upload JSON File</h5>
+                <p class="card-text text-muted mb-4">
+                    Upload a recipe JSON file to import it into your collection.
+                    The JSON file should follow the recipe schema format.
+                </p>
+
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="json_file" class="form-label">Select JSON File</label>
+                        <input type="file" class="form-control" id="json_file" name="json_file" accept=".json" required>
+                        <div class="form-text">Only .json files are accepted</div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">Import Recipe</button>
+                        <a href="{% url 'recipe_list' %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title">JSON Schema Example</h5>
+                <p class="card-text text-muted">Here's an example of the expected JSON format:</p>
+                <pre class="bg-light p-3 rounded"><code>{
+  "title": "Chocolate Chip Cookies",
+  "description": "Classic homemade cookies",
+  "servings": 24,
+  "keywords": "dessert, cookies, chocolate",
+  "prep_time_minutes": 15,
+  "wait_time_minutes": 12,
+  "url": "",
+  "notes": "Store in airtight container",
+  "special_equipment": "Cookie sheet, mixing bowl",
+  "ingredients": [
+    {
+      "amount": "2",
+      "unit": "cups",
+      "name": "all-purpose flour",
+      "note": "",
+      "order": 0
+    },
+    {
+      "amount": "1",
+      "unit": "cup",
+      "name": "chocolate chips",
+      "note": "semi-sweet",
+      "order": 1
+    }
+  ],
+  "steps": [
+    {
+      "content": "Preheat oven to 350°F (175°C).",
+      "order": 0
+    },
+    {
+      "content": "Mix dry ingredients in a large bowl.",
+      "order": 1
+    },
+    {
+      "content": "Bake for 10-12 minutes until golden brown.",
+      "order": 2
+    }
+  ],
+  "images": []
+}</code></pre>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

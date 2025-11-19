@@ -1,13 +1,15 @@
 from __future__ import annotations
 
-from typing import Any
+import json
+from typing import Any, cast
 
 from django import forms
 from django.contrib import messages
+from django.core.files.uploadedfile import UploadedFile
 from django.db import transaction
 from django.forms import inlineformset_factory
 from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import (
     CreateView,
@@ -19,6 +21,7 @@ from django.views.generic import (
 
 from .forms import RecipeForm
 from .models import Ingredient, Recipe, RecipeImage, Step
+from .schema import deserialize_recipe, serialize_recipe, validate_recipe_data
 
 
 def get_ingredient_formset(extra: int = 5):
@@ -262,3 +265,84 @@ def get_ingredient_units(request: HttpRequest) -> JsonResponse:
         .order_by("unit")
     )
     return JsonResponse({"units": list(units)})
+
+
+def export_recipe(request: HttpRequest, pk: int) -> HttpResponse:
+    """Export a recipe as a JSON file."""
+    recipe = get_object_or_404(Recipe, pk=pk)
+    recipe_data = serialize_recipe(recipe)
+
+    # Create JSON response with proper filename
+    response = HttpResponse(
+        json.dumps(recipe_data, indent=2, ensure_ascii=False),
+        content_type="application/json",
+    )
+    # Sanitize filename by replacing spaces and special chars
+    safe_title = "".join(
+        c if c.isalnum() or c in (" ", "-", "_") else "_" for c in recipe.title
+    )
+    safe_title = safe_title.replace(" ", "_")
+    response["Content-Disposition"] = f'attachment; filename="{safe_title}.json"'
+
+    return response
+
+
+def import_recipe(request: HttpRequest) -> HttpResponse:
+    """Import a recipe from a JSON file."""
+    if request.method == "POST":
+        if "json_file" not in request.FILES:
+            messages.error(request, "No file was uploaded.")
+            return redirect("recipe_import")
+
+        json_file = cast(UploadedFile, request.FILES["json_file"])
+
+        # Read and parse JSON
+        try:
+            content = json_file.read().decode("utf-8")
+            data = json.loads(content)
+        except json.JSONDecodeError as e:
+            messages.error(request, f"Invalid JSON file: {e}")
+            return redirect("recipe_import")
+        except Exception as e:
+            messages.error(request, f"Error reading file: {e}")
+            return redirect("recipe_import")
+
+        # Validate the data
+        errors = validate_recipe_data(data)
+        if errors:
+            for error in errors:
+                messages.error(request, error)
+            return redirect("recipe_import")
+
+        # Deserialize and create recipe
+        try:
+            with transaction.atomic():
+                deserialized = deserialize_recipe(data)
+
+                # Create the recipe
+                recipe = Recipe.objects.create(**deserialized["recipe_data"])
+
+                # Create ingredients
+                for ing_data in deserialized["ingredients_data"]:
+                    Ingredient.objects.create(recipe=recipe, **ing_data)
+
+                # Create steps
+                for step_data in deserialized["steps_data"]:
+                    Step.objects.create(recipe=recipe, **step_data)
+
+                # Note: We don't import images since they're just metadata
+                # Users would need to manually add images after import
+
+            messages.success(
+                request,
+                f"Recipe '{recipe.title}' imported successfully! "
+                "You can now add images if needed.",
+            )
+            return redirect("recipe_detail", pk=recipe.pk)
+
+        except Exception as e:
+            messages.error(request, f"Error creating recipe: {e}")
+            return redirect("recipe_import")
+
+    # GET request - show the upload form
+    return render(request, "recipes/recipe_import.html")
