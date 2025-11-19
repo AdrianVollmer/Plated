@@ -28,7 +28,9 @@ Let's build a recipe app!
   units (like a dropdown suggesting existing names)
 - Recipes must have an import/export function, we need a JSON schema for
   that
-- Recipes can be rendered server-side in PDF
+- There can be recipe collections
+- Recipes can be rendered server-side in PDF using Typst (assumed to be
+  installed)
 - Layout should be modern, friendly, usable
 
 Let's keep it simple at first, but we may want to add more features
@@ -36,6 +38,7 @@ later.
 
 *Python specifics*:
 
+- Use `uv run ...` for everything
 - We'll use type hints
 - We'll use mypy with the Django plugin
 - We'll use pytest for the test suite
@@ -45,7 +48,7 @@ later.
 
 ### Phase 1: Project Setup
 
-1.  Initialize Django project with uv
+1.  Initialize Django project with uv (Already done!)
 2.  Create recipes app
 3.  Configure settings (database, static files, media files)
 4.  Set up Bootstrap integration
@@ -53,11 +56,12 @@ later.
 ### Phase 2: Data Models
 
 1.  Create Recipe model (title, description, servings, keywords,
-    prep_time, wait_time)
+    prep_time, wait_time, url, notes, special_equipment)
 2.  Create Ingredient model (recipe FK, amount, unit, name, note)
 3.  Create Step model (recipe FK, order, content with markdown support)
 4.  Create RecipeImage model (recipe FK, image file, order)
-5.  Run migrations
+5.  Create RecipeCollection model (name, description, recipes FK)
+6.  Run migrations
 
 ### Phase 3: Admin Interface
 
@@ -90,10 +94,8 @@ later.
 
 ### Phase 7: PDF Generation
 
-1.  Install and configure PDF library (e.g., WeasyPrint or ReportLab)
-2.  Create PDF template for recipes
-3.  Add PDF download view
-4.  Style PDF output appropriately
+1.  Add PDF download view
+2.  Call Typst with a given Typst file which reads a JSON recipe
 
 ### Phase 8: Polish & Testing
 
