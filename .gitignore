@@ -11,3 +11,4 @@ wheels/
 
 # Binaries
 db.sqlite3
+src/staticfiles

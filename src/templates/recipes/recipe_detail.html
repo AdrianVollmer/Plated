@@ -15,38 +15,40 @@
     </div>
 </div>
 
-<div class="row mb-4">
-    <div class="col-12">
-        <h1 class="display-5 mb-3">{{ recipe.title }}</h1>
-    </div>
-    <div class="col-12">
-        <div class="btn-group-vertical d-md-none w-100 mb-3" role="group">
-            <a href="{% url 'recipe_pdf' recipe.pk %}" class="btn btn-outline-info">
-                <i class="bi bi-file-pdf"></i> Download PDF
-            </a>
-            <a href="{% url 'recipe_export' recipe.pk %}" class="btn btn-outline-success">
-                <i class="bi bi-download"></i> Export JSON
-            </a>
-            <a href="{% url 'recipe_update' recipe.pk %}" class="btn btn-outline-primary">
-                <i class="bi bi-pencil"></i> Edit
-            </a>
-            <a href="{% url 'recipe_delete' recipe.pk %}" class="btn btn-outline-danger">
-                <i class="bi bi-trash"></i> Delete
-            </a>
+<div class="recipe-header">
+    <div class="row align-items-center mb-4">
+        <div class="col-12 col-md-6">
+            <h1 class="recipe-title">{{ recipe.title }}</h1>
         </div>
-        <div class="d-none d-md-block text-md-end">
-            <a href="{% url 'recipe_pdf' recipe.pk %}" class="btn btn-outline-info me-2">
-                <i class="bi bi-file-pdf"></i> PDF
-            </a>
-            <a href="{% url 'recipe_export' recipe.pk %}" class="btn btn-outline-success me-2">
-                <i class="bi bi-download"></i> Export
-            </a>
-            <a href="{% url 'recipe_update' recipe.pk %}" class="btn btn-outline-primary me-2">
-                <i class="bi bi-pencil"></i> Edit
-            </a>
-            <a href="{% url 'recipe_delete' recipe.pk %}" class="btn btn-outline-danger">
-                <i class="bi bi-trash"></i> Delete
-            </a>
+        <div class="col-12 col-md-6">
+            <div class="btn-group-vertical d-md-none w-100 mb-3" role="group">
+                <a href="{% url 'recipe_pdf' recipe.pk %}" class="btn btn-outline-info">
+                    <i class="bi bi-file-pdf"></i> Download PDF
+                </a>
+                <a href="{% url 'recipe_export' recipe.pk %}" class="btn btn-outline-success">
+                    <i class="bi bi-download"></i> Export JSON
+                </a>
+                <a href="{% url 'recipe_update' recipe.pk %}" class="btn btn-outline-primary">
+                    <i class="bi bi-pencil"></i> Edit
+                </a>
+                <a href="{% url 'recipe_delete' recipe.pk %}" class="btn btn-outline-danger">
+                    <i class="bi bi-trash"></i> Delete
+                </a>
+            </div>
+            <div class="d-none d-md-block text-md-end">
+                <a href="{% url 'recipe_pdf' recipe.pk %}" class="btn btn-outline-info me-2">
+                    <i class="bi bi-file-pdf"></i> PDF
+                </a>
+                <a href="{% url 'recipe_export' recipe.pk %}" class="btn btn-outline-success me-2">
+                    <i class="bi bi-download"></i> Export
+                </a>
+                <a href="{% url 'recipe_update' recipe.pk %}" class="btn btn-outline-primary me-2">
+                    <i class="bi bi-pencil"></i> Edit
+                </a>
+                <a href="{% url 'recipe_delete' recipe.pk %}" class="btn btn-outline-danger">
+                    <i class="bi bi-trash"></i> Delete
+                </a>
+            </div>
         </div>
     </div>
 </div>
@@ -78,70 +80,66 @@
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Recipe Info</h5>
-                <ul class="list-unstyled">
-                    <li class="mb-2">
-                        <strong>Servings:</strong> {{ recipe.servings }}
-                    </li>
-                    {% if recipe.prep_time %}
-                    <li class="mb-2">
-                        <strong>Prep Time:</strong> {{ recipe.prep_time }}
-                    </li>
-                    {% endif %}
-                    {% if recipe.wait_time %}
-                    <li class="mb-2">
-                        <strong>Cook Time:</strong> {{ recipe.wait_time }}
-                    </li>
-                    {% endif %}
-                    {% if recipe.keywords %}
-                    <li class="mb-2">
-                        <strong>Keywords:</strong>
-                        <div class="mt-1">
-                            {% for keyword in recipe.keywords|split:"," %}
-                            <span class="badge bg-secondary">{{ keyword }}</span>
-                            {% endfor %}
-                        </div>
-                    </li>
-                    {% endif %}
-                </ul>
+        <div class="recipe-section">
+            <h5 class="recipe-section-title">Quick Info</h5>
+            <div class="recipe-info-grid">
+                <div class="recipe-info-item">
+                    <div class="recipe-info-label"><i class="bi bi-people"></i> Servings</div>
+                    <div class="recipe-info-value">{{ recipe.servings }}</div>
+                </div>
+                {% if recipe.prep_time %}
+                <div class="recipe-info-item">
+                    <div class="recipe-info-label"><i class="bi bi-clock"></i> Prep</div>
+                    <div class="recipe-info-value">{{ recipe.prep_time }}</div>
+                </div>
+                {% endif %}
+                {% if recipe.wait_time %}
+                <div class="recipe-info-item">
+                    <div class="recipe-info-label"><i class="bi bi-hourglass"></i> Cook</div>
+                    <div class="recipe-info-value">{{ recipe.wait_time }}</div>
+                </div>
+                {% endif %}
             </div>
+            {% if recipe.keywords %}
+            <div class="mt-3">
+                {% for keyword in recipe.keywords|split:"," %}
+                <span class="keyword-tag">{{ keyword }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>
 {% else %}
 <div class="row mb-4">
     <div class="col-md-8 offset-md-2">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Recipe Info</h5>
-                <ul class="list-unstyled">
-                    <li class="mb-2">
-                        <strong>Servings:</strong> {{ recipe.servings }}
-                    </li>
-                    {% if recipe.prep_time %}
-                    <li class="mb-2">
-                        <strong>Prep Time:</strong> {{ recipe.prep_time }}
-                    </li>
-                    {% endif %}
-                    {% if recipe.wait_time %}
-                    <li class="mb-2">
-                        <strong>Cook Time:</strong> {{ recipe.wait_time }}
-                    </li>
-                    {% endif %}
-                    {% if recipe.keywords %}
-                    <li class="mb-2">
-                        <strong>Keywords:</strong>
-                        <div class="mt-1">
-                            {% for keyword in recipe.keywords|split:"," %}
-                            <span class="badge bg-secondary">{{ keyword }}</span>
-                            {% endfor %}
-                        </div>
-                    </li>
-                    {% endif %}
-                </ul>
+        <div class="recipe-section">
+            <h5 class="recipe-section-title">Quick Info</h5>
+            <div class="recipe-info-grid">
+                <div class="recipe-info-item">
+                    <div class="recipe-info-label"><i class="bi bi-people"></i> Servings</div>
+                    <div class="recipe-info-value">{{ recipe.servings }}</div>
+                </div>
+                {% if recipe.prep_time %}
+                <div class="recipe-info-item">
+                    <div class="recipe-info-label"><i class="bi bi-clock"></i> Prep</div>
+                    <div class="recipe-info-value">{{ recipe.prep_time }}</div>
+                </div>
+                {% endif %}
+                {% if recipe.wait_time %}
+                <div class="recipe-info-item">
+                    <div class="recipe-info-label"><i class="bi bi-hourglass"></i> Cook</div>
+                    <div class="recipe-info-value">{{ recipe.wait_time }}</div>
+                </div>
+                {% endif %}
             </div>
+            {% if recipe.keywords %}
+            <div class="mt-3">
+                {% for keyword in recipe.keywords|split:"," %}
+                <span class="keyword-tag">{{ keyword }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -150,11 +148,9 @@
 {% if recipe.description %}
 <div class="row mb-4">
     <div class="col-md-8 offset-md-2">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Description</h5>
-                <p class="card-text">{{ recipe.description }}</p>
-            </div>
+        <div class="recipe-section">
+            <h5 class="recipe-section-title">Description</h5>
+            <p>{{ recipe.description }}</p>
         </div>
     </div>
 </div>
@@ -162,43 +158,43 @@
 
 <div class="row mb-4">
     <div class="col-md-8 offset-md-2">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Ingredients</h5>
-                {% if recipe.ingredients.all %}
-                <ul class="list-group list-group-flush">
-                    {% for ingredient in recipe.ingredients.all %}
-                    <li class="list-group-item">
+        <div class="recipe-section">
+            <h5 class="recipe-section-title">Ingredients</h5>
+            {% if recipe.ingredients.all %}
+            <ul class="ingredient-list">
+                {% for ingredient in recipe.ingredients.all %}
+                <li class="ingredient-item">
+                    <span class="ingredient-amount">
                         {% if ingredient.amount %}{{ ingredient.amount }}{% endif %}
                         {% if ingredient.unit %}{{ ingredient.unit }}{% endif %}
-                        <strong>{{ ingredient.name }}</strong>
-                        {% if ingredient.note %}<em class="text-muted">({{ ingredient.note }})</em>{% endif %}
-                    </li>
-                    {% endfor %}
-                </ul>
-                {% else %}
-                <p class="text-muted">No ingredients listed.</p>
-                {% endif %}
-            </div>
+                    </span>
+                    <span class="ingredient-name">{{ ingredient.name }}</span>
+                    {% if ingredient.note %}<span class="ingredient-note">({{ ingredient.note }})</span>{% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="text-muted">No ingredients listed.</p>
+            {% endif %}
         </div>
     </div>
 </div>
 
 <div class="row mb-4">
     <div class="col-md-8 offset-md-2">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Instructions</h5>
-                {% if recipe.steps.all %}
-                <ol class="list-group list-group-numbered">
+        <div class="recipe-section">
+            <h5 class="recipe-section-title">Instructions</h5>
+            {% if recipe.steps.all %}
+            <div class="instruction-list-wrapper">
+                <ol class="instruction-list">
                     {% for step in recipe.steps.all %}
-                    <li class="list-group-item">{{ step.content|linebreaks }}</li>
+                    <li class="instruction-item">{{ step.content|linebreaks }}</li>
                     {% endfor %}
                 </ol>
-                {% else %}
-                <p class="text-muted">No instructions provided.</p>
-                {% endif %}
             </div>
+            {% else %}
+            <p class="text-muted">No instructions provided.</p>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -206,11 +202,9 @@
 {% if recipe.special_equipment %}
 <div class="row mb-4">
     <div class="col-md-8 offset-md-2">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Special Equipment</h5>
-                <p class="card-text">{{ recipe.special_equipment|linebreaks }}</p>
-            </div>
+        <div class="recipe-section">
+            <h5 class="recipe-section-title">Special Equipment</h5>
+            <p>{{ recipe.special_equipment|linebreaks }}</p>
         </div>
     </div>
 </div>
@@ -219,11 +213,9 @@
 {% if recipe.notes %}
 <div class="row mb-4">
     <div class="col-md-8 offset-md-2">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Notes</h5>
-                <p class="card-text">{{ recipe.notes|linebreaks }}</p>
-            </div>
+        <div class="recipe-section">
+            <h5 class="recipe-section-title">Notes</h5>
+            <p>{{ recipe.notes|linebreaks }}</p>
         </div>
     </div>
 </div>
@@ -232,11 +224,9 @@
 {% if recipe.url %}
 <div class="row mb-4">
     <div class="col-md-8 offset-md-2">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Source</h5>
-                <a href="{{ recipe.url }}" target="_blank" class="card-link">{{ recipe.url }}</a>
-            </div>
+        <div class="recipe-section">
+            <h5 class="recipe-section-title">Source</h5>
+            <a href="{{ recipe.url }}" target="_blank" style="color: var(--primary); text-decoration: none;"><i class="bi bi-link-45deg"></i> {{ recipe.url }}</a>
         </div>
     </div>
 </div>

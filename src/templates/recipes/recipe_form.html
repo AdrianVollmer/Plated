@@ -21,7 +21,7 @@
 
 <div class="row mb-4">
     <div class="col-md-8 offset-md-2">
-        <h1 class="display-5">{% if object %}Edit Recipe{% else %}Create New Recipe{% endif %}</h1>
+        <h1 class="recipe-title">{% if object %}Edit Recipe{% else %}Create New Recipe{% endif %}</h1>
     </div>
 </div>
 
@@ -30,11 +30,8 @@
 
     <div class="row mb-4">
         <div class="col-md-8 offset-md-2">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Recipe Details</h5>
-                </div>
-                <div class="card-body">
+            <div class="form-section">
+                <div class="form-section-header">Recipe Details</div>
                     {% if form.errors %}
                     <div class="alert alert-danger">
                         <strong>Please correct the errors below:</strong>
@@ -119,15 +116,11 @@
                 </div>
             </div>
         </div>
-    </div>
 
     <div class="row mb-4">
         <div class="col-md-8 offset-md-2">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Ingredients</h5>
-                </div>
-                <div class="card-body">
+            <div class="form-section">
+                <div class="form-section-header">Ingredients</div>
                     {{ ingredient_formset.management_form }}
                     {% if ingredient_formset.errors %}
                     <div class="alert alert-danger">{{ ingredient_formset.errors }}</div>
@@ -173,15 +166,11 @@
                 </div>
             </div>
         </div>
-    </div>
 
     <div class="row mb-4">
         <div class="col-md-8 offset-md-2">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Instructions</h5>
-                </div>
-                <div class="card-body">
+            <div class="form-section">
+                <div class="form-section-header">Instructions</div>
                     {{ step_formset.management_form }}
                     {% if step_formset.errors %}
                     <div class="alert alert-danger">{{ step_formset.errors }}</div>
@@ -216,15 +205,11 @@
                 </div>
             </div>
         </div>
-    </div>
 
     <div class="row mb-4">
         <div class="col-md-8 offset-md-2">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Images</h5>
-                </div>
-                <div class="card-body">
+            <div class="form-section">
+                <div class="form-section-header">Images</div>
                     {{ image_formset.management_form }}
                     {% if image_formset.errors %}
                     <div class="alert alert-danger">{{ image_formset.errors }}</div>
