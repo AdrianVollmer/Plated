@@ -726,3 +726,11 @@ def rename_unit(request: HttpRequest) -> HttpResponse:
         "recipes/rename_unit.html",
         {"old_unit": old_unit, "usage_count": usage_count},
     )
+
+
+# Settings View
+
+
+def settings_view(request: HttpRequest) -> HttpResponse:
+    """Display application settings page."""
+    return render(request, "recipes/settings.html")

@@ -139,3 +139,7 @@ sense.
 ### Issue 5
 
 Fix minor color issues in dark theme.
+
+### Issue 6
+
+Add meal planner and shopping list generator.

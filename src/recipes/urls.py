@@ -63,4 +63,6 @@ urlpatterns = [
     ),
     path("manage/units/", views.manage_units, name="manage_units"),
     path("manage/units/rename/", views.rename_unit, name="rename_unit"),
+    # Settings
+    path("settings/", views.settings_view, name="settings"),
 ]

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Settings - Plated{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <h1 class="mb-4">Settings</h1>
+
+        <!-- Theme Selection Section -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Theme</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">Choose your preferred color theme</p>
+                <div class="theme-switcher-settings">
+                    <button class="theme-btn" data-theme="light" title="Light Theme" aria-label="Light Theme">
+                        <span class="theme-label">Light</span>
+                    </button>
+                    <button class="theme-btn" data-theme="dark" title="Dark Theme" aria-label="Dark Theme">
+                        <span class="theme-label">Dark</span>
+                    </button>
+                    <button class="theme-btn" data-theme="warm" title="Warm Theme" aria-label="Warm Theme">
+                        <span class="theme-label">Warm</span>
+                    </button>
+                    <button class="theme-btn" data-theme="cool" title="Cool Theme" aria-label="Cool Theme">
+                        <span class="theme-label">Cool</span>
+                    </button>
+                    <button class="theme-btn" data-theme="forest" title="Forest Theme" aria-label="Forest Theme">
+                        <span class="theme-label">Forest</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Section -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Administration</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">Access the Django admin interface for advanced management</p>
+                <a href="{% url 'admin:index' %}" class="btn btn-primary">
+                    <i class="bi bi-gear-fill"></i> Open Admin Panel
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
