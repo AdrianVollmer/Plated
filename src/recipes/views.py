@@ -6,8 +6,8 @@ from django import forms
 from django.contrib import messages
 from django.db import transaction
 from django.forms import inlineformset_factory
-from django.http import HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404, redirect, render
+from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import (
     CreateView,
@@ -243,3 +243,22 @@ class RecipeDeleteView(DeleteView):
         recipe = self.get_object()
         messages.success(request, f"Recipe '{recipe.title}' deleted successfully!")
         return super().delete(request, *args, **kwargs)
+
+
+def get_ingredient_names(request: HttpRequest) -> JsonResponse:
+    """API endpoint to get distinct ingredient names for autocomplete."""
+    names = (
+        Ingredient.objects.values_list("name", flat=True).distinct().order_by("name")
+    )
+    return JsonResponse({"names": list(names)})
+
+
+def get_ingredient_units(request: HttpRequest) -> JsonResponse:
+    """API endpoint to get distinct ingredient units for autocomplete."""
+    units = (
+        Ingredient.objects.exclude(unit="")
+        .values_list("unit", flat=True)
+        .distinct()
+        .order_by("unit")
+    )
+    return JsonResponse({"units": list(units)})

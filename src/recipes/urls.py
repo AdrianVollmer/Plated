@@ -16,4 +16,11 @@ urlpatterns = [
         views.RecipeDeleteView.as_view(),
         name="recipe_delete",
     ),
+    # API endpoints for autocomplete
+    path(
+        "api/ingredient-names/", views.get_ingredient_names, name="api_ingredient_names"
+    ),
+    path(
+        "api/ingredient-units/", views.get_ingredient_units, name="api_ingredient_units"
+    ),
 ]

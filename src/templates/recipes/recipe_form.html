@@ -290,3 +290,69 @@
     }
 </style>
 {% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Create datalist elements for autocomplete
+    const nameDatalist = document.createElement('datalist');
+    nameDatalist.id = 'ingredient-names-list';
+    document.body.appendChild(nameDatalist);
+
+    const unitDatalist = document.createElement('datalist');
+    unitDatalist.id = 'ingredient-units-list';
+    document.body.appendChild(unitDatalist);
+
+    // Fetch ingredient names from API
+    fetch('{% url "api_ingredient_names" %}')
+        .then(response => response.json())
+        .then(data => {
+            data.names.forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                nameDatalist.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error fetching ingredient names:', error));
+
+    // Fetch ingredient units from API
+    fetch('{% url "api_ingredient_units" %}')
+        .then(response => response.json())
+        .then(data => {
+            data.units.forEach(unit => {
+                const option = document.createElement('option');
+                option.value = unit;
+                unitDatalist.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error fetching ingredient units:', error));
+
+    // Function to attach datalist to input fields
+    function attachDatalistsToIngredients() {
+        // Find all ingredient name inputs and attach the datalist
+        document.querySelectorAll('input[name*="ingredients"][name$="-name"]').forEach(input => {
+            input.setAttribute('list', 'ingredient-names-list');
+            input.setAttribute('autocomplete', 'off');
+        });
+
+        // Find all ingredient unit inputs and attach the datalist
+        document.querySelectorAll('input[name*="ingredients"][name$="-unit"]').forEach(input => {
+            input.setAttribute('list', 'ingredient-units-list');
+            input.setAttribute('autocomplete', 'off');
+        });
+    }
+
+    // Attach datalists to existing ingredient fields
+    attachDatalistsToIngredients();
+
+    // Watch for dynamically added ingredient forms (if formsets are modified)
+    const ingredientFormset = document.getElementById('ingredient-formset');
+    if (ingredientFormset) {
+        const observer = new MutationObserver(function() {
+            attachDatalistsToIngredients();
+        });
+        observer.observe(ingredientFormset, { childList: true, subtree: true });
+    }
+});
+</script>
+{% endblock %}
