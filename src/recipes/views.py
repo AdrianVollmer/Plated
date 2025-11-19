@@ -113,9 +113,9 @@ class RecipeCreateView(CreateView):
         """Add formsets to the context."""
         data = super().get_context_data(**kwargs)
 
-        IngredientFormSet = get_ingredient_formset(extra=5)
-        StepFormSet = get_step_formset(extra=3)
-        ImageFormSet = get_image_formset(extra=2)
+        IngredientFormSet = get_ingredient_formset(extra=5)  # noqa: N806
+        StepFormSet = get_step_formset(extra=3)  # noqa: N806
+        ImageFormSet = get_image_formset(extra=2)  # noqa: N806
 
         if self.request.POST:
             data["ingredient_formset"] = IngredientFormSet(
@@ -139,26 +139,52 @@ class RecipeCreateView(CreateView):
         step_formset = context["step_formset"]
         image_formset = context["image_formset"]
 
+        # Validate formsets
+        if not ingredient_formset.is_valid():
+            return self.form_invalid(form)
+
+        if not step_formset.is_valid():
+            return self.form_invalid(form)
+
+        if not image_formset.is_valid():
+            return self.form_invalid(form)
+
+        # Check that at least one ingredient and one step are provided
+        ingredient_count = sum(
+            1
+            for form_item in ingredient_formset
+            if form_item.cleaned_data
+            and not form_item.cleaned_data.get("DELETE", False)
+            and form_item.cleaned_data.get("name")
+        )
+        step_count = sum(
+            1
+            for form_item in step_formset
+            if form_item.cleaned_data
+            and not form_item.cleaned_data.get("DELETE", False)
+            and form_item.cleaned_data.get("content")
+        )
+
+        if ingredient_count == 0:
+            messages.error(
+                self.request, "Please add at least one ingredient to the recipe."
+            )
+            return self.form_invalid(form)
+
+        if step_count == 0:
+            messages.error(
+                self.request, "Please add at least one instruction step to the recipe."
+            )
+            return self.form_invalid(form)
+
         with transaction.atomic():
             self.object = form.save()
-
-            if ingredient_formset.is_valid():
-                ingredient_formset.instance = self.object
-                ingredient_formset.save()
-            else:
-                return self.form_invalid(form)
-
-            if step_formset.is_valid():
-                step_formset.instance = self.object
-                step_formset.save()
-            else:
-                return self.form_invalid(form)
-
-            if image_formset.is_valid():
-                image_formset.instance = self.object
-                image_formset.save()
-            else:
-                return self.form_invalid(form)
+            ingredient_formset.instance = self.object
+            ingredient_formset.save()
+            step_formset.instance = self.object
+            step_formset.save()
+            image_formset.instance = self.object
+            image_formset.save()
 
         messages.success(
             self.request, f"Recipe '{self.object.title}' created successfully!"
@@ -177,9 +203,9 @@ class RecipeUpdateView(UpdateView):
         """Add formsets to the context."""
         data = super().get_context_data(**kwargs)
 
-        IngredientFormSet = get_ingredient_formset(extra=2)
-        StepFormSet = get_step_formset(extra=1)
-        ImageFormSet = get_image_formset(extra=1)
+        IngredientFormSet = get_ingredient_formset(extra=2)  # noqa: N806
+        StepFormSet = get_step_formset(extra=1)  # noqa: N806
+        ImageFormSet = get_image_formset(extra=1)  # noqa: N806
 
         if self.request.POST:
             data["ingredient_formset"] = IngredientFormSet(
@@ -210,26 +236,52 @@ class RecipeUpdateView(UpdateView):
         step_formset = context["step_formset"]
         image_formset = context["image_formset"]
 
+        # Validate formsets
+        if not ingredient_formset.is_valid():
+            return self.form_invalid(form)
+
+        if not step_formset.is_valid():
+            return self.form_invalid(form)
+
+        if not image_formset.is_valid():
+            return self.form_invalid(form)
+
+        # Check that at least one ingredient and one step are provided
+        ingredient_count = sum(
+            1
+            for form_item in ingredient_formset
+            if form_item.cleaned_data
+            and not form_item.cleaned_data.get("DELETE", False)
+            and form_item.cleaned_data.get("name")
+        )
+        step_count = sum(
+            1
+            for form_item in step_formset
+            if form_item.cleaned_data
+            and not form_item.cleaned_data.get("DELETE", False)
+            and form_item.cleaned_data.get("content")
+        )
+
+        if ingredient_count == 0:
+            messages.error(
+                self.request, "Please add at least one ingredient to the recipe."
+            )
+            return self.form_invalid(form)
+
+        if step_count == 0:
+            messages.error(
+                self.request, "Please add at least one instruction step to the recipe."
+            )
+            return self.form_invalid(form)
+
         with transaction.atomic():
             self.object = form.save()
-
-            if ingredient_formset.is_valid():
-                ingredient_formset.instance = self.object
-                ingredient_formset.save()
-            else:
-                return self.form_invalid(form)
-
-            if step_formset.is_valid():
-                step_formset.instance = self.object
-                step_formset.save()
-            else:
-                return self.form_invalid(form)
-
-            if image_formset.is_valid():
-                image_formset.instance = self.object
-                image_formset.save()
-            else:
-                return self.form_invalid(form)
+            ingredient_formset.instance = self.object
+            ingredient_formset.save()
+            step_formset.instance = self.object
+            step_formset.save()
+            image_formset.instance = self.object
+            image_formset.save()
 
         messages.success(
             self.request, f"Recipe '{self.object.title}' updated successfully!"
