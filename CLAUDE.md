@@ -95,7 +95,8 @@ later.
 ### Phase 7: PDF Generation
 
 1.  Add PDF download view
-2.  Call Typst with a given Typst file which reads a JSON recipe
+2.  Call Typst with a given Typst file (`src/recipe.typ`) which reads a
+    JSON recipe (schema: `src/recipeformat.txt`)
 
 ### Phase 8: Polish & Testing
 

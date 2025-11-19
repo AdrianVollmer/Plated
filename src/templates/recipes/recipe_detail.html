@@ -19,6 +19,7 @@
         <h1 class="display-5">{{ recipe.title }}</h1>
     </div>
     <div class="col-md-4 text-md-end">
+        <a href="{% url 'recipe_pdf' recipe.pk %}" class="btn btn-outline-info me-2">Download PDF</a>
         <a href="{% url 'recipe_export' recipe.pk %}" class="btn btn-outline-success me-2">Export JSON</a>
         <a href="{% url 'recipe_update' recipe.pk %}" class="btn btn-outline-primary me-2">Edit</a>
         <a href="{% url 'recipe_delete' recipe.pk %}" class="btn btn-outline-danger">Delete</a>

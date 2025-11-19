@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 import json
+import subprocess
+import tempfile
+from pathlib import Path
 from typing import Any, cast
 
 from django import forms
@@ -346,3 +349,86 @@ def import_recipe(request: HttpRequest) -> HttpResponse:
 
     # GET request - show the upload form
     return render(request, "recipes/recipe_import.html")
+
+
+def download_recipe_pdf(request: HttpRequest, pk: int) -> HttpResponse:
+    """Generate and download a recipe as a PDF using Typst."""
+    recipe = get_object_or_404(Recipe, pk=pk)
+    recipe_data = serialize_recipe(recipe)
+
+    # Get the path to the Typst template
+    base_dir = Path(__file__).resolve().parent.parent
+    typst_template = base_dir / "recipe.typ"
+
+    if not typst_template.exists():
+        messages.error(request, "Typst template file not found.")
+        return redirect("recipe_detail", pk=pk)
+
+    # Create temporary directory for intermediate files
+    with tempfile.TemporaryDirectory() as temp_dir:
+        temp_path = Path(temp_dir)
+
+        # Write recipe JSON to temp file
+        recipe_json_path = temp_path / "recipe.json"
+        with open(recipe_json_path, "w", encoding="utf-8") as f:
+            json.dump(recipe_data, f, indent=2, ensure_ascii=False)
+
+        # Prepare output PDF path
+        output_pdf = temp_path / "recipe.pdf"
+
+        # Prepare Typst input data
+        # The data format is: {"recipe": "path/to/recipe.json"}
+        typst_input_data = json.dumps({"recipe": str(recipe_json_path)})
+
+        # Call Typst to compile the PDF
+        try:
+            subprocess.run(
+                [
+                    "typst",
+                    "compile",
+                    str(typst_template),
+                    str(output_pdf),
+                    "--input",
+                    f"data={typst_input_data}",
+                ],
+                capture_output=True,
+                text=True,
+                timeout=30,
+                check=True,
+            )
+        except FileNotFoundError:
+            messages.error(
+                request,
+                "Typst is not installed. Please install Typst to generate PDFs.",
+            )
+            return redirect("recipe_detail", pk=pk)
+        except subprocess.TimeoutExpired:
+            messages.error(request, "PDF generation timed out.")
+            return redirect("recipe_detail", pk=pk)
+        except subprocess.CalledProcessError as e:
+            messages.error(
+                request,
+                f"Error generating PDF: {e.stderr if e.stderr else str(e)}",
+            )
+            return redirect("recipe_detail", pk=pk)
+
+        # Check if PDF was created
+        if not output_pdf.exists():
+            messages.error(request, "PDF file was not generated.")
+            return redirect("recipe_detail", pk=pk)
+
+        # Read the PDF file
+        with open(output_pdf, "rb") as pdf_file:
+            pdf_content = pdf_file.read()
+
+        # Create response with PDF
+        response = HttpResponse(pdf_content, content_type="application/pdf")
+
+        # Sanitize filename
+        safe_title = "".join(
+            c if c.isalnum() or c in (" ", "-", "_") else "_" for c in recipe.title
+        )
+        safe_title = safe_title.replace(" ", "_")
+        response["Content-Disposition"] = f'attachment; filename="{safe_title}.pdf"'
+
+        return response

@@ -19,6 +19,8 @@ urlpatterns = [
     # Import/Export
     path("recipe/<int:pk>/export/", views.export_recipe, name="recipe_export"),
     path("recipe/import/", views.import_recipe, name="recipe_import"),
+    # PDF Generation
+    path("recipe/<int:pk>/pdf/", views.download_recipe_pdf, name="recipe_pdf"),
     # API endpoints for autocomplete
     path(
         "api/ingredient-names/", views.get_ingredient_names, name="api_ingredient_names"
