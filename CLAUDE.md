@@ -104,3 +104,41 @@ later.
 2.  Test mobile responsiveness
 3.  Add basic validation and error handling
 4.  Manual testing of all features
+
+## Expanding
+
+### Issue 1
+
+Add views to manage ingredients and units as well as recipe collections.
+
+### Issue 2
+
+Make the recipe form dynamic, like add a step, ingredient or image.
+Figure out a "best practice" for this. Let's try not the reinvent the
+wheel.
+
+While doing this, make the reordering a bit nicer and dynamic as well.
+
+Some light JavaScript is fine here.
+
+### Issue 3
+
+Add AI integration. The user should be able to define a LLM (API URL,
+API key, model, etc). Provide a way to paste text or HTML which will be
+sent to the model with a comment, like "translate to German and metric
+units".
+
+The model should return JSON in the correct schema.
+
+### Issue 4
+
+Add logging through out the application at various levels which make
+sense.
+
+### Issue 5
+
+Improve the layout asthetics. Use less cards, try to make it not look
+like a bootstrap app from some tutorial. Make it unique, modern,
+splashy, cool, elegant.
+
+Add support for color themes while we are at it.

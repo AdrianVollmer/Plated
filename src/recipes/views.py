@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import shutil
 import subprocess
 import tempfile
 from pathlib import Path
@@ -417,10 +418,14 @@ def download_recipe_pdf(request: HttpRequest, pk: int) -> HttpResponse:
         return redirect("recipe_detail", pk=pk)
 
     # Create temporary directory for intermediate files
-    with tempfile.TemporaryDirectory() as temp_dir:
+    with tempfile.TemporaryDirectory(prefix="plated_typst_") as temp_dir:
         temp_path = Path(temp_dir)
 
-        # Write recipe JSON to temp file
+        # Copy typst template to temp directory
+        temp_typst = temp_path / "recipe.typ"
+        shutil.copy(typst_template, temp_typst)
+
+        # Write recipe JSON to temp directory (same location as typst file)
         recipe_json_path = temp_path / "recipe.json"
         with open(recipe_json_path, "w", encoding="utf-8") as f:
             json.dump(recipe_data, f, indent=2, ensure_ascii=False)
@@ -428,9 +433,8 @@ def download_recipe_pdf(request: HttpRequest, pk: int) -> HttpResponse:
         # Prepare output PDF path
         output_pdf = temp_path / "recipe.pdf"
 
-        # Prepare Typst input data
-        # The data format is: {"recipe": "path/to/recipe.json"}
-        typst_input_data = json.dumps({"recipe": str(recipe_json_path)})
+        # Prepare Typst input data with relative paths
+        typst_input_data = json.dumps({"recipe": "recipe.json"})
 
         # Call Typst to compile the PDF
         try:
@@ -438,7 +442,7 @@ def download_recipe_pdf(request: HttpRequest, pk: int) -> HttpResponse:
                 [
                     "typst",
                     "compile",
-                    str(typst_template),
+                    str(temp_typst),
                     str(output_pdf),
                     "--input",
                     f"data={typst_input_data}",
