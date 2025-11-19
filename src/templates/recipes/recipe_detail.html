@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load recipe_filters %}
 
 {% block title %}{{ recipe.title }} - Plated{% endblock %}
 
@@ -98,8 +99,8 @@
                     <li class="mb-2">
                         <strong>Keywords:</strong>
                         <div class="mt-1">
-                            {% for keyword in recipe.keywords.split:',' %}
-                            <span class="badge bg-secondary">{{ keyword.strip }}</span>
+                            {% for keyword in recipe.keywords|split:"," %}
+                            <span class="badge bg-secondary">{{ keyword }}</span>
                             {% endfor %}
                         </div>
                     </li>
@@ -133,8 +134,8 @@
                     <li class="mb-2">
                         <strong>Keywords:</strong>
                         <div class="mt-1">
-                            {% for keyword in recipe.keywords.split:',' %}
-                            <span class="badge bg-secondary">{{ keyword.strip }}</span>
+                            {% for keyword in recipe.keywords|split:"," %}
+                            <span class="badge bg-secondary">{{ keyword }}</span>
                             {% endfor %}
                         </div>
                     </li>
