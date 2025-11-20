@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import logging
 import shutil
 import subprocess
 import tempfile
@@ -27,6 +28,8 @@ from django.views.generic import (
 from .forms import RecipeForm
 from .models import Ingredient, Recipe, RecipeCollection, RecipeImage, Step
 from .schema import deserialize_recipe, serialize_recipe, validate_recipe_data
+
+logger = logging.getLogger(__name__)
 
 
 def get_ingredient_formset(extra: int = 5):
@@ -90,9 +93,11 @@ class RecipeListView(ListView):
         queryset = super().get_queryset()
         query = self.request.GET.get("q")
         if query:
+            logger.info(f"Recipe search performed with query: '{query}'")
             queryset = queryset.filter(title__icontains=query) | queryset.filter(
                 keywords__icontains=query
             )
+            logger.debug(f"Search returned {queryset.count()} results")
         return queryset
 
 
@@ -144,12 +149,17 @@ class RecipeCreateView(CreateView):
 
         # Validate formsets
         if not ingredient_formset.is_valid():
+            logger.warning(
+                "Recipe creation failed: ingredient formset validation error"
+            )
             return self.form_invalid(form)
 
         if not step_formset.is_valid():
+            logger.warning("Recipe creation failed: step formset validation error")
             return self.form_invalid(form)
 
         if not image_formset.is_valid():
+            logger.warning("Recipe creation failed: image formset validation error")
             return self.form_invalid(form)
 
         # Check that at least one ingredient and one step are provided
@@ -169,30 +179,41 @@ class RecipeCreateView(CreateView):
         )
 
         if ingredient_count == 0:
+            logger.warning("Recipe creation failed: no ingredients provided")
             messages.error(
                 self.request, "Please add at least one ingredient to the recipe."
             )
             return self.form_invalid(form)
 
         if step_count == 0:
+            logger.warning("Recipe creation failed: no steps provided")
             messages.error(
                 self.request, "Please add at least one instruction step to the recipe."
             )
             return self.form_invalid(form)
 
-        with transaction.atomic():
-            self.object = form.save()
-            ingredient_formset.instance = self.object
-            ingredient_formset.save()
-            step_formset.instance = self.object
-            step_formset.save()
-            image_formset.instance = self.object
-            image_formset.save()
+        try:
+            with transaction.atomic():
+                self.object = form.save()
+                ingredient_formset.instance = self.object
+                ingredient_formset.save()
+                step_formset.instance = self.object
+                step_formset.save()
+                image_formset.instance = self.object
+                image_formset.save()
 
-        messages.success(
-            self.request, f"Recipe '{self.object.title}' created successfully!"
-        )
-        return redirect("recipe_detail", pk=self.object.pk)
+            logger.info(
+                f"Recipe created: '{self.object.title}' (ID: {self.object.pk}, "
+                f"Ingredients: {ingredient_count}, Steps: {step_count})"
+            )
+            messages.success(
+                self.request, f"Recipe '{self.object.title}' created successfully!"
+            )
+            return redirect("recipe_detail", pk=self.object.pk)
+        except Exception as e:
+            logger.error(f"Error creating recipe: {e}", exc_info=True)
+            messages.error(self.request, f"Error creating recipe: {e}")
+            return self.form_invalid(form)
 
 
 class RecipeUpdateView(UpdateView):
@@ -242,12 +263,24 @@ class RecipeUpdateView(UpdateView):
 
         # Validate formsets
         if not ingredient_formset.is_valid():
+            logger.warning(
+                f"Recipe update failed for '{self.object.title}' (ID: {self.object.pk}): "
+                "ingredient formset validation error"
+            )
             return self.form_invalid(form)
 
         if not step_formset.is_valid():
+            logger.warning(
+                f"Recipe update failed for '{self.object.title}' (ID: {self.object.pk}): "
+                "step formset validation error"
+            )
             return self.form_invalid(form)
 
         if not image_formset.is_valid():
+            logger.warning(
+                f"Recipe update failed for '{self.object.title}' (ID: {self.object.pk}): "
+                "image formset validation error"
+            )
             return self.form_invalid(form)
 
         # Check that at least one ingredient and one step are provided
@@ -267,30 +300,50 @@ class RecipeUpdateView(UpdateView):
         )
 
         if ingredient_count == 0:
+            logger.warning(
+                f"Recipe update failed for '{self.object.title}' (ID: {self.object.pk}): "
+                "no ingredients provided"
+            )
             messages.error(
                 self.request, "Please add at least one ingredient to the recipe."
             )
             return self.form_invalid(form)
 
         if step_count == 0:
+            logger.warning(
+                f"Recipe update failed for '{self.object.title}' (ID: {self.object.pk}): "
+                "no steps provided"
+            )
             messages.error(
                 self.request, "Please add at least one instruction step to the recipe."
             )
             return self.form_invalid(form)
 
-        with transaction.atomic():
-            self.object = form.save()
-            ingredient_formset.instance = self.object
-            ingredient_formset.save()
-            step_formset.instance = self.object
-            step_formset.save()
-            image_formset.instance = self.object
-            image_formset.save()
+        try:
+            with transaction.atomic():
+                self.object = form.save()
+                ingredient_formset.instance = self.object
+                ingredient_formset.save()
+                step_formset.instance = self.object
+                step_formset.save()
+                image_formset.instance = self.object
+                image_formset.save()
 
-        messages.success(
-            self.request, f"Recipe '{self.object.title}' updated successfully!"
-        )
-        return redirect("recipe_detail", pk=self.object.pk)
+            logger.info(
+                f"Recipe updated: '{self.object.title}' (ID: {self.object.pk}, "
+                f"Ingredients: {ingredient_count}, Steps: {step_count})"
+            )
+            messages.success(
+                self.request, f"Recipe '{self.object.title}' updated successfully!"
+            )
+            return redirect("recipe_detail", pk=self.object.pk)
+        except Exception as e:
+            logger.error(
+                f"Error updating recipe '{self.object.title}' (ID: {self.object.pk}): {e}",
+                exc_info=True,
+            )
+            messages.error(self.request, f"Error updating recipe: {e}")
+            return self.form_invalid(form)
 
 
 class RecipeDeleteView(DeleteView):
@@ -303,7 +356,10 @@ class RecipeDeleteView(DeleteView):
     def delete(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         """Delete the recipe and show a success message."""
         recipe = self.get_object()
-        messages.success(request, f"Recipe '{recipe.title}' deleted successfully!")
+        recipe_title = recipe.title
+        recipe_id = recipe.pk
+        logger.info(f"Recipe deleted: '{recipe_title}' (ID: {recipe_id})")
+        messages.success(request, f"Recipe '{recipe_title}' deleted successfully!")
         return super().delete(request, *args, **kwargs)
 
 
@@ -329,47 +385,71 @@ def get_ingredient_units(request: HttpRequest) -> JsonResponse:
 def export_recipe(request: HttpRequest, pk: int) -> HttpResponse:
     """Export a recipe as a JSON file."""
     recipe = get_object_or_404(Recipe, pk=pk)
-    recipe_data = serialize_recipe(recipe)
+    logger.info(f"Exporting recipe: '{recipe.title}' (ID: {pk})")
 
-    # Create JSON response with proper filename
-    response = HttpResponse(
-        json.dumps(recipe_data, indent=2, ensure_ascii=False),
-        content_type="application/json",
-    )
-    # Sanitize filename by replacing spaces and special chars
-    safe_title = "".join(
-        c if c.isalnum() or c in (" ", "-", "_") else "_" for c in recipe.title
-    )
-    safe_title = safe_title.replace(" ", "_")
-    response["Content-Disposition"] = f'attachment; filename="{safe_title}.json"'
+    try:
+        recipe_data = serialize_recipe(recipe)
 
-    return response
+        # Create JSON response with proper filename
+        response = HttpResponse(
+            json.dumps(recipe_data, indent=2, ensure_ascii=False),
+            content_type="application/json",
+        )
+        # Sanitize filename by replacing spaces and special chars
+        safe_title = "".join(
+            c if c.isalnum() or c in (" ", "-", "_") else "_" for c in recipe.title
+        )
+        safe_title = safe_title.replace(" ", "_")
+        response["Content-Disposition"] = f'attachment; filename="{safe_title}.json"'
+
+        logger.debug(f"Recipe export successful: '{recipe.title}' (ID: {pk})")
+        return response
+    except Exception as e:
+        logger.error(
+            f"Error exporting recipe '{recipe.title}' (ID: {pk}): {e}", exc_info=True
+        )
+        messages.error(request, f"Error exporting recipe: {e}")
+        return redirect("recipe_detail", pk=pk)
 
 
 def import_recipe(request: HttpRequest) -> HttpResponse:
     """Import a recipe from a JSON file."""
     if request.method == "POST":
+        logger.info("Recipe import initiated")
+
         if "json_file" not in request.FILES:
+            logger.warning("Recipe import failed: no file uploaded")
             messages.error(request, "No file was uploaded.")
             return redirect("recipe_import")
 
         json_file = cast(UploadedFile, request.FILES["json_file"])
+        logger.debug(f"Importing recipe from file: {json_file.name}")
 
         # Read and parse JSON
         try:
             content = json_file.read().decode("utf-8")
             data = json.loads(content)
         except json.JSONDecodeError as e:
+            logger.error(
+                f"Recipe import failed: invalid JSON in file {json_file.name}: {e}"
+            )
             messages.error(request, f"Invalid JSON file: {e}")
             return redirect("recipe_import")
         except Exception as e:
+            logger.error(
+                f"Recipe import failed: error reading file {json_file.name}: {e}"
+            )
             messages.error(request, f"Error reading file: {e}")
             return redirect("recipe_import")
 
         # Validate the data
         errors = validate_recipe_data(data)
         if errors:
+            logger.warning(
+                f"Recipe import validation failed for file {json_file.name}: {len(errors)} errors"
+            )
             for error in errors:
+                logger.debug(f"Validation error: {error}")
                 messages.error(request, error)
             return redirect("recipe_import")
 
@@ -392,6 +472,10 @@ def import_recipe(request: HttpRequest) -> HttpResponse:
                 # Note: We don't import images since they're just metadata
                 # Users would need to manually add images after import
 
+            logger.info(
+                f"Recipe imported successfully: '{recipe.title}' (ID: {recipe.pk}) "
+                f"from file {json_file.name}"
+            )
             messages.success(
                 request,
                 f"Recipe '{recipe.title}' imported successfully! "
@@ -400,6 +484,10 @@ def import_recipe(request: HttpRequest) -> HttpResponse:
             return redirect("recipe_detail", pk=recipe.pk)
 
         except Exception as e:
+            logger.error(
+                f"Error creating recipe from import file {json_file.name}: {e}",
+                exc_info=True,
+            )
             messages.error(request, f"Error creating recipe: {e}")
             return redirect("recipe_import")
 
@@ -410,87 +498,114 @@ def import_recipe(request: HttpRequest) -> HttpResponse:
 def download_recipe_pdf(request: HttpRequest, pk: int) -> HttpResponse:
     """Generate and download a recipe as a PDF using Typst."""
     recipe = get_object_or_404(Recipe, pk=pk)
-    recipe_data = serialize_recipe(recipe)
+    logger.info(f"PDF generation initiated for recipe: '{recipe.title}' (ID: {pk})")
 
-    # Get the path to the Typst template
-    base_dir = Path(__file__).resolve().parent.parent
-    typst_template = base_dir / "recipe.typ"
+    try:
+        recipe_data = serialize_recipe(recipe)
 
-    if not typst_template.exists():
-        messages.error(request, "Typst template file not found.")
-        return redirect("recipe_detail", pk=pk)
+        # Get the path to the Typst template
+        base_dir = Path(__file__).resolve().parent.parent
+        typst_template = base_dir / "recipe.typ"
 
-    # Create temporary directory for intermediate files
-    with tempfile.TemporaryDirectory(prefix="plated_typst_") as temp_dir:
-        temp_path = Path(temp_dir)
+        if not typst_template.exists():
+            logger.error(f"Typst template not found at {typst_template}")
+            messages.error(request, "Typst template file not found.")
+            return redirect("recipe_detail", pk=pk)
 
-        # Copy typst template to temp directory
-        temp_typst = temp_path / "recipe.typ"
-        shutil.copy(typst_template, temp_typst)
+        # Create temporary directory for intermediate files
+        with tempfile.TemporaryDirectory(prefix="plated_typst_") as temp_dir:
+            temp_path = Path(temp_dir)
+            logger.debug(f"Using temporary directory: {temp_dir}")
 
-        # Write recipe JSON to temp directory (same location as typst file)
-        recipe_json_path = temp_path / "recipe.json"
-        with open(recipe_json_path, "w", encoding="utf-8") as f:
-            json.dump(recipe_data, f, indent=2, ensure_ascii=False)
+            # Copy typst template to temp directory
+            temp_typst = temp_path / "recipe.typ"
+            shutil.copy(typst_template, temp_typst)
 
-        # Prepare output PDF path
-        output_pdf = temp_path / "recipe.pdf"
+            # Write recipe JSON to temp directory (same location as typst file)
+            recipe_json_path = temp_path / "recipe.json"
+            with open(recipe_json_path, "w", encoding="utf-8") as f:
+                json.dump(recipe_data, f, indent=2, ensure_ascii=False)
 
-        # Prepare Typst input data with relative paths
-        typst_input_data = json.dumps({"recipe": "recipe.json"})
+            # Prepare output PDF path
+            output_pdf = temp_path / "recipe.pdf"
 
-        # Call Typst to compile the PDF
-        try:
-            subprocess.run(
-                [
-                    "typst",
-                    "compile",
-                    str(temp_typst),
-                    str(output_pdf),
-                    "--input",
-                    f"data={typst_input_data}",
-                ],
-                capture_output=True,
-                text=True,
-                timeout=30,
-                check=True,
+            # Prepare Typst input data with relative paths
+            typst_input_data = json.dumps({"recipe": "recipe.json"})
+
+            # Call Typst to compile the PDF
+            try:
+                logger.debug(f"Running Typst compiler for recipe '{recipe.title}'")
+                subprocess.run(
+                    [
+                        "typst",
+                        "compile",
+                        str(temp_typst),
+                        str(output_pdf),
+                        "--input",
+                        f"data={typst_input_data}",
+                    ],
+                    capture_output=True,
+                    text=True,
+                    timeout=30,
+                    check=True,
+                )
+            except FileNotFoundError:
+                logger.error("Typst executable not found on system")
+                messages.error(
+                    request,
+                    "Typst is not installed. Please install Typst to generate PDFs.",
+                )
+                return redirect("recipe_detail", pk=pk)
+            except subprocess.TimeoutExpired:
+                logger.error(
+                    f"Typst compilation timed out for recipe '{recipe.title}' (ID: {pk})"
+                )
+                messages.error(request, "PDF generation timed out.")
+                return redirect("recipe_detail", pk=pk)
+            except subprocess.CalledProcessError as e:
+                logger.error(
+                    f"Typst compilation failed for recipe '{recipe.title}' (ID: {pk}): {e.stderr}",
+                    exc_info=True,
+                )
+                messages.error(
+                    request,
+                    f"Error generating PDF: {e.stderr if e.stderr else str(e)}",
+                )
+                return redirect("recipe_detail", pk=pk)
+
+            # Check if PDF was created
+            if not output_pdf.exists():
+                logger.error(
+                    f"PDF file not created for recipe '{recipe.title}' (ID: {pk})"
+                )
+                messages.error(request, "PDF file was not generated.")
+                return redirect("recipe_detail", pk=pk)
+
+            # Read the PDF file
+            with open(output_pdf, "rb") as pdf_file:
+                pdf_content = pdf_file.read()
+
+            # Create response with PDF
+            response = HttpResponse(pdf_content, content_type="application/pdf")
+
+            # Sanitize filename
+            safe_title = "".join(
+                c if c.isalnum() or c in (" ", "-", "_") else "_" for c in recipe.title
             )
-        except FileNotFoundError:
-            messages.error(
-                request,
-                "Typst is not installed. Please install Typst to generate PDFs.",
+            safe_title = safe_title.replace(" ", "_")
+            response["Content-Disposition"] = f'attachment; filename="{safe_title}.pdf"'
+
+            logger.info(
+                f"PDF generated successfully for recipe '{recipe.title}' (ID: {pk})"
             )
-            return redirect("recipe_detail", pk=pk)
-        except subprocess.TimeoutExpired:
-            messages.error(request, "PDF generation timed out.")
-            return redirect("recipe_detail", pk=pk)
-        except subprocess.CalledProcessError as e:
-            messages.error(
-                request,
-                f"Error generating PDF: {e.stderr if e.stderr else str(e)}",
-            )
-            return redirect("recipe_detail", pk=pk)
-
-        # Check if PDF was created
-        if not output_pdf.exists():
-            messages.error(request, "PDF file was not generated.")
-            return redirect("recipe_detail", pk=pk)
-
-        # Read the PDF file
-        with open(output_pdf, "rb") as pdf_file:
-            pdf_content = pdf_file.read()
-
-        # Create response with PDF
-        response = HttpResponse(pdf_content, content_type="application/pdf")
-
-        # Sanitize filename
-        safe_title = "".join(
-            c if c.isalnum() or c in (" ", "-", "_") else "_" for c in recipe.title
+            return response
+    except Exception as e:
+        logger.error(
+            f"Unexpected error generating PDF for recipe '{recipe.title}' (ID: {pk}): {e}",
+            exc_info=True,
         )
-        safe_title = safe_title.replace(" ", "_")
-        response["Content-Disposition"] = f'attachment; filename="{safe_title}.pdf"'
-
-        return response
+        messages.error(request, f"Error generating PDF: {e}")
+        return redirect("recipe_detail", pk=pk)
 
 
 # Recipe Collection Views
@@ -537,11 +652,15 @@ class CollectionCreateView(CreateView):
 
     def form_valid(self, form: forms.ModelForm) -> HttpResponse:  # type: ignore[override]
         """Save the collection and show success message."""
+        result = super().form_valid(form)
+        logger.info(
+            f"Collection created: '{form.instance.name}' (ID: {form.instance.pk})"
+        )
         messages.success(
             self.request,
             f"Collection '{form.instance.name}' created successfully!",
         )
-        return super().form_valid(form)
+        return result
 
     def get_success_url(self) -> str:
         """Redirect to collection detail page."""
@@ -573,11 +692,15 @@ class CollectionUpdateView(UpdateView):
 
     def form_valid(self, form: forms.ModelForm) -> HttpResponse:  # type: ignore[override]
         """Save the collection and show success message."""
+        result = super().form_valid(form)
+        logger.info(
+            f"Collection updated: '{form.instance.name}' (ID: {form.instance.pk})"
+        )
         messages.success(
             self.request,
             f"Collection '{form.instance.name}' updated successfully!",
         )
-        return super().form_valid(form)
+        return result
 
     def get_success_url(self) -> str:
         """Redirect to collection detail page."""
@@ -595,8 +718,11 @@ class CollectionDeleteView(DeleteView):
     def delete(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         """Delete the collection and show a success message."""
         collection = self.get_object()
+        collection_name = collection.name
+        collection_id = collection.pk
+        logger.info(f"Collection deleted: '{collection_name}' (ID: {collection_id})")
         messages.success(
-            request, f"Collection '{collection.name}' deleted successfully!"
+            request, f"Collection '{collection_name}' deleted successfully!"
         )
         return super().delete(request, *args, **kwargs)
 
@@ -631,30 +757,50 @@ def rename_ingredient_name(request: HttpRequest) -> HttpResponse:
         old_name = request.POST.get("old_name", "").strip()
         new_name = request.POST.get("new_name", "").strip()
 
+        logger.info(f"Ingredient rename requested: '{old_name}' -> '{new_name}'")
+
         if not old_name or not new_name:
+            logger.warning("Ingredient rename failed: missing old or new name")
             messages.error(request, "Both old and new names are required.")
             return redirect("manage_ingredient_names")
 
         if old_name == new_name:
+            logger.warning(
+                f"Ingredient rename skipped: old and new names are identical ('{old_name}')"
+            )
             messages.warning(request, "Old and new names are the same.")
             return redirect("manage_ingredient_names")
 
         # Check if old name exists
         count = Ingredient.objects.filter(name=old_name).count()
         if count == 0:
+            logger.warning(
+                f"Ingredient rename failed: no ingredients found with name '{old_name}'"
+            )
             messages.error(request, f"No ingredients found with name '{old_name}'.")
             return redirect("manage_ingredient_names")
 
         # Update all ingredients with the old name
-        with transaction.atomic():
-            updated = Ingredient.objects.filter(name=old_name).update(name=new_name)
+        try:
+            with transaction.atomic():
+                updated = Ingredient.objects.filter(name=old_name).update(name=new_name)
 
-        plural = "" if updated == 1 else "s"
-        messages.success(
-            request,
-            f"Renamed '{old_name}' to '{new_name}' in {updated} ingredient{plural}.",
-        )
-        return redirect("manage_ingredient_names")
+            logger.info(
+                f"Ingredient renamed: '{old_name}' -> '{new_name}' ({updated} occurrences)"
+            )
+            plural = "" if updated == 1 else "s"
+            messages.success(
+                request,
+                f"Renamed '{old_name}' to '{new_name}' in {updated} ingredient{plural}.",
+            )
+            return redirect("manage_ingredient_names")
+        except Exception as e:
+            logger.error(
+                f"Error renaming ingredient '{old_name}' to '{new_name}': {e}",
+                exc_info=True,
+            )
+            messages.error(request, f"Error renaming ingredient: {e}")
+            return redirect("manage_ingredient_names")
 
     # GET request - show rename form
     old_name = request.GET.get("name", "")
@@ -693,31 +839,50 @@ def rename_unit(request: HttpRequest) -> HttpResponse:
         old_unit = request.POST.get("old_unit", "").strip()
         new_unit = request.POST.get("new_unit", "").strip()
 
+        logger.info(f"Unit rename requested: '{old_unit}' -> '{new_unit}'")
+
         if not old_unit:
+            logger.warning("Unit rename failed: missing old unit name")
             messages.error(request, "Old unit name is required.")
             return redirect("manage_units")
 
         if old_unit == new_unit:
+            logger.warning(
+                f"Unit rename skipped: old and new units are identical ('{old_unit}')"
+            )
             messages.warning(request, "Old and new units are the same.")
             return redirect("manage_units")
 
         # Check if old unit exists
         count = Ingredient.objects.filter(unit=old_unit).count()
         if count == 0:
+            logger.warning(
+                f"Unit rename failed: no ingredients found with unit '{old_unit}'"
+            )
             messages.error(request, f"No ingredients found with unit '{old_unit}'.")
             return redirect("manage_units")
 
         # Update all ingredients with the old unit
-        with transaction.atomic():
-            updated = Ingredient.objects.filter(unit=old_unit).update(unit=new_unit)
+        try:
+            with transaction.atomic():
+                updated = Ingredient.objects.filter(unit=old_unit).update(unit=new_unit)
 
-        plural = "" if updated == 1 else "s"
-        msg = (
-            f"Renamed unit '{old_unit}' to '{new_unit}' "
-            f"in {updated} ingredient{plural}."
-        )
-        messages.success(request, msg)
-        return redirect("manage_units")
+            logger.info(
+                f"Unit renamed: '{old_unit}' -> '{new_unit}' ({updated} occurrences)"
+            )
+            plural = "" if updated == 1 else "s"
+            msg = (
+                f"Renamed unit '{old_unit}' to '{new_unit}' "
+                f"in {updated} ingredient{plural}."
+            )
+            messages.success(request, msg)
+            return redirect("manage_units")
+        except Exception as e:
+            logger.error(
+                f"Error renaming unit '{old_unit}' to '{new_unit}': {e}", exc_info=True
+            )
+            messages.error(request, f"Error renaming unit: {e}")
+            return redirect("manage_units")
 
     # GET request - show rename form
     old_unit = request.GET.get("unit", "")

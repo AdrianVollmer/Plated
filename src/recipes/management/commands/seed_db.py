@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
+import logging
 from datetime import timedelta
 
 from django.core.management.base import BaseCommand
 
 from recipes.models import Ingredient, Recipe, Step
+
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -22,12 +25,18 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **kwargs):  # type: ignore
+        logger.info("Database seeding command started")
+
         if kwargs["clear"]:
             self.stdout.write("Clearing existing recipes...")
+            logger.info("Clearing all existing recipes from database")
+            recipe_count = Recipe.objects.count()
             Recipe.objects.all().delete()
+            logger.info(f"Deleted {recipe_count} recipes from database")
             self.stdout.write(self.style.SUCCESS("Cleared all recipes"))
 
         self.stdout.write("Seeding database with sample recipes...")
+        logger.info("Starting to seed database with sample recipes")
 
         # Recipe 1: Classic Chocolate Chip Cookies
         recipe1 = Recipe.objects.create(
@@ -233,10 +242,18 @@ class Command(BaseCommand):
         for i, content in enumerate(steps5, 1):
             Step.objects.create(recipe=recipe5, order=i, content=content)
 
+        total_recipes = Recipe.objects.count()
+        logger.info(
+            f"Database seeding completed successfully. "
+            f"Total recipes in database: {total_recipes}"
+        )
+        logger.debug(
+            f"Created recipes: {recipe1.title}, {recipe2.title}, {recipe3.title}, "
+            f"{recipe4.title}, {recipe5.title}"
+        )
+
         self.stdout.write(
-            self.style.SUCCESS(
-                f"Successfully created {Recipe.objects.count()} sample recipes!"
-            )
+            self.style.SUCCESS(f"Successfully created {total_recipes} sample recipes!")
         )
         self.stdout.write(
             "\nCreated recipes:"
