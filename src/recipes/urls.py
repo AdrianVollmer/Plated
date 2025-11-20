@@ -61,4 +61,7 @@ urlpatterns = [
     path("settings/", views.settings_view, name="settings"),
     # AI Integration
     path("ai/extract/", views.ai_extract_recipe, name="ai_extract_recipe"),
+    # PWA
+    path("manifest.json", views.manifest_view, name="manifest"),
+    path("service-worker.js", views.service_worker_view, name="service_worker"),
 ]

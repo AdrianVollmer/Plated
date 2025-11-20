@@ -7,6 +7,36 @@
     <div class="col-md-8 offset-md-2">
         <h1 class="mb-4">Settings</h1>
 
+        <!-- PWA Installation Section -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Progressive Web App</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">Install Plated as an app on your device for offline access and a native app experience</p>
+                <div id="pwa-installed-message" class="alert alert-success d-none" role="alert">
+                    <i class="bi bi-check-circle-fill"></i> Plated is installed as a PWA and can work offline!
+                </div>
+                <div id="pwa-info-message" class="alert alert-info d-none" role="alert">
+                    <i class="bi bi-info-circle"></i> <span id="pwa-info-text"></span>
+                </div>
+                <button id="pwa-install-button" class="btn btn-primary d-none" onclick="installPWA()">
+                    <i class="bi bi-download"></i> Install Plated App
+                </button>
+                <div class="mt-3">
+                    <small class="text-muted">
+                        <strong>Benefits:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li>Access recipes offline</li>
+                            <li>Install on home screen like a native app</li>
+                            <li>Faster loading times</li>
+                            <li>Works across all your devices</li>
+                        </ul>
+                    </small>
+                </div>
+            </div>
+        </div>
+
         <!-- Theme Selection Section -->
         <div class="card mb-4">
             <div class="card-header">
