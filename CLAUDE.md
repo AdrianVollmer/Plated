@@ -107,16 +107,6 @@ later.
 
 ## Expanding
 
-### Issue: Dynamic recipe form
-
-Make the recipe form dynamic, like add a step, ingredient or image.
-Figure out a "best practice" for this. Let's try not the reinvent the
-wheel.
-
-While doing this, make the reordering a bit nicer and dynamic as well.
-
-Some light JavaScript is fine here.
-
 ### Issue: AI Integration
 
 Add AI integration. The user should be able to define a LLM (API URL,

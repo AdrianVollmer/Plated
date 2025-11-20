@@ -107,6 +107,12 @@
                 {% endfor %}
             </div>
             {% endif %}
+            {% if recipe.url %}
+            <div class="mt-3 pt-3" style="border-top: 1px solid var(--border-subtle);">
+                <div class="recipe-info-label mb-2"><i class="bi bi-link-45deg"></i> Source</div>
+                <a href="{{ recipe.url }}" target="_blank" rel="noopener noreferrer" style="color: var(--primary); text-decoration: none; word-break: break-all; font-size: 0.9rem;">{{ recipe.url }}</a>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -138,6 +144,12 @@
                 {% for keyword in recipe.keywords|split:"," %}
                 <span class="keyword-tag">{{ keyword }}</span>
                 {% endfor %}
+            </div>
+            {% endif %}
+            {% if recipe.url %}
+            <div class="mt-3 pt-3" style="border-top: 1px solid var(--border-subtle);">
+                <div class="recipe-info-label mb-2"><i class="bi bi-link-45deg"></i> Source</div>
+                <a href="{{ recipe.url }}" target="_blank" rel="noopener noreferrer" style="color: var(--primary); text-decoration: none; word-break: break-all; font-size: 0.9rem;">{{ recipe.url }}</a>
             </div>
             {% endif %}
         </div>
@@ -216,17 +228,6 @@
         <div class="recipe-section">
             <h5 class="recipe-section-title">Notes</h5>
             <p>{{ recipe.notes|linebreaks }}</p>
-        </div>
-    </div>
-</div>
-{% endif %}
-
-{% if recipe.url %}
-<div class="row mb-4">
-    <div class="col-md-8 offset-md-2">
-        <div class="recipe-section">
-            <h5 class="recipe-section-title">Source</h5>
-            <a href="{{ recipe.url }}" target="_blank" style="color: var(--primary); text-decoration: none;"><i class="bi bi-link-45deg"></i> {{ recipe.url }}</a>
         </div>
     </div>
 </div>
