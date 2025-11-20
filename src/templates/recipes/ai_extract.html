@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}AI Recipe Extraction - Plated{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="display-6">
+                <i class="bi bi-stars"></i> AI Recipe Extraction
+            </h1>
+            <a href="{% url 'recipe_list' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <p class="text-muted mb-4">
+                    Paste recipe text, HTML, or provide a URL, and let AI extract the recipe information for you.
+                    You can also provide additional instructions like "translate to German" or "convert to metric units".
+                </p>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <!-- Input Type Selection -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">{{ form.input_type.label }}</label>
+                        <div class="btn-group d-flex" role="group">
+                            {% for value, text in form.fields.input_type.choices %}
+                            <input type="radio" class="btn-check" name="input_type" id="input_type_{{ value }}" value="{{ value }}" {% if forloop.first %}checked{% endif %}>
+                            <label class="btn btn-outline-primary" for="input_type_{{ value }}">
+                                {% if value == "text" %}
+                                    <i class="bi bi-file-text"></i> {{ text }}
+                                {% elif value == "html" %}
+                                    <i class="bi bi-code-square"></i> {{ text }}
+                                {% elif value == "url" %}
+                                    <i class="bi bi-link-45deg"></i> {{ text }}
+                                {% endif %}
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Input Content -->
+                    <div class="mb-3">
+                        <label for="id_input_content" class="form-label fw-bold">{{ form.input_content.label }}</label>
+                        {{ form.input_content }}
+                        {% if form.input_content.errors %}
+                            <div class="text-danger mt-1">
+                                {{ form.input_content.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Optional Instructions -->
+                    <div class="mb-4">
+                        <label for="id_prompt" class="form-label fw-bold">{{ form.prompt.label }}</label>
+                        {{ form.prompt }}
+                        <div class="form-text">{{ form.prompt.help_text }}</div>
+                        {% if form.prompt.errors %}
+                            <div class="text-danger mt-1">
+                                {{ form.prompt.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-stars"></i> Extract Recipe with AI
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Help Section -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="bi bi-info-circle"></i> Tips</h6>
+            </div>
+            <div class="card-body">
+                <ul class="mb-0">
+                    <li><strong>Plain Text:</strong> Paste recipe text directly from any source.</li>
+                    <li><strong>HTML:</strong> Paste HTML code containing a recipe (e.g., copied from browser developer tools).</li>
+                    <li><strong>URL:</strong> Provide a direct link to a recipe webpage.</li>
+                    <li><strong>Instructions:</strong> Add custom instructions like "translate to Spanish", "convert to metric", or "make it vegan".</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

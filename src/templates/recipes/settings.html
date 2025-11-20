@@ -34,6 +34,36 @@
             </div>
         </div>
 
+        <!-- AI Settings Section -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">AI Integration</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">Configure AI/LLM settings for recipe extraction</p>
+                {% if ai_settings %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="ai_settings" value="1">
+                        {{ ai_form.as_p }}
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Update AI Settings
+                        </button>
+                    </form>
+                {% else %}
+                    <p class="text-muted mb-3">No AI settings configured yet.</p>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="ai_settings" value="1">
+                        {{ ai_form.as_p }}
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Create AI Settings
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+
         <!-- Admin Section -->
         <div class="card">
             <div class="card-header">

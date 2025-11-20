@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from django.contrib import admin
 
-from .models import Ingredient, Recipe, RecipeCollection, RecipeImage, Step
+from .models import AISettings, Ingredient, Recipe, RecipeCollection, RecipeImage, Step
 
 
 class IngredientInline(admin.TabularInline):
@@ -106,3 +106,32 @@ class RecipeCollectionAdmin(admin.ModelAdmin):
     def recipe_count(self, obj: RecipeCollection) -> int:
         """Display the number of recipes in the collection."""
         return obj.recipes.count()
+
+
+@admin.register(AISettings)
+class AISettingsAdmin(admin.ModelAdmin):
+    """Admin interface for AISettings model."""
+
+    list_display = ["model", "api_url", "created_at", "updated_at"]
+    readonly_fields = ["created_at", "updated_at"]
+    fieldsets = [
+        (
+            "API Configuration",
+            {
+                "fields": ["api_url", "api_key", "model"],
+            },
+        ),
+        (
+            "Model Parameters",
+            {
+                "fields": ["max_tokens", "temperature"],
+            },
+        ),
+        (
+            "Metadata",
+            {
+                "fields": ["created_at", "updated_at"],
+                "classes": ["collapse"],
+            },
+        ),
+    ]

@@ -65,4 +65,6 @@ urlpatterns = [
     path("manage/units/rename/", views.rename_unit, name="rename_unit"),
     # Settings
     path("settings/", views.settings_view, name="settings"),
+    # AI Integration
+    path("ai/extract/", views.ai_extract_recipe, name="ai_extract_recipe"),
 ]

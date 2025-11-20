@@ -8,6 +8,7 @@ import tempfile
 from pathlib import Path
 from typing import Any, cast
 
+import requests
 from django import forms
 from django.contrib import messages
 from django.core.files.uploadedfile import UploadedFile
@@ -25,8 +26,8 @@ from django.views.generic import (
     UpdateView,
 )
 
-from .forms import RecipeForm
-from .models import Ingredient, Recipe, RecipeCollection, RecipeImage, Step
+from .forms import AIRecipeExtractionForm, AISettingsForm, RecipeForm
+from .models import AISettings, Ingredient, Recipe, RecipeCollection, RecipeImage, Step
 from .schema import deserialize_recipe, serialize_recipe, validate_recipe_data
 
 logger = logging.getLogger(__name__)
@@ -116,13 +117,46 @@ class RecipeCreateView(CreateView):
     form_class = RecipeForm
     template_name = "recipes/recipe_form.html"
 
+    def get_initial(self) -> dict[str, Any]:
+        """Get initial data, including AI-extracted recipe if available."""
+        initial = super().get_initial()
+
+        # Check if there's AI-extracted recipe data in the session
+        ai_recipe_data = self.request.session.get("ai_extracted_recipe")
+        if ai_recipe_data:
+            logger.info("Pre-filling recipe form with AI-extracted data")
+            # Deserialize the recipe data
+            deserialized = deserialize_recipe(ai_recipe_data)
+            recipe_data = deserialized["recipe_data"]
+
+            # Update initial data with recipe fields
+            initial.update(recipe_data)
+
+            # Store ingredients and steps data for formsets
+            self.request.session["ai_ingredients_data"] = deserialized[
+                "ingredients_data"
+            ]
+            self.request.session["ai_steps_data"] = deserialized["steps_data"]
+
+            # Clear the AI-extracted recipe from session
+            del self.request.session["ai_extracted_recipe"]
+
+        return initial
+
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         """Add formsets to the context."""
         data = super().get_context_data(**kwargs)
 
-        # Reduced extra forms since users can add more dynamically
-        IngredientFormSet = get_ingredient_formset(extra=1)  # noqa: N806
-        StepFormSet = get_step_formset(extra=1)  # noqa: N806
+        # Check if there's AI-extracted ingredients and steps data
+        ai_ingredients_data = self.request.session.get("ai_ingredients_data", [])
+        ai_steps_data = self.request.session.get("ai_steps_data", [])
+
+        # Determine extra forms based on AI data
+        extra_ingredients = max(1, len(ai_ingredients_data))
+        extra_steps = max(1, len(ai_steps_data))
+
+        IngredientFormSet = get_ingredient_formset(extra=extra_ingredients)  # noqa: N806
+        StepFormSet = get_step_formset(extra=extra_steps)  # noqa: N806
         ImageFormSet = get_image_formset(extra=0)  # noqa: N806
 
         if self.request.POST:
@@ -134,8 +168,25 @@ class RecipeCreateView(CreateView):
                 self.request.POST, self.request.FILES, prefix="images"
             )
         else:
-            data["ingredient_formset"] = IngredientFormSet(prefix="ingredients")
-            data["step_formset"] = StepFormSet(prefix="steps")
+            # Pre-fill formsets with AI data if available
+            if ai_ingredients_data:
+                data["ingredient_formset"] = IngredientFormSet(
+                    initial=ai_ingredients_data, prefix="ingredients"
+                )
+                # Clear from session after using
+                del self.request.session["ai_ingredients_data"]
+            else:
+                data["ingredient_formset"] = IngredientFormSet(prefix="ingredients")
+
+            if ai_steps_data:
+                data["step_formset"] = StepFormSet(
+                    initial=ai_steps_data, prefix="steps"
+                )
+                # Clear from session after using
+                del self.request.session["ai_steps_data"]
+            else:
+                data["step_formset"] = StepFormSet(prefix="steps")
+
             data["image_formset"] = ImageFormSet(prefix="images")
 
         return data
@@ -900,4 +951,223 @@ def rename_unit(request: HttpRequest) -> HttpResponse:
 
 def settings_view(request: HttpRequest) -> HttpResponse:
     """Display application settings page."""
-    return render(request, "recipes/settings.html")
+    # Since we only support one set of AI settings, get or create it
+    ai_settings = AISettings.objects.first()
+
+    if request.method == "POST" and "ai_settings" in request.POST:
+        if ai_settings:
+            ai_form = AISettingsForm(request.POST, instance=ai_settings)
+        else:
+            ai_form = AISettingsForm(request.POST)
+
+        if ai_form.is_valid():
+            ai_form.save()
+            messages.success(request, "AI settings saved successfully!")
+            logger.info("AI settings updated")
+            return redirect("settings")
+    else:
+        ai_form = (
+            AISettingsForm(instance=ai_settings) if ai_settings else AISettingsForm()
+        )
+
+    return render(
+        request,
+        "recipes/settings.html",
+        {"ai_settings": ai_settings, "ai_form": ai_form},
+    )
+
+
+# AI Recipe Extraction
+
+
+def ai_extract_recipe(request: HttpRequest) -> HttpResponse:
+    """Extract a recipe using AI from text, HTML, or URL."""
+    # Check if AI settings are configured
+    ai_settings = AISettings.objects.first()
+    if not ai_settings:
+        messages.error(
+            request,
+            "AI settings are not configured. Please configure AI settings in the settings page.",
+        )
+        return redirect("settings")
+
+    if request.method == "POST":
+        form = AIRecipeExtractionForm(request.POST)
+        if form.is_valid():
+            input_type = form.cleaned_data["input_type"]
+            input_content = form.cleaned_data["input_content"]
+            prompt = form.cleaned_data["prompt"]
+
+            logger.info(f"AI recipe extraction initiated with input_type: {input_type}")
+
+            try:
+                # Fetch content if it's a URL
+                if input_type == "url":
+                    logger.debug(f"Fetching content from URL: {input_content}")
+                    try:
+                        response = requests.get(input_content, timeout=30)
+                        response.raise_for_status()
+                        content = response.text
+                        logger.debug(
+                            f"URL content fetched successfully: {len(content)} characters"
+                        )
+                    except requests.RequestException as e:
+                        logger.error(f"Error fetching URL {input_content}: {e}")
+                        messages.error(request, f"Error fetching URL: {e}")
+                        return render(
+                            request, "recipes/ai_extract.html", {"form": form}
+                        )
+                else:
+                    content = input_content
+
+                # Build the prompt for the LLM
+                schema_description = """
+Extract the recipe information from the provided content and return it as a JSON object with the following schema:
+
+{
+  "title": "Recipe title (required)",
+  "description": "Brief description",
+  "servings": 4,
+  "keywords": "comma, separated, keywords",
+  "prep_time_minutes": 30,
+  "wait_time_minutes": 45,
+  "url": "source URL if applicable",
+  "notes": "any additional notes",
+  "special_equipment": "special equipment needed",
+  "ingredients": [
+    {
+      "amount": "2",
+      "unit": "cups",
+      "name": "flour",
+      "note": "sifted",
+      "order": 0
+    }
+  ],
+  "steps": [
+    {
+      "content": "Step instructions (markdown supported)",
+      "order": 0
+    }
+  ]
+}
+
+IMPORTANT: Return ONLY valid JSON, no additional text or markdown formatting.
+"""
+
+                system_message = schema_description
+                if prompt:
+                    system_message += f"\n\nAdditional instructions: {prompt}"
+
+                user_message = f"Content type: {input_type}\n\nContent:\n{content}"
+
+                # Call the LLM API
+                logger.debug(f"Calling LLM API: {ai_settings.api_url}")
+                try:
+                    # Try OpenAI-compatible API format
+                    api_payload = {
+                        "model": ai_settings.model,
+                        "messages": [
+                            {"role": "system", "content": system_message},
+                            {"role": "user", "content": user_message},
+                        ],
+                        "max_tokens": ai_settings.max_tokens,
+                        "temperature": ai_settings.temperature,
+                    }
+
+                    api_response = requests.post(
+                        ai_settings.api_url,
+                        headers={
+                            "Authorization": f"Bearer {ai_settings.api_key}",
+                            "Content-Type": "application/json",
+                        },
+                        json=api_payload,
+                        timeout=120,
+                    )
+                    api_response.raise_for_status()
+                    response_data = api_response.json()
+
+                    logger.debug("LLM API call successful")
+
+                    # Extract the response text (try OpenAI format first)
+                    if "choices" in response_data and len(response_data["choices"]) > 0:
+                        recipe_json_str = response_data["choices"][0]["message"][
+                            "content"
+                        ]
+                    elif "content" in response_data:
+                        # Alternative format
+                        recipe_json_str = response_data["content"]
+                    else:
+                        logger.error(f"Unexpected API response format: {response_data}")
+                        messages.error(
+                            request,
+                            "Unexpected response format from AI API. Please check your API configuration.",
+                        )
+                        return render(
+                            request, "recipes/ai_extract.html", {"form": form}
+                        )
+
+                    # Clean up the response (remove markdown code blocks if present)
+                    recipe_json_str = recipe_json_str.strip()
+                    if recipe_json_str.startswith("```json"):
+                        recipe_json_str = recipe_json_str[7:]
+                    if recipe_json_str.startswith("```"):
+                        recipe_json_str = recipe_json_str[3:]
+                    if recipe_json_str.endswith("```"):
+                        recipe_json_str = recipe_json_str[:-3]
+                    recipe_json_str = recipe_json_str.strip()
+
+                    # Parse the JSON
+                    try:
+                        recipe_data = json.loads(recipe_json_str)
+                        logger.debug("Recipe JSON parsed successfully")
+                    except json.JSONDecodeError as e:
+                        logger.error(
+                            f"Error parsing recipe JSON: {e}\nJSON string: {recipe_json_str[:500]}"
+                        )
+                        messages.error(
+                            request,
+                            f"Error parsing AI response as JSON: {e}. The AI may have returned invalid JSON.",
+                        )
+                        return render(
+                            request, "recipes/ai_extract.html", {"form": form}
+                        )
+
+                    # Validate the recipe data
+                    errors = validate_recipe_data(recipe_data)
+                    if errors:
+                        logger.warning(
+                            f"AI-extracted recipe validation failed: {len(errors)} errors"
+                        )
+                        for error in errors[:5]:  # Show first 5 errors
+                            messages.error(request, f"Validation error: {error}")
+                        return render(
+                            request, "recipes/ai_extract.html", {"form": form}
+                        )
+
+                    # Store the recipe data in the session
+                    request.session["ai_extracted_recipe"] = recipe_data
+                    logger.info(
+                        "Recipe extracted successfully via AI, redirecting to recipe form"
+                    )
+                    messages.success(
+                        request,
+                        "Recipe extracted successfully! Please review and save the recipe.",
+                    )
+                    return redirect("recipe_create")
+
+                except requests.RequestException as e:
+                    logger.error(f"Error calling LLM API: {e}")
+                    messages.error(request, f"Error calling AI API: {e}")
+                    return render(request, "recipes/ai_extract.html", {"form": form})
+
+            except Exception as e:
+                logger.error(
+                    f"Unexpected error during AI recipe extraction: {e}", exc_info=True
+                )
+                messages.error(request, f"Unexpected error: {e}")
+                return render(request, "recipes/ai_extract.html", {"form": form})
+
+    else:
+        form = AIRecipeExtractionForm()
+
+    return render(request, "recipes/ai_extract.html", {"form": form})

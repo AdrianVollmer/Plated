@@ -123,11 +123,6 @@ should be forwarded to a pre-filled form of a new recipe.
 
 Make sure to handle all kinds of errors here.
 
-### Issue: Logging
-
-Add logging through out the application at various levels which make
-sense.
-
 ### Issue: Meal planner
 
 Add meal planner and shopping list generator.

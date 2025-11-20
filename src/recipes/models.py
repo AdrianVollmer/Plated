@@ -108,3 +108,32 @@ class RecipeCollection(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+
+class AISettings(models.Model):
+    """Settings for AI/LLM integration."""
+
+    api_url = models.URLField(
+        help_text="URL of the LLM API endpoint (e.g., https://api.openai.com/v1/chat/completions)"
+    )
+    api_key = models.CharField(max_length=500, help_text="API key for authentication")
+    model = models.CharField(
+        max_length=200,
+        help_text="Model name (e.g., gpt-4, claude-3-sonnet-20240229)",
+    )
+    max_tokens = models.PositiveIntegerField(
+        default=4096, help_text="Maximum tokens for the response"
+    )
+    temperature = models.FloatField(
+        default=0.7,
+        help_text="Temperature for response randomness (0.0 to 2.0)",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "AI Settings"
+        verbose_name_plural = "AI Settings"
+
+    def __str__(self) -> str:
+        return f"AI Settings (Model: {self.model})"
