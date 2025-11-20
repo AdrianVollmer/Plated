@@ -9,15 +9,9 @@ class Recipe(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     servings = models.PositiveIntegerField(default=1)
-    keywords = models.CharField(
-        max_length=500, blank=True, help_text="Comma-separated keywords"
-    )
-    prep_time = models.DurationField(
-        null=True, blank=True, help_text="Time to prepare ingredients"
-    )
-    wait_time = models.DurationField(
-        null=True, blank=True, help_text="Time for cooking/baking/waiting"
-    )
+    keywords = models.CharField(max_length=500, blank=True, help_text="Comma-separated keywords")
+    prep_time = models.DurationField(null=True, blank=True, help_text="Time to prepare ingredients")
+    wait_time = models.DurationField(null=True, blank=True, help_text="Time for cooking/baking/waiting")
     url = models.URLField(blank=True, help_text="Source URL if recipe is from the web")
     notes = models.TextField(blank=True)
     special_equipment = models.TextField(blank=True)
@@ -34,19 +28,11 @@ class Recipe(models.Model):
 class Ingredient(models.Model):
     """An ingredient in a recipe."""
 
-    recipe = models.ForeignKey(
-        Recipe, on_delete=models.CASCADE, related_name="ingredients"
-    )
-    amount = models.CharField(
-        max_length=50, blank=True, help_text="e.g., '2', '1/2', '1-2'"
-    )
-    unit = models.CharField(
-        max_length=50, blank=True, help_text="e.g., 'cups', 'tbsp', 'g'"
-    )
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="ingredients")
+    amount = models.CharField(max_length=50, blank=True, help_text="e.g., '2', '1/2', '1-2'")
+    unit = models.CharField(max_length=50, blank=True, help_text="e.g., 'cups', 'tbsp', 'g'")
     name = models.CharField(max_length=200)
-    note = models.CharField(
-        max_length=200, blank=True, help_text="e.g., 'chopped', 'room temperature'"
-    )
+    note = models.CharField(max_length=200, blank=True, help_text="e.g., 'chopped', 'room temperature'")
     order = models.PositiveIntegerField(default=0)
 
     class Meta:
@@ -121,9 +107,7 @@ class AISettings(models.Model):
         max_length=200,
         help_text="Model name (e.g., gpt-4, claude-3-sonnet-20240229)",
     )
-    max_tokens = models.PositiveIntegerField(
-        default=4096, help_text="Maximum tokens for the response"
-    )
+    max_tokens = models.PositiveIntegerField(default=4096, help_text="Maximum tokens for the response")
     temperature = models.FloatField(
         default=0.7,
         help_text="Temperature for response randomness (0.0 to 2.0)",

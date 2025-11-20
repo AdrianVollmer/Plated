@@ -63,9 +63,7 @@ class Command(BaseCommand):
             ("2", "cups", "chocolate chips", "semi-sweet"),
         ]
         for i, (amount, unit, name, note) in enumerate(ingredients1, 1):
-            Ingredient.objects.create(
-                recipe=recipe1, amount=amount, unit=unit, name=name, note=note, order=i
-            )
+            Ingredient.objects.create(recipe=recipe1, amount=amount, unit=unit, name=name, note=note, order=i)
 
         # Steps
         steps1 = [
@@ -107,9 +105,7 @@ class Command(BaseCommand):
             ("", "", "black pepper", "to taste"),
         ]
         for i, (amount, unit, name, note) in enumerate(ingredients2, 1):
-            Ingredient.objects.create(
-                recipe=recipe2, amount=amount, unit=unit, name=name, note=note, order=i
-            )
+            Ingredient.objects.create(recipe=recipe2, amount=amount, unit=unit, name=name, note=note, order=i)
 
         steps2 = [
             "Heat olive oil in a large pot over medium heat.",
@@ -151,9 +147,7 @@ class Command(BaseCommand):
             ("4", "", "fried eggs", "optional, for serving"),
         ]
         for i, (amount, unit, name, note) in enumerate(ingredients3, 1):
-            Ingredient.objects.create(
-                recipe=recipe3, amount=amount, unit=unit, name=name, note=note, order=i
-            )
+            Ingredient.objects.create(recipe=recipe3, amount=amount, unit=unit, name=name, note=note, order=i)
 
         steps3 = [
             "Heat oil in a large wok or skillet over high heat.",
@@ -189,9 +183,7 @@ class Command(BaseCommand):
             ("", "", "toppings", "berries, banana, nuts, etc."),
         ]
         for i, (amount, unit, name, note) in enumerate(ingredients4, 1):
-            Ingredient.objects.create(
-                recipe=recipe4, amount=amount, unit=unit, name=name, note=note, order=i
-            )
+            Ingredient.objects.create(recipe=recipe4, amount=amount, unit=unit, name=name, note=note, order=i)
 
         steps4 = [
             "In a jar or container, combine rolled oats, milk, Greek yogurt, chia seeds, maple syrup, vanilla, and salt.",
@@ -225,9 +217,7 @@ class Command(BaseCommand):
             ("2", "tsp", "salt", ""),
         ]
         for i, (amount, unit, name, note) in enumerate(ingredients5, 1):
-            Ingredient.objects.create(
-                recipe=recipe5, amount=amount, unit=unit, name=name, note=note, order=i
-            )
+            Ingredient.objects.create(recipe=recipe5, amount=amount, unit=unit, name=name, note=note, order=i)
 
         steps5 = [
             "In a large bowl, combine warm water, yeast, and sugar. Let sit for 5 minutes until foamy.",
@@ -243,18 +233,12 @@ class Command(BaseCommand):
             Step.objects.create(recipe=recipe5, order=i, content=content)
 
         total_recipes = Recipe.objects.count()
-        logger.info(
-            f"Database seeding completed successfully. "
-            f"Total recipes in database: {total_recipes}"
-        )
+        logger.info(f"Database seeding completed successfully. Total recipes in database: {total_recipes}")
         logger.debug(
-            f"Created recipes: {recipe1.title}, {recipe2.title}, {recipe3.title}, "
-            f"{recipe4.title}, {recipe5.title}"
+            f"Created recipes: {recipe1.title}, {recipe2.title}, {recipe3.title}, {recipe4.title}, {recipe5.title}"
         )
 
-        self.stdout.write(
-            self.style.SUCCESS(f"Successfully created {total_recipes} sample recipes!")
-        )
+        self.stdout.write(self.style.SUCCESS(f"Successfully created {total_recipes} sample recipes!"))
         self.stdout.write(
             "\nCreated recipes:"
             f"\n  • {recipe1.title}"

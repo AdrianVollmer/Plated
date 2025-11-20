@@ -107,22 +107,6 @@ later.
 
 ## Expanding
 
-### Issue: AI Integration
-
-Add AI integration. The user should be able to define a LLM (API URL,
-API key, model, etc). Provide a way to paste text or HTML which will be
-sent to the model with a comment, like "translate to German and metric
-units".
-
-The model should return JSON in the correct schema.
-
-Add an AI button left of "New Recipe" on the "All Recipes" page, with
-some sparkles as the icon. It should take the user to a new form where
-they can paste text, HTML, or a URL and supply the comment. Then they
-should be forwarded to a pre-filled form of a new recipe.
-
-Make sure to handle all kinds of errors here.
-
 ### Issue: Meal planner
 
 Add meal planner and shopping list generator.

@@ -22,9 +22,7 @@ class RecipeForm(forms.ModelForm):
             "special_equipment",
         ]
         widgets = {
-            "title": forms.TextInput(
-                attrs={"class": "form-control", "placeholder": "Recipe title"}
-            ),
+            "title": forms.TextInput(attrs={"class": "form-control", "placeholder": "Recipe title"}),
             "description": forms.Textarea(
                 attrs={
                     "class": "form-control",
@@ -53,13 +51,9 @@ class RecipeForm(forms.ModelForm):
                     "placeholder": "italian, pasta, vegetarian",
                 }
             ),
-            "url": forms.URLInput(
-                attrs={"class": "form-control", "placeholder": "https://..."}
-            ),
+            "url": forms.URLInput(attrs={"class": "form-control", "placeholder": "https://..."}),
             "notes": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
-            "special_equipment": forms.Textarea(
-                attrs={"class": "form-control", "rows": 2}
-            ),
+            "special_equipment": forms.Textarea(attrs={"class": "form-control", "rows": 2}),
         }
 
 
@@ -88,12 +82,8 @@ class AISettingsForm(forms.ModelForm):
                     "placeholder": "gpt-4 or claude-3-sonnet-20240229",
                 }
             ),
-            "max_tokens": forms.NumberInput(
-                attrs={"class": "form-control", "min": 1, "max": 100000}
-            ),
-            "temperature": forms.NumberInput(
-                attrs={"class": "form-control", "min": 0.0, "max": 2.0, "step": 0.1}
-            ),
+            "max_tokens": forms.NumberInput(attrs={"class": "form-control", "min": 1, "max": 100000}),
+            "temperature": forms.NumberInput(attrs={"class": "form-control", "min": 0.0, "max": 2.0, "step": 0.1}),
         }
 
 

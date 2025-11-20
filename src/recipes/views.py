@@ -95,9 +95,7 @@ class RecipeListView(ListView):
         query = self.request.GET.get("q")
         if query:
             logger.info(f"Recipe search performed with query: '{query}'")
-            queryset = queryset.filter(title__icontains=query) | queryset.filter(
-                keywords__icontains=query
-            )
+            queryset = queryset.filter(title__icontains=query) | queryset.filter(keywords__icontains=query)
             logger.debug(f"Search returned {queryset.count()} results")
         return queryset
 
@@ -133,9 +131,7 @@ class RecipeCreateView(CreateView):
             initial.update(recipe_data)
 
             # Store ingredients and steps data for formsets
-            self.request.session["ai_ingredients_data"] = deserialized[
-                "ingredients_data"
-            ]
+            self.request.session["ai_ingredients_data"] = deserialized["ingredients_data"]
             self.request.session["ai_steps_data"] = deserialized["steps_data"]
 
             # Clear the AI-extracted recipe from session
@@ -160,28 +156,20 @@ class RecipeCreateView(CreateView):
         ImageFormSet = get_image_formset(extra=0)  # noqa: N806
 
         if self.request.POST:
-            data["ingredient_formset"] = IngredientFormSet(
-                self.request.POST, prefix="ingredients"
-            )
+            data["ingredient_formset"] = IngredientFormSet(self.request.POST, prefix="ingredients")
             data["step_formset"] = StepFormSet(self.request.POST, prefix="steps")
-            data["image_formset"] = ImageFormSet(
-                self.request.POST, self.request.FILES, prefix="images"
-            )
+            data["image_formset"] = ImageFormSet(self.request.POST, self.request.FILES, prefix="images")
         else:
             # Pre-fill formsets with AI data if available
             if ai_ingredients_data:
-                data["ingredient_formset"] = IngredientFormSet(
-                    initial=ai_ingredients_data, prefix="ingredients"
-                )
+                data["ingredient_formset"] = IngredientFormSet(initial=ai_ingredients_data, prefix="ingredients")
                 # Clear from session after using
                 del self.request.session["ai_ingredients_data"]
             else:
                 data["ingredient_formset"] = IngredientFormSet(prefix="ingredients")
 
             if ai_steps_data:
-                data["step_formset"] = StepFormSet(
-                    initial=ai_steps_data, prefix="steps"
-                )
+                data["step_formset"] = StepFormSet(initial=ai_steps_data, prefix="steps")
                 # Clear from session after using
                 del self.request.session["ai_steps_data"]
             else:
@@ -200,9 +188,7 @@ class RecipeCreateView(CreateView):
 
         # Validate formsets
         if not ingredient_formset.is_valid():
-            logger.warning(
-                "Recipe creation failed: ingredient formset validation error"
-            )
+            logger.warning("Recipe creation failed: ingredient formset validation error")
             return self.form_invalid(form)
 
         if not step_formset.is_valid():
@@ -231,16 +217,12 @@ class RecipeCreateView(CreateView):
 
         if ingredient_count == 0:
             logger.warning("Recipe creation failed: no ingredients provided")
-            messages.error(
-                self.request, "Please add at least one ingredient to the recipe."
-            )
+            messages.error(self.request, "Please add at least one ingredient to the recipe.")
             return self.form_invalid(form)
 
         if step_count == 0:
             logger.warning("Recipe creation failed: no steps provided")
-            messages.error(
-                self.request, "Please add at least one instruction step to the recipe."
-            )
+            messages.error(self.request, "Please add at least one instruction step to the recipe.")
             return self.form_invalid(form)
 
         try:
@@ -257,9 +239,7 @@ class RecipeCreateView(CreateView):
                 f"Recipe created: '{self.object.title}' (ID: {self.object.pk}, "
                 f"Ingredients: {ingredient_count}, Steps: {step_count})"
             )
-            messages.success(
-                self.request, f"Recipe '{self.object.title}' created successfully!"
-            )
+            messages.success(self.request, f"Recipe '{self.object.title}' created successfully!")
             return redirect("recipe_detail", pk=self.object.pk)
         except Exception as e:
             logger.error(f"Error creating recipe: {e}", exc_info=True)
@@ -287,9 +267,7 @@ class RecipeUpdateView(UpdateView):
             data["ingredient_formset"] = IngredientFormSet(
                 self.request.POST, instance=self.object, prefix="ingredients"
             )
-            data["step_formset"] = StepFormSet(
-                self.request.POST, instance=self.object, prefix="steps"
-            )
+            data["step_formset"] = StepFormSet(self.request.POST, instance=self.object, prefix="steps")
             data["image_formset"] = ImageFormSet(
                 self.request.POST,
                 self.request.FILES,
@@ -297,9 +275,7 @@ class RecipeUpdateView(UpdateView):
                 prefix="images",
             )
         else:
-            data["ingredient_formset"] = IngredientFormSet(
-                instance=self.object, prefix="ingredients"
-            )
+            data["ingredient_formset"] = IngredientFormSet(instance=self.object, prefix="ingredients")
             data["step_formset"] = StepFormSet(instance=self.object, prefix="steps")
             data["image_formset"] = ImageFormSet(instance=self.object, prefix="images")
 
@@ -322,15 +298,13 @@ class RecipeUpdateView(UpdateView):
 
         if not step_formset.is_valid():
             logger.warning(
-                f"Recipe update failed for '{self.object.title}' (ID: {self.object.pk}): "
-                "step formset validation error"
+                f"Recipe update failed for '{self.object.title}' (ID: {self.object.pk}): step formset validation error"
             )
             return self.form_invalid(form)
 
         if not image_formset.is_valid():
             logger.warning(
-                f"Recipe update failed for '{self.object.title}' (ID: {self.object.pk}): "
-                "image formset validation error"
+                f"Recipe update failed for '{self.object.title}' (ID: {self.object.pk}): image formset validation error"
             )
             return self.form_invalid(form)
 
@@ -352,22 +326,14 @@ class RecipeUpdateView(UpdateView):
 
         if ingredient_count == 0:
             logger.warning(
-                f"Recipe update failed for '{self.object.title}' (ID: {self.object.pk}): "
-                "no ingredients provided"
+                f"Recipe update failed for '{self.object.title}' (ID: {self.object.pk}): no ingredients provided"
             )
-            messages.error(
-                self.request, "Please add at least one ingredient to the recipe."
-            )
+            messages.error(self.request, "Please add at least one ingredient to the recipe.")
             return self.form_invalid(form)
 
         if step_count == 0:
-            logger.warning(
-                f"Recipe update failed for '{self.object.title}' (ID: {self.object.pk}): "
-                "no steps provided"
-            )
-            messages.error(
-                self.request, "Please add at least one instruction step to the recipe."
-            )
+            logger.warning(f"Recipe update failed for '{self.object.title}' (ID: {self.object.pk}): no steps provided")
+            messages.error(self.request, "Please add at least one instruction step to the recipe.")
             return self.form_invalid(form)
 
         try:
@@ -384,9 +350,7 @@ class RecipeUpdateView(UpdateView):
                 f"Recipe updated: '{self.object.title}' (ID: {self.object.pk}, "
                 f"Ingredients: {ingredient_count}, Steps: {step_count})"
             )
-            messages.success(
-                self.request, f"Recipe '{self.object.title}' updated successfully!"
-            )
+            messages.success(self.request, f"Recipe '{self.object.title}' updated successfully!")
             return redirect("recipe_detail", pk=self.object.pk)
         except Exception as e:
             logger.error(
@@ -416,20 +380,13 @@ class RecipeDeleteView(DeleteView):
 
 def get_ingredient_names(request: HttpRequest) -> JsonResponse:
     """API endpoint to get distinct ingredient names for autocomplete."""
-    names = (
-        Ingredient.objects.values_list("name", flat=True).distinct().order_by("name")
-    )
+    names = Ingredient.objects.values_list("name", flat=True).distinct().order_by("name")
     return JsonResponse({"names": list(names)})
 
 
 def get_ingredient_units(request: HttpRequest) -> JsonResponse:
     """API endpoint to get distinct ingredient units for autocomplete."""
-    units = (
-        Ingredient.objects.exclude(unit="")
-        .values_list("unit", flat=True)
-        .distinct()
-        .order_by("unit")
-    )
+    units = Ingredient.objects.exclude(unit="").values_list("unit", flat=True).distinct().order_by("unit")
     return JsonResponse({"units": list(units)})
 
 
@@ -447,18 +404,14 @@ def export_recipe(request: HttpRequest, pk: int) -> HttpResponse:
             content_type="application/json",
         )
         # Sanitize filename by replacing spaces and special chars
-        safe_title = "".join(
-            c if c.isalnum() or c in (" ", "-", "_") else "_" for c in recipe.title
-        )
+        safe_title = "".join(c if c.isalnum() or c in (" ", "-", "_") else "_" for c in recipe.title)
         safe_title = safe_title.replace(" ", "_")
         response["Content-Disposition"] = f'attachment; filename="{safe_title}.json"'
 
         logger.debug(f"Recipe export successful: '{recipe.title}' (ID: {pk})")
         return response
     except Exception as e:
-        logger.error(
-            f"Error exporting recipe '{recipe.title}' (ID: {pk}): {e}", exc_info=True
-        )
+        logger.error(f"Error exporting recipe '{recipe.title}' (ID: {pk}): {e}", exc_info=True)
         messages.error(request, f"Error exporting recipe: {e}")
         return redirect("recipe_detail", pk=pk)
 
@@ -481,24 +434,18 @@ def import_recipe(request: HttpRequest) -> HttpResponse:
             content = json_file.read().decode("utf-8")
             data = json.loads(content)
         except json.JSONDecodeError as e:
-            logger.error(
-                f"Recipe import failed: invalid JSON in file {json_file.name}: {e}"
-            )
+            logger.error(f"Recipe import failed: invalid JSON in file {json_file.name}: {e}")
             messages.error(request, f"Invalid JSON file: {e}")
             return redirect("recipe_import")
         except Exception as e:
-            logger.error(
-                f"Recipe import failed: error reading file {json_file.name}: {e}"
-            )
+            logger.error(f"Recipe import failed: error reading file {json_file.name}: {e}")
             messages.error(request, f"Error reading file: {e}")
             return redirect("recipe_import")
 
         # Validate the data
         errors = validate_recipe_data(data)
         if errors:
-            logger.warning(
-                f"Recipe import validation failed for file {json_file.name}: {len(errors)} errors"
-            )
+            logger.warning(f"Recipe import validation failed for file {json_file.name}: {len(errors)} errors")
             for error in errors:
                 logger.debug(f"Validation error: {error}")
                 messages.error(request, error)
@@ -523,14 +470,10 @@ def import_recipe(request: HttpRequest) -> HttpResponse:
                 # Note: We don't import images since they're just metadata
                 # Users would need to manually add images after import
 
-            logger.info(
-                f"Recipe imported successfully: '{recipe.title}' (ID: {recipe.pk}) "
-                f"from file {json_file.name}"
-            )
+            logger.info(f"Recipe imported successfully: '{recipe.title}' (ID: {recipe.pk}) from file {json_file.name}")
             messages.success(
                 request,
-                f"Recipe '{recipe.title}' imported successfully! "
-                "You can now add images if needed.",
+                f"Recipe '{recipe.title}' imported successfully! You can now add images if needed.",
             )
             return redirect("recipe_detail", pk=recipe.pk)
 
@@ -608,9 +551,7 @@ def download_recipe_pdf(request: HttpRequest, pk: int) -> HttpResponse:
                 )
                 return redirect("recipe_detail", pk=pk)
             except subprocess.TimeoutExpired:
-                logger.error(
-                    f"Typst compilation timed out for recipe '{recipe.title}' (ID: {pk})"
-                )
+                logger.error(f"Typst compilation timed out for recipe '{recipe.title}' (ID: {pk})")
                 messages.error(request, "PDF generation timed out.")
                 return redirect("recipe_detail", pk=pk)
             except subprocess.CalledProcessError as e:
@@ -626,9 +567,7 @@ def download_recipe_pdf(request: HttpRequest, pk: int) -> HttpResponse:
 
             # Check if PDF was created
             if not output_pdf.exists():
-                logger.error(
-                    f"PDF file not created for recipe '{recipe.title}' (ID: {pk})"
-                )
+                logger.error(f"PDF file not created for recipe '{recipe.title}' (ID: {pk})")
                 messages.error(request, "PDF file was not generated.")
                 return redirect("recipe_detail", pk=pk)
 
@@ -640,15 +579,11 @@ def download_recipe_pdf(request: HttpRequest, pk: int) -> HttpResponse:
             response = HttpResponse(pdf_content, content_type="application/pdf")
 
             # Sanitize filename
-            safe_title = "".join(
-                c if c.isalnum() or c in (" ", "-", "_") else "_" for c in recipe.title
-            )
+            safe_title = "".join(c if c.isalnum() or c in (" ", "-", "_") else "_" for c in recipe.title)
             safe_title = safe_title.replace(" ", "_")
             response["Content-Disposition"] = f'attachment; filename="{safe_title}.pdf"'
 
-            logger.info(
-                f"PDF generated successfully for recipe '{recipe.title}' (ID: {pk})"
-            )
+            logger.info(f"PDF generated successfully for recipe '{recipe.title}' (ID: {pk})")
             return response
     except Exception as e:
         logger.error(
@@ -686,27 +621,19 @@ class CollectionCreateView(CreateView):
     fields = ["name", "description", "recipes"]
     template_name = "recipes/collection_form.html"
 
-    def get_form(
-        self, form_class: type[forms.ModelForm] | None = None
-    ) -> forms.ModelForm:  # type: ignore[override]
+    def get_form(self, form_class: type[forms.ModelForm] | None = None) -> forms.ModelForm:  # type: ignore[override]
         """Customize the form to add Bootstrap classes."""
         form = super().get_form(form_class)
         form.fields["name"].widget.attrs.update({"class": "form-control"})
-        form.fields["description"].widget.attrs.update(
-            {"class": "form-control", "rows": 3}
-        )
-        form.fields["recipes"].widget.attrs.update(
-            {"class": "form-select", "size": "10"}
-        )
+        form.fields["description"].widget.attrs.update({"class": "form-control", "rows": 3})
+        form.fields["recipes"].widget.attrs.update({"class": "form-select", "size": "10"})
         form.fields["recipes"].help_text = "Hold Ctrl/Cmd to select multiple recipes"
         return form
 
     def form_valid(self, form: forms.ModelForm) -> HttpResponse:  # type: ignore[override]
         """Save the collection and show success message."""
         result = super().form_valid(form)
-        logger.info(
-            f"Collection created: '{form.instance.name}' (ID: {form.instance.pk})"
-        )
+        logger.info(f"Collection created: '{form.instance.name}' (ID: {form.instance.pk})")
         messages.success(
             self.request,
             f"Collection '{form.instance.name}' created successfully!",
@@ -726,27 +653,19 @@ class CollectionUpdateView(UpdateView):
     fields = ["name", "description", "recipes"]
     template_name = "recipes/collection_form.html"
 
-    def get_form(
-        self, form_class: type[forms.ModelForm] | None = None
-    ) -> forms.ModelForm:  # type: ignore[override]
+    def get_form(self, form_class: type[forms.ModelForm] | None = None) -> forms.ModelForm:  # type: ignore[override]
         """Customize the form to add Bootstrap classes."""
         form = super().get_form(form_class)
         form.fields["name"].widget.attrs.update({"class": "form-control"})
-        form.fields["description"].widget.attrs.update(
-            {"class": "form-control", "rows": 3}
-        )
-        form.fields["recipes"].widget.attrs.update(
-            {"class": "form-select", "size": "10"}
-        )
+        form.fields["description"].widget.attrs.update({"class": "form-control", "rows": 3})
+        form.fields["recipes"].widget.attrs.update({"class": "form-select", "size": "10"})
         form.fields["recipes"].help_text = "Hold Ctrl/Cmd to select multiple recipes"
         return form
 
     def form_valid(self, form: forms.ModelForm) -> HttpResponse:  # type: ignore[override]
         """Save the collection and show success message."""
         result = super().form_valid(form)
-        logger.info(
-            f"Collection updated: '{form.instance.name}' (ID: {form.instance.pk})"
-        )
+        logger.info(f"Collection updated: '{form.instance.name}' (ID: {form.instance.pk})")
         messages.success(
             self.request,
             f"Collection '{form.instance.name}' updated successfully!",
@@ -772,9 +691,7 @@ class CollectionDeleteView(DeleteView):
         collection_name = collection.name
         collection_id = collection.pk
         logger.info(f"Collection deleted: '{collection_name}' (ID: {collection_id})")
-        messages.success(
-            request, f"Collection '{collection_name}' deleted successfully!"
-        )
+        messages.success(request, f"Collection '{collection_name}' deleted successfully!")
         return super().delete(request, *args, **kwargs)
 
 
@@ -784,11 +701,7 @@ class CollectionDeleteView(DeleteView):
 def manage_ingredient_names(request: HttpRequest) -> HttpResponse:
     """View and manage distinct ingredient names."""
     # Get all distinct ingredient names with usage counts
-    ingredients = (
-        Ingredient.objects.values("name")
-        .annotate(usage_count=django_models.Count("id"))
-        .order_by("name")
-    )
+    ingredients = Ingredient.objects.values("name").annotate(usage_count=django_models.Count("id")).order_by("name")
 
     # Handle search query
     query = request.GET.get("q")
@@ -816,18 +729,14 @@ def rename_ingredient_name(request: HttpRequest) -> HttpResponse:
             return redirect("manage_ingredient_names")
 
         if old_name == new_name:
-            logger.warning(
-                f"Ingredient rename skipped: old and new names are identical ('{old_name}')"
-            )
+            logger.warning(f"Ingredient rename skipped: old and new names are identical ('{old_name}')")
             messages.warning(request, "Old and new names are the same.")
             return redirect("manage_ingredient_names")
 
         # Check if old name exists
         count = Ingredient.objects.filter(name=old_name).count()
         if count == 0:
-            logger.warning(
-                f"Ingredient rename failed: no ingredients found with name '{old_name}'"
-            )
+            logger.warning(f"Ingredient rename failed: no ingredients found with name '{old_name}'")
             messages.error(request, f"No ingredients found with name '{old_name}'.")
             return redirect("manage_ingredient_names")
 
@@ -836,9 +745,7 @@ def rename_ingredient_name(request: HttpRequest) -> HttpResponse:
             with transaction.atomic():
                 updated = Ingredient.objects.filter(name=old_name).update(name=new_name)
 
-            logger.info(
-                f"Ingredient renamed: '{old_name}' -> '{new_name}' ({updated} occurrences)"
-            )
+            logger.info(f"Ingredient renamed: '{old_name}' -> '{new_name}' ({updated} occurrences)")
             plural = "" if updated == 1 else "s"
             messages.success(
                 request,
@@ -879,9 +786,7 @@ def manage_units(request: HttpRequest) -> HttpResponse:
     if query:
         units = units.filter(unit__icontains=query)
 
-    return render(
-        request, "recipes/manage_units.html", {"units": units, "query": query}
-    )
+    return render(request, "recipes/manage_units.html", {"units": units, "query": query})
 
 
 def rename_unit(request: HttpRequest) -> HttpResponse:
@@ -898,18 +803,14 @@ def rename_unit(request: HttpRequest) -> HttpResponse:
             return redirect("manage_units")
 
         if old_unit == new_unit:
-            logger.warning(
-                f"Unit rename skipped: old and new units are identical ('{old_unit}')"
-            )
+            logger.warning(f"Unit rename skipped: old and new units are identical ('{old_unit}')")
             messages.warning(request, "Old and new units are the same.")
             return redirect("manage_units")
 
         # Check if old unit exists
         count = Ingredient.objects.filter(unit=old_unit).count()
         if count == 0:
-            logger.warning(
-                f"Unit rename failed: no ingredients found with unit '{old_unit}'"
-            )
+            logger.warning(f"Unit rename failed: no ingredients found with unit '{old_unit}'")
             messages.error(request, f"No ingredients found with unit '{old_unit}'.")
             return redirect("manage_units")
 
@@ -918,20 +819,13 @@ def rename_unit(request: HttpRequest) -> HttpResponse:
             with transaction.atomic():
                 updated = Ingredient.objects.filter(unit=old_unit).update(unit=new_unit)
 
-            logger.info(
-                f"Unit renamed: '{old_unit}' -> '{new_unit}' ({updated} occurrences)"
-            )
+            logger.info(f"Unit renamed: '{old_unit}' -> '{new_unit}' ({updated} occurrences)")
             plural = "" if updated == 1 else "s"
-            msg = (
-                f"Renamed unit '{old_unit}' to '{new_unit}' "
-                f"in {updated} ingredient{plural}."
-            )
+            msg = f"Renamed unit '{old_unit}' to '{new_unit}' in {updated} ingredient{plural}."
             messages.success(request, msg)
             return redirect("manage_units")
         except Exception as e:
-            logger.error(
-                f"Error renaming unit '{old_unit}' to '{new_unit}': {e}", exc_info=True
-            )
+            logger.error(f"Error renaming unit '{old_unit}' to '{new_unit}': {e}", exc_info=True)
             messages.error(request, f"Error renaming unit: {e}")
             return redirect("manage_units")
 
@@ -966,9 +860,7 @@ def settings_view(request: HttpRequest) -> HttpResponse:
             logger.info("AI settings updated")
             return redirect("settings")
     else:
-        ai_form = (
-            AISettingsForm(instance=ai_settings) if ai_settings else AISettingsForm()
-        )
+        ai_form = AISettingsForm(instance=ai_settings) if ai_settings else AISettingsForm()
 
     return render(
         request,
@@ -1008,15 +900,11 @@ def ai_extract_recipe(request: HttpRequest) -> HttpResponse:
                         response = requests.get(input_content, timeout=30)
                         response.raise_for_status()
                         content = response.text
-                        logger.debug(
-                            f"URL content fetched successfully: {len(content)} characters"
-                        )
+                        logger.debug(f"URL content fetched successfully: {len(content)} characters")
                     except requests.RequestException as e:
                         logger.error(f"Error fetching URL {input_content}: {e}")
                         messages.error(request, f"Error fetching URL: {e}")
-                        return render(
-                            request, "recipes/ai_extract.html", {"form": form}
-                        )
+                        return render(request, "recipes/ai_extract.html", {"form": form})
                 else:
                     content = input_content
 
@@ -1090,9 +978,7 @@ IMPORTANT: Return ONLY valid JSON, no additional text or markdown formatting.
 
                     # Extract the response text (try OpenAI format first)
                     if "choices" in response_data and len(response_data["choices"]) > 0:
-                        recipe_json_str = response_data["choices"][0]["message"][
-                            "content"
-                        ]
+                        recipe_json_str = response_data["choices"][0]["message"]["content"]
                     elif "content" in response_data:
                         # Alternative format
                         recipe_json_str = response_data["content"]
@@ -1102,9 +988,7 @@ IMPORTANT: Return ONLY valid JSON, no additional text or markdown formatting.
                             request,
                             "Unexpected response format from AI API. Please check your API configuration.",
                         )
-                        return render(
-                            request, "recipes/ai_extract.html", {"form": form}
-                        )
+                        return render(request, "recipes/ai_extract.html", {"form": form})
 
                     # Clean up the response (remove markdown code blocks if present)
                     recipe_json_str = recipe_json_str.strip()
@@ -1121,34 +1005,24 @@ IMPORTANT: Return ONLY valid JSON, no additional text or markdown formatting.
                         recipe_data = json.loads(recipe_json_str)
                         logger.debug("Recipe JSON parsed successfully")
                     except json.JSONDecodeError as e:
-                        logger.error(
-                            f"Error parsing recipe JSON: {e}\nJSON string: {recipe_json_str[:500]}"
-                        )
+                        logger.error(f"Error parsing recipe JSON: {e}\nJSON string: {recipe_json_str[:500]}")
                         messages.error(
                             request,
                             f"Error parsing AI response as JSON: {e}. The AI may have returned invalid JSON.",
                         )
-                        return render(
-                            request, "recipes/ai_extract.html", {"form": form}
-                        )
+                        return render(request, "recipes/ai_extract.html", {"form": form})
 
                     # Validate the recipe data
                     errors = validate_recipe_data(recipe_data)
                     if errors:
-                        logger.warning(
-                            f"AI-extracted recipe validation failed: {len(errors)} errors"
-                        )
+                        logger.warning(f"AI-extracted recipe validation failed: {len(errors)} errors")
                         for error in errors[:5]:  # Show first 5 errors
                             messages.error(request, f"Validation error: {error}")
-                        return render(
-                            request, "recipes/ai_extract.html", {"form": form}
-                        )
+                        return render(request, "recipes/ai_extract.html", {"form": form})
 
                     # Store the recipe data in the session
                     request.session["ai_extracted_recipe"] = recipe_data
-                    logger.info(
-                        "Recipe extracted successfully via AI, redirecting to recipe form"
-                    )
+                    logger.info("Recipe extracted successfully via AI, redirecting to recipe form")
                     messages.success(
                         request,
                         "Recipe extracted successfully! Please review and save the recipe.",
@@ -1161,9 +1035,7 @@ IMPORTANT: Return ONLY valid JSON, no additional text or markdown formatting.
                     return render(request, "recipes/ai_extract.html", {"form": form})
 
             except Exception as e:
-                logger.error(
-                    f"Unexpected error during AI recipe extraction: {e}", exc_info=True
-                )
+                logger.error(f"Unexpected error during AI recipe extraction: {e}", exc_info=True)
                 messages.error(request, f"Unexpected error: {e}")
                 return render(request, "recipes/ai_extract.html", {"form": form})
 

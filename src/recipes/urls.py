@@ -8,9 +8,7 @@ urlpatterns = [
     path("", views.RecipeListView.as_view(), name="recipe_list"),
     path("recipe/<int:pk>/", views.RecipeDetailView.as_view(), name="recipe_detail"),
     path("recipe/new/", views.RecipeCreateView.as_view(), name="recipe_create"),
-    path(
-        "recipe/<int:pk>/edit/", views.RecipeUpdateView.as_view(), name="recipe_update"
-    ),
+    path("recipe/<int:pk>/edit/", views.RecipeUpdateView.as_view(), name="recipe_update"),
     path(
         "recipe/<int:pk>/delete/",
         views.RecipeDeleteView.as_view(),
@@ -22,12 +20,8 @@ urlpatterns = [
     # PDF Generation
     path("recipe/<int:pk>/pdf/", views.download_recipe_pdf, name="recipe_pdf"),
     # API endpoints for autocomplete
-    path(
-        "api/ingredient-names/", views.get_ingredient_names, name="api_ingredient_names"
-    ),
-    path(
-        "api/ingredient-units/", views.get_ingredient_units, name="api_ingredient_units"
-    ),
+    path("api/ingredient-names/", views.get_ingredient_names, name="api_ingredient_names"),
+    path("api/ingredient-units/", views.get_ingredient_units, name="api_ingredient_units"),
     # Collection management
     path("collections/", views.CollectionListView.as_view(), name="collection_list"),
     path(

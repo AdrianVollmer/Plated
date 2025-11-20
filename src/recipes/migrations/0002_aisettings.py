@@ -29,9 +29,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "api_key",
-                    models.CharField(
-                        help_text="API key for authentication", max_length=500
-                    ),
+                    models.CharField(help_text="API key for authentication", max_length=500),
                 ),
                 (
                     "model",
@@ -42,9 +40,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "max_tokens",
-                    models.PositiveIntegerField(
-                        default=4096, help_text="Maximum tokens for the response"
-                    ),
+                    models.PositiveIntegerField(default=4096, help_text="Maximum tokens for the response"),
                 ),
                 (
                     "temperature",

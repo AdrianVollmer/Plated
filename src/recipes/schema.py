@@ -93,10 +93,7 @@ def serialize_recipe(recipe: Any) -> RecipeSchema:
         data["ingredients"] = ingredients
 
         # Serialize steps
-        steps: list[StepSchema] = [
-            {"content": step.content, "order": step.order}
-            for step in recipe.steps.all()
-        ]
+        steps: list[StepSchema] = [{"content": step.content, "order": step.order} for step in recipe.steps.all()]
         data["steps"] = steps
 
         # Serialize image metadata (not the actual files)
@@ -225,8 +222,7 @@ def deserialize_recipe(data: dict[str, Any]) -> dict[str, Any]:
         images_data = data.get("images", [])
 
         logger.debug(
-            f"Recipe deserialized: '{title}' with {len(ingredients_data)} ingredients, "
-            f"{len(steps_data)} steps"
+            f"Recipe deserialized: '{title}' with {len(ingredients_data)} ingredients, {len(steps_data)} steps"
         )
 
         return {
@@ -236,7 +232,5 @@ def deserialize_recipe(data: dict[str, Any]) -> dict[str, Any]:
             "images_data": images_data,
         }
     except Exception as e:
-        logger.error(
-            f"Error deserializing recipe data for '{title}': {e}", exc_info=True
-        )
+        logger.error(f"Error deserializing recipe data for '{title}': {e}", exc_info=True)
         raise

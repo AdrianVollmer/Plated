@@ -27,15 +27,11 @@ class Migration(migrations.Migration):
                 ("servings", models.PositiveIntegerField(default=1)),
                 (
                     "keywords",
-                    models.CharField(
-                        blank=True, help_text="Comma-separated keywords", max_length=500
-                    ),
+                    models.CharField(blank=True, help_text="Comma-separated keywords", max_length=500),
                 ),
                 (
                     "prep_time",
-                    models.DurationField(
-                        blank=True, help_text="Time to prepare ingredients", null=True
-                    ),
+                    models.DurationField(blank=True, help_text="Time to prepare ingredients", null=True),
                 ),
                 (
                     "wait_time",
@@ -47,9 +43,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "url",
-                    models.URLField(
-                        blank=True, help_text="Source URL if recipe is from the web"
-                    ),
+                    models.URLField(blank=True, help_text="Source URL if recipe is from the web"),
                 ),
                 ("notes", models.TextField(blank=True)),
                 ("special_equipment", models.TextField(blank=True)),
@@ -74,15 +68,11 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "amount",
-                    models.CharField(
-                        blank=True, help_text="e.g., '2', '1/2', '1-2'", max_length=50
-                    ),
+                    models.CharField(blank=True, help_text="e.g., '2', '1/2', '1-2'", max_length=50),
                 ),
                 (
                     "unit",
-                    models.CharField(
-                        blank=True, help_text="e.g., 'cups', 'tbsp', 'g'", max_length=50
-                    ),
+                    models.CharField(blank=True, help_text="e.g., 'cups', 'tbsp', 'g'", max_length=50),
                 ),
                 ("name", models.CharField(max_length=200)),
                 (
@@ -125,9 +115,7 @@ class Migration(migrations.Migration):
                 ("updated_at", models.DateTimeField(auto_now=True)),
                 (
                     "recipes",
-                    models.ManyToManyField(
-                        blank=True, related_name="collections", to="recipes.recipe"
-                    ),
+                    models.ManyToManyField(blank=True, related_name="collections", to="recipes.recipe"),
                 ),
             ],
             options={
