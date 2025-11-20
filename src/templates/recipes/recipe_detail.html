@@ -21,27 +21,35 @@
             <h1 class="recipe-title">{{ recipe.title }}</h1>
         </div>
         <div class="col-12 col-md-6">
-            <div class="btn-group-vertical d-md-none w-100 mb-3" role="group">
-                <a href="{% url 'recipe_pdf' recipe.pk %}" class="btn btn-outline-info">
-                    <i class="bi bi-file-pdf"></i> Download PDF
-                </a>
-                <a href="{% url 'recipe_export' recipe.pk %}" class="btn btn-outline-success">
-                    <i class="bi bi-download"></i> Export JSON
-                </a>
-                <a href="{% url 'recipe_update' recipe.pk %}" class="btn btn-outline-primary">
-                    <i class="bi bi-pencil"></i> Edit
-                </a>
-                <a href="{% url 'recipe_delete' recipe.pk %}" class="btn btn-outline-danger">
-                    <i class="bi bi-trash"></i> Delete
-                </a>
+            <div class="d-md-none mb-3" role="group">
+                <div class="btn-group w-100 mb-2" role="group">
+                    <button type="button" class="btn btn-outline-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-download"></i> Download
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'recipe_pdf' recipe.pk %}"><i class="bi bi-file-pdf"></i> PDF</a></li>
+                        <li><a class="dropdown-item" href="{% url 'recipe_export' recipe.pk %}"><i class="bi bi-file-earmark-code"></i> JSON</a></li>
+                    </ul>
+                </div>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'recipe_update' recipe.pk %}" class="btn btn-outline-primary">
+                        <i class="bi bi-pencil"></i> Edit
+                    </a>
+                    <a href="{% url 'recipe_delete' recipe.pk %}" class="btn btn-outline-danger">
+                        <i class="bi bi-trash"></i> Delete
+                    </a>
+                </div>
             </div>
             <div class="d-none d-md-block text-md-end">
-                <a href="{% url 'recipe_pdf' recipe.pk %}" class="btn btn-outline-info me-2">
-                    <i class="bi bi-file-pdf"></i> PDF
-                </a>
-                <a href="{% url 'recipe_export' recipe.pk %}" class="btn btn-outline-success me-2">
-                    <i class="bi bi-download"></i> Export
-                </a>
+                <div class="btn-group me-2" role="group">
+                    <button type="button" class="btn btn-outline-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-download"></i> Download
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'recipe_pdf' recipe.pk %}"><i class="bi bi-file-pdf"></i> PDF</a></li>
+                        <li><a class="dropdown-item" href="{% url 'recipe_export' recipe.pk %}"><i class="bi bi-file-earmark-code"></i> JSON</a></li>
+                    </ul>
+                </div>
                 <a href="{% url 'recipe_update' recipe.pk %}" class="btn btn-outline-primary me-2">
                     <i class="bi bi-pencil"></i> Edit
                 </a>
