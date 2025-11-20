@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - "${PORT:-8000}:8000"
+    volumes:
+      # SQLite database
+      - db_data:/app/data
+      # Static files
+      - static_files:/app/staticfiles
+      # Media files (user uploads)
+      - media_files:/app/media
+    environment:
+      # Django settings
+      - SECRET_KEY=${SECRET_KEY:-django-insecure-change-this-in-production}
+      - DEBUG=${DEBUG:-False}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-localhost,127.0.0.1}
+      # Database location (inside container)
+      - DATABASE_PATH=/app/data/db.sqlite3
+      # Static and media paths
+      - STATIC_ROOT=/app/staticfiles
+      - MEDIA_ROOT=/app/media
+    restart: unless-stopped
+
+volumes:
+  db_data:
+  static_files:
+  media_files:

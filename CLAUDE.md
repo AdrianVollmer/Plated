@@ -111,7 +111,19 @@ later.
 
 Add meal planner and shopping list generator.
 
-### Issue: Source URL Placement
+### Issue: Servings
 
-The "source" of a recipe should be in the "quick info" card, if it is
-not `None`.
+The user should be able to display a recipe for new servings count.
+
+### Issue: PWA
+
+Add a button or something in the settings view for a progressive web
+app.
+
+### Issue: Documentation
+
+Create docs with "material for mkdocs". Choose a cool, non-default color
+theme. Ideally a theme in line with the app.
+
+Don't be overly verbose. Prefer references over duplicating information.
+Be concise, clear, brief.
