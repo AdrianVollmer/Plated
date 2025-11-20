@@ -50,3 +50,21 @@ ignore = []
 "__init__.py" = ["F401"]
 "*/migrations/*.py" = ["E501"]
 "*/management/commands/seed_db.py" = ["E501"]
+"*/settings.py" = ["S105"]  # Django dev secret key
+"*/views.py" = ["S101", "S603", "S607"]  # assert for type narrowing, subprocess for typst
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings"
+python_files = ["tests.py", "test_*.py", "*_tests.py"]
+pythonpath = ["src"]
+
+[tool.mypy]
+python_version = "3.12"
+plugins = ["mypy_django_plugin.main"]
+
+[[tool.mypy.overrides]]
+module = "*.migrations.*"
+ignore_errors = true
+
+[tool.django-stubs]
+django_settings_module = "config.settings"
