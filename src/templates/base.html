@@ -9,6 +9,13 @@
     {% load static %}
     <link href="{% static 'styles.css' %}" rel="stylesheet">
     {% block extra_css %}{% endblock %}
+    <script>
+        // Apply theme immediately to prevent flash
+        (function() {
+            const theme = localStorage.getItem('plated-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-custom">
@@ -64,7 +71,7 @@
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="bg-light text-center py-3 mt-5">
+    <footer class="text-center py-3 mt-5">
         <div class="container">
             <p class="text-muted mb-0">Plated - Your Recipe Manager</p>
         </div>

@@ -646,6 +646,89 @@ main.container {
 }
 
 /* ============================================
+   Bootstrap Overrides for Dark Theme
+   ============================================ */
+
+/* Fix text-muted being too dark in dark theme */
+[data-theme="dark"] .text-muted {
+    color: var(--text-secondary) !important;
+}
+
+/* Fix card brightness in dark theme */
+[data-theme="dark"] .card {
+    background-color: var(--bg-elevated);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .card-header {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .card-body {
+    background-color: var(--bg-elevated);
+    color: var(--text-primary);
+}
+
+/* Fix dropdown-menu brightness in dark theme */
+[data-theme="dark"] .dropdown-menu {
+    background-color: var(--bg-elevated);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .dropdown-item {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .dropdown-item:hover,
+[data-theme="dark"] .dropdown-item:focus {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .dropdown-divider {
+    border-color: var(--border-color);
+}
+
+/* Fix table brightness in dark theme */
+[data-theme="dark"] .table {
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .table > :not(caption) > * > * {
+    background-color: var(--bg-elevated);
+    border-bottom-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .table > thead {
+    background-color: var(--bg-secondary);
+}
+
+[data-theme="dark"] .table > tbody {
+    background-color: var(--bg-elevated);
+}
+
+[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) > * {
+    background-color: var(--bg-secondary);
+}
+
+[data-theme="dark"] .table-hover > tbody > tr:hover > * {
+    background-color: var(--bg-tertiary);
+}
+
+[data-theme="dark"] .table-bordered > :not(caption) > * {
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .table-bordered > :not(caption) > * > * {
+    border-color: var(--border-color);
+}
+
+/* ============================================
    Footer
    ============================================ */
 

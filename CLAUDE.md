@@ -109,8 +109,15 @@ later.
 
 ### Issue 1
 
-Add a `settings` view. Move the `Admin` button there, as well as the
-theme picker.
+Fix minor color issues in the dark theme.
+
+- `text-muted` is too dark
+- `card` is too bright
+- `dropdown-menu` is too bright
+- When navigating to a new page, the background flashes from very bright
+  to dark. The contrast is a bit jarring. The flash is fine in itself,
+  but if should be softer.
+- The `<footer>` is too bright.
 
 ### Issue 2
 
@@ -131,15 +138,18 @@ units".
 
 The model should return JSON in the correct schema.
 
+Add an AI button left of "New Recipe" on the "All Recipes" page, with
+some sparkles as the icon. It should take the user to a new form where
+they can paste text, HTML, or a URL and supply the comment. Then they
+should be forwarded to a pre-filled form of a new recipe.
+
+Make sure to handle all kinds of errors here.
+
 ### Issue 4
 
 Add logging through out the application at various levels which make
 sense.
 
 ### Issue 5
-
-Fix minor color issues in dark theme.
-
-### Issue 6
 
 Add meal planner and shopping list generator.
