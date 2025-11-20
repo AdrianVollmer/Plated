@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}{% if object %}Edit {{ object.title }}{% else %}New Recipe{% endif %} - Plated{% endblock %}
 
@@ -128,8 +129,23 @@
 
                     <div id="ingredient-formset">
                         {% for form in ingredient_formset %}
-                        <div class="ingredient-form mb-3 p-3 border rounded">
+                        <div class="ingredients-form mb-3 p-3 border rounded">
                             {{ form.id }}
+                            {{ form.DELETE }}
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <strong class="text-muted">Ingredient</strong>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button type="button" class="btn btn-outline-secondary move-up-btn" title="Move up">
+                                        <i class="bi bi-arrow-up"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary move-down-btn" title="Move down">
+                                        <i class="bi bi-arrow-down"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-danger delete-form-btn" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-md-2">
                                     <label class="form-label small">Amount</label>
@@ -139,7 +155,7 @@
                                     <label class="form-label small">Unit</label>
                                     {{ form.unit }}
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-5">
                                     <label class="form-label small">Name *</label>
                                     {{ form.name }}
                                 </div>
@@ -147,21 +163,57 @@
                                     <label class="form-label small">Note</label>
                                     {{ form.note }}
                                 </div>
-                                <div class="col-md-1">
-                                    <label class="form-label small">Order</label>
-                                    {{ form.order }}
-                                </div>
                             </div>
-                            {% if form.instance.pk %}
-                            <div class="form-check mt-2">
-                                {{ form.DELETE }}
-                                <label class="form-check-label text-danger small" for="{{ form.DELETE.id_for_label }}">
-                                    Delete this ingredient
-                                </label>
-                            </div>
-                            {% endif %}
+                            {{ form.order }}
                         </div>
                         {% endfor %}
+                    </div>
+
+                    <!-- Empty form template for dynamic addition -->
+                    <script type="text/template" id="ingredient-empty-form">
+                        <div class="ingredients-form mb-3 p-3 border rounded">
+                            {{ ingredient_formset.empty_form.id }}
+                            {{ ingredient_formset.empty_form.DELETE }}
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <strong class="text-muted">Ingredient</strong>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button type="button" class="btn btn-outline-secondary move-up-btn" title="Move up">
+                                        <i class="bi bi-arrow-up"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary move-down-btn" title="Move down">
+                                        <i class="bi bi-arrow-down"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-danger delete-form-btn" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label class="form-label small">Amount</label>
+                                    {{ ingredient_formset.empty_form.amount }}
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label small">Unit</label>
+                                    {{ ingredient_formset.empty_form.unit }}
+                                </div>
+                                <div class="col-md-5">
+                                    <label class="form-label small">Name *</label>
+                                    {{ ingredient_formset.empty_form.name }}
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small">Note</label>
+                                    {{ ingredient_formset.empty_form.note }}
+                                </div>
+                            </div>
+                            {{ ingredient_formset.empty_form.order }}
+                        </div>
+                    </script>
+
+                    <div class="text-center mt-3">
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="add-ingredient-btn">
+                            <i class="bi bi-plus-circle"></i> Add Ingredient
+                        </button>
                     </div>
                 </div>
             </div>
@@ -178,29 +230,69 @@
 
                     <div id="step-formset">
                         {% for form in step_formset %}
-                        <div class="step-form mb-3 p-3 border rounded">
+                        <div class="steps-form mb-3 p-3 border rounded">
                             {{ form.id }}
+                            {{ form.DELETE }}
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <strong class="text-muted">Step <span class="step-number">{{ forloop.counter }}</span></strong>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button type="button" class="btn btn-outline-secondary move-up-btn" title="Move up">
+                                        <i class="bi bi-arrow-up"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary move-down-btn" title="Move down">
+                                        <i class="bi bi-arrow-down"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-danger delete-form-btn" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
                             <div class="row">
-                                <div class="col-md-11">
-                                    <label class="form-label small">Step {{ forloop.counter }}</label>
+                                <div class="col-12">
+                                    <label class="form-label small">Content</label>
                                     {{ form.content }}
                                     <small class="form-text text-muted">Markdown supported</small>
                                 </div>
-                                <div class="col-md-1">
-                                    <label class="form-label small">Order</label>
-                                    {{ form.order }}
-                                </div>
                             </div>
-                            {% if form.instance.pk %}
-                            <div class="form-check mt-2">
-                                {{ form.DELETE }}
-                                <label class="form-check-label text-danger small" for="{{ form.DELETE.id_for_label }}">
-                                    Delete this step
-                                </label>
-                            </div>
-                            {% endif %}
+                            {{ form.order }}
                         </div>
                         {% endfor %}
+                    </div>
+
+                    <!-- Empty form template for dynamic addition -->
+                    <script type="text/template" id="step-empty-form">
+                        <div class="steps-form mb-3 p-3 border rounded">
+                            {{ step_formset.empty_form.id }}
+                            {{ step_formset.empty_form.DELETE }}
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <strong class="text-muted">Step <span class="step-number">1</span></strong>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button type="button" class="btn btn-outline-secondary move-up-btn" title="Move up">
+                                        <i class="bi bi-arrow-up"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary move-down-btn" title="Move down">
+                                        <i class="bi bi-arrow-down"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-danger delete-form-btn" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <label class="form-label small">Content</label>
+                                    {{ step_formset.empty_form.content }}
+                                    <small class="form-text text-muted">Markdown supported</small>
+                                </div>
+                            </div>
+                            {{ step_formset.empty_form.order }}
+                        </div>
+                    </script>
+
+                    <div class="text-center mt-3">
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="add-step-btn">
+                            <i class="bi bi-plus-circle"></i> Add Step
+                        </button>
                     </div>
                 </div>
             </div>
@@ -217,32 +309,75 @@
 
                     <div id="image-formset">
                         {% for form in image_formset %}
-                        <div class="image-form mb-3 p-3 border rounded">
+                        <div class="images-form mb-3 p-3 border rounded">
                             {{ form.id }}
+                            {{ form.DELETE }}
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <strong class="text-muted">Image</strong>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button type="button" class="btn btn-outline-secondary move-up-btn" title="Move up">
+                                        <i class="bi bi-arrow-up"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary move-down-btn" title="Move down">
+                                        <i class="bi bi-arrow-down"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-danger delete-form-btn" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-8">
                                     <label class="form-label small">Image</label>
                                     {{ form.image }}
                                 </div>
-                                <div class="col-md-5">
+                                <div class="col-md-4">
                                     <label class="form-label small">Caption</label>
                                     {{ form.caption }}
                                 </div>
-                                <div class="col-md-1">
-                                    <label class="form-label small">Order</label>
-                                    {{ form.order }}
-                                </div>
                             </div>
-                            {% if form.instance.pk %}
-                            <div class="form-check mt-2">
-                                {{ form.DELETE }}
-                                <label class="form-check-label text-danger small" for="{{ form.DELETE.id_for_label }}">
-                                    Delete this image
-                                </label>
-                            </div>
-                            {% endif %}
+                            {{ form.order }}
                         </div>
                         {% endfor %}
+                    </div>
+
+                    <!-- Empty form template for dynamic addition -->
+                    <script type="text/template" id="image-empty-form">
+                        <div class="images-form mb-3 p-3 border rounded">
+                            {{ image_formset.empty_form.id }}
+                            {{ image_formset.empty_form.DELETE }}
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <strong class="text-muted">Image</strong>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button type="button" class="btn btn-outline-secondary move-up-btn" title="Move up">
+                                        <i class="bi bi-arrow-up"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary move-down-btn" title="Move down">
+                                        <i class="bi bi-arrow-down"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-danger delete-form-btn" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <label class="form-label small">Image</label>
+                                    {{ image_formset.empty_form.image }}
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small">Caption</label>
+                                    {{ image_formset.empty_form.caption }}
+                                </div>
+                            </div>
+                            {{ image_formset.empty_form.order }}
+                        </div>
+                    </script>
+
+                    <div class="text-center mt-3">
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="add-image-btn">
+                            <i class="bi bi-plus-circle"></i> Add Image
+                        </button>
                     </div>
                 </div>
             </div>
@@ -262,21 +397,33 @@
 
 {% block extra_css %}
 <style>
-    .ingredient-form input,
-    .ingredient-form select,
-    .step-form textarea,
-    .image-form input {
+    .ingredients-form input,
+    .ingredients-form select,
+    .steps-form textarea,
+    .images-form input {
         font-size: 0.9rem;
     }
-    .ingredient-form .form-control,
-    .step-form .form-control,
-    .image-form .form-control {
+    .ingredients-form .form-control,
+    .steps-form .form-control,
+    .images-form .form-control {
         padding: 0.375rem 0.5rem;
+    }
+    .ingredients-form input[name$="-order"],
+    .steps-form input[name$="-order"],
+    .images-form input[name$="-order"],
+    .ingredients-form input[name$="-DELETE"],
+    .steps-form input[name$="-DELETE"],
+    .images-form input[name$="-DELETE"],
+    .ingredients-form input[name$="-id"],
+    .steps-form input[name$="-id"],
+    .images-form input[name$="-id"] {
+        display: none;
     }
 </style>
 {% endblock %}
 
 {% block extra_js %}
+<script src="{% static 'dynamic-formset.js' %}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Create datalist elements for autocomplete
@@ -330,14 +477,33 @@ document.addEventListener('DOMContentLoaded', function() {
     // Attach datalists to existing ingredient fields
     attachDatalistsToIngredients();
 
-    // Watch for dynamically added ingredient forms (if formsets are modified)
-    const ingredientFormset = document.getElementById('ingredient-formset');
-    if (ingredientFormset) {
-        const observer = new MutationObserver(function() {
+    // Initialize dynamic formsets
+    const ingredientFormset = new DynamicFormset({
+        prefix: 'ingredients',
+        containerID: 'ingredient-formset',
+        addButtonID: 'add-ingredient-btn',
+        emptyFormTemplate: document.getElementById('ingredient-empty-form').innerHTML,
+        formClass: 'ingredients-form',
+        onFormAdded: function(form) {
             attachDatalistsToIngredients();
-        });
-        observer.observe(ingredientFormset, { childList: true, subtree: true });
-    }
+        }
+    });
+
+    const stepFormset = new DynamicFormset({
+        prefix: 'steps',
+        containerID: 'step-formset',
+        addButtonID: 'add-step-btn',
+        emptyFormTemplate: document.getElementById('step-empty-form').innerHTML,
+        formClass: 'steps-form'
+    });
+
+    const imageFormset = new DynamicFormset({
+        prefix: 'images',
+        containerID: 'image-formset',
+        addButtonID: 'add-image-btn',
+        emptyFormTemplate: document.getElementById('image-empty-form').innerHTML,
+        formClass: 'images-form'
+    });
 });
 </script>
 {% endblock %}

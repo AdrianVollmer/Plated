@@ -823,3 +823,162 @@ footer {
         padding-left: 0;
     }
 }
+
+/* ============================================
+   Dynamic Formset Controls
+   ============================================ */
+
+/* Formset container styling */
+.ingredients-form,
+.steps-form,
+.images-form {
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.ingredients-form:hover,
+.steps-form:hover,
+.images-form:hover {
+    box-shadow: var(--shadow-md);
+}
+
+/* Move/Delete button styling */
+.move-up-btn,
+.move-down-btn,
+.delete-form-btn {
+    border-color: var(--border-color) !important;
+    color: var(--text-secondary) !important;
+    background: var(--bg-elevated) !important;
+}
+
+.move-up-btn:hover,
+.move-down-btn:hover {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--text-primary) !important;
+}
+
+.delete-form-btn:hover {
+    background: var(--danger) !important;
+    color: white !important;
+    border-color: var(--danger) !important;
+}
+
+
+/* Dragging state (for future drag-and-drop) */
+.ingredients-form.dragging,
+.steps-form.dragging,
+.images-form.dragging {
+    opacity: 0.5;
+    cursor: move;
+}
+
+/* Step number styling */
+.step-number {
+    font-weight: 700;
+    color: var(--primary);
+}
+
+/* Button group spacing */
+.btn-group-sm .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+/* Hide DELETE checkboxes (handled by delete button) */
+input[type="checkbox"][name$="-DELETE"] {
+    display: none;
+}
+
+/* Add animation for new forms */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.ingredients-form,
+.steps-form,
+.images-form {
+    animation: slideIn 0.3s ease;
+}
+
+/* Highlight animation for moved forms */
+@keyframes moveHighlight {
+    0% {
+        background-color: var(--bg-elevated);
+        transform: scale(1);
+        box-shadow: var(--shadow-md);
+    }
+    15% {
+        transform: scale(1.02);
+    }
+    30% {
+        background-color: rgba(229, 93, 117, 0.15);
+        box-shadow: 0 0 0 3px rgba(229, 93, 117, 0.3), var(--shadow-lg);
+    }
+    70% {
+        background-color: rgba(229, 93, 117, 0.15);
+        box-shadow: 0 0 0 3px rgba(229, 93, 117, 0.3), var(--shadow-lg);
+    }
+    85% {
+        transform: scale(1.02);
+    }
+    100% {
+        background-color: var(--bg-elevated);
+        transform: scale(1);
+        box-shadow: var(--shadow-md);
+    }
+}
+
+.form-moved-highlight {
+    animation: moveHighlight 0.8s ease-in-out;
+}
+
+/* Dark theme adjustment for move highlight */
+[data-theme="dark"] .ingredients-form.form-moved-highlight,
+[data-theme="dark"] .steps-form.form-moved-highlight,
+[data-theme="dark"] .images-form.form-moved-highlight {
+    animation-name: moveHighlightDark;
+}
+
+@keyframes moveHighlightDark {
+    0% {
+        background-color: var(--bg-elevated);
+        transform: scale(1);
+        box-shadow: var(--shadow-md);
+    }
+    15% {
+        transform: scale(1.02);
+    }
+    30% {
+        background-color: rgba(244, 114, 182, 0.25);
+        box-shadow: 0 0 0 3px rgba(244, 114, 182, 0.4), var(--shadow-lg);
+    }
+    70% {
+        background-color: rgba(244, 114, 182, 0.25);
+        box-shadow: 0 0 0 3px rgba(244, 114, 182, 0.4), var(--shadow-lg);
+    }
+    85% {
+        transform: scale(1.02);
+    }
+    100% {
+        background-color: var(--bg-elevated);
+        transform: scale(1);
+        box-shadow: var(--shadow-md);
+    }
+}
+
+/* Bootstrap Icons (if not already loaded) */
+.bi {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.125em;
+}
+

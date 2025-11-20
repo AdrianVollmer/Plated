@@ -115,9 +115,10 @@ class RecipeCreateView(CreateView):
         """Add formsets to the context."""
         data = super().get_context_data(**kwargs)
 
-        IngredientFormSet = get_ingredient_formset(extra=5)  # noqa: N806
-        StepFormSet = get_step_formset(extra=3)  # noqa: N806
-        ImageFormSet = get_image_formset(extra=2)  # noqa: N806
+        # Reduced extra forms since users can add more dynamically
+        IngredientFormSet = get_ingredient_formset(extra=1)  # noqa: N806
+        StepFormSet = get_step_formset(extra=1)  # noqa: N806
+        ImageFormSet = get_image_formset(extra=0)  # noqa: N806
 
         if self.request.POST:
             data["ingredient_formset"] = IngredientFormSet(
@@ -205,9 +206,10 @@ class RecipeUpdateView(UpdateView):
         """Add formsets to the context."""
         data = super().get_context_data(**kwargs)
 
-        IngredientFormSet = get_ingredient_formset(extra=2)  # noqa: N806
-        StepFormSet = get_step_formset(extra=1)  # noqa: N806
-        ImageFormSet = get_image_formset(extra=1)  # noqa: N806
+        # No extra forms - users can add more dynamically if needed
+        IngredientFormSet = get_ingredient_formset(extra=0)  # noqa: N806
+        StepFormSet = get_step_formset(extra=0)  # noqa: N806
+        ImageFormSet = get_image_formset(extra=0)  # noqa: N806
 
         if self.request.POST:
             data["ingredient_formset"] = IngredientFormSet(

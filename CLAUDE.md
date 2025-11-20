@@ -107,19 +107,7 @@ later.
 
 ## Expanding
 
-### Issue 1
-
-Fix minor color issues in the dark theme.
-
-- `text-muted` is too dark
-- `card` is too bright
-- `dropdown-menu` is too bright
-- When navigating to a new page, the background flashes from very bright
-  to dark. The contrast is a bit jarring. The flash is fine in itself,
-  but if should be softer.
-- The `<footer>` is too bright.
-
-### Issue 2
+### Issue: Dynamic recipe form
 
 Make the recipe form dynamic, like add a step, ingredient or image.
 Figure out a "best practice" for this. Let's try not the reinvent the
@@ -129,7 +117,7 @@ While doing this, make the reordering a bit nicer and dynamic as well.
 
 Some light JavaScript is fine here.
 
-### Issue 3
+### Issue: AI Integration
 
 Add AI integration. The user should be able to define a LLM (API URL,
 API key, model, etc). Provide a way to paste text or HTML which will be
@@ -145,11 +133,16 @@ should be forwarded to a pre-filled form of a new recipe.
 
 Make sure to handle all kinds of errors here.
 
-### Issue 4
+### Issue: Logging
 
 Add logging through out the application at various levels which make
 sense.
 
-### Issue 5
+### Issue: Meal planner
 
 Add meal planner and shopping list generator.
+
+### Issue: Source URL Placement
+
+The "source" of a recipe should be in the "quick info" card, if it is
+not `None`.
