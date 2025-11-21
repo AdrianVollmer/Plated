@@ -690,21 +690,30 @@ class CollectionDetailView(DetailView):
     context_object_name = "collection"
 
 
-class CollectionCreateView(CreateView):
-    """Create a new recipe collection."""
-
-    model = RecipeCollection
-    fields = ["name", "description", "recipes"]
-    template_name = "recipes/collection_form.html"
+class CollectionFormMixin:
+    """Mixin for collection form customization."""
 
     def get_form(self, form_class: type[forms.ModelForm] | None = None) -> forms.ModelForm:  # type: ignore[override]
         """Customize the form to add Bootstrap classes."""
-        form = super().get_form(form_class)
+        form = super().get_form(form_class)  # type: ignore[misc]
         form.fields["name"].widget.attrs.update({"class": "form-control"})
         form.fields["description"].widget.attrs.update({"class": "form-control", "rows": 3})
         form.fields["recipes"].widget.attrs.update({"class": "form-select", "size": "10"})
         form.fields["recipes"].help_text = "Hold Ctrl/Cmd to select multiple recipes"
         return form
+
+    def get_success_url(self) -> str:
+        """Redirect to collection detail page."""
+        assert self.object is not None  # type: ignore[attr-defined]
+        return str(reverse_lazy("collection_detail", kwargs={"pk": self.object.pk}))  # type: ignore[attr-defined]
+
+
+class CollectionCreateView(CollectionFormMixin, CreateView):  # type: ignore[misc]
+    """Create a new recipe collection."""
+
+    model = RecipeCollection
+    fields = ["name", "description", "recipes"]
+    template_name = "recipes/collection_form.html"
 
     def form_valid(self, form: forms.ModelForm) -> HttpResponse:  # type: ignore[override]
         """Save the collection and show success message."""
@@ -716,27 +725,13 @@ class CollectionCreateView(CreateView):
         )
         return result
 
-    def get_success_url(self) -> str:
-        """Redirect to collection detail page."""
-        assert self.object is not None
-        return str(reverse_lazy("collection_detail", kwargs={"pk": self.object.pk}))
 
-
-class CollectionUpdateView(UpdateView):
+class CollectionUpdateView(CollectionFormMixin, UpdateView):  # type: ignore[misc]
     """Update an existing recipe collection."""
 
     model = RecipeCollection
     fields = ["name", "description", "recipes"]
     template_name = "recipes/collection_form.html"
-
-    def get_form(self, form_class: type[forms.ModelForm] | None = None) -> forms.ModelForm:  # type: ignore[override]
-        """Customize the form to add Bootstrap classes."""
-        form = super().get_form(form_class)
-        form.fields["name"].widget.attrs.update({"class": "form-control"})
-        form.fields["description"].widget.attrs.update({"class": "form-control", "rows": 3})
-        form.fields["recipes"].widget.attrs.update({"class": "form-select", "size": "10"})
-        form.fields["recipes"].help_text = "Hold Ctrl/Cmd to select multiple recipes"
-        return form
 
     def form_valid(self, form: forms.ModelForm) -> HttpResponse:  # type: ignore[override]
         """Save the collection and show success message."""
@@ -747,11 +742,6 @@ class CollectionUpdateView(UpdateView):
             f"Collection '{form.instance.name}' updated successfully!",
         )
         return result
-
-    def get_success_url(self) -> str:
-        """Redirect to collection detail page."""
-        assert self.object is not None
-        return str(reverse_lazy("collection_detail", kwargs={"pk": self.object.pk}))
 
 
 class CollectionDeleteView(DeleteView):
