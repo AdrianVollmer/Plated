@@ -4,6 +4,7 @@
 {% block title %}{{ recipe.title }} - Plated{% endblock %}
 
 {% block content %}
+<div id="recipe-scaler-container" data-original-servings="{{ recipe.servings }}">
 <div class="row mb-3">
     <div class="col">
         <nav aria-label="breadcrumb">
@@ -93,7 +94,12 @@
             <div class="recipe-info-grid">
                 <div class="recipe-info-item">
                     <div class="recipe-info-label"><i class="bi bi-people"></i> Servings</div>
-                    <div class="recipe-info-value">{{ recipe.servings }}</div>
+                    <div class="recipe-info-value">
+                        <span id="servings-display">{{ recipe.servings }}</span>
+                        <button type="button" class="btn btn-sm btn-outline-primary ms-2" data-bs-toggle="modal" data-bs-target="#scaleRecipeModal" title="Scale recipe">
+                            <i class="bi bi-sliders"></i> Scale
+                        </button>
+                    </div>
                 </div>
                 {% if recipe.prep_time %}
                 <div class="recipe-info-item">
@@ -132,7 +138,12 @@
             <div class="recipe-info-grid">
                 <div class="recipe-info-item">
                     <div class="recipe-info-label"><i class="bi bi-people"></i> Servings</div>
-                    <div class="recipe-info-value">{{ recipe.servings }}</div>
+                    <div class="recipe-info-value">
+                        <span id="servings-display">{{ recipe.servings }}</span>
+                        <button type="button" class="btn btn-sm btn-outline-primary ms-2" data-bs-toggle="modal" data-bs-target="#scaleRecipeModal" title="Scale recipe">
+                            <i class="bi bi-sliders"></i> Scale
+                        </button>
+                    </div>
                 </div>
                 {% if recipe.prep_time %}
                 <div class="recipe-info-item">
@@ -183,7 +194,7 @@
             {% if recipe.ingredients.all %}
             <ul class="ingredient-list">
                 {% for ingredient in recipe.ingredients.all %}
-                <li class="ingredient-item">
+                <li class="ingredient-item" data-amount="{{ ingredient.amount }}" data-unit="{{ ingredient.unit }}" data-name="{{ ingredient.name }}">
                     <span class="ingredient-amount">
                         {% if ingredient.amount %}{{ ingredient.amount }}{% endif %}
                         {% if ingredient.unit %}{{ ingredient.unit }}{% endif %}
@@ -247,4 +258,149 @@
         <p>Last updated: {{ recipe.updated_at|date:"F j, Y, g:i a" }}</p>
     </div>
 </div>
+
+<!-- Scale Recipe Modal -->
+<div class="modal fade" id="scaleRecipeModal" tabindex="-1" aria-labelledby="scaleRecipeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="scaleRecipeModalLabel"><i class="bi bi-sliders"></i> Scale Recipe</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="nav nav-tabs mb-3" id="scaleModeTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="servings-tab" data-bs-toggle="tab" data-bs-target="#servings-pane" type="button" role="tab" aria-controls="servings-pane" aria-selected="true">
+                            <i class="bi bi-people"></i> By Servings
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="ingredient-tab" data-bs-toggle="tab" data-bs-target="#ingredient-pane" type="button" role="tab" aria-controls="ingredient-pane" aria-selected="false">
+                            <i class="bi bi-egg"></i> By Ingredient
+                        </button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="scaleModeTabContent">
+                    <!-- By Servings Tab -->
+                    <div class="tab-pane fade show active" id="servings-pane" role="tabpanel" aria-labelledby="servings-tab">
+                        <div class="mb-3">
+                            <label for="modal-servings-input" class="form-label">New servings count:</label>
+                            <input type="number" class="form-control" id="modal-servings-input" min="0.25" step="0.25" value="{{ recipe.servings }}" placeholder="Enter servings">
+                            <small class="text-muted">Original: {{ recipe.servings }} serving{{ recipe.servings|pluralize }}</small>
+                        </div>
+                    </div>
+                    <!-- By Ingredient Tab -->
+                    <div class="tab-pane fade" id="ingredient-pane" role="tabpanel" aria-labelledby="ingredient-tab">
+                        <div class="mb-3">
+                            <label for="modal-ingredient-select" class="form-label">Select ingredient:</label>
+                            <select class="form-select" id="modal-ingredient-select">
+                                <option value="-1" selected>Choose ingredient...</option>
+                                {% for ingredient in recipe.ingredients.all %}
+                                {% if ingredient.amount %}
+                                <option value="{{ forloop.counter0 }}">{{ ingredient.name }} (original: {{ ingredient.amount }} {{ ingredient.unit }})</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="modal-ingredient-amount" class="form-label">New amount:</label>
+                            <input type="text" class="form-control" id="modal-ingredient-amount" placeholder="e.g., 500 or 2 1/2">
+                            <small class="text-muted">Enter the amount you have (e.g., "500" for 500g, "2 1/2" for 2½ cups)</small>
+                        </div>
+                    </div>
+                </div>
+                <!-- Live Preview -->
+                <div class="alert alert-info mt-3" id="scale-preview" style="display: none;">
+                    <i class="bi bi-info-circle"></i> <span id="scale-preview-text"></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" id="modal-reset-button">
+                    <i class="bi bi-arrow-counterclockwise"></i> Reset to Original
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="modal-apply-button">Apply</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div><!-- End recipe-scaler-container -->
+{% endblock %}
+
+{% block extra_js %}
+{% load static %}
+<script src="{% static 'recipe-scaler.js' %}"></script>
+<style>
+/* Recipe Scaling Styles - Theme-aware */
+.ingredient-amount.scaled {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+/* Modal theme adjustments */
+#scaleRecipeModal .modal-content {
+    background-color: var(--bg-elevated);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+#scaleRecipeModal .modal-header {
+    border-bottom-color: var(--border-color);
+}
+
+#scaleRecipeModal .modal-footer {
+    border-top-color: var(--border-color);
+}
+
+#scaleRecipeModal .nav-tabs {
+    border-bottom-color: var(--border-color);
+}
+
+#scaleRecipeModal .nav-tabs .nav-link {
+    color: var(--text-secondary);
+    border-color: transparent;
+}
+
+#scaleRecipeModal .nav-tabs .nav-link:hover {
+    border-color: var(--border-subtle);
+    color: var(--text-primary);
+}
+
+#scaleRecipeModal .nav-tabs .nav-link.active {
+    color: var(--primary);
+    background-color: var(--bg-primary);
+    border-color: var(--border-color) var(--border-color) var(--bg-primary);
+}
+
+#scaleRecipeModal .form-control,
+#scaleRecipeModal .form-select {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+#scaleRecipeModal .form-control:focus,
+#scaleRecipeModal .form-select:focus {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.25rem rgba(var(--primary-rgb, 232, 93, 117), 0.25);
+}
+
+#scaleRecipeModal .form-label {
+    color: var(--text-primary);
+}
+
+#scaleRecipeModal .text-muted,
+#scaleRecipeModal small.text-muted {
+    color: var(--text-secondary) !important;
+}
+
+#scaleRecipeModal .alert-info {
+    background-color: var(--bg-tertiary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+</style>
 {% endblock %}
