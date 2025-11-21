@@ -125,7 +125,7 @@
   waiting_time: "",
   ingredients: (),
   steps: [],
-  remarks: [],
+  remarks: "",
   pairings: [],
 ) = {
   show heading.where(level: 2): it => text(
@@ -186,7 +186,7 @@
       ],
       [
         #display_steps(steps)
-        #if remarks != [] {
+        #if remarks != "" {
           [== Chef's Tips]
           emph(remarks)
         }
@@ -215,8 +215,7 @@
   // Check if image.jpg exists and include it
   let image_path = data.at("image", default: "")
 
-  let remarks_text = recipe_data.at("notes", default: "")
-  let remarks_list = if remarks_text != "" { (remarks_text,) } else { () }
+  let remarks = recipe_data.at("notes", default: "")
 
   recipe(
     title: recipe_data.title,
@@ -227,7 +226,7 @@
     waiting_time: wait_time,
     ingredients: all_ingredients,
     steps: recipe_data.steps,
-    remarks: remarks_list,
+    remarks: remarks,
     image_path: image_path,
   )
 }
