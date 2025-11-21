@@ -23,6 +23,7 @@ build-backend = "hatchling.build"
 [dependency-groups]
 dev = [
     "django-stubs>=5.2.7",
+    "mkdocs-material>=9.7.0",
     "mypy>=1.18.2",
     "pytest>=9.0.1",
     "pytest-django>=4.11.1",

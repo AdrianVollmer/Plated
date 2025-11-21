@@ -16,3 +16,6 @@ src/staticfiles
 # Logs
 src/logs/
 *.log
+
+# Documentation build
+site/
