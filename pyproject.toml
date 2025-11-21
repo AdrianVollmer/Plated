@@ -13,9 +13,6 @@ dependencies = [
     "requests>=2.32.5",
 ]
 
-[project.scripts]
-plated = "plated:main"
-
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
@@ -52,7 +49,8 @@ ignore = []
 "*/migrations/*.py" = ["E501"]
 "*/management/commands/seed_db.py" = ["E501"]
 "*/settings.py" = ["S105"]  # Django dev secret key
-"*/views.py" = ["S101", "S603", "S607"]  # assert for type narrowing, subprocess for typst
+"*/views/recipes.py" = ["S101", "S603", "S607"]  # assert for type narrowing, subprocess for typst
+"*/views/collections.py" = ["S101"]  # assert for type narrowing
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "config.settings"

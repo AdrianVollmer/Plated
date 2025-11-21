@@ -37,3 +37,7 @@ Users can only change or delete recipes or collections that they own.
 ## Issue: Environment settings
 
 Read from env the settings regarding time zone, secret key, etc.
+
+## Issue: AI button
+
+Hide AI button if no AI settings have been set
