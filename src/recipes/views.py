@@ -655,6 +655,7 @@ def download_recipe_pdf(request: HttpRequest, pk: int) -> HttpResponse:
                 messages.error(
                     request,
                     f"Error generating PDF: {e.stderr if e.stderr else str(e)}",
+                    # TODO render output in `<pre><code>` tags
                 )
                 return redirect("recipe_detail", pk=pk)
 
