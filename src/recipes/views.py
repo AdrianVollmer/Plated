@@ -447,18 +447,35 @@ def get_ingredient_units(request: HttpRequest) -> JsonResponse:
     return JsonResponse({"units": list(units)})
 
 
+def _parse_keywords(keywords_str: str) -> list[str]:
+    """
+    Parse a comma-separated keyword string into a list of cleaned keywords.
+
+    Args:
+        keywords_str: Comma-separated string of keywords
+
+    Returns:
+        List of cleaned, non-empty keywords
+    """
+    return [kw.strip() for kw in keywords_str.split(",") if kw.strip()]
+
+
+def _get_all_recipe_keywords() -> list[str]:
+    """
+    Get all distinct keywords from recipes as a flat list.
+
+    Returns:
+        List of all keyword strings (comma-separated) from recipes
+    """
+    return list(Recipe.objects.exclude(keywords="").values_list("keywords", flat=True))
+
+
 def get_keywords(request: HttpRequest) -> JsonResponse:
     """API endpoint to get distinct keywords for autocomplete."""
-    # Get all non-empty keywords from recipes
-    all_keywords_raw = Recipe.objects.exclude(keywords="").values_list("keywords", flat=True)
-
-    # Split comma-separated keywords and clean them up
+    # Get all keywords and flatten into a unique set
     keywords_set = set()
-    for keywords_str in all_keywords_raw:
-        for keyword in keywords_str.split(","):
-            keyword = keyword.strip()
-            if keyword:  # Only add non-empty keywords
-                keywords_set.add(keyword)
+    for keywords_str in _get_all_recipe_keywords():
+        keywords_set.update(_parse_keywords(keywords_str))
 
     # Convert to sorted list
     keywords_list = sorted(keywords_set, key=str.lower)
@@ -937,16 +954,11 @@ def rename_unit(request: HttpRequest) -> HttpResponse:
 
 def manage_keywords(request: HttpRequest) -> HttpResponse:
     """View and manage distinct keywords."""
-    # Get all non-empty keywords from recipes
-    all_keywords_raw = Recipe.objects.exclude(keywords="").values_list("keywords", flat=True)
-
-    # Split comma-separated keywords and count their usage
+    # Count keyword usage across all recipes
     keyword_counts: dict[str, int] = {}
-    for keywords_str in all_keywords_raw:
-        for keyword in keywords_str.split(","):
-            keyword = keyword.strip()
-            if keyword:  # Only add non-empty keywords
-                keyword_counts[keyword] = keyword_counts.get(keyword, 0) + 1
+    for keywords_str in _get_all_recipe_keywords():
+        for keyword in _parse_keywords(keywords_str):
+            keyword_counts[keyword] = keyword_counts.get(keyword, 0) + 1
 
     # Convert to list of dicts and sort
     keywords: list[dict[str, Any]] = [{"keyword": k, "usage_count": v} for k, v in keyword_counts.items()]
@@ -1039,11 +1051,7 @@ def recipes_with_keyword(request: HttpRequest, keyword: str) -> HttpResponse:
     """Show all recipes that use a specific keyword."""
     recipes = Recipe.objects.filter(keywords__icontains=keyword).distinct()
     # Further filter to ensure exact keyword match (not just substring)
-    filtered_recipes = []
-    for recipe in recipes:
-        keywords_list = [k.strip() for k in recipe.keywords.split(",")]
-        if keyword in keywords_list:
-            filtered_recipes.append(recipe)
+    filtered_recipes = [recipe for recipe in recipes if keyword in _parse_keywords(recipe.keywords)]
 
     return render(
         request,
@@ -1088,12 +1096,7 @@ def delete_keyword(request: HttpRequest) -> HttpResponse:
             return redirect("manage_keywords")
 
         # Check usage count - count how many recipes have this keyword
-        usage_count = 0
-        all_keywords_raw = Recipe.objects.exclude(keywords="").values_list("keywords", flat=True)
-        for keywords_str in all_keywords_raw:
-            keywords_list = [k.strip() for k in keywords_str.split(",")]
-            if keyword in keywords_list:
-                usage_count += 1
+        usage_count = sum(1 for keywords_str in _get_all_recipe_keywords() if keyword in _parse_keywords(keywords_str))
 
         if usage_count > 0:
             logger.warning(f"Cannot delete keyword '{keyword}': usage count is {usage_count}")
