@@ -102,7 +102,7 @@ class AISettings(models.Model):
     api_url = models.URLField(
         help_text="URL of the LLM API endpoint (e.g., https://api.openai.com/v1/chat/completions)"
     )
-    api_key = models.CharField(max_length=500, help_text="API key for authentication")
+    api_key = models.CharField(max_length=500, help_text="API key for authentication", blank=True, null=True)
     model = models.CharField(
         max_length=200,
         help_text="Model name (e.g., gpt-4, claude-3-sonnet-20240229)",
