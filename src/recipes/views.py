@@ -390,6 +390,25 @@ def get_ingredient_units(request: HttpRequest) -> JsonResponse:
     return JsonResponse({"units": list(units)})
 
 
+def get_keywords(request: HttpRequest) -> JsonResponse:
+    """API endpoint to get distinct keywords for autocomplete."""
+    # Get all non-empty keywords from recipes
+    all_keywords_raw = Recipe.objects.exclude(keywords="").values_list("keywords", flat=True)
+
+    # Split comma-separated keywords and clean them up
+    keywords_set = set()
+    for keywords_str in all_keywords_raw:
+        for keyword in keywords_str.split(","):
+            keyword = keyword.strip()
+            if keyword:  # Only add non-empty keywords
+                keywords_set.add(keyword)
+
+    # Convert to sorted list
+    keywords_list = sorted(keywords_set, key=str.lower)
+
+    return JsonResponse({"keywords": keywords_list})
+
+
 def export_recipe(request: HttpRequest, pk: int) -> HttpResponse:
     """Export a recipe as a JSON file."""
     recipe = get_object_or_404(Recipe, pk=pk)

@@ -115,15 +115,6 @@ Add meal planner and shopping list generator.
 
 The user should be able to display a recipe for new servings count.
 
-### Issue: PWA
-
-Add a button or something in the settings view for a progressive web
-app.
-
-### Issue: Documentation
-
-Create docs with "material for mkdocs". Choose a cool, non-default color
-theme. Ideally a theme in line with the app.
-
-Don't be overly verbose. Prefer references over duplicating information.
-Be concise, clear, brief.
+They should also be able to scale it to one ingredient. Let's say the
+recipe calls for 300g of flour, then the user should be able to scale
+all ingredients to 500g of flour.

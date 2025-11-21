@@ -85,6 +85,7 @@
                     <div class="mb-3">
                         <label for="{{ form.keywords.id_for_label }}" class="form-label">Keywords</label>
                         {{ form.keywords }}
+                        <div id="keyword-suggestions" class="mt-1"></div>
                         <small class="form-text text-muted">Comma-separated keywords (e.g., italian, pasta, vegetarian)</small>
                         {% if form.keywords.errors %}
                         <div class="invalid-feedback d-block">{{ form.keywords.errors }}</div>
@@ -435,6 +436,10 @@ document.addEventListener('DOMContentLoaded', function() {
     unitDatalist.id = 'ingredient-units-list';
     document.body.appendChild(unitDatalist);
 
+    const keywordDatalist = document.createElement('datalist');
+    keywordDatalist.id = 'keywords-list';
+    document.body.appendChild(keywordDatalist);
+
     // Fetch ingredient names from API
     fetch('{% url "api_ingredient_names" %}')
         .then(response => response.json())
@@ -458,6 +463,111 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         })
         .catch(error => console.error('Error fetching ingredient units:', error));
+
+    // Fetch keywords from API and set up smart keyword editing
+    let existingKeywords = [];
+    fetch('{% url "api_keywords" %}')
+        .then(response => response.json())
+        .then(data => {
+            existingKeywords = data.keywords.map(k => k.toLowerCase());
+            data.keywords.forEach(keyword => {
+                const option = document.createElement('option');
+                option.value = keyword;
+                keywordDatalist.appendChild(option);
+            });
+
+            // Set up keyword input field
+            setupKeywordInput();
+        })
+        .catch(error => console.error('Error fetching keywords:', error));
+
+    function setupKeywordInput() {
+        const keywordsInput = document.getElementById('{{ form.keywords.id_for_label }}');
+        const suggestionsDiv = document.getElementById('keyword-suggestions');
+
+        if (!keywordsInput) return;
+
+        // Attach datalist
+        keywordsInput.setAttribute('list', 'keywords-list');
+        keywordsInput.setAttribute('autocomplete', 'off');
+
+        // Function to get current keyword being typed
+        function getCurrentKeyword() {
+            const value = keywordsInput.value;
+            const cursorPos = keywordsInput.selectionStart;
+
+            // Find the start and end of the current keyword
+            let start = value.lastIndexOf(',', cursorPos - 1) + 1;
+            let end = value.indexOf(',', cursorPos);
+            if (end === -1) end = value.length;
+
+            return value.substring(start, end).trim().toLowerCase();
+        }
+
+        // Function to update suggestions
+        function updateSuggestions() {
+            const currentKeyword = getCurrentKeyword();
+
+            if (currentKeyword.length === 0) {
+                suggestionsDiv.innerHTML = '';
+                return;
+            }
+
+            // Check if the current keyword exists
+            const isExisting = existingKeywords.includes(currentKeyword);
+
+            if (isExisting) {
+                suggestionsDiv.innerHTML = '<span class="badge bg-success"><i class="bi bi-check-circle"></i> Existing keyword</span>';
+            } else {
+                // Find matching suggestions
+                const matches = existingKeywords.filter(k => k.includes(currentKeyword));
+
+                if (matches.length > 0 && matches.length <= 5) {
+                    const matchHtml = matches.slice(0, 5).map(m =>
+                        `<span class="badge bg-info me-1" style="cursor: pointer;" data-keyword="${m}">${m}</span>`
+                    ).join('');
+                    suggestionsDiv.innerHTML = '<small class="text-muted">Suggestions: ' + matchHtml + '</small>';
+
+                    // Add click handlers to suggestion badges
+                    suggestionsDiv.querySelectorAll('.badge[data-keyword]').forEach(badge => {
+                        badge.addEventListener('click', function() {
+                            insertKeyword(this.dataset.keyword);
+                        });
+                    });
+                } else {
+                    suggestionsDiv.innerHTML = '<span class="badge bg-warning text-dark"><i class="bi bi-plus-circle"></i> New keyword</span>';
+                }
+            }
+        }
+
+        // Function to insert a keyword at cursor position
+        function insertKeyword(keyword) {
+            const value = keywordsInput.value;
+            const cursorPos = keywordsInput.selectionStart;
+
+            // Find the start and end of the current keyword
+            let start = value.lastIndexOf(',', cursorPos - 1) + 1;
+            let end = value.indexOf(',', cursorPos);
+            if (end === -1) end = value.length;
+
+            // Replace the current keyword with the selected one
+            const before = value.substring(0, start);
+            const after = value.substring(end);
+
+            keywordsInput.value = before + ' ' + keyword + (after ? ',' + after : '');
+
+            // Update suggestions
+            updateSuggestions();
+        }
+
+        // Listen for input changes
+        keywordsInput.addEventListener('input', updateSuggestions);
+        keywordsInput.addEventListener('click', updateSuggestions);
+        keywordsInput.addEventListener('keyup', updateSuggestions);
+
+        // Initial update
+        updateSuggestions();
+    }
 
     // Function to attach datalist to input fields
     function attachDatalistsToIngredients() {

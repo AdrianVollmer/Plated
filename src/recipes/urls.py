@@ -22,6 +22,7 @@ urlpatterns = [
     # API endpoints for autocomplete
     path("api/ingredient-names/", views.get_ingredient_names, name="api_ingredient_names"),
     path("api/ingredient-units/", views.get_ingredient_units, name="api_ingredient_units"),
+    path("api/keywords/", views.get_keywords, name="api_keywords"),
     # Collection management
     path("collections/", views.CollectionListView.as_view(), name="collection_list"),
     path(
