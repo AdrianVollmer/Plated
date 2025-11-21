@@ -787,6 +787,7 @@ def _manage_ingredient_property(
     display_name: str,
     template_name: str,
     list_url_name: str,
+    context_var_name: str,
 ) -> HttpResponse:
     """
     Generic view for managing ingredient properties (name or unit).
@@ -797,6 +798,7 @@ def _manage_ingredient_property(
         display_name: Human-readable name for display
         template_name: Template to render
         list_url_name: URL name for redirect
+        context_var_name: Name for the context variable in template
     """
     # Get all distinct values with usage counts
     queryset = (
@@ -814,10 +816,7 @@ def _manage_ingredient_property(
     if query:
         queryset = queryset.filter(**{f"{field_name}__icontains": query})
 
-    # Rename field to match template expectations
-    items = [{field_name: item[field_name], "usage_count": item["usage_count"]} for item in queryset]
-
-    return render(request, template_name, {f"{field_name}s": items, "query": query})
+    return render(request, template_name, {context_var_name: queryset, "query": query})
 
 
 def _rename_ingredient_property(
@@ -911,6 +910,7 @@ def manage_ingredient_names(request: HttpRequest) -> HttpResponse:
         display_name="Ingredient Name",
         template_name="recipes/manage_ingredient_names.html",
         list_url_name="manage_ingredient_names",
+        context_var_name="ingredients",
     )
 
 
@@ -935,6 +935,7 @@ def manage_units(request: HttpRequest) -> HttpResponse:
         display_name="Unit",
         template_name="recipes/manage_units.html",
         list_url_name="manage_units",
+        context_var_name="units",
     )
 
 

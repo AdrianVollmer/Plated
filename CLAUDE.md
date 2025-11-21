@@ -111,6 +111,10 @@ later.
 
 Add meal planner and shopping list generator.
 
+### Issue: I18n
+
+Add support for internationalization
+
 ### Issue: User support
 
 A environment variable should decide whether the app runs in single user
