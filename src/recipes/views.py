@@ -33,51 +33,101 @@ from .schema import deserialize_recipe, serialize_recipe, validate_recipe_data
 logger = logging.getLogger(__name__)
 
 
+def _create_bootstrap_widget(field_name: str, model_field: Any) -> forms.Widget:
+    """
+    Create a Bootstrap-styled widget based on field type.
+
+    Args:
+        field_name: Name of the field
+        model_field: Django model field instance
+
+    Returns:
+        Appropriately styled widget
+    """
+    base_class = "form-control"
+    small_class = "form-control form-control-sm"
+
+    # Determine widget type based on field
+    if isinstance(model_field, django_models.TextField):
+        return forms.Textarea(attrs={"class": base_class, "rows": 3})
+    elif isinstance(model_field, django_models.IntegerField):
+        return forms.NumberInput(attrs={"class": small_class})
+    elif isinstance(model_field, django_models.ImageField):
+        # Image fields use default widget
+        return forms.FileInput(attrs={"class": base_class})
+    else:
+        # Default to text input for CharField and others
+        return forms.TextInput(attrs={"class": small_class})
+
+
+def _create_inline_formset(
+    parent_model: type[django_models.Model],
+    child_model: type[django_models.Model],
+    fields: tuple[str, ...],
+    extra: int = 0,
+    custom_widgets: dict[str, forms.Widget] | None = None,
+) -> Any:
+    """
+    Create an inline formset with automatic Bootstrap styling.
+
+    Args:
+        parent_model: Parent model class
+        child_model: Child model class
+        fields: Tuple of field names to include
+        extra: Number of empty forms to display
+        custom_widgets: Optional dict of custom widgets to override defaults
+
+    Returns:
+        Formset factory
+    """
+    # Build widgets dict with Bootstrap styling
+    widgets: dict[str, type[forms.Widget] | forms.Widget] = {}
+    for field_name in fields:
+        if custom_widgets and field_name in custom_widgets:
+            # Use custom widget if provided
+            widgets[field_name] = custom_widgets[field_name]
+        else:
+            # Auto-generate Bootstrap widget
+            model_field = child_model._meta.get_field(field_name)
+            widgets[field_name] = _create_bootstrap_widget(field_name, model_field)
+
+    return inlineformset_factory(
+        parent_model,
+        child_model,
+        fields=fields,
+        extra=extra,
+        can_delete=True,
+        widgets=widgets,
+    )
+
+
 def get_ingredient_formset(extra: int = 5):
     """Create an ingredient formset with Bootstrap styling."""
-    return inlineformset_factory(
+    return _create_inline_formset(
         Recipe,
         Ingredient,
         fields=("amount", "unit", "name", "note", "order"),
         extra=extra,
-        can_delete=True,
-        widgets={
-            "amount": forms.TextInput(attrs={"class": "form-control form-control-sm"}),
-            "unit": forms.TextInput(attrs={"class": "form-control form-control-sm"}),
-            "name": forms.TextInput(attrs={"class": "form-control form-control-sm"}),
-            "note": forms.TextInput(attrs={"class": "form-control form-control-sm"}),
-            "order": forms.NumberInput(attrs={"class": "form-control form-control-sm"}),
-        },
     )
 
 
 def get_step_formset(extra: int = 3):
     """Create a step formset with Bootstrap styling."""
-    return inlineformset_factory(
+    return _create_inline_formset(
         Recipe,
         Step,
         fields=("content", "order"),
         extra=extra,
-        can_delete=True,
-        widgets={
-            "content": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
-            "order": forms.NumberInput(attrs={"class": "form-control form-control-sm"}),
-        },
     )
 
 
 def get_image_formset(extra: int = 2):
     """Create an image formset with Bootstrap styling."""
-    return inlineformset_factory(
+    return _create_inline_formset(
         Recipe,
         RecipeImage,
         fields=("image", "caption", "order"),
         extra=extra,
-        can_delete=True,
-        widgets={
-            "caption": forms.TextInput(attrs={"class": "form-control form-control-sm"}),
-            "order": forms.NumberInput(attrs={"class": "form-control form-control-sm"}),
-        },
     )
 
 
