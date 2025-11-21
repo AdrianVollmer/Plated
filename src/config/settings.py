@@ -149,7 +149,7 @@ LOGGING = {
     "loggers": {
         "recipes": {
             "handlers": ["console", "file"],
-            "level": "INFO",
+            "level": "DEBUG" if DEBUG else "INFO",
             "propagate": False,
         },
     },
