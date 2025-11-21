@@ -982,3 +982,187 @@ input[type="checkbox"][name$="-DELETE"] {
     vertical-align: -0.125em;
 }
 
+/* ============================================
+   Code Blocks
+   ============================================ */
+
+.code-block {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'Courier New', monospace;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    overflow-x: auto;
+}
+
+.code-block code {
+    color: var(--text-primary);
+}
+
+/* ============================================
+   Bootstrap Card Overrides
+   ============================================ */
+
+.card {
+    background-color: var(--bg-elevated);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+.card-title a {
+    color: var(--text-primary);
+}
+
+.card-title a:hover {
+    color: var(--primary);
+}
+
+.card-body {
+    color: var(--text-primary);
+}
+
+.card-footer {
+    border-top-color: var(--border-color);
+    background-color: var(--bg-secondary);
+}
+
+.card-header {
+    background-color: var(--bg-secondary);
+    border-bottom-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+/* ============================================
+   Bootstrap Button Overrides
+   ============================================ */
+
+/* Outline primary buttons - use theme primary color */
+.btn-outline-primary {
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus,
+.btn-outline-primary:focus-visible {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: var(--text-inverse);
+    box-shadow: none;
+}
+
+.btn-check:checked + .btn-outline-primary,
+.btn-check:active + .btn-outline-primary,
+.btn-outline-primary:active,
+.btn-outline-primary.active {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: var(--text-inverse);
+    box-shadow: none;
+}
+
+/* Primary buttons */
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: var(--text-inverse);
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:focus-visible {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    color: var(--text-inverse);
+    box-shadow: none;
+}
+
+.btn-primary:active,
+.btn-primary.active {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    box-shadow: none;
+}
+
+/* Secondary buttons - already work well, but ensure consistency */
+.btn-secondary {
+    background-color: var(--secondary);
+    border-color: var(--secondary);
+}
+
+.btn-outline-secondary {
+    color: var(--text-secondary);
+    border-color: var(--border-color);
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+/* ============================================
+   Bootstrap Form Control Overrides
+   ============================================ */
+
+/* Input fields, textareas, selects */
+.form-control,
+.form-select {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.25rem rgba(var(--primary-rgb, 232, 93, 117), 0.25);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+    background-color: var(--bg-secondary);
+    color: var(--text-tertiary);
+}
+
+/* Placeholder text */
+.form-control::placeholder {
+    color: var(--text-tertiary);
+    opacity: 1;
+}
+
+.form-control::-webkit-input-placeholder {
+    color: var(--text-tertiary);
+    opacity: 1;
+}
+
+.form-control::-moz-placeholder {
+    color: var(--text-tertiary);
+    opacity: 1;
+}
+
+.form-control:-ms-input-placeholder {
+    color: var(--text-tertiary);
+    opacity: 1;
+}
+
+/* Form labels */
+.form-label {
+    color: var(--text-primary);
+}
+
+/* Form text (help text) */
+.form-text {
+    color: var(--text-secondary);
+}
+
+/* Input group text */
+.input-group-text {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
