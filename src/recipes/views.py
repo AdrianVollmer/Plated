@@ -108,6 +108,76 @@ class RecipeDetailView(DetailView):
     context_object_name = "recipe"
 
 
+def _validate_and_save_recipe_formsets(
+    request: HttpRequest,
+    form: RecipeForm,
+    ingredient_formset: Any,
+    step_formset: Any,
+    image_formset: Any,
+    recipe_instance: Recipe | None = None,
+    is_create: bool = True,
+) -> tuple[bool, HttpResponse | None, int, int]:
+    """
+    Common validation and saving logic for recipe formsets.
+
+    Returns:
+        tuple: (success, response, ingredient_count, step_count)
+        - success: True if validation passed
+        - response: HttpResponse to return if validation failed, None otherwise
+        - ingredient_count: Number of valid ingredients
+        - step_count: Number of valid steps
+    """
+    action = "creation" if is_create else "update"
+    recipe_info = (
+        "" if is_create or recipe_instance is None else f" for '{recipe_instance.title}' (ID: {recipe_instance.pk})"
+    )
+
+    # Validate formsets
+    if not ingredient_formset.is_valid():
+        logger.warning(f"Recipe {action} failed{recipe_info}: ingredient formset validation error")
+        form.add_error(None, "Invalid ingredient data")
+        return False, None, 0, 0
+
+    if not step_formset.is_valid():
+        logger.warning(f"Recipe {action} failed{recipe_info}: step formset validation error")
+        form.add_error(None, "Invalid step data")
+        return False, None, 0, 0
+
+    if not image_formset.is_valid():
+        logger.warning(f"Recipe {action} failed{recipe_info}: image formset validation error")
+        form.add_error(None, "Invalid image data")
+        return False, None, 0, 0
+
+    # Count non-deleted forms
+    ingredient_count = sum(
+        1
+        for form_item in ingredient_formset
+        if form_item.cleaned_data
+        and not form_item.cleaned_data.get("DELETE", False)
+        and form_item.cleaned_data.get("name")
+    )
+    step_count = sum(
+        1
+        for form_item in step_formset
+        if form_item.cleaned_data
+        and not form_item.cleaned_data.get("DELETE", False)
+        and form_item.cleaned_data.get("content")
+    )
+
+    # Validate minimum requirements
+    if ingredient_count == 0:
+        logger.warning(f"Recipe {action} failed{recipe_info}: no ingredients provided")
+        messages.error(request, "Please add at least one ingredient to the recipe.")
+        return False, None, 0, 0
+
+    if step_count == 0:
+        logger.warning(f"Recipe {action} failed{recipe_info}: no steps provided")
+        messages.error(request, "Please add at least one instruction step to the recipe.")
+        return False, None, 0, 0
+
+    return True, None, ingredient_count, step_count
+
+
 class RecipeCreateView(CreateView):
     """Create a new recipe with ingredients, steps, and images."""
 
@@ -186,45 +256,15 @@ class RecipeCreateView(CreateView):
         step_formset = context["step_formset"]
         image_formset = context["image_formset"]
 
-        # Validate formsets
-        if not ingredient_formset.is_valid():
-            logger.warning("Recipe creation failed: ingredient formset validation error")
-            return self.form_invalid(form)
-
-        if not step_formset.is_valid():
-            logger.warning("Recipe creation failed: step formset validation error")
-            return self.form_invalid(form)
-
-        if not image_formset.is_valid():
-            logger.warning("Recipe creation failed: image formset validation error")
-            return self.form_invalid(form)
-
-        # Check that at least one ingredient and one step are provided
-        ingredient_count = sum(
-            1
-            for form_item in ingredient_formset
-            if form_item.cleaned_data
-            and not form_item.cleaned_data.get("DELETE", False)
-            and form_item.cleaned_data.get("name")
-        )
-        step_count = sum(
-            1
-            for form_item in step_formset
-            if form_item.cleaned_data
-            and not form_item.cleaned_data.get("DELETE", False)
-            and form_item.cleaned_data.get("content")
+        # Validate formsets using common helper
+        success, response, ingredient_count, step_count = _validate_and_save_recipe_formsets(
+            self.request, form, ingredient_formset, step_formset, image_formset, is_create=True
         )
 
-        if ingredient_count == 0:
-            logger.warning("Recipe creation failed: no ingredients provided")
-            messages.error(self.request, "Please add at least one ingredient to the recipe.")
+        if not success:
             return self.form_invalid(form)
 
-        if step_count == 0:
-            logger.warning("Recipe creation failed: no steps provided")
-            messages.error(self.request, "Please add at least one instruction step to the recipe.")
-            return self.form_invalid(form)
-
+        # Save everything in a transaction
         try:
             with transaction.atomic():
                 self.object = form.save()
@@ -288,54 +328,21 @@ class RecipeUpdateView(UpdateView):
         step_formset = context["step_formset"]
         image_formset = context["image_formset"]
 
-        # Validate formsets
-        if not ingredient_formset.is_valid():
-            logger.warning(
-                f"Recipe update failed for '{self.object.title}' (ID: {self.object.pk}): "
-                "ingredient formset validation error"
-            )
-            return self.form_invalid(form)
-
-        if not step_formset.is_valid():
-            logger.warning(
-                f"Recipe update failed for '{self.object.title}' (ID: {self.object.pk}): step formset validation error"
-            )
-            return self.form_invalid(form)
-
-        if not image_formset.is_valid():
-            logger.warning(
-                f"Recipe update failed for '{self.object.title}' (ID: {self.object.pk}): image formset validation error"
-            )
-            return self.form_invalid(form)
-
-        # Check that at least one ingredient and one step are provided
-        ingredient_count = sum(
-            1
-            for form_item in ingredient_formset
-            if form_item.cleaned_data
-            and not form_item.cleaned_data.get("DELETE", False)
-            and form_item.cleaned_data.get("name")
-        )
-        step_count = sum(
-            1
-            for form_item in step_formset
-            if form_item.cleaned_data
-            and not form_item.cleaned_data.get("DELETE", False)
-            and form_item.cleaned_data.get("content")
+        # Validate formsets using common helper
+        success, response, ingredient_count, step_count = _validate_and_save_recipe_formsets(
+            self.request,
+            form,
+            ingredient_formset,
+            step_formset,
+            image_formset,
+            recipe_instance=self.object,
+            is_create=False,
         )
 
-        if ingredient_count == 0:
-            logger.warning(
-                f"Recipe update failed for '{self.object.title}' (ID: {self.object.pk}): no ingredients provided"
-            )
-            messages.error(self.request, "Please add at least one ingredient to the recipe.")
+        if not success:
             return self.form_invalid(form)
 
-        if step_count == 0:
-            logger.warning(f"Recipe update failed for '{self.object.title}' (ID: {self.object.pk}): no steps provided")
-            messages.error(self.request, "Please add at least one instruction step to the recipe.")
-            return self.form_invalid(form)
-
+        # Save everything in a transaction
         try:
             with transaction.atomic():
                 self.object = form.save()
@@ -873,13 +880,13 @@ def manage_keywords(request: HttpRequest) -> HttpResponse:
                 keyword_counts[keyword] = keyword_counts.get(keyword, 0) + 1
 
     # Convert to list of dicts and sort
-    keywords = [{"keyword": k, "usage_count": v} for k, v in keyword_counts.items()]
-    keywords.sort(key=lambda x: x["keyword"].lower())
+    keywords: list[dict[str, Any]] = [{"keyword": k, "usage_count": v} for k, v in keyword_counts.items()]
+    keywords.sort(key=lambda x: str(x["keyword"]).lower())
 
     # Handle search query
     query = request.GET.get("q")
     if query:
-        keywords = [k for k in keywords if query.lower() in k["keyword"].lower()]
+        keywords = [k for k in keywords if query.lower() in str(k["keyword"]).lower()]
 
     return render(
         request,
@@ -1008,9 +1015,10 @@ def delete_keyword(request: HttpRequest) -> HttpResponse:
 
         if usage_count > 0:
             logger.warning(f"Cannot delete keyword '{keyword}': usage count is {usage_count}")
+            plural = "s" if usage_count > 1 else ""
             messages.error(
                 request,
-                f"Cannot delete '{keyword}' because it is used in {usage_count} recipe{'s' if usage_count > 1 else ''}.",
+                f"Cannot delete '{keyword}' because it is used in {usage_count} recipe{plural}.",
             )
             return redirect("manage_keywords")
 
