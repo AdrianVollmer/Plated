@@ -36,147 +36,7 @@ def ai_extract_recipe(request: HttpRequest) -> HttpResponse:
             logger.info(f"AI recipe extraction initiated with input_type: {input_type}")
 
             try:
-                # Fetch content if it's a URL
-                if input_type == "url":
-                    logger.debug(f"Fetching content from URL: {input_content}")
-                    try:
-                        response = requests.get(input_content, timeout=30)
-                        response.raise_for_status()
-                        content = response.text
-                        logger.debug(f"URL content fetched successfully: {len(content)} characters")
-                    except requests.RequestException as e:
-                        logger.error(f"Error fetching URL {input_content}: {e}")
-                        messages.error(request, f"Error fetching URL: {e}")
-                        return render(request, "recipes/ai_extract.html", {"form": form})
-                else:
-                    content = input_content
-
-                # Build the prompt for the LLM
-                schema_description = """
-Extract the recipe information from the provided content and return it as a JSON object with the following schema:
-
-{
-  "title": "Recipe title (required)",
-  "description": "Brief description",
-  "servings": 4,
-  "keywords": "comma, separated, keywords",
-  "prep_time_minutes": 30,
-  "wait_time_minutes": 45,
-  "url": "source URL if applicable",
-  "notes": "any additional notes",
-  "special_equipment": "special equipment needed",
-  "ingredients": [
-    {
-      "amount": "2",
-      "unit": "cups",
-      "name": "flour",
-      "note": "sifted",
-      "order": 0
-    }
-  ],
-  "steps": [
-    {
-      "content": "Step instructions (markdown supported)",
-      "order": 0
-    }
-  ]
-}
-
-IMPORTANT: Return ONLY valid JSON, no additional text or markdown formatting.
-"""
-
-                system_message = schema_description
-                if prompt:
-                    system_message += f"\n\nAdditional instructions: {prompt}"
-
-                user_message = f"Content type: {input_type}\n\nContent:\n{content}"
-
-                # Call the LLM API
-                logger.debug(f"Calling LLM API: {ai_settings.api_url}")
-                try:
-                    # Try OpenAI-compatible API format
-                    api_payload = {
-                        "model": ai_settings.model,
-                        "messages": [
-                            {"role": "system", "content": system_message},
-                            {"role": "user", "content": user_message},
-                        ],
-                        "max_tokens": ai_settings.max_tokens,
-                        "temperature": ai_settings.temperature,
-                    }
-
-                    api_response = requests.post(
-                        ai_settings.api_url,
-                        headers={
-                            "Authorization": f"Bearer {ai_settings.api_key}",
-                            "Content-Type": "application/json",
-                        },
-                        json=api_payload,
-                        timeout=120,
-                    )
-                    api_response.raise_for_status()
-                    response_data = api_response.json()
-
-                    logger.debug("LLM API call successful")
-
-                    # Extract the response text (try OpenAI format first)
-                    if "choices" in response_data and len(response_data["choices"]) > 0:
-                        recipe_json_str = response_data["choices"][0]["message"]["content"]
-                    elif "content" in response_data:
-                        # Alternative format
-                        recipe_json_str = response_data["content"]
-                    else:
-                        logger.error(f"Unexpected API response format: {response_data}")
-                        messages.error(
-                            request,
-                            "Unexpected response format from AI API. Please check your API configuration.",
-                        )
-                        return render(request, "recipes/ai_extract.html", {"form": form})
-
-                    # Clean up the response (remove markdown code blocks if present)
-                    recipe_json_str = recipe_json_str.strip()
-                    if recipe_json_str.startswith("```json"):
-                        recipe_json_str = recipe_json_str[7:]
-                    if recipe_json_str.startswith("```"):
-                        recipe_json_str = recipe_json_str[3:]
-                    if recipe_json_str.endswith("```"):
-                        recipe_json_str = recipe_json_str[:-3]
-                    recipe_json_str = recipe_json_str.strip()
-
-                    # Parse the JSON
-                    try:
-                        recipe_data = json.loads(recipe_json_str)
-                        logger.debug("Recipe JSON parsed successfully")
-                    except json.JSONDecodeError as e:
-                        logger.error(f"Error parsing recipe JSON: {e}\nJSON string: {recipe_json_str[:500]}")
-                        messages.error(
-                            request,
-                            f"Error parsing AI response as JSON: {e}. The AI may have returned invalid JSON.",
-                        )
-                        return render(request, "recipes/ai_extract.html", {"form": form})
-
-                    # Validate the recipe data
-                    errors = validate_recipe_data(recipe_data)
-                    if errors:
-                        logger.warning(f"AI-extracted recipe validation failed: {len(errors)} errors")
-                        for error in errors[:5]:  # Show first 5 errors
-                            messages.error(request, f"Validation error: {error}")
-                        return render(request, "recipes/ai_extract.html", {"form": form})
-
-                    # Store the recipe data in the session
-                    request.session["ai_extracted_recipe"] = recipe_data
-                    logger.info("Recipe extracted successfully via AI, redirecting to recipe form")
-                    messages.success(
-                        request,
-                        "Recipe extracted successfully! Please review and save the recipe.",
-                    )
-                    return redirect("recipe_create")
-
-                except requests.RequestException as e:
-                    logger.error(f"Error calling LLM API: {e}")
-                    messages.error(request, f"Error calling AI API: {e}")
-                    return render(request, "recipes/ai_extract.html", {"form": form})
-
+                prompt_ai(input_type, input_content, request, form, prompt, ai_settings)
             except Exception as e:
                 logger.error(f"Unexpected error during AI recipe extraction: {e}", exc_info=True)
                 messages.error(request, f"Unexpected error: {e}")
@@ -186,3 +46,139 @@ IMPORTANT: Return ONLY valid JSON, no additional text or markdown formatting.
         form = AIRecipeExtractionForm()
 
     return render(request, "recipes/ai_extract.html", {"form": form})
+
+
+def prompt_ai(
+    input_type: str,
+    input_content: str,
+    request: HttpRequest,
+    form: AIRecipeExtractionForm,
+    prompt,
+    ai_settings,
+) -> HttpResponse:
+    # Fetch content if it's a URL
+    if input_type == "url":
+        logger.debug(f"Fetching content from URL: {input_content}")
+        try:
+            response = requests.get(input_content, timeout=30)
+            response.raise_for_status()
+            content = response.text
+            logger.debug(f"URL content fetched successfully: {len(content)} characters")
+        except requests.RequestException as e:
+            logger.error(f"Error fetching URL {input_content}: {e}")
+            messages.error(request, f"Error fetching URL: {e}")
+            return render(request, "recipes/ai_extract.html", {"form": form})
+    else:
+        content = input_content
+
+    # Build the prompt for the LLM
+    schema_description = """
+Extract the recipe information from the provided content and return it as a JSON object"""
+
+    # TODO pass correct schema
+    recipe_schema = {
+        "title": "Recipe title (required)",
+        "description": "Brief description",
+        "servings": 4,
+        "keywords": "comma, separated, keywords",
+        "prep_time_minutes": 30,
+        "wait_time_minutes": 45,
+        "url": "source URL if applicable",
+        "notes": "any additional notes",
+        "special_equipment": "special equipment needed",
+        "ingredients": [{"amount": "2", "unit": "cups", "name": "flour", "note": "sifted", "order": 0}],
+        "steps": [{"content": "Step instructions (markdown supported)", "order": 0}],
+    }
+
+    system_message = schema_description
+    if prompt:
+        system_message += f"\n\nAdditional instructions: {prompt}"
+
+    # Call the LLM API
+    try:
+        # Try OpenAI-compatible API format
+        api_payload = {
+            "model": ai_settings.model,
+            "prompt": system_message + "\n\n" + content,
+            "options": {
+                "temperature": ai_settings.temperature,
+            },
+            "format": recipe_schema,
+            "stream": False,
+        }
+
+        logger.debug(f"Calling LLM API: {ai_settings.api_url} / {api_payload}")
+
+        api_response = requests.post(
+            ai_settings.api_url,
+            headers={
+                "Authorization": f"Bearer {ai_settings.api_key}",
+                "Content-Type": "application/json",
+            },
+            json=api_payload,
+            timeout=120,
+        )
+        api_response.raise_for_status()
+        response_data = api_response.json()
+
+        logger.debug("LLM API call successful")
+
+        # Extract the response text (try OpenAI format first)
+        if "choices" in response_data and len(response_data["choices"]) > 0:
+            recipe_json_str = response_data["choices"][0]["message"]["content"]
+        elif "content" in response_data:
+            # Alternative format
+            recipe_json_str = response_data["content"]
+        elif "response" in response_data:
+            recipe_json_str = response_data["response"]
+        else:
+            logger.error(f"Unexpected API response format: {response_data}")
+            messages.error(
+                request,
+                "Unexpected response format from AI API. Please check your API configuration.",
+            )
+            return render(request, "recipes/ai_extract.html", {"form": form})
+
+        # Clean up the response (remove markdown code blocks if present)
+        recipe_json_str = recipe_json_str.strip()
+        if recipe_json_str.startswith("```json"):
+            recipe_json_str = recipe_json_str[7:]
+        if recipe_json_str.startswith("```"):
+            recipe_json_str = recipe_json_str[3:]
+        if recipe_json_str.endswith("```"):
+            recipe_json_str = recipe_json_str[:-3]
+        recipe_json_str = recipe_json_str.strip()
+
+        # Parse the JSON
+        try:
+            recipe_data = json.loads(recipe_json_str)
+            logger.debug("Recipe JSON parsed successfully")
+        except json.JSONDecodeError as e:
+            logger.error(f"Error parsing recipe JSON: {e}\nJSON string: {recipe_json_str[:500]}")
+            messages.error(
+                request,
+                f"Error parsing AI response as JSON: {e}. The AI may have returned invalid JSON.",
+            )
+            return render(request, "recipes/ai_extract.html", {"form": form})
+
+        # Validate the recipe data
+        errors = validate_recipe_data(recipe_data)
+        if errors:
+            logger.warning(f"AI-extracted recipe validation failed: {len(errors)} errors")
+            for error in errors[:5]:  # Show first 5 errors
+                messages.error(request, f"Validation error: {error}")
+            return render(request, "recipes/ai_extract.html", {"form": form})
+
+        # Store the recipe data in the session
+        request.session["ai_extracted_recipe"] = recipe_data
+        logger.info("Recipe extracted successfully via AI, redirecting to recipe form")
+        messages.success(
+            request,
+            "Recipe extracted successfully! Please review and save the recipe.",
+        )
+        return redirect("recipe_create")
+
+    except requests.RequestException as e:
+        logger.error(f"Error calling LLM API: {e}")
+        messages.error(request, f"Error calling AI API: {e}")
+        return render(request, "recipes/ai_extract.html", {"form": form})
