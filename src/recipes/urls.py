@@ -56,8 +56,27 @@ urlpatterns = [
         views.rename_ingredient_name,
         name="rename_ingredient_name",
     ),
+    path(
+        "manage/ingredient-names/delete/",
+        views.delete_ingredient_name,
+        name="delete_ingredient_name",
+    ),
+    path(
+        "manage/ingredient-names/<str:name>/recipes/",
+        views.recipes_with_ingredient_name,
+        name="recipes_with_ingredient_name",
+    ),
     path("manage/units/", views.manage_units, name="manage_units"),
     path("manage/units/rename/", views.rename_unit, name="rename_unit"),
+    path("manage/units/delete/", views.delete_unit, name="delete_unit"),
+    path("manage/units/<str:unit>/recipes/", views.recipes_with_unit, name="recipes_with_unit"),
+    path("manage/keywords/", views.manage_keywords, name="manage_keywords"),
+    path("manage/keywords/delete/", views.delete_keyword, name="delete_keyword"),
+    path(
+        "manage/keywords/<str:keyword>/recipes/",
+        views.recipes_with_keyword,
+        name="recipes_with_keyword",
+    ),
     # Settings
     path("settings/", views.settings_view, name="settings"),
     # AI Integration

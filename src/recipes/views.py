@@ -859,6 +859,168 @@ def rename_unit(request: HttpRequest) -> HttpResponse:
     )
 
 
+def manage_keywords(request: HttpRequest) -> HttpResponse:
+    """View and manage distinct keywords."""
+    # Get all non-empty keywords from recipes
+    all_keywords_raw = Recipe.objects.exclude(keywords="").values_list("keywords", flat=True)
+
+    # Split comma-separated keywords and count their usage
+    keyword_counts: dict[str, int] = {}
+    for keywords_str in all_keywords_raw:
+        for keyword in keywords_str.split(","):
+            keyword = keyword.strip()
+            if keyword:  # Only add non-empty keywords
+                keyword_counts[keyword] = keyword_counts.get(keyword, 0) + 1
+
+    # Convert to list of dicts and sort
+    keywords = [{"keyword": k, "usage_count": v} for k, v in keyword_counts.items()]
+    keywords.sort(key=lambda x: x["keyword"].lower())
+
+    # Handle search query
+    query = request.GET.get("q")
+    if query:
+        keywords = [k for k in keywords if query.lower() in k["keyword"].lower()]
+
+    return render(
+        request,
+        "recipes/manage_keywords.html",
+        {"keywords": keywords, "query": query},
+    )
+
+
+def recipes_with_ingredient_name(request: HttpRequest, name: str) -> HttpResponse:
+    """Show all recipes that use a specific ingredient name."""
+    recipes = Recipe.objects.filter(ingredients__name=name).distinct()
+    return render(
+        request,
+        "recipes/recipes_by_property.html",
+        {
+            "recipes": recipes,
+            "property_type": "Ingredient Name",
+            "property_value": name,
+            "back_url": "manage_ingredient_names",
+        },
+    )
+
+
+def recipes_with_unit(request: HttpRequest, unit: str) -> HttpResponse:
+    """Show all recipes that use a specific unit."""
+    recipes = Recipe.objects.filter(ingredients__unit=unit).distinct()
+    return render(
+        request,
+        "recipes/recipes_by_property.html",
+        {
+            "recipes": recipes,
+            "property_type": "Unit",
+            "property_value": unit,
+            "back_url": "manage_units",
+        },
+    )
+
+
+def recipes_with_keyword(request: HttpRequest, keyword: str) -> HttpResponse:
+    """Show all recipes that use a specific keyword."""
+    recipes = Recipe.objects.filter(keywords__icontains=keyword).distinct()
+    # Further filter to ensure exact keyword match (not just substring)
+    filtered_recipes = []
+    for recipe in recipes:
+        keywords_list = [k.strip() for k in recipe.keywords.split(",")]
+        if keyword in keywords_list:
+            filtered_recipes.append(recipe)
+
+    return render(
+        request,
+        "recipes/recipes_by_property.html",
+        {
+            "recipes": filtered_recipes,
+            "property_type": "Keyword",
+            "property_value": keyword,
+            "back_url": "manage_keywords",
+        },
+    )
+
+
+def delete_ingredient_name(request: HttpRequest) -> HttpResponse:
+    """Delete an ingredient name if its usage count is 0."""
+    if request.method == "POST":
+        name = request.POST.get("name", "").strip()
+        if not name:
+            messages.error(request, "Ingredient name is required.")
+            return redirect("manage_ingredient_names")
+
+        # Check usage count
+        usage_count = Ingredient.objects.filter(name=name).count()
+        if usage_count > 0:
+            logger.warning(f"Cannot delete ingredient '{name}': usage count is {usage_count}")
+            messages.error(
+                request,
+                f"Cannot delete '{name}' because it is used in {usage_count} recipe{'s' if usage_count > 1 else ''}.",
+            )
+            return redirect("manage_ingredient_names")
+
+        logger.info(f"Ingredient name deleted (no usage): '{name}'")
+        messages.success(request, f"Ingredient name '{name}' deleted (no usage found).")
+        return redirect("manage_ingredient_names")
+
+    return redirect("manage_ingredient_names")
+
+
+def delete_unit(request: HttpRequest) -> HttpResponse:
+    """Delete a unit if its usage count is 0."""
+    if request.method == "POST":
+        unit = request.POST.get("unit", "").strip()
+        if not unit:
+            messages.error(request, "Unit is required.")
+            return redirect("manage_units")
+
+        # Check usage count
+        usage_count = Ingredient.objects.filter(unit=unit).count()
+        if usage_count > 0:
+            logger.warning(f"Cannot delete unit '{unit}': usage count is {usage_count}")
+            messages.error(
+                request,
+                f"Cannot delete '{unit}' because it is used in {usage_count} recipe{'s' if usage_count > 1 else ''}.",
+            )
+            return redirect("manage_units")
+
+        logger.info(f"Unit deleted (no usage): '{unit}'")
+        messages.success(request, f"Unit '{unit}' deleted (no usage found).")
+        return redirect("manage_units")
+
+    return redirect("manage_units")
+
+
+def delete_keyword(request: HttpRequest) -> HttpResponse:
+    """Delete a keyword if its usage count is 0."""
+    if request.method == "POST":
+        keyword = request.POST.get("keyword", "").strip()
+        if not keyword:
+            messages.error(request, "Keyword is required.")
+            return redirect("manage_keywords")
+
+        # Check usage count - count how many recipes have this keyword
+        usage_count = 0
+        all_keywords_raw = Recipe.objects.exclude(keywords="").values_list("keywords", flat=True)
+        for keywords_str in all_keywords_raw:
+            keywords_list = [k.strip() for k in keywords_str.split(",")]
+            if keyword in keywords_list:
+                usage_count += 1
+
+        if usage_count > 0:
+            logger.warning(f"Cannot delete keyword '{keyword}': usage count is {usage_count}")
+            messages.error(
+                request,
+                f"Cannot delete '{keyword}' because it is used in {usage_count} recipe{'s' if usage_count > 1 else ''}.",
+            )
+            return redirect("manage_keywords")
+
+        logger.info(f"Keyword deleted (no usage): '{keyword}'")
+        messages.success(request, f"Keyword '{keyword}' deleted (no usage found).")
+        return redirect("manage_keywords")
+
+    return redirect("manage_keywords")
+
+
 # Settings View
 
 

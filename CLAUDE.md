@@ -118,3 +118,13 @@ The user should be able to display a recipe for new servings count.
 They should also be able to scale it to one ingredient. Let's say the
 recipe calls for 300g of flour, then the user should be able to scale
 all ingredients to 500g of flour.
+
+### ISsue: Properties
+
+Under the "Manage" button, there should be a link to the "Keywords".
+
+Also, users should be able to delete ingredients, keywords or units, but
+only if the usage count is 0.
+
+Also, when clicking on a non-zero usage count, the user should be taken
+to a page with a list of the recipes.

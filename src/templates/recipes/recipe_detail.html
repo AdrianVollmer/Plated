@@ -111,7 +111,7 @@
             {% if recipe.keywords %}
             <div class="mt-3">
                 {% for keyword in recipe.keywords|split:"," %}
-                <span class="keyword-tag">{{ keyword }}</span>
+                <a href="{% url 'recipes_with_keyword' keyword %}" class="keyword-tag text-decoration-none">{{ keyword }}</a>
                 {% endfor %}
             </div>
             {% endif %}
@@ -150,7 +150,7 @@
             {% if recipe.keywords %}
             <div class="mt-3">
                 {% for keyword in recipe.keywords|split:"," %}
-                <span class="keyword-tag">{{ keyword }}</span>
+                <a href="{% url 'recipes_with_keyword' keyword %}" class="keyword-tag text-decoration-none">{{ keyword }}</a>
                 {% endfor %}
             </div>
             {% endif %}

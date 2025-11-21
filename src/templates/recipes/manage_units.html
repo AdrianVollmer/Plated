@@ -45,12 +45,31 @@
                     <tr>
                         <td>{{ unit.unit }}</td>
                         <td class="text-end">
-                            <span class="badge bg-secondary">{{ unit.usage_count }} time{{ unit.usage_count|pluralize }}</span>
+                            {% if unit.usage_count > 0 %}
+                            <a href="{% url 'recipes_with_unit' unit.unit %}" class="badge bg-secondary text-decoration-none">
+                                {{ unit.usage_count }} time{{ unit.usage_count|pluralize }}
+                            </a>
+                            {% else %}
+                            <span class="badge bg-secondary">0 times</span>
+                            {% endif %}
                         </td>
                         <td class="text-end">
                             <a href="{% url 'rename_unit' %}?unit={{ unit.unit|urlencode }}" class="btn btn-sm btn-outline-primary">
                                 <i class="bi bi-pencil"></i> Rename
                             </a>
+                            {% if unit.usage_count == 0 %}
+                            <form method="post" action="{% url 'delete_unit' %}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete \'{{ unit.unit }}\'?');">
+                                {% csrf_token %}
+                                <input type="hidden" name="unit" value="{{ unit.unit }}">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i> Delete
+                                </button>
+                            </form>
+                            {% else %}
+                            <button type="button" class="btn btn-sm btn-outline-secondary" disabled title="Cannot delete: in use">
+                                <i class="bi bi-trash"></i> Delete
+                            </button>
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}
