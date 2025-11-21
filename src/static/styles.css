@@ -9,6 +9,7 @@
     --primary: #e85d75;
     --primary-dark: #d14361;
     --primary-light: #ff7b92;
+    --primary-rgb: 232, 93, 117;
     --secondary: #6c757d;
     --success: #10b981;
     --info: #3b82f6;
@@ -39,12 +40,26 @@
     --radius-xl: 1rem;
 
     --transition: all 0.2s ease;
+
+    /* Alpha variants for better theming */
+    --primary-alpha-10: rgba(var(--primary-rgb), 0.1);
+    --primary-alpha-15: rgba(var(--primary-rgb), 0.15);
+    --primary-alpha-25: rgba(var(--primary-rgb), 0.25);
+    --primary-alpha-30: rgba(var(--primary-rgb), 0.3);
+
+    /* Theme gradients - reusable */
+    --theme-gradient-light: linear-gradient(135deg, #fff 0%, #f3f4f6 100%);
+    --theme-gradient-dark: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+    --theme-gradient-warm: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    --theme-gradient-cool: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+    --theme-gradient-forest: linear-gradient(135deg, #34d399 0%, #10b981 100%);
 }
 
 [data-theme="dark"] {
     --primary: #f472b6;
     --primary-dark: #ec4899;
     --primary-light: #f9a8d4;
+    --primary-rgb: 244, 114, 182;
 
     --bg-primary: #111827;
     --bg-secondary: #1f2937;
@@ -63,6 +78,11 @@
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
     --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.3), 0 8px 10px -6px rgb(0 0 0 / 0.3);
+
+    --primary-alpha-10: rgba(var(--primary-rgb), 0.1);
+    --primary-alpha-15: rgba(var(--primary-rgb), 0.15);
+    --primary-alpha-25: rgba(var(--primary-rgb), 0.25);
+    --primary-alpha-30: rgba(var(--primary-rgb), 0.3);
 }
 
 [data-theme="warm"] {
@@ -123,7 +143,16 @@
    Global Styles
    ============================================ */
 
-* {
+/* Performance: Only transition theme-sensitive properties on specific elements */
+html,
+body,
+main,
+.card,
+.recipe-card,
+.form-control,
+.form-select,
+.btn,
+.navbar-custom {
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
@@ -162,7 +191,7 @@ body {
 
 .navbar-custom .nav-link:hover {
     color: white !important;
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--primary-alpha-15);
 }
 
 /* Theme Switcher */
@@ -192,11 +221,11 @@ body {
     box-shadow: 0 0 0 2px var(--primary), 0 0 0 4px white;
 }
 
-.theme-btn[data-theme="light"] { background: linear-gradient(135deg, #fff 0%, #f3f4f6 100%); }
-.theme-btn[data-theme="dark"] { background: linear-gradient(135deg, #1f2937 0%, #111827 100%); }
-.theme-btn[data-theme="warm"] { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); }
-.theme-btn[data-theme="cool"] { background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%); }
-.theme-btn[data-theme="forest"] { background: linear-gradient(135deg, #34d399 0%, #10b981 100%); }
+.theme-btn[data-theme="light"] { background: var(--theme-gradient-light); }
+.theme-btn[data-theme="dark"] { background: var(--theme-gradient-dark); }
+.theme-btn[data-theme="warm"] { background: var(--theme-gradient-warm); }
+.theme-btn[data-theme="cool"] { background: var(--theme-gradient-cool); }
+.theme-btn[data-theme="forest"] { background: var(--theme-gradient-forest); }
 
 /* Theme Switcher in Settings Page */
 .theme-switcher-settings {
@@ -218,6 +247,7 @@ body {
     gap: 0.75rem;
     position: relative;
     overflow: hidden;
+    background: var(--bg-elevated);
 }
 
 .theme-switcher-settings .theme-btn::before {
@@ -228,29 +258,11 @@ body {
     border: 3px solid rgba(255, 255, 255, 0.5);
 }
 
-.theme-switcher-settings .theme-btn[data-theme="light"]::before {
-    background: linear-gradient(135deg, #fff 0%, #f3f4f6 100%);
-}
-
-.theme-switcher-settings .theme-btn[data-theme="dark"]::before {
-    background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
-}
-
-.theme-switcher-settings .theme-btn[data-theme="warm"]::before {
-    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-}
-
-.theme-switcher-settings .theme-btn[data-theme="cool"]::before {
-    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
-}
-
-.theme-switcher-settings .theme-btn[data-theme="forest"]::before {
-    background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
-}
-
-.theme-switcher-settings .theme-btn {
-    background: var(--bg-elevated);
-}
+.theme-switcher-settings .theme-btn[data-theme="light"]::before { background: var(--theme-gradient-light); }
+.theme-switcher-settings .theme-btn[data-theme="dark"]::before { background: var(--theme-gradient-dark); }
+.theme-switcher-settings .theme-btn[data-theme="warm"]::before { background: var(--theme-gradient-warm); }
+.theme-switcher-settings .theme-btn[data-theme="cool"]::before { background: var(--theme-gradient-cool); }
+.theme-switcher-settings .theme-btn[data-theme="forest"]::before { background: var(--theme-gradient-forest); }
 
 .theme-switcher-settings .theme-btn:hover {
     transform: translateY(-2px);
@@ -261,7 +273,7 @@ body {
 .theme-switcher-settings .theme-btn.active {
     border-color: var(--primary);
     background: var(--bg-secondary);
-    box-shadow: 0 0 0 3px rgba(229, 93, 117, 0.1);
+    box-shadow: 0 0 0 3px var(--primary-alpha-10);
 }
 
 .theme-label {
@@ -279,7 +291,7 @@ main.container {
 }
 
 /* ============================================
-   Recipe Cards (Simplified)
+   Recipe Cards
    ============================================ */
 
 .recipe-card {
@@ -358,14 +370,27 @@ main.container {
 
 .btn-primary {
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-    color: white;
-    border: none;
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: var(--text-inverse);
 }
 
-.btn-primary:hover {
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:focus-visible {
     background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    color: var(--text-inverse);
     transform: translateY(-1px);
     box-shadow: var(--shadow-md);
+}
+
+.btn-primary:active,
+.btn-primary.active {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    box-shadow: none;
 }
 
 .btn-outline-primary {
@@ -374,10 +399,40 @@ main.container {
     background: transparent;
 }
 
-.btn-outline-primary:hover {
+.btn-outline-primary:hover,
+.btn-outline-primary:focus,
+.btn-outline-primary:focus-visible {
     background: var(--primary);
-    color: white;
+    border-color: var(--primary);
+    color: var(--text-inverse);
     transform: translateY(-1px);
+    box-shadow: none;
+}
+
+.btn-check:checked + .btn-outline-primary,
+.btn-check:active + .btn-outline-primary,
+.btn-outline-primary:active,
+.btn-outline-primary.active {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: var(--text-inverse);
+    box-shadow: none;
+}
+
+.btn-secondary {
+    background-color: var(--secondary);
+    border-color: var(--secondary);
+}
+
+.btn-outline-secondary {
+    color: var(--text-secondary);
+    border-color: var(--border-color);
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
 }
 
 /* ============================================
@@ -401,7 +456,7 @@ main.container {
 .search-input:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(229, 93, 117, 0.1);
+    box-shadow: 0 0 0 3px var(--primary-alpha-10);
     background: var(--bg-primary);
 }
 
@@ -557,25 +612,42 @@ main.container {
    Forms
    ============================================ */
 
-.form-control, .form-select {
-    background: var(--bg-elevated);
+.form-control,
+.form-select {
+    background: var(--bg-primary);
     border: 2px solid var(--border-color);
     border-radius: var(--radius-md);
     color: var(--text-primary);
     transition: var(--transition);
 }
 
-.form-control:focus, .form-select:focus {
+.form-control:focus,
+.form-select:focus {
     background: var(--bg-primary);
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(229, 93, 117, 0.1);
+    box-shadow: 0 0 0 0.25rem var(--primary-alpha-25);
     color: var(--text-primary);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+    background-color: var(--bg-secondary);
+    color: var(--text-tertiary);
+}
+
+.form-control::placeholder {
+    color: var(--text-tertiary);
+    opacity: 1;
 }
 
 .form-label {
     color: var(--text-primary);
     font-weight: 600;
     margin-bottom: 0.5rem;
+}
+
+.form-text {
+    color: var(--text-secondary);
 }
 
 .form-section {
@@ -593,6 +665,12 @@ main.container {
     margin-bottom: 1.5rem;
     padding-bottom: 0.75rem;
     border-bottom: 2px solid var(--primary);
+}
+
+.input-group-text {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
 }
 
 /* ============================================
@@ -649,12 +727,10 @@ main.container {
    Bootstrap Overrides for Dark Theme
    ============================================ */
 
-/* Fix text-muted being too dark in dark theme */
 [data-theme="dark"] .text-muted {
     color: var(--text-secondary) !important;
 }
 
-/* Fix card brightness in dark theme */
 [data-theme="dark"] .card {
     background-color: var(--bg-elevated);
     border-color: var(--border-color);
@@ -672,7 +748,6 @@ main.container {
     color: var(--text-primary);
 }
 
-/* Fix dropdown-menu brightness in dark theme */
 [data-theme="dark"] .dropdown-menu {
     background-color: var(--bg-elevated);
     border-color: var(--border-color);
@@ -692,7 +767,6 @@ main.container {
     border-color: var(--border-color);
 }
 
-/* Fix table brightness in dark theme */
 [data-theme="dark"] .table {
     color: var(--text-primary);
     border-color: var(--border-color);
@@ -828,12 +902,12 @@ footer {
    Dynamic Formset Controls
    ============================================ */
 
-/* Formset container styling */
 .ingredients-form,
 .steps-form,
 .images-form {
     transition: all 0.3s ease;
     position: relative;
+    animation: slideIn 0.3s ease;
 }
 
 .ingredients-form:hover,
@@ -842,30 +916,28 @@ footer {
     box-shadow: var(--shadow-md);
 }
 
-/* Move/Delete button styling */
+/* Move/Delete button styling - removed !important flags */
 .move-up-btn,
 .move-down-btn,
 .delete-form-btn {
-    border-color: var(--border-color) !important;
-    color: var(--text-secondary) !important;
-    background: var(--bg-elevated) !important;
+    border-color: var(--border-color);
+    color: var(--text-secondary);
+    background: var(--bg-elevated);
 }
 
 .move-up-btn:hover,
 .move-down-btn:hover {
-    background: var(--bg-secondary) !important;
-    color: var(--text-primary) !important;
-    border-color: var(--text-primary) !important;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border-color: var(--text-primary);
 }
 
 .delete-form-btn:hover {
-    background: var(--danger) !important;
-    color: white !important;
-    border-color: var(--danger) !important;
+    background: var(--danger);
+    color: white;
+    border-color: var(--danger);
 }
 
-
-/* Dragging state (for future drag-and-drop) */
 .ingredients-form.dragging,
 .steps-form.dragging,
 .images-form.dragging {
@@ -873,24 +945,21 @@ footer {
     cursor: move;
 }
 
-/* Step number styling */
 .step-number {
     font-weight: 700;
     color: var(--primary);
 }
 
-/* Button group spacing */
 .btn-group-sm .btn {
     padding: 0.25rem 0.5rem;
     font-size: 0.875rem;
 }
 
-/* Hide DELETE checkboxes (handled by delete button) */
 input[type="checkbox"][name$="-DELETE"] {
     display: none;
 }
 
-/* Add animation for new forms */
+/* Animations */
 @keyframes slideIn {
     from {
         opacity: 0;
@@ -902,84 +971,24 @@ input[type="checkbox"][name$="-DELETE"] {
     }
 }
 
-.ingredients-form,
-.steps-form,
-.images-form {
-    animation: slideIn 0.3s ease;
-}
-
-/* Highlight animation for moved forms */
+/* Unified move highlight animation using theme variables */
 @keyframes moveHighlight {
-    0% {
+    0%, 100% {
         background-color: var(--bg-elevated);
         transform: scale(1);
         box-shadow: var(--shadow-md);
     }
-    15% {
+    15%, 85% {
         transform: scale(1.02);
     }
-    30% {
-        background-color: rgba(229, 93, 117, 0.15);
-        box-shadow: 0 0 0 3px rgba(229, 93, 117, 0.3), var(--shadow-lg);
-    }
-    70% {
-        background-color: rgba(229, 93, 117, 0.15);
-        box-shadow: 0 0 0 3px rgba(229, 93, 117, 0.3), var(--shadow-lg);
-    }
-    85% {
-        transform: scale(1.02);
-    }
-    100% {
-        background-color: var(--bg-elevated);
-        transform: scale(1);
-        box-shadow: var(--shadow-md);
+    30%, 70% {
+        background-color: var(--primary-alpha-15);
+        box-shadow: 0 0 0 3px var(--primary-alpha-30), var(--shadow-lg);
     }
 }
 
 .form-moved-highlight {
     animation: moveHighlight 0.8s ease-in-out;
-}
-
-/* Dark theme adjustment for move highlight */
-[data-theme="dark"] .ingredients-form.form-moved-highlight,
-[data-theme="dark"] .steps-form.form-moved-highlight,
-[data-theme="dark"] .images-form.form-moved-highlight {
-    animation-name: moveHighlightDark;
-}
-
-@keyframes moveHighlightDark {
-    0% {
-        background-color: var(--bg-elevated);
-        transform: scale(1);
-        box-shadow: var(--shadow-md);
-    }
-    15% {
-        transform: scale(1.02);
-    }
-    30% {
-        background-color: rgba(244, 114, 182, 0.25);
-        box-shadow: 0 0 0 3px rgba(244, 114, 182, 0.4), var(--shadow-lg);
-    }
-    70% {
-        background-color: rgba(244, 114, 182, 0.25);
-        box-shadow: 0 0 0 3px rgba(244, 114, 182, 0.4), var(--shadow-lg);
-    }
-    85% {
-        transform: scale(1.02);
-    }
-    100% {
-        background-color: var(--bg-elevated);
-        transform: scale(1);
-        box-shadow: var(--shadow-md);
-    }
-}
-
-/* Bootstrap Icons (if not already loaded) */
-.bi {
-    display: inline-block;
-    width: 1em;
-    height: 1em;
-    vertical-align: -0.125em;
 }
 
 /* ============================================
@@ -1034,135 +1043,12 @@ input[type="checkbox"][name$="-DELETE"] {
 }
 
 /* ============================================
-   Bootstrap Button Overrides
+   Bootstrap Icons
    ============================================ */
 
-/* Outline primary buttons - use theme primary color */
-.btn-outline-primary {
-    color: var(--primary);
-    border-color: var(--primary);
+.bi {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.125em;
 }
-
-.btn-outline-primary:hover,
-.btn-outline-primary:focus,
-.btn-outline-primary:focus-visible {
-    background-color: var(--primary);
-    border-color: var(--primary);
-    color: var(--text-inverse);
-    box-shadow: none;
-}
-
-.btn-check:checked + .btn-outline-primary,
-.btn-check:active + .btn-outline-primary,
-.btn-outline-primary:active,
-.btn-outline-primary.active {
-    background-color: var(--primary);
-    border-color: var(--primary);
-    color: var(--text-inverse);
-    box-shadow: none;
-}
-
-/* Primary buttons */
-.btn-primary {
-    background-color: var(--primary);
-    border-color: var(--primary);
-    color: var(--text-inverse);
-}
-
-.btn-primary:hover,
-.btn-primary:focus,
-.btn-primary:focus-visible {
-    background-color: var(--primary-dark);
-    border-color: var(--primary-dark);
-    color: var(--text-inverse);
-    box-shadow: none;
-}
-
-.btn-primary:active,
-.btn-primary.active {
-    background-color: var(--primary-dark);
-    border-color: var(--primary-dark);
-    box-shadow: none;
-}
-
-/* Secondary buttons - already work well, but ensure consistency */
-.btn-secondary {
-    background-color: var(--secondary);
-    border-color: var(--secondary);
-}
-
-.btn-outline-secondary {
-    color: var(--text-secondary);
-    border-color: var(--border-color);
-}
-
-.btn-outline-secondary:hover {
-    background-color: var(--bg-secondary);
-    border-color: var(--border-color);
-    color: var(--text-primary);
-}
-
-/* ============================================
-   Bootstrap Form Control Overrides
-   ============================================ */
-
-/* Input fields, textareas, selects */
-.form-control,
-.form-select {
-    background-color: var(--bg-primary);
-    color: var(--text-primary);
-    border-color: var(--border-color);
-}
-
-.form-control:focus,
-.form-select:focus {
-    background-color: var(--bg-primary);
-    color: var(--text-primary);
-    border-color: var(--primary);
-    box-shadow: 0 0 0 0.25rem rgba(var(--primary-rgb, 232, 93, 117), 0.25);
-}
-
-.form-control:disabled,
-.form-select:disabled {
-    background-color: var(--bg-secondary);
-    color: var(--text-tertiary);
-}
-
-/* Placeholder text */
-.form-control::placeholder {
-    color: var(--text-tertiary);
-    opacity: 1;
-}
-
-.form-control::-webkit-input-placeholder {
-    color: var(--text-tertiary);
-    opacity: 1;
-}
-
-.form-control::-moz-placeholder {
-    color: var(--text-tertiary);
-    opacity: 1;
-}
-
-.form-control:-ms-input-placeholder {
-    color: var(--text-tertiary);
-    opacity: 1;
-}
-
-/* Form labels */
-.form-label {
-    color: var(--text-primary);
-}
-
-/* Form text (help text) */
-.form-text {
-    color: var(--text-secondary);
-}
-
-/* Input group text */
-.input-group-text {
-    background-color: var(--bg-secondary);
-    color: var(--text-primary);
-    border-color: var(--border-color);
-}
-
