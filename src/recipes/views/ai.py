@@ -36,7 +36,7 @@ def ai_extract_recipe(request: HttpRequest) -> HttpResponse:
             logger.info(f"AI recipe extraction initiated with input_type: {input_type}")
 
             try:
-                prompt_ai(input_type, input_content, request, form, prompt, ai_settings)
+                return prompt_ai(input_type, input_content, request, form, prompt, ai_settings)
             except Exception as e:
                 logger.error(f"Unexpected error during AI recipe extraction: {e}", exc_info=True)
                 messages.error(request, f"Unexpected error: {e}")
@@ -72,8 +72,7 @@ def prompt_ai(
         content = input_content
 
     # Build the prompt for the LLM
-    schema_description = """
-Extract the recipe information from the provided content and return it as a JSON object"""
+    schema_description = "Extract the recipe information from the provided content and return it as a JSON object"
 
     # Get the JSON schema for recipe extraction
     recipe_schema = get_recipe_json_schema()
@@ -123,7 +122,7 @@ def call_llm_api(
             "Content-Type": "application/json",
         },
         json=api_payload,
-        timeout=120,
+        timeout=300,
     )
     api_response.raise_for_status()
     response_data = api_response.json()
@@ -178,6 +177,7 @@ def call_llm_api(
 
     # Store the recipe data in the session
     request.session["ai_extracted_recipe"] = recipe_data
+    logger.debug(f"AI extraction result: {recipe_data}")
     logger.info("Recipe extracted successfully via AI, redirecting to recipe form")
     messages.success(
         request,

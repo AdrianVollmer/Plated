@@ -36,8 +36,8 @@ Aesthetics is important, but even more important is usability.
 - Try to keep code readable and maintainable
 - Apply the DRY principle as much as possible (but not more)
 - When a file approaches 1000 lines, split it up into sub modules
-- When a function approaches 100 lines or nested for-if-statements of
-  the fourth level, consider splitting the function into several
+- When a function approaches 60 lines or indentation levels greater than
+  4 or 5, consider splitting the function into several
 
 ## Development
 
