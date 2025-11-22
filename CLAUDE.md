@@ -1,43 +1,47 @@
-## Issue: Refactor views
+# Instructions for Claude
 
-Make views.py into a directory with several files.
+This is a Python app for managing recipes.
 
-## Issue: Meal planner
+## Principles
 
-Add meal planner and shopping list generator.
+- Open Source
+- Open Data
+- Simple
+- Thoughtful UI/UX
+- Minimal JavaScript
 
-## Issue: I18n
+We prefer server-side render pages.
 
-Add support for internationalization
+We focus on exporting and importing data to several formats.
 
-## Issue: User support
+Aesthetics is important, but even more important is usability.
 
-A environment variable should decide whether the app runs in single user
-mode or multi isuer mode.
+## Tech Stack
 
-### Single user mode
+- Django 5
+- Bootstrap 5
+- Sqlite
+- Vanilla JS
 
-In single user mode, the anonymous user is automatically the admin user.
+## Python conventions
 
-### Multi user mode
+- We use ruff for formatting and linting
+- We use mypy for type checking
+- Always use type hints
+- We make heavy use of `uv`. Always run python programs with
+  `uv run ...`.
 
-In multi user mode, the anonymous user can browse, but make no
-modifications whatsoever. Read only.
+## Coding convetions
 
-Logged on users can create recipes. They can change user-specific
-settings, but not site-wide settings. We may have to start
-differentiating such settings.
+- Try to keep code readable and maintainable
+- Apply the DRY principle as much as possible (but not more)
+- When a file approaches 1000 lines, split it up into sub modules
+- When a function approaches 100 lines or nested for-if-statements of
+  the fourth level, consider splitting the function into several
 
-Recipes and collections should belong to a user. Modify the model for
-that (add a "owner"). Properties (ingredients, units, keywords) do not
-belong to a user.
+## Development
 
-Users can only change or delete recipes or collections that they own.
+Issues are in `issues/`. When you are told to solve one issue, delete
+the issue file and commit your changes with git.
 
-## Issue: Environment settings
-
-Read from env the settings regarding time zone, secret key, etc.
-
-## Issue: AI button
-
-Hide AI button if no AI settings have been set
+When commiting, supply author information on the command line.

@@ -5,41 +5,63 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('recipes', '0003_alter_aisettings_api_key'),
+        ("recipes", "0003_alter_aisettings_api_key"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='MealPlan',
+            name="MealPlan",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=200)),
-                ('description', models.TextField(blank=True)),
-                ('start_date', models.DateField()),
-                ('end_date', models.DateField()),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("name", models.CharField(max_length=200)),
+                ("description", models.TextField(blank=True)),
+                ("start_date", models.DateField()),
+                ("end_date", models.DateField()),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
             ],
             options={
-                'ordering': ['-start_date'],
+                "ordering": ["-start_date"],
             },
         ),
         migrations.CreateModel(
-            name='MealPlanEntry',
+            name="MealPlanEntry",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date', models.DateField()),
-                ('meal_type', models.CharField(choices=[('breakfast', 'Breakfast'), ('lunch', 'Lunch'), ('dinner', 'Dinner'), ('snack', 'Snack')], max_length=20)),
-                ('servings', models.PositiveIntegerField(default=1, help_text='Number of servings for this meal')),
-                ('notes', models.TextField(blank=True)),
-                ('meal_plan', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='entries', to='recipes.mealplan')),
-                ('recipe', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='meal_plan_entries', to='recipes.recipe')),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("date", models.DateField()),
+                (
+                    "meal_type",
+                    models.CharField(
+                        choices=[
+                            ("breakfast", "Breakfast"),
+                            ("lunch", "Lunch"),
+                            ("dinner", "Dinner"),
+                            ("snack", "Snack"),
+                        ],
+                        max_length=20,
+                    ),
+                ),
+                ("servings", models.PositiveIntegerField(default=1, help_text="Number of servings for this meal")),
+                ("notes", models.TextField(blank=True)),
+                (
+                    "meal_plan",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, related_name="entries", to="recipes.mealplan"
+                    ),
+                ),
+                (
+                    "recipe",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="meal_plan_entries",
+                        to="recipes.recipe",
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'Meal plan entries',
-                'ordering': ['date', 'meal_type'],
+                "verbose_name_plural": "Meal plan entries",
+                "ordering": ["date", "meal_type"],
             },
         ),
     ]

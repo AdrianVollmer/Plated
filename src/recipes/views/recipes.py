@@ -27,7 +27,7 @@ from django.views.generic import (
 
 from ..forms import RecipeForm
 from ..models import AISettings, Ingredient, Recipe, RecipeImage, Step
-from ..schema import deserialize_recipe, serialize_recipe, validate_recipe_data
+from ..schema import deserialize_recipe, serialize_recipe
 
 logger = logging.getLogger(__name__)
 
