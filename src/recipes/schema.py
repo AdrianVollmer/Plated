@@ -184,6 +184,42 @@ def validate_recipe_data(data: dict[str, Any]) -> list[str]:
     return errors
 
 
+def get_recipe_json_schema() -> dict[str, Any]:
+    """
+    Generate a JSON schema example for recipe extraction by AI.
+
+    Returns a dictionary with example values that demonstrates the expected
+    structure for recipe data. This is used to guide AI models in extracting
+    recipe information.
+    """
+    return {
+        "title": "Recipe title (required)",
+        "description": "Brief description",
+        "servings": 4,
+        "keywords": "comma, separated, keywords",
+        "prep_time_minutes": 30,
+        "wait_time_minutes": 45,
+        "url": "source URL if applicable",
+        "notes": "any additional notes",
+        "special_equipment": "special equipment needed",
+        "ingredients": [
+            {
+                "amount": "2",
+                "unit": "cups",
+                "name": "flour",
+                "note": "sifted",
+                "order": 0,
+            }
+        ],
+        "steps": [
+            {
+                "content": "Step instructions (markdown supported)",
+                "order": 0,
+            }
+        ],
+    }
+
+
 def deserialize_recipe(data: dict[str, Any]) -> dict[str, Any]:
     """
     Convert JSON data to a format suitable for creating a Recipe model.

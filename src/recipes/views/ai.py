@@ -10,7 +10,7 @@ from django.shortcuts import redirect, render
 
 from ..forms import AIRecipeExtractionForm
 from ..models import AISettings
-from ..schema import validate_recipe_data
+from ..schema import get_recipe_json_schema, validate_recipe_data
 
 logger = logging.getLogger(__name__)
 
@@ -75,20 +75,8 @@ def prompt_ai(
     schema_description = """
 Extract the recipe information from the provided content and return it as a JSON object"""
 
-    # TODO pass correct schema
-    recipe_schema = {
-        "title": "Recipe title (required)",
-        "description": "Brief description",
-        "servings": 4,
-        "keywords": "comma, separated, keywords",
-        "prep_time_minutes": 30,
-        "wait_time_minutes": 45,
-        "url": "source URL if applicable",
-        "notes": "any additional notes",
-        "special_equipment": "special equipment needed",
-        "ingredients": [{"amount": "2", "unit": "cups", "name": "flour", "note": "sifted", "order": 0}],
-        "steps": [{"content": "Step instructions (markdown supported)", "order": 0}],
-    }
+    # Get the JSON schema for recipe extraction
+    recipe_schema = get_recipe_json_schema()
 
     system_message = schema_description
     if prompt:
