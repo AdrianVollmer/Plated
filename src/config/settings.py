@@ -119,6 +119,11 @@ MEDIA_ROOT = Path(os.environ.get("MEDIA_ROOT", str(BASE_DIR / "media")))
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Logging configuration
+# Use XDG_DATA_HOME for logs, defaulting to ~/.local/share if not set
+XDG_DATA_HOME = Path(os.environ.get("XDG_DATA_HOME", Path.home() / ".local" / "share"))
+LOG_DIR = Path(os.environ.get("LOG_DIR", XDG_DATA_HOME / "plated" / "logs"))
+LOG_DIR.mkdir(parents=True, exist_ok=True)
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -139,7 +144,7 @@ LOGGING = {
         },
         "file": {
             "class": "logging.handlers.RotatingFileHandler",
-            "filename": BASE_DIR / "logs" / "plated.log",
+            "filename": LOG_DIR / "plated.log",
             "maxBytes": 1024 * 1024 * 10,  # 10 MB
             "backupCount": 5,
             "formatter": "verbose",
