@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Meal Plans - Plated{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Meal Plans</h1>
+            <a href="{% url 'meal_plan_create' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> New Meal Plan
+            </a>
+        </div>
+
+        {% if meal_plans %}
+        <div class="row">
+            {% for meal_plan in meal_plans %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <a href="{% url 'meal_plan_detail' meal_plan.pk %}" class="text-decoration-none">
+                                {{ meal_plan.name }}
+                            </a>
+                        </h5>
+                        {% if meal_plan.description %}
+                        <p class="card-text text-muted">{{ meal_plan.description|truncatewords:20 }}</p>
+                        {% endif %}
+                        <p class="card-text">
+                            <small class="text-muted">
+                                <i class="bi bi-calendar"></i> {{ meal_plan.start_date|date:"M d, Y" }} - {{ meal_plan.end_date|date:"M d, Y" }}
+                            </small>
+                        </p>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                <i class="bi bi-list-ul"></i> {{ meal_plan.entries.count }} meal{{ meal_plan.entries.count|pluralize }}
+                            </small>
+                        </p>
+                    </div>
+                    <div class="card-footer bg-transparent border-top-0">
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'meal_plan_detail' meal_plan.pk %}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+                            <a href="{% url 'meal_plan_update' meal_plan.pk %}" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
+                            <a href="{% url 'shopping_list' meal_plan.pk %}" class="btn btn-sm btn-outline-success">
+                                <i class="bi bi-cart"></i> Shopping List
+                            </a>
+                            <a href="{% url 'meal_plan_delete' meal_plan.pk %}" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-trash"></i> Delete
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if is_paginated %}
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1">First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                </li>
+                {% endif %}
+
+                <li class="page-item disabled">
+                    <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                </li>
+
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+
+        {% else %}
+        <div class="alert alert-info">
+            <p class="mb-0">No meal plans yet. <a href="{% url 'meal_plan_create' %}">Create your first meal plan</a> to organize your weekly meals!</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

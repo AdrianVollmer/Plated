@@ -23,6 +23,7 @@ urlpatterns = [
     path("api/ingredient-names/", views.properties.get_ingredient_names, name="api_ingredient_names"),
     path("api/ingredient-units/", views.properties.get_ingredient_units, name="api_ingredient_units"),
     path("api/keywords/", views.properties.get_keywords, name="api_keywords"),
+    path("api/recipes/", views.recipes.get_recipes_api, name="api_recipes"),
     # Collection management
     path("collections/", views.collections.CollectionListView.as_view(), name="collection_list"),
     path(
@@ -45,6 +46,23 @@ urlpatterns = [
         views.collections.CollectionDeleteView.as_view(),
         name="collection_delete",
     ),
+    # Meal plan management
+    path("meal-plans/", views.meal_plans.MealPlanListView.as_view(), name="meal_plan_list"),
+    path("meal-plans/<int:pk>/", views.meal_plans.MealPlanDetailView.as_view(), name="meal_plan_detail"),
+    path("meal-plans/new/", views.meal_plans.MealPlanCreateView.as_view(), name="meal_plan_create"),
+    path("meal-plans/<int:pk>/edit/", views.meal_plans.MealPlanUpdateView.as_view(), name="meal_plan_update"),
+    path(
+        "meal-plans/<int:pk>/delete/",
+        views.meal_plans.MealPlanDeleteView.as_view(),
+        name="meal_plan_delete",
+    ),
+    path("meal-plans/<int:pk>/add-entry/", views.meal_plans.add_meal_entry, name="add_meal_entry"),
+    path(
+        "meal-plans/<int:pk>/remove-entry/<int:entry_id>/",
+        views.meal_plans.remove_meal_entry,
+        name="remove_meal_entry",
+    ),
+    path("meal-plans/<int:pk>/shopping-list/", views.meal_plans.shopping_list, name="shopping_list"),
     # Ingredient and Unit management
     path(
         "manage/ingredient-names/",

@@ -1,1 +1,1 @@
-from . import ai, collections, properties, pwa, recipes, settings
+from . import ai, collections, meal_plans, properties, pwa, recipes, settings

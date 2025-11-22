@@ -121,3 +121,45 @@ class AISettings(models.Model):
 
     def __str__(self) -> str:
         return f"AI Settings (Model: {self.model})"
+
+
+class MealPlan(models.Model):
+    """A meal plan for a specific time period."""
+
+    name = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-start_date"]
+
+    def __str__(self) -> str:
+        return self.name
+
+
+class MealPlanEntry(models.Model):
+    """A specific recipe scheduled for a date and meal type in a meal plan."""
+
+    MEAL_TYPE_CHOICES = [
+        ("breakfast", "Breakfast"),
+        ("lunch", "Lunch"),
+        ("dinner", "Dinner"),
+        ("snack", "Snack"),
+    ]
+
+    meal_plan = models.ForeignKey(MealPlan, on_delete=models.CASCADE, related_name="entries")
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="meal_plan_entries")
+    date = models.DateField()
+    meal_type = models.CharField(max_length=20, choices=MEAL_TYPE_CHOICES)
+    servings = models.PositiveIntegerField(default=1, help_text="Number of servings for this meal")
+    notes = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ["date", "meal_type"]
+        verbose_name_plural = "Meal plan entries"
+
+    def __str__(self) -> str:
+        return f"{self.recipe.title} - {self.get_meal_type_display()} on {self.date}"

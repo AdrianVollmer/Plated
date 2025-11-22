@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}{{ meal_plan.name }} - Plated{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1>{{ meal_plan.name }}</h1>
+                <p class="text-muted">
+                    <i class="bi bi-calendar"></i> {{ meal_plan.start_date|date:"M d, Y" }} - {{ meal_plan.end_date|date:"M d, Y" }}
+                </p>
+                {% if meal_plan.description %}
+                <p>{{ meal_plan.description }}</p>
+                {% endif %}
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{% url 'shopping_list' meal_plan.pk %}" class="btn btn-success">
+                    <i class="bi bi-cart"></i> Shopping List
+                </a>
+                <a href="{% url 'meal_plan_update' meal_plan.pk %}" class="btn btn-secondary">
+                    <i class="bi bi-pencil"></i> Edit
+                </a>
+                <a href="{% url 'meal_plan_delete' meal_plan.pk %}" class="btn btn-danger">
+                    <i class="bi bi-trash"></i> Delete
+                </a>
+            </div>
+        </div>
+
+        <!-- Add meal form -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-plus-circle"></i> Add Meal</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{% url 'add_meal_entry' meal_plan.pk %}" class="row g-3">
+                    {% csrf_token %}
+                    <div class="col-md-4">
+                        <label for="recipe_id" class="form-label">Recipe</label>
+                        <select name="recipe_id" id="recipe_id" class="form-select" required>
+                            <option value="">Select a recipe...</option>
+                            {% load static %}
+                            <!-- This should ideally use a select2 or similar for better UX -->
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="date" class="form-label">Date</label>
+                        <input type="date" name="date" id="date" class="form-control" required
+                               min="{{ meal_plan.start_date|date:'Y-m-d' }}"
+                               max="{{ meal_plan.end_date|date:'Y-m-d' }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="meal_type" class="form-label">Meal Type</label>
+                        <select name="meal_type" id="meal_type" class="form-select" required>
+                            <option value="breakfast">Breakfast</option>
+                            <option value="lunch">Lunch</option>
+                            <option value="dinner">Dinner</option>
+                            <option value="snack">Snack</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="servings" class="form-label">Servings</label>
+                        <input type="number" name="servings" id="servings" class="form-control" value="1" min="1" required>
+                    </div>
+                    <div class="col-md-1 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Meal plan calendar -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-calendar-week"></i> Meal Schedule</h5>
+            </div>
+            <div class="card-body">
+                {% if dates %}
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="width: 120px;">Date</th>
+                                <th>Breakfast</th>
+                                <th>Lunch</th>
+                                <th>Dinner</th>
+                                <th>Snack</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for date in dates %}
+                            <tr>
+                                <td class="fw-bold">
+                                    {{ date|date:"D" }}<br>
+                                    <small class="text-muted">{{ date|date:"M d" }}</small>
+                                </td>
+                                {% for meal_type in meal_types %}
+                                <td>
+                                    {% for entry in meal_plan.entries.all %}
+                                        {% if entry.date == date and entry.meal_type == meal_type %}
+                                        <div class="meal-entry mb-2">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div>
+                                                    <a href="{% url 'recipe_detail' entry.recipe.pk %}" class="text-decoration-none">
+                                                        {{ entry.recipe.title }}
+                                                    </a>
+                                                    {% if entry.servings != entry.recipe.servings %}
+                                                    <br><small class="text-muted">{{ entry.servings }} serving{{ entry.servings|pluralize }}</small>
+                                                    {% endif %}
+                                                </div>
+                                                <form method="post" action="{% url 'remove_meal_entry' meal_plan.pk entry.pk %}" class="d-inline">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-sm btn-link text-danger p-0" title="Remove">
+                                                        <i class="bi bi-x-circle"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted mb-0">No dates in this meal plan.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <a href="{% url 'meal_plan_list' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Meal Plans
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Load recipes for the select dropdown
+document.addEventListener('DOMContentLoaded', function() {
+    const recipeSelect = document.getElementById('recipe_id');
+
+    fetch('/api/recipes/')
+        .then(response => response.json())
+        .then(recipes => {
+            recipes.forEach(recipe => {
+                const option = document.createElement('option');
+                option.value = recipe.id;
+                option.textContent = recipe.title;
+                recipeSelect.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Error loading recipes:', error);
+        });
+});
+</script>
+{% endblock %}

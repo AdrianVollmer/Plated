@@ -637,3 +637,10 @@ def download_recipe_pdf(request: HttpRequest, pk: int) -> HttpResponse:
         )
         messages.error(request, f"Error generating PDF: {e}")
         return redirect("recipe_detail", pk=pk)
+
+
+def get_recipes_api(request: HttpRequest) -> HttpResponse:
+    """API endpoint to get all recipes for autocomplete."""
+    recipes = Recipe.objects.all().order_by("title")
+    recipes_data = [{"id": recipe.pk, "title": recipe.title} for recipe in recipes]
+    return HttpResponse(json.dumps(recipes_data), content_type="application/json")
