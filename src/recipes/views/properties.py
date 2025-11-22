@@ -369,6 +369,87 @@ def get_keywords(request: HttpRequest) -> JsonResponse:
     return JsonResponse({"keywords": keywords_list})
 
 
+def rename_keyword(request: HttpRequest) -> HttpResponse:
+    """Rename a keyword across all recipes."""
+    if request.method == "POST":
+        old_keyword = request.POST.get("old_keyword", "").strip()
+        new_keyword = request.POST.get("new_keyword", "").strip()
+
+        logger.info(f"Keyword rename requested: '{old_keyword}' -> '{new_keyword}'")
+
+        # Validate inputs
+        if not old_keyword:
+            logger.warning("Keyword rename failed: missing old keyword")
+            messages.error(request, "Old keyword is required.")
+            return redirect("manage_keywords")
+
+        if not new_keyword:
+            logger.warning("Keyword rename failed: missing new keyword")
+            messages.error(request, "New keyword is required.")
+            return redirect("manage_keywords")
+
+        if old_keyword == new_keyword:
+            logger.warning(f"Keyword rename skipped: old and new keywords are identical ('{old_keyword}')")
+            messages.warning(request, "Old and new keywords are the same.")
+            return redirect("manage_keywords")
+
+        # Find all recipes with the old keyword
+        recipes_to_update = [
+            recipe for recipe in Recipe.objects.exclude(keywords="") if old_keyword in _parse_keywords(recipe.keywords)
+        ]
+
+        if not recipes_to_update:
+            logger.warning(f"Keyword rename failed: no recipes found with keyword '{old_keyword}'")
+            messages.error(request, f"No recipes found with keyword '{old_keyword}'.")
+            return redirect("manage_keywords")
+
+        # Update keywords in all matching recipes
+        try:
+            with transaction.atomic():
+                updated_count = 0
+                for recipe in recipes_to_update:
+                    keywords_list = _parse_keywords(recipe.keywords)
+                    # Replace old keyword with new keyword
+                    keywords_list = [new_keyword if kw == old_keyword else kw for kw in keywords_list]
+                    # Deduplicate while preserving order
+                    seen = set()
+                    deduplicated = []
+                    for kw in keywords_list:
+                        if kw not in seen:
+                            seen.add(kw)
+                            deduplicated.append(kw)
+                    # Update the recipe
+                    recipe.keywords = ", ".join(deduplicated)
+                    recipe.save()
+                    updated_count += 1
+
+            logger.info(f"Keyword renamed: '{old_keyword}' -> '{new_keyword}' ({updated_count} recipes updated)")
+            plural = "" if updated_count == 1 else "s"
+            messages.success(
+                request,
+                f"Renamed '{old_keyword}' to '{new_keyword}' in {updated_count} recipe{plural}.",
+            )
+            return redirect("manage_keywords")
+        except Exception as e:
+            logger.error(f"Error renaming keyword '{old_keyword}' to '{new_keyword}': {e}", exc_info=True)
+            messages.error(request, f"Error renaming keyword: {e}")
+            return redirect("manage_keywords")
+
+    # GET request - show rename form
+    old_keyword = request.GET.get("keyword", "")
+    usage_count = (
+        sum(1 for keywords_str in _get_all_recipe_keywords() if old_keyword in _parse_keywords(keywords_str))
+        if old_keyword
+        else 0
+    )
+
+    context = {
+        "old_keyword": old_keyword,
+        "usage_count": usage_count,
+    }
+    return render(request, "recipes/rename_keyword.html", context)
+
+
 def delete_keyword(request: HttpRequest) -> HttpResponse:
     """Delete a keyword if its usage count is 0."""
     if request.method == "POST":

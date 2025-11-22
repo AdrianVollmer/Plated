@@ -54,6 +54,9 @@
                             {% endif %}
                         </td>
                         <td class="text-end">
+                            <a href="{% url 'rename_keyword' %}?keyword={{ keyword.keyword|urlencode }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-pencil"></i> Rename
+                            </a>
                             {% if keyword.usage_count == 0 %}
                             <form method="post" action="{% url 'delete_keyword' %}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete \'{{ keyword.keyword }}\'?');">
                                 {% csrf_token %}

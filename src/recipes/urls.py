@@ -89,6 +89,7 @@ urlpatterns = [
     path("manage/units/delete/", views.properties.delete_unit, name="delete_unit"),
     path("manage/units/<str:unit>/recipes/", views.properties.recipes_with_unit, name="recipes_with_unit"),
     path("manage/keywords/", views.properties.manage_keywords, name="manage_keywords"),
+    path("manage/keywords/rename/", views.properties.rename_keyword, name="rename_keyword"),
     path("manage/keywords/delete/", views.properties.delete_keyword, name="delete_keyword"),
     path(
         "manage/keywords/<str:keyword>/recipes/",
