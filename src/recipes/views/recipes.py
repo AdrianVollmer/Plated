@@ -26,7 +26,7 @@ from django.views.generic import (
 )
 
 from ..forms import RecipeForm
-from ..models import Ingredient, Recipe, RecipeImage, Step
+from ..models import AISettings, Ingredient, Recipe, RecipeImage, Step
 from ..schema import deserialize_recipe, serialize_recipe, validate_recipe_data
 
 logger = logging.getLogger(__name__)
@@ -147,6 +147,12 @@ class RecipeListView(ListView):
             queryset = queryset.filter(title__icontains=query) | queryset.filter(keywords__icontains=query)
             logger.debug(f"Search returned {queryset.count()} results")
         return queryset
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        """Add AI settings availability to context."""
+        context = super().get_context_data(**kwargs)
+        context["ai_settings_available"] = AISettings.objects.exists()
+        return context
 
 
 class RecipeDetailView(DetailView):
