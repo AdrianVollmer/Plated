@@ -169,7 +169,7 @@ def add_meal_entry(request: HttpRequest, pk: int) -> HttpResponse:
             recipe = get_object_or_404(Recipe, pk=recipe_id)
             date = datetime.strptime(date_str, "%Y-%m-%d").date()
 
-            entry = MealPlanEntry.objects.create(
+            MealPlanEntry.objects.create(
                 meal_plan=meal_plan,
                 recipe=recipe,
                 date=date,

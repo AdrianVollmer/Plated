@@ -8,6 +8,7 @@ authors = [
 ]
 requires-python = ">=3.12"
 dependencies = [
+    "colorlog>=6.10.1",
     "django>=5.2.8",
     "pillow>=12.0.0",
     "requests>=2.32.5",
@@ -52,6 +53,7 @@ ignore = []
 "*/settings.py" = ["S105"]  # Django dev secret key
 "*/views/recipes.py" = ["S101", "S603", "S607"]  # assert for type narrowing, subprocess for typst
 "*/views/collections.py" = ["S101"]  # assert for type narrowing
+"*/views/meal_plans.py" = ["S101"]  # assert for type narrowing
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "config.settings"

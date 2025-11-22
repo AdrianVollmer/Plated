@@ -132,22 +132,45 @@ LOGGING = {
             "format": "{levelname} {asctime} {name} {module} {funcName} {message}",
             "style": "{",
         },
-        "simple": {
-            "format": "{levelname} {name} {message}",
+        "verbose_debug": {
+            "format": "{levelname} {asctime} {name} {pathname}:{lineno} {funcName} {message}",
             "style": "{",
+        },
+        "colored": {
+            "()": "colorlog.ColoredFormatter",
+            "format": "%(log_color)s%(levelname)-8s%(reset)s %(cyan)s%(name)s%(reset)s %(message)s",
+            "log_colors": {
+                "DEBUG": "blue",
+                "INFO": "green",
+                "WARNING": "yellow",
+                "ERROR": "red",
+                "CRITICAL": "bold_red",
+            },
+        },
+        "colored_debug": {
+            "()": "colorlog.ColoredFormatter",
+            "format": "%(log_color)s%(levelname)-8s%(reset)s %(cyan)s%(name)s%(reset)s "
+            "%(white)s%(pathname)s:%(lineno)d%(reset)s %(funcName)s %(message)s",
+            "log_colors": {
+                "DEBUG": "blue",
+                "INFO": "green",
+                "WARNING": "yellow",
+                "ERROR": "red",
+                "CRITICAL": "bold_red",
+            },
         },
     },
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
-            "formatter": "verbose",
+            "formatter": "colored_debug" if DEBUG else "colored",
         },
         "file": {
             "class": "logging.handlers.RotatingFileHandler",
             "filename": LOG_DIR / "plated.log",
             "maxBytes": 1024 * 1024 * 10,  # 10 MB
             "backupCount": 5,
-            "formatter": "verbose",
+            "formatter": "verbose_debug" if DEBUG else "verbose",
         },
     },
     "loggers": {
