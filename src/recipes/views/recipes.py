@@ -441,24 +441,32 @@ class RecipeDeleteView(DeleteView):
 
 
 def export_recipe(request: HttpRequest, pk: int) -> HttpResponse:
-    """Export a recipe as a JSON file."""
+    """Export a recipe using the specified format handler."""
+    from ..services import format_registry
+
     recipe = get_object_or_404(Recipe, pk=pk)
-    logger.info(f"Exporting recipe: '{recipe.title}' (ID: {pk})")
+    format_id = request.GET.get("format", "json")
+    logger.info(f"Exporting recipe: '{recipe.title}' (ID: {pk}) as {format_id}")
+
+    # Get the format handler
+    handler = format_registry.get_handler(format_id)
+    if not handler:
+        logger.error(f"Recipe export failed: unknown format '{format_id}'")
+        messages.error(request, f"Unknown format: {format_id}")
+        return redirect("recipe_detail", pk=pk)
 
     try:
-        recipe_data = serialize_recipe(recipe)
+        content = handler.export_recipe(recipe)
 
-        # Create JSON response with proper filename
-        response = HttpResponse(
-            json.dumps(recipe_data, indent=2, ensure_ascii=False),
-            content_type="application/json",
-        )
+        # Create response with proper content type
+        response = HttpResponse(content, content_type=handler.mime_type)
+
         # Sanitize filename by replacing spaces and special chars
         safe_title = "".join(c if c.isalnum() or c in (" ", "-", "_") else "_" for c in recipe.title)
         safe_title = safe_title.replace(" ", "_")
-        response["Content-Disposition"] = f'attachment; filename="{safe_title}.json"'
+        response["Content-Disposition"] = f'attachment; filename="{safe_title}{handler.file_extension}"'
 
-        logger.debug(f"Recipe export successful: '{recipe.title}' (ID: {pk})")
+        logger.debug(f"Recipe export successful: '{recipe.title}' (ID: {pk}) as {format_id}")
         return response
     except Exception as e:
         logger.error(f"Error exporting recipe '{recipe.title}' (ID: {pk}): {e}", exc_info=True)
@@ -467,60 +475,42 @@ def export_recipe(request: HttpRequest, pk: int) -> HttpResponse:
 
 
 def import_recipe(request: HttpRequest) -> HttpResponse:
-    """Import a recipe from a JSON file."""
+    """Import a recipe from a file using the selected format handler."""
+    from ..services import format_registry
+
     if request.method == "POST":
         logger.info("Recipe import initiated")
 
-        if "json_file" not in request.FILES:
+        if "recipe_file" not in request.FILES:
             logger.warning("Recipe import failed: no file uploaded")
             messages.error(request, "No file was uploaded.")
             return redirect("recipe_import")
 
-        json_file = cast(UploadedFile, request.FILES["json_file"])
-        logger.debug(f"Importing recipe from file: {json_file.name}")
+        recipe_file = cast(UploadedFile, request.FILES["recipe_file"])
+        format_id = request.POST.get("format", "json")
+        logger.debug(f"Importing recipe from file: {recipe_file.name} using format: {format_id}")
 
-        # Read and parse JSON
-        try:
-            content = json_file.read().decode("utf-8")
-            data = json.loads(content)
-        except json.JSONDecodeError as e:
-            logger.error(f"Recipe import failed: invalid JSON in file {json_file.name}: {e}")
-            messages.error(request, f"Invalid JSON file: {e}")
+        # Get the format handler
+        handler = format_registry.get_handler(format_id)
+        if not handler:
+            logger.error(f"Recipe import failed: unknown format '{format_id}'")
+            messages.error(request, f"Unknown format: {format_id}")
             return redirect("recipe_import")
+
+        # Read the file content
+        try:
+            content = recipe_file.read().decode("utf-8")
         except Exception as e:
-            logger.error(f"Recipe import failed: error reading file {json_file.name}: {e}")
+            logger.error(f"Recipe import failed: error reading file {recipe_file.name}: {e}")
             messages.error(request, f"Error reading file: {e}")
             return redirect("recipe_import")
 
-        # Validate the data
-        errors = validate_recipe_data(data)
-        if errors:
-            logger.warning(f"Recipe import validation failed for file {json_file.name}: {len(errors)} errors")
-            for error in errors:
-                logger.debug(f"Validation error: {error}")
-                messages.error(request, error)
-            return redirect("recipe_import")
-
-        # Deserialize and create recipe
+        # Import using the handler
         try:
-            with transaction.atomic():
-                deserialized = deserialize_recipe(data)
-
-                # Create the recipe
-                recipe = Recipe.objects.create(**deserialized["recipe_data"])
-
-                # Create ingredients
-                for ing_data in deserialized["ingredients_data"]:
-                    Ingredient.objects.create(recipe=recipe, **ing_data)
-
-                # Create steps
-                for step_data in deserialized["steps_data"]:
-                    Step.objects.create(recipe=recipe, **step_data)
-
-                # Note: We don't import images since they're just metadata
-                # Users would need to manually add images after import
-
-            logger.info(f"Recipe imported successfully: '{recipe.title}' (ID: {recipe.pk}) from file {json_file.name}")
+            recipe = handler.import_recipe(content)
+            logger.info(
+                f"Recipe imported successfully: '{recipe.title}' (ID: {recipe.pk}) from file {recipe_file.name}"
+            )
             messages.success(
                 request,
                 f"Recipe '{recipe.title}' imported successfully! You can now add images if needed.",
@@ -529,14 +519,15 @@ def import_recipe(request: HttpRequest) -> HttpResponse:
 
         except Exception as e:
             logger.error(
-                f"Error creating recipe from import file {json_file.name}: {e}",
+                f"Error creating recipe from import file {recipe_file.name}: {e}",
                 exc_info=True,
             )
             messages.error(request, f"Error creating recipe: {e}")
             return redirect("recipe_import")
 
     # GET request - show the upload form
-    return render(request, "recipes/recipe_import.html")
+    formats = format_registry.get_import_formats()
+    return render(request, "recipes/recipe_import.html", {"formats": formats})
 
 
 def download_recipe_pdf(request: HttpRequest, pk: int) -> HttpResponse:

@@ -20,18 +20,28 @@
 
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Upload JSON File</h5>
+                <h5 class="card-title">Upload Recipe File</h5>
                 <p class="card-text text-muted mb-4">
-                    Upload a recipe JSON file to import it into your collection.
-                    The JSON file should follow the recipe schema format.
+                    Upload a recipe file to import it into your collection.
+                    Select the format from the dropdown below.
                 </p>
 
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="mb-3">
-                        <label for="json_file" class="form-label">Select JSON File</label>
-                        <input type="file" class="form-control" id="json_file" name="json_file" accept=".json" required>
-                        <div class="form-text">Only .json files are accepted</div>
+                        <label for="format" class="form-label">Format</label>
+                        <select class="form-select" id="format" name="format" required>
+                            {% for format_id, format_name in formats %}
+                            <option value="{{ format_id }}"{% if format_id == 'json' %} selected{% endif %}>{{ format_name }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text">Select the format of your recipe file</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="recipe_file" class="form-label">Select Recipe File</label>
+                        <input type="file" class="form-control" id="recipe_file" name="recipe_file" required>
+                        <div class="form-text">Upload your recipe file in the selected format</div>
                     </div>
 
                     <div class="d-flex gap-2">
