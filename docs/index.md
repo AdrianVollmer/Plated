@@ -17,6 +17,7 @@ managing your recipes. Built with simplicity and usability in mind.
   using Typst
 - **Mobile-Friendly** - Responsive design works on all devices
 - **Dark Mode** - Multiple color themes including dark mode
+- **Internationalization** - Support for multiple languages
 - **AI Extraction** - Extract recipe data from URLs using AI
 
 ## Quick Start

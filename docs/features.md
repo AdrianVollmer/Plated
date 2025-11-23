@@ -126,17 +126,38 @@ Standardize measurement units:
 3.  Rename to standardize (e.g., "tsp" → "teaspoon")
 4.  Changes apply to all recipes using that unit
 
+## Internationalization
+
+Plated supports multiple languages to make it accessible to users worldwide.
+
+### Changing Language
+
+1.  Navigate to **Settings**
+2.  Select your preferred language from the dropdown
+3.  Click **Save Language**
+
+The interface will immediately update to your chosen language.
+
+### Available Languages
+
+- English
+- Spanish (Español)
+- French (Français)
+- German (Deutsch)
+- Italian (Italiano)
+- Portuguese (Português)
+
+For information on adding new languages or contributing translations, see the [Internationalization](internationalization.md) documentation.
+
 ## Themes
 
 ### Changing Theme
 
 1.  Navigate to **Settings**
 2.  Select from available themes:
-    - Light (default pink)
+    - Light
     - Dark
-    - Warm (amber/orange)
-    - Cool (blue)
-    - Forest (green)
+    - Auto (follows system preference)
 
 Theme preference is saved in browser.
 

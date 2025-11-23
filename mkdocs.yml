@@ -62,6 +62,7 @@ nav:
       - Docker Installation: installation/docker.md
   - Deployment: deployment.md
   - Features: features.md
+  - Internationalization: internationalization.md
 
 extra:
   social:
