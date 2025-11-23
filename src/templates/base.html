@@ -17,8 +17,12 @@
     <script>
         // Apply theme immediately to prevent flash
         (function() {
-            const theme = localStorage.getItem('plated-theme') || 'light';
-            document.documentElement.setAttribute('data-theme', theme);
+            const savedTheme = localStorage.getItem('plated-theme') || 'auto';
+            let actualTheme = savedTheme;
+            if (savedTheme === 'auto') {
+                actualTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            document.documentElement.setAttribute('data-theme', actualTheme);
         })();
     </script>
 </head>

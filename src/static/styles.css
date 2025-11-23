@@ -50,9 +50,7 @@
     /* Theme gradients - reusable */
     --theme-gradient-light: linear-gradient(135deg, #fff 0%, #f3f4f6 100%);
     --theme-gradient-dark: linear-gradient(135deg, #1f2937 0%, #111827 100%);
-    --theme-gradient-warm: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-    --theme-gradient-cool: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
-    --theme-gradient-forest: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+    --theme-gradient-auto: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
 }
 
 [data-theme="dark"] {
@@ -83,60 +81,6 @@
     --primary-alpha-15: rgba(var(--primary-rgb), 0.15);
     --primary-alpha-25: rgba(var(--primary-rgb), 0.25);
     --primary-alpha-30: rgba(var(--primary-rgb), 0.3);
-}
-
-[data-theme="warm"] {
-    --primary: #f59e0b;
-    --primary-dark: #d97706;
-    --primary-light: #fbbf24;
-
-    --bg-primary: #fffbf5;
-    --bg-secondary: #fef3e2;
-    --bg-tertiary: #fde8c8;
-    --bg-elevated: #ffffff;
-
-    --text-primary: #451a03;
-    --text-secondary: #78350f;
-    --text-tertiary: #92400e;
-
-    --border-color: #fed7aa;
-    --border-subtle: #fef3e2;
-}
-
-[data-theme="cool"] {
-    --primary: #3b82f6;
-    --primary-dark: #2563eb;
-    --primary-light: #60a5fa;
-
-    --bg-primary: #f0f9ff;
-    --bg-secondary: #e0f2fe;
-    --bg-tertiary: #bae6fd;
-    --bg-elevated: #ffffff;
-
-    --text-primary: #0c4a6e;
-    --text-secondary: #075985;
-    --text-tertiary: #0369a1;
-
-    --border-color: #7dd3fc;
-    --border-subtle: #e0f2fe;
-}
-
-[data-theme="forest"] {
-    --primary: #10b981;
-    --primary-dark: #059669;
-    --primary-light: #34d399;
-
-    --bg-primary: #f0fdf4;
-    --bg-secondary: #dcfce7;
-    --bg-tertiary: #bbf7d0;
-    --bg-elevated: #ffffff;
-
-    --text-primary: #064e3b;
-    --text-secondary: #065f46;
-    --text-tertiary: #047857;
-
-    --border-color: #86efac;
-    --border-subtle: #dcfce7;
 }
 
 /* ============================================
@@ -223,9 +167,7 @@ body {
 
 .theme-btn[data-theme="light"] { background: var(--theme-gradient-light); }
 .theme-btn[data-theme="dark"] { background: var(--theme-gradient-dark); }
-.theme-btn[data-theme="warm"] { background: var(--theme-gradient-warm); }
-.theme-btn[data-theme="cool"] { background: var(--theme-gradient-cool); }
-.theme-btn[data-theme="forest"] { background: var(--theme-gradient-forest); }
+.theme-btn[data-theme="auto"] { background: var(--theme-gradient-auto); }
 
 /* Theme Switcher in Settings Page */
 .theme-switcher-settings {
@@ -260,9 +202,7 @@ body {
 
 .theme-switcher-settings .theme-btn[data-theme="light"]::before { background: var(--theme-gradient-light); }
 .theme-switcher-settings .theme-btn[data-theme="dark"]::before { background: var(--theme-gradient-dark); }
-.theme-switcher-settings .theme-btn[data-theme="warm"]::before { background: var(--theme-gradient-warm); }
-.theme-switcher-settings .theme-btn[data-theme="cool"]::before { background: var(--theme-gradient-cool); }
-.theme-switcher-settings .theme-btn[data-theme="forest"]::before { background: var(--theme-gradient-forest); }
+.theme-switcher-settings .theme-btn[data-theme="auto"]::before { background: var(--theme-gradient-auto); }
 
 .theme-switcher-settings .theme-btn:hover {
     transform: translateY(-2px);
