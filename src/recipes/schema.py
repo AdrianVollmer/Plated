@@ -278,7 +278,7 @@ def get_recipe_json_schema() -> dict[str, Any]:
                     "properties": {
                         "content": {
                             "type": "string",
-                            "description": "Step instructions (markdown supported)",
+                            "description": "Step instructions",
                             "minLength": 1,
                         },
                         "order": {

@@ -53,11 +53,11 @@ class Ingredient(models.Model):
 
 
 class Step(models.Model):
-    """A step in a recipe, supporting markdown."""
+    """A step in a recipe."""
 
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="steps")
     order = models.PositiveIntegerField(default=0)
-    content = models.TextField(help_text="Markdown supported")
+    content = models.TextField(help_text="Step instructions")
 
     class Meta:
         ordering = ["order"]
