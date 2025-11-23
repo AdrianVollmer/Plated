@@ -19,7 +19,7 @@ msgstr ""
 #: src/templates/base.html:8
 msgid ""
 "Your personal recipe manager for organizing, creating, and sharing recipes"
-msgstr ""
+msgstr "Ihr persönlicher Rezeptmanager zum Organisieren, Erstellen und Teilen von Rezepten"
 
 #: src/templates/base.html:9
 msgid "Plated - Recipe Manager"
@@ -69,118 +69,110 @@ msgid "Settings"
 msgstr "Einstellungen"
 
 #: src/templates/base.html:95
-#, fuzzy
-#| msgid "Plated - Recipe Manager"
 msgid "Plated - Your Recipe Manager"
-msgstr "Plated - Rezeptverwaltung"
+msgstr "Plated - Ihr Rezeptmanager"
 
 #: src/templates/recipes/ai_extract.html:4
 #: src/templates/recipes/ai_extract.html:11
 msgid "AI Recipe Extraction"
-msgstr ""
+msgstr "KI-Rezeptextraktion"
 
 #: src/templates/recipes/ai_extract.html:14
 msgid "Back"
-msgstr ""
+msgstr "Zurück"
 
 #: src/templates/recipes/ai_extract.html:21
 msgid ""
 "Paste recipe text, HTML, or provide a URL, and let AI extract the recipe "
 "information for you. You can also provide additional instructions like \\"
-msgstr ""
+msgstr "Fügen Sie Rezepttext, HTML ein oder geben Sie eine URL an, und lassen Sie die KI die Rezeptinformationen für Sie extrahieren. Sie können auch zusätzliche Anweisungen wie \\ angeben"
 
 #: src/templates/recipes/ai_extract.html:27
 #: src/templates/recipes/job_detail.html:35
 msgid "Timeout:"
-msgstr ""
+msgstr "Zeitüberschreitung:"
 
 #: src/templates/recipes/ai_extract.html:29
 msgid "This job will run in the background. You can check its progress on the"
-msgstr ""
+msgstr "Dieser Auftrag wird im Hintergrund ausgeführt. Sie können den Fortschritt auf der"
 
 #: src/templates/recipes/ai_extract.html:29
-#, fuzzy
-#| msgid "Jobs"
 msgid "Jobs page"
-msgstr "Aufträge"
+msgstr "Auftragsseite"
 
 #: src/templates/recipes/ai_extract.html:31
 msgid "This job will run immediately and you'll wait for the result."
-msgstr ""
+msgstr "Dieser Auftrag wird sofort ausgeführt und Sie warten auf das Ergebnis."
 
 #: src/templates/recipes/ai_extract.html:84
 msgid "Extract Recipe with AI"
-msgstr ""
+msgstr "Rezept mit KI extrahieren"
 
 #: src/templates/recipes/ai_extract.html:94
 msgid "Tips"
-msgstr ""
+msgstr "Tipps"
 
 #: src/templates/recipes/ai_extract.html:98
 msgid "Plain Text:"
-msgstr ""
+msgstr "Klartext:"
 
 #: src/templates/recipes/ai_extract.html:98
 msgid "Paste recipe text directly from any source."
-msgstr ""
+msgstr "Fügen Sie Rezepttext direkt aus beliebiger Quelle ein."
 
 #: src/templates/recipes/ai_extract.html:99
 msgid "HTML:"
-msgstr ""
+msgstr "HTML:"
 
 #: src/templates/recipes/ai_extract.html:99
 msgid ""
 "Paste HTML code containing a recipe (e.g., copied from browser developer "
 "tools)."
-msgstr ""
+msgstr "Fügen Sie HTML-Code ein, der ein Rezept enthält (z.B. aus den Browser-Entwicklertools kopiert)."
 
 #: src/templates/recipes/ai_extract.html:100
 msgid "URL:"
-msgstr ""
+msgstr "URL:"
 
 #: src/templates/recipes/ai_extract.html:100
 msgid "Provide a direct link to a recipe webpage."
-msgstr ""
+msgstr "Geben Sie einen direkten Link zu einer Rezeptwebseite an."
 
 #: src/templates/recipes/ai_extract.html:101
 #: src/templates/recipes/job_detail.html:94
 msgid "Instructions:"
-msgstr ""
+msgstr "Anweisungen:"
 
 #: src/templates/recipes/ai_extract.html:101
 msgid "Add custom instructions like \\"
-msgstr ""
+msgstr "Fügen Sie benutzerdefinierte Anweisungen hinzu wie \\"
 
 #: src/templates/recipes/collection_confirm_delete.html:4
 #: src/templates/recipes/collection_confirm_delete.html:9
-#, fuzzy
-#| msgid "Collections"
 msgid "Delete Collection"
-msgstr "Sammlungen"
+msgstr "Sammlung löschen"
 
 #: src/templates/recipes/collection_confirm_delete.html:14
 #: src/templates/recipes/meal_plan_confirm_delete.html:11
 #: src/templates/recipes/recipe_confirm_delete.html:23
 msgid "Confirm Deletion"
-msgstr ""
+msgstr "Löschen bestätigen"
 
 #: src/templates/recipes/collection_confirm_delete.html:16
 #, python-format
 msgid ""
 "Are you sure you want to delete the collection <strong>\"%(name)s\"</strong>?"
-msgstr ""
+msgstr "Möchten Sie die Sammlung <strong>\"%(name)s\"</strong> wirklich löschen?"
 
 #: src/templates/recipes/collection_confirm_delete.html:17
 msgid ""
 "This action cannot be undone. The recipes themselves will not be deleted, "
 "only the collection."
-msgstr ""
+msgstr "Diese Aktion kann nicht rückgängig gemacht werden. Die Rezepte selbst werden nicht gelöscht, nur die Sammlung."
 
 #: src/templates/recipes/collection_confirm_delete.html:24
-#, fuzzy
-#| msgid "Collections"
 msgid "Yes, Delete Collection"
-msgstr "Sammlungen"
+msgstr "Ja, Sammlung löschen"
 
 #: src/templates/recipes/collection_confirm_delete.html:27
 #: src/templates/recipes/collection_form.html:58
@@ -195,17 +187,17 @@ msgstr "Sammlungen"
 #: src/templates/recipes/rename_keyword.html:40
 #: src/templates/recipes/rename_unit.html:40
 msgid "Cancel"
-msgstr ""
+msgstr "Abbrechen"
 
 #: src/templates/recipes/collection_detail.html:17
 #, python-format
 msgid "Created %(date)s"
-msgstr ""
+msgstr "Erstellt am %(date)s"
 
 #: src/templates/recipes/collection_detail.html:19
 #, python-format
 msgid "Updated %(date)s"
-msgstr ""
+msgstr "Aktualisiert am %(date)s"
 
 #: src/templates/recipes/collection_detail.html:26
 #: src/templates/recipes/collection_list.html:42
@@ -217,7 +209,7 @@ msgstr ""
 #: src/templates/recipes/recipe_form.html:5
 #: src/templates/recipes/recipe_form.html:15
 msgid "Edit"
-msgstr ""
+msgstr "Bearbeiten"
 
 #: src/templates/recipes/collection_detail.html:29
 #: src/templates/recipes/collection_list.html:45
@@ -242,354 +234,324 @@ msgstr ""
 #: src/templates/recipes/recipe_form.html:326
 #: src/templates/recipes/recipe_form.html:360
 msgid "Delete"
-msgstr ""
+msgstr "Löschen"
 
 #: src/templates/recipes/collection_detail.html:36
 #, python-format
 msgid "Recipes (%(counter)s)"
-msgstr ""
+msgstr "Rezepte (%(counter)s)"
 
 #: src/templates/recipes/collection_detail.html:72
 msgid "No recipes in this collection yet."
-msgstr ""
+msgstr "Noch keine Rezepte in dieser Sammlung."
 
 #: src/templates/recipes/collection_detail.html:72
-#, fuzzy
-#| msgid "Collections"
 msgid "Edit the collection"
-msgstr "Sammlungen"
+msgstr "Sammlung bearbeiten"
 
 #: src/templates/recipes/collection_detail.html:72
 msgid "to add recipes."
-msgstr ""
+msgstr "um Rezepte hinzuzufügen."
 
 #: src/templates/recipes/collection_detail.html:78
-#, fuzzy
-#| msgid "Collections"
 msgid "Back to Collections"
-msgstr "Sammlungen"
+msgstr "Zurück zu Sammlungen"
 
 #: src/templates/recipes/collection_form.html:4
 #: src/templates/recipes/collection_form.html:9
-#, fuzzy
-#| msgid "Collections"
 msgid "Edit Collection"
-msgstr "Sammlungen"
+msgstr "Sammlung bearbeiten"
 
 #: src/templates/recipes/collection_form.html:4
 #: src/templates/recipes/collection_form.html:9
 #: src/templates/recipes/collection_list.html:12
-#, fuzzy
-#| msgid "Collections"
 msgid "New Collection"
-msgstr "Sammlungen"
+msgstr "Neue Sammlung"
 
 #: src/templates/recipes/collection_form.html:16
-#, fuzzy
-#| msgid "Collections"
 msgid "Collection Name"
-msgstr "Sammlungen"
+msgstr "Sammlungsname"
 
 #: src/templates/recipes/collection_form.html:28
 #: src/templates/recipes/meal_plan_form.html:25
 #: src/templates/recipes/recipe_detail.html:184
 #: src/templates/recipes/recipe_form.html:53
 msgid "Description"
-msgstr ""
+msgstr "Beschreibung"
 
 #: src/templates/recipes/collection_form.html:37
 msgid "Optional description of this collection"
-msgstr ""
+msgstr "Optionale Beschreibung dieser Sammlung"
 
 #: src/templates/recipes/collection_form.html:55
-#, fuzzy
-#| msgid "Collections"
 msgid "Update Collection"
-msgstr "Sammlungen"
+msgstr "Sammlung aktualisieren"
 
 #: src/templates/recipes/collection_form.html:55
-#, fuzzy
-#| msgid "Collections"
 msgid "Create Collection"
-msgstr "Sammlungen"
+msgstr "Sammlung erstellen"
 
 #: src/templates/recipes/collection_list.html:4
 #: src/templates/recipes/collection_list.html:10
-#, fuzzy
-#| msgid "Collections"
 msgid "Recipe Collections"
-msgstr "Sammlungen"
+msgstr "Rezeptsammlungen"
 
 #: src/templates/recipes/collection_list.html:32
 #, python-format
 msgid "%(counter)s recipe"
 msgid_plural "%(counter)s recipes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(counter)s Rezept"
+msgstr[1] "%(counter)s Rezepte"
 
 #: src/templates/recipes/collection_list.html:39
 #: src/templates/recipes/jobs_list.html:53
 #: src/templates/recipes/meal_plan_list.html:44
 msgid "View"
-msgstr ""
+msgstr "Anzeigen"
 
 #: src/templates/recipes/collection_list.html:55
 #: src/templates/recipes/meal_plan_list.html:63
 msgid "Page navigation"
-msgstr ""
+msgstr "Seitennavigation"
 
 #: src/templates/recipes/collection_list.html:59
 #: src/templates/recipes/meal_plan_list.html:67
 #: src/templates/recipes/recipe_list.html:87
 msgid "First"
-msgstr ""
+msgstr "Erste"
 
 #: src/templates/recipes/collection_list.html:62
 #: src/templates/recipes/meal_plan_list.html:70
 #: src/templates/recipes/recipe_list.html:90
 msgid "Previous"
-msgstr ""
+msgstr "Vorherige"
 
 #: src/templates/recipes/collection_list.html:67
 #: src/templates/recipes/meal_plan_list.html:75
 #, python-format
 msgid "Page %(current)s of %(total)s"
-msgstr ""
+msgstr "Seite %(current)s von %(total)s"
 
 #: src/templates/recipes/collection_list.html:72
 #: src/templates/recipes/meal_plan_list.html:80
 #: src/templates/recipes/recipe_list.html:100
 msgid "Next"
-msgstr ""
+msgstr "Nächste"
 
 #: src/templates/recipes/collection_list.html:75
 #: src/templates/recipes/meal_plan_list.html:83
 #: src/templates/recipes/recipe_list.html:103
 msgid "Last"
-msgstr ""
+msgstr "Letzte"
 
 #: src/templates/recipes/collection_list.html:84
-#, fuzzy
-#| msgid "Collections"
 msgid "No collections yet."
-msgstr "Sammlungen"
+msgstr "Noch keine Sammlungen vorhanden."
 
 #: src/templates/recipes/collection_list.html:84
 msgid "Create your first collection"
-msgstr ""
+msgstr "Erstellen Sie Ihre erste Sammlung"
 
 #: src/templates/recipes/collection_list.html:84
 msgid "to organize your recipes!"
-msgstr ""
+msgstr "um Ihre Rezepte zu organisieren!"
 
 #: src/templates/recipes/job_detail.html:4
 #: src/templates/recipes/job_detail.html:9
 msgid "AI Job"
-msgstr ""
+msgstr "KI-Auftrag"
 
 #: src/templates/recipes/job_detail.html:14
 msgid "Job Status"
-msgstr ""
+msgstr "Auftragsstatus"
 
 #: src/templates/recipes/job_detail.html:29
 #: src/templates/recipes/recipe_detail.html:258
 msgid "Created:"
-msgstr ""
+msgstr "Erstellt:"
 
 #: src/templates/recipes/job_detail.html:32
 msgid "Input Type:"
-msgstr ""
+msgstr "Eingabetyp:"
 
 #: src/templates/recipes/job_detail.html:36
 #, python-format
 msgid "%(seconds)s seconds"
-msgstr ""
+msgstr "%(seconds)s Sekunden"
 
 #: src/templates/recipes/job_detail.html:39
 msgid "Started:"
-msgstr ""
+msgstr "Gestartet:"
 
 #: src/templates/recipes/job_detail.html:44
 msgid "Completed:"
-msgstr ""
+msgstr "Abgeschlossen:"
 
 #: src/templates/recipes/job_detail.html:55
 msgid "Processing..."
-msgstr ""
+msgstr "Verarbeitung läuft..."
 
 #: src/templates/recipes/job_detail.html:58
 #, python-format
 msgid "Job is %(status)s. This page will automatically refresh..."
-msgstr ""
+msgstr "Auftrag ist %(status)s. Diese Seite wird automatisch aktualisiert..."
 
 #: src/templates/recipes/job_detail.html:66
 msgid "Recipe extracted successfully!"
-msgstr ""
+msgstr "Rezept erfolgreich extrahiert!"
 
 #: src/templates/recipes/job_detail.html:70
 msgid "Use This Recipe"
-msgstr ""
+msgstr "Dieses Rezept verwenden"
 
 #: src/templates/recipes/job_detail.html:77
 msgid "Job Failed"
-msgstr ""
+msgstr "Auftrag fehlgeschlagen"
 
 #: src/templates/recipes/job_detail.html:83
 msgid "Retry Job"
-msgstr ""
+msgstr "Auftrag wiederholen"
 
 #: src/templates/recipes/job_detail.html:90
 msgid "Input Content"
-msgstr ""
+msgstr "Eingabeinhalt"
 
 #: src/templates/recipes/job_detail.html:103
 msgid "Back to Jobs"
-msgstr ""
+msgstr "Zurück zu Aufträgen"
 
 #: src/templates/recipes/job_detail.html:109
 msgid "Cancel Job"
-msgstr ""
+msgstr "Auftrag abbrechen"
 
 #: src/templates/recipes/job_detail.html:113
 msgid "Are you sure you want to delete this job?"
-msgstr ""
+msgstr "Möchten Sie diesen Auftrag wirklich löschen?"
 
 #: src/templates/recipes/job_detail.html:116
 msgid "Delete Job"
-msgstr ""
+msgstr "Auftrag löschen"
 
 #: src/templates/recipes/jobs_list.html:4
-#, fuzzy
-#| msgid "Jobs"
 msgid "AI Jobs"
-msgstr "Aufträge"
+msgstr "KI-Aufträge"
 
 #: src/templates/recipes/jobs_list.html:9
 msgid "AI Extraction Jobs"
-msgstr ""
+msgstr "KI-Extraktionsaufträge"
 
 #: src/templates/recipes/jobs_list.html:10
 msgid "View and manage your AI recipe extraction jobs"
-msgstr ""
+msgstr "Zeigen Sie Ihre KI-Rezeptextraktionsaufträge an und verwalten Sie diese"
 
 #: src/templates/recipes/jobs_list.html:18
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #: src/templates/recipes/jobs_list.html:19
 msgid "Created"
-msgstr ""
+msgstr "Erstellt"
 
 #: src/templates/recipes/jobs_list.html:20
 msgid "Status"
-msgstr ""
+msgstr "Status"
 
 #: src/templates/recipes/jobs_list.html:21
 msgid "Input Type"
-msgstr ""
+msgstr "Eingabetyp"
 
 #: src/templates/recipes/jobs_list.html:22
 msgid "Timeout"
-msgstr ""
+msgstr "Zeitüberschreitung"
 
 #: src/templates/recipes/jobs_list.html:23
 #: src/templates/recipes/manage_ingredient_names.html:41
 #: src/templates/recipes/manage_keywords.html:41
 #: src/templates/recipes/manage_units.html:41
-#, fuzzy
-#| msgid "Collections"
 msgid "Actions"
-msgstr "Sammlungen"
+msgstr "Aktionen"
 
 #: src/templates/recipes/jobs_list.html:32
 msgid "New"
-msgstr ""
+msgstr "Neu"
 
 #: src/templates/recipes/jobs_list.html:58
 msgid "Retry"
-msgstr ""
+msgstr "Wiederholen"
 
 #: src/templates/recipes/jobs_list.html:72
 msgid "Are you sure you want to delete job"
-msgstr ""
+msgstr "Möchten Sie den Auftrag wirklich löschen"
 
 #: src/templates/recipes/jobs_list.html:99
 msgid "No jobs found."
-msgstr ""
+msgstr "Keine Aufträge gefunden."
 
 #: src/templates/recipes/jobs_list.html:99
 msgid "Extract a recipe with AI"
-msgstr ""
+msgstr "Extrahieren Sie ein Rezept mit KI"
 
 #: src/templates/recipes/jobs_list.html:99
 msgid "to create a job."
-msgstr ""
+msgstr "um einen Auftrag zu erstellen."
 
 #: src/templates/recipes/jobs_list.html:105
 #: src/templates/recipes/manage_ingredient_names.html:92
 #: src/templates/recipes/manage_keywords.html:92
 #: src/templates/recipes/manage_units.html:92
-#, fuzzy
-#| msgid "Recipes"
 msgid "Back to Recipes"
-msgstr "Rezepte"
+msgstr "Zurück zu Rezepten"
 
 #: src/templates/recipes/jobs_list.html:108
 msgid "New AI Extraction"
-msgstr ""
+msgstr "Neue KI-Extraktion"
 
 #: src/templates/recipes/manage_ingredient_names.html:4
 #: src/templates/recipes/manage_ingredient_names.html:9
-#, fuzzy
-#| msgid "Ingredient Names"
 msgid "Manage Ingredient Names"
-msgstr "Zutatennamen"
+msgstr "Zutatennamen verwalten"
 
 #: src/templates/recipes/manage_ingredient_names.html:10
 msgid "View all distinct ingredient names used across your recipes."
-msgstr ""
+msgstr "Sehen Sie alle eindeutigen Zutatennamen, die in Ihren Rezepten verwendet werden."
 
 #: src/templates/recipes/manage_ingredient_names.html:16
-#, fuzzy
-#| msgid "Ingredient Names"
 msgid "Search ingredient names..."
-msgstr "Zutatennamen"
+msgstr "Zutatennamen suchen..."
 
 #: src/templates/recipes/manage_ingredient_names.html:18
 #: src/templates/recipes/manage_keywords.html:18
 #: src/templates/recipes/manage_units.html:18
 #: src/templates/recipes/recipe_list.html:33
 msgid "Search"
-msgstr ""
+msgstr "Suchen"
 
 #: src/templates/recipes/manage_ingredient_names.html:22
 #: src/templates/recipes/manage_keywords.html:22
 #: src/templates/recipes/manage_units.html:22
 msgid "Clear"
-msgstr ""
+msgstr "Löschen"
 
 #: src/templates/recipes/manage_ingredient_names.html:31
 #, python-format
 msgid "Found %(counter)s distinct ingredient name."
 msgid_plural "Found %(counter)s distinct ingredient names."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(counter)s eindeutiger Zutatenname gefunden."
+msgstr[1] "%(counter)s eindeutige Zutatennamen gefunden."
 
 #: src/templates/recipes/manage_ingredient_names.html:32
 msgid "Use consistent naming to help with autocomplete when creating recipes."
-msgstr ""
+msgstr "Verwenden Sie konsistente Bezeichnungen, um die Autovervollständigung beim Erstellen von Rezepten zu unterstützen."
 
 #: src/templates/recipes/manage_ingredient_names.html:39
-#, fuzzy
-#| msgid "Ingredient Names"
 msgid "Ingredient Name"
-msgstr "Zutatennamen"
+msgstr "Zutatenname"
 
 #: src/templates/recipes/manage_ingredient_names.html:40
 #: src/templates/recipes/manage_keywords.html:40
 #: src/templates/recipes/manage_units.html:40
 msgid "Usage Count"
-msgstr ""
+msgstr "Verwendungsanzahl"
 
 #: src/templates/recipes/manage_ingredient_names.html:51
 #: src/templates/recipes/manage_keywords.html:51
@@ -597,482 +559,442 @@ msgstr ""
 #, python-format
 msgid "%(counter)s time"
 msgid_plural "%(counter)s times"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(counter)s Mal"
+msgstr[1] "%(counter)s Mal"
 
 #: src/templates/recipes/manage_ingredient_names.html:54
 #: src/templates/recipes/manage_keywords.html:54
 #: src/templates/recipes/manage_units.html:54
 msgid "0 times"
-msgstr ""
+msgstr "0 Mal"
 
 #: src/templates/recipes/manage_ingredient_names.html:59
 #: src/templates/recipes/manage_keywords.html:59
 #: src/templates/recipes/manage_units.html:59
 msgid "Rename"
-msgstr ""
+msgstr "Umbenennen"
 
 #: src/templates/recipes/manage_ingredient_names.html:62
 #: src/templates/recipes/manage_keywords.html:62
 #: src/templates/recipes/manage_units.html:62
 msgid "Are you sure you want to delete"
-msgstr ""
+msgstr "Möchten Sie wirklich löschen"
 
 #: src/templates/recipes/manage_ingredient_names.html:70
 #: src/templates/recipes/manage_keywords.html:70
 #: src/templates/recipes/manage_units.html:70
 msgid "Cannot delete: in use"
-msgstr ""
+msgstr "Kann nicht gelöscht werden: wird verwendet"
 
 #: src/templates/recipes/manage_ingredient_names.html:83
 #, python-format
 msgid "No ingredient names found matching \"%(query)s\"."
-msgstr ""
+msgstr "Keine Zutatennamen gefunden, die mit \"%(query)s\" übereinstimmen."
 
 #: src/templates/recipes/manage_ingredient_names.html:85
 msgid "No ingredients found in your recipes yet."
-msgstr ""
+msgstr "Noch keine Zutaten in Ihren Rezepten gefunden."
 
 #: src/templates/recipes/manage_keywords.html:4
 #: src/templates/recipes/manage_keywords.html:9
-#, fuzzy
-#| msgid "Keywords"
 msgid "Manage Keywords"
-msgstr "Stichwörter"
+msgstr "Stichwörter verwalten"
 
 #: src/templates/recipes/manage_keywords.html:10
 msgid "View all distinct keywords used across your recipes."
-msgstr ""
+msgstr "Sehen Sie alle eindeutigen Stichwörter, die in Ihren Rezepten verwendet werden."
 
 #: src/templates/recipes/manage_keywords.html:16
 msgid "Search keywords..."
-msgstr ""
+msgstr "Stichwörter suchen..."
 
 #: src/templates/recipes/manage_keywords.html:31
 #, python-format
 msgid "Found %(counter)s distinct keyword."
 msgid_plural "Found %(counter)s distinct keywords."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(counter)s eindeutiges Stichwort gefunden."
+msgstr[1] "%(counter)s eindeutige Stichwörter gefunden."
 
 #: src/templates/recipes/manage_keywords.html:32
 msgid "Use consistent keywords to help organize and find recipes."
-msgstr ""
+msgstr "Verwenden Sie konsistente Stichwörter, um Rezepte zu organisieren und zu finden."
 
 #: src/templates/recipes/manage_keywords.html:39
-#, fuzzy
-#| msgid "Keywords"
 msgid "Keyword"
-msgstr "Stichwörter"
+msgstr "Stichwort"
 
 #: src/templates/recipes/manage_keywords.html:83
 #, python-format
 msgid "No keywords found matching \"%(query)s\"."
-msgstr ""
+msgstr "Keine Stichwörter gefunden, die mit \"%(query)s\" übereinstimmen."
 
 #: src/templates/recipes/manage_keywords.html:85
 msgid "No keywords found in your recipes yet."
-msgstr ""
+msgstr "Noch keine Stichwörter in Ihren Rezepten gefunden."
 
 #: src/templates/recipes/manage_units.html:4
 #: src/templates/recipes/manage_units.html:9
-#, fuzzy
-#| msgid "Manage"
 msgid "Manage Units"
-msgstr "Verwalten"
+msgstr "Einheiten verwalten"
 
 #: src/templates/recipes/manage_units.html:10
 msgid "View all distinct measurement units used across your recipes."
-msgstr ""
+msgstr "Sehen Sie alle eindeutigen Maßeinheiten, die in Ihren Rezepten verwendet werden."
 
 #: src/templates/recipes/manage_units.html:16
 msgid "Search units..."
-msgstr ""
+msgstr "Einheiten suchen..."
 
 #: src/templates/recipes/manage_units.html:31
 #, python-format
 msgid "Found %(counter)s distinct unit."
 msgid_plural "Found %(counter)s distinct units."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(counter)s eindeutige Einheit gefunden."
+msgstr[1] "%(counter)s eindeutige Einheiten gefunden."
 
 #: src/templates/recipes/manage_units.html:32
 msgid "Use consistent units to help with autocomplete when creating recipes."
-msgstr ""
+msgstr "Verwenden Sie konsistente Einheiten, um die Autovervollständigung beim Erstellen von Rezepten zu unterstützen."
 
 #: src/templates/recipes/manage_units.html:39
 #: src/templates/recipes/recipe_form.html:157
 #: src/templates/recipes/recipe_form.html:199
-#, fuzzy
-#| msgid "Units"
 msgid "Unit"
-msgstr "Einheiten"
+msgstr "Einheit"
 
 #: src/templates/recipes/manage_units.html:83
 #, python-format
 msgid "No units found matching \"%(query)s\"."
-msgstr ""
+msgstr "Keine Einheiten gefunden, die mit \"%(query)s\" übereinstimmen."
 
 #: src/templates/recipes/manage_units.html:85
 msgid "No units found in your recipes yet."
-msgstr ""
+msgstr "Noch keine Einheiten in Ihren Rezepten gefunden."
 
 #: src/templates/recipes/meal_plan_confirm_delete.html:14
 #, python-format
 msgid ""
 "Are you sure you want to delete the meal plan <strong>%(name)s</strong>?"
-msgstr ""
+msgstr "Möchten Sie den Speiseplan <strong>%(name)s</strong> wirklich löschen?"
 
 #: src/templates/recipes/meal_plan_confirm_delete.html:16
 msgid ""
 "This will remove all meal entries associated with this plan. This action "
 "cannot be undone."
-msgstr ""
+msgstr "Dadurch werden alle Mahlzeiteinträge gelöscht, die mit diesem Plan verbunden sind. Diese Aktion kann nicht rückgängig gemacht werden."
 
 #: src/templates/recipes/meal_plan_confirm_delete.html:23
 msgid "Yes, Delete Meal Plan"
-msgstr ""
+msgstr "Ja, Speiseplan löschen"
 
 #: src/templates/recipes/meal_plan_detail.html:21
 #: src/templates/recipes/meal_plan_list.html:50
 #: src/templates/recipes/shopping_list.html:4
 #: src/templates/recipes/shopping_list.html:11
 msgid "Shopping List"
-msgstr ""
+msgstr "Einkaufsliste"
 
 #: src/templates/recipes/meal_plan_detail.html:35
 msgid "Add Meal"
-msgstr ""
+msgstr "Mahlzeit hinzufügen"
 
 #: src/templates/recipes/meal_plan_detail.html:41
-#, fuzzy
-#| msgid "Recipes"
 msgid "Recipe"
-msgstr "Rezepte"
+msgstr "Rezept"
 
 #: src/templates/recipes/meal_plan_detail.html:43
 msgid "Select a recipe..."
-msgstr ""
+msgstr "Wählen Sie ein Rezept..."
 
 #: src/templates/recipes/meal_plan_detail.html:49
 #: src/templates/recipes/meal_plan_detail.html:85
 msgid "Date"
-msgstr ""
+msgstr "Datum"
 
 #: src/templates/recipes/meal_plan_detail.html:55
 msgid "Meal Type"
-msgstr ""
+msgstr "Mahlzeittyp"
 
 #: src/templates/recipes/meal_plan_detail.html:57
 #: src/templates/recipes/meal_plan_detail.html:86
 msgid "Breakfast"
-msgstr ""
+msgstr "Frühstück"
 
 #: src/templates/recipes/meal_plan_detail.html:58
 #: src/templates/recipes/meal_plan_detail.html:87
 msgid "Lunch"
-msgstr ""
+msgstr "Mittagessen"
 
 #: src/templates/recipes/meal_plan_detail.html:59
 #: src/templates/recipes/meal_plan_detail.html:88
 msgid "Dinner"
-msgstr ""
+msgstr "Abendessen"
 
 #: src/templates/recipes/meal_plan_detail.html:60
 #: src/templates/recipes/meal_plan_detail.html:89
 msgid "Snack"
-msgstr ""
+msgstr "Snack"
 
 #: src/templates/recipes/meal_plan_detail.html:64
 #: src/templates/recipes/recipe_detail.html:97
 #: src/templates/recipes/recipe_detail.html:141
 #: src/templates/recipes/recipe_form.html:62
-#, fuzzy
-#| msgid "Settings"
 msgid "Servings"
-msgstr "Einstellungen"
+msgstr "Portionen"
 
 #: src/templates/recipes/meal_plan_detail.html:68
 msgid "Add"
-msgstr ""
+msgstr "Hinzufügen"
 
 #: src/templates/recipes/meal_plan_detail.html:77
 msgid "Meal Schedule"
-msgstr ""
+msgstr "Mahlzeitenplan"
 
 #: src/templates/recipes/meal_plan_detail.html:110
 #: src/templates/recipes/recipes_by_property.html:32
 #, python-format
 msgid "%(counter)s serving"
 msgid_plural "%(counter)s servings"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(counter)s Portion"
+msgstr[1] "%(counter)s Portionen"
 
 #: src/templates/recipes/meal_plan_detail.html:115
 msgid "Remove"
-msgstr ""
+msgstr "Entfernen"
 
 #: src/templates/recipes/meal_plan_detail.html:131
 msgid "No dates in this meal plan."
-msgstr ""
+msgstr "Keine Termine in diesem Speiseplan."
 
 #: src/templates/recipes/meal_plan_detail.html:138
-#, fuzzy
-#| msgid "Meal Plans"
 msgid "Back to Meal Plans"
-msgstr "Speisepläne"
+msgstr "Zurück zu Speiseplänen"
 
 #: src/templates/recipes/meal_plan_form.html:4
 #: src/templates/recipes/meal_plan_list.html:12
-#, fuzzy
-#| msgid "Meal Plans"
 msgid "New Meal Plan"
-msgstr "Speisepläne"
+msgstr "Neuer Speiseplan"
 
 #: src/templates/recipes/meal_plan_form.html:9
-#, fuzzy
-#| msgid "Meal Plans"
 msgid "Edit Meal Plan"
-msgstr "Speisepläne"
+msgstr "Speiseplan bearbeiten"
 
 #: src/templates/recipes/meal_plan_form.html:9
-#, fuzzy
-#| msgid "Meal Plans"
 msgid "Create New Meal Plan"
-msgstr "Speisepläne"
+msgstr "Neuen Speiseplan erstellen"
 
 #: src/templates/recipes/meal_plan_form.html:17
 #: src/templates/recipes/recipe_form.html:161
 #: src/templates/recipes/recipe_form.html:203
 msgid "Name"
-msgstr ""
+msgstr "Name"
 
 #: src/templates/recipes/meal_plan_form.html:30
 msgid "Optional description for this meal plan"
-msgstr ""
+msgstr "Optionale Beschreibung für diesen Speiseplan"
 
 #: src/templates/recipes/meal_plan_form.html:35
 msgid "Start Date"
-msgstr ""
+msgstr "Startdatum"
 
 #: src/templates/recipes/meal_plan_form.html:43
 msgid "End Date"
-msgstr ""
+msgstr "Enddatum"
 
 #: src/templates/recipes/meal_plan_form.html:53
-#, fuzzy
-#| msgid "Meal Plans"
 msgid "Update Meal Plan"
-msgstr "Speisepläne"
+msgstr "Speiseplan aktualisieren"
 
 #: src/templates/recipes/meal_plan_form.html:53
-#, fuzzy
-#| msgid "Meal Plans"
 msgid "Create Meal Plan"
-msgstr "Speisepläne"
+msgstr "Speiseplan erstellen"
 
 #: src/templates/recipes/meal_plan_list.html:37
 #, python-format
 msgid "%(counter)s meal"
 msgid_plural "%(counter)s meals"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(counter)s Mahlzeit"
+msgstr[1] "%(counter)s Mahlzeiten"
 
 #: src/templates/recipes/meal_plan_list.html:92
 msgid "No meal plans yet."
-msgstr ""
+msgstr "Noch keine Speisepläne vorhanden."
 
 #: src/templates/recipes/meal_plan_list.html:92
 msgid "Create your first meal plan"
-msgstr ""
+msgstr "Erstellen Sie Ihren ersten Speiseplan"
 
 #: src/templates/recipes/meal_plan_list.html:92
 msgid "to organize your weekly meals!"
-msgstr ""
+msgstr "um Ihre wöchentlichen Mahlzeiten zu organisieren!"
 
 #: src/templates/recipes/recipe_confirm_delete.html:9
 #: src/templates/recipes/recipe_form.html:10
 msgid "breadcrumb"
-msgstr ""
+msgstr "Brotkrumen-Navigation"
 
 #: src/templates/recipes/recipe_confirm_delete.html:26
 #, python-format
 msgid "Are you sure you want to delete the recipe <strong>%(title)s</strong>?"
-msgstr ""
+msgstr "Möchten Sie das Rezept <strong>%(title)s</strong> wirklich löschen?"
 
 #: src/templates/recipes/recipe_confirm_delete.html:27
 msgid ""
 "This action cannot be undone. All ingredients, steps, and images associated "
 "with this recipe will also be deleted."
-msgstr ""
+msgstr "Diese Aktion kann nicht rückgängig gemacht werden. Alle Zutaten, Schritte und Bilder, die mit diesem Rezept verbunden sind, werden ebenfalls gelöscht."
 
 #: src/templates/recipes/recipe_confirm_delete.html:33
-#, fuzzy
-#| msgid "Recipes"
 msgid "Delete Recipe"
-msgstr "Rezepte"
+msgstr "Rezept löschen"
 
 #: src/templates/recipes/recipe_detail.html:29
 #: src/templates/recipes/recipe_detail.html:48
 msgid "Download"
-msgstr ""
+msgstr "Herunterladen"
 
 #: src/templates/recipes/recipe_detail.html:94
 #: src/templates/recipes/recipe_detail.html:138
 msgid "Quick Info"
-msgstr ""
+msgstr "Kurzinfo"
 
 #: src/templates/recipes/recipe_detail.html:100
 #: src/templates/recipes/recipe_detail.html:144
 msgid "Scale recipe"
-msgstr ""
+msgstr "Rezept skalieren"
 
 #: src/templates/recipes/recipe_detail.html:101
 #: src/templates/recipes/recipe_detail.html:145
 msgid "Scale"
-msgstr ""
+msgstr "Skalieren"
 
 #: src/templates/recipes/recipe_detail.html:107
 #: src/templates/recipes/recipe_detail.html:151
 msgid "Prep"
-msgstr ""
+msgstr "Vorbereitung"
 
 #: src/templates/recipes/recipe_detail.html:113
 #: src/templates/recipes/recipe_detail.html:157
 msgid "Cook"
-msgstr ""
+msgstr "Kochen"
 
 #: src/templates/recipes/recipe_detail.html:127
 #: src/templates/recipes/recipe_detail.html:171
 msgid "Source"
-msgstr ""
+msgstr "Quelle"
 
 #: src/templates/recipes/recipe_detail.html:194
 #: src/templates/recipes/recipe_form.html:126
 #: src/templates/recipes/shopping_list.html:30
-#, fuzzy
-#| msgid "Ingredient Names"
 msgid "Ingredients"
-msgstr "Zutatennamen"
+msgstr "Zutaten"
 
 #: src/templates/recipes/recipe_detail.html:209
 msgid "No ingredients listed."
-msgstr ""
+msgstr "Keine Zutaten aufgelistet."
 
 #: src/templates/recipes/recipe_detail.html:218
 #: src/templates/recipes/recipe_form.html:227
 msgid "Instructions"
-msgstr ""
+msgstr "Anleitungen"
 
 #: src/templates/recipes/recipe_detail.html:228
 msgid "No instructions provided."
-msgstr ""
+msgstr "Keine Anleitungen angegeben."
 
 #: src/templates/recipes/recipe_detail.html:238
 #: src/templates/recipes/recipe_form.html:105
 msgid "Special Equipment"
-msgstr ""
+msgstr "Spezielle Ausrüstung"
 
 #: src/templates/recipes/recipe_detail.html:249
 #: src/templates/recipes/recipe_form.html:113
 msgid "Notes"
-msgstr ""
+msgstr "Notizen"
 
 #: src/templates/recipes/recipe_detail.html:259
 msgid "Last updated:"
-msgstr ""
+msgstr "Zuletzt aktualisiert:"
 
 #: src/templates/recipes/recipe_detail.html:268
-#, fuzzy
-#| msgid "Recipes"
 msgid "Scale Recipe"
-msgstr "Rezepte"
+msgstr "Rezept skalieren"
 
 #: src/templates/recipes/recipe_detail.html:269
 msgid "Close"
-msgstr ""
+msgstr "Schließen"
 
 #: src/templates/recipes/recipe_detail.html:275
-#, fuzzy
-#| msgid "Settings"
 msgid "By Servings"
-msgstr "Einstellungen"
+msgstr "Nach Portionen"
 
 #: src/templates/recipes/recipe_detail.html:280
-#, fuzzy
-#| msgid "Ingredient Names"
 msgid "By Ingredient"
-msgstr "Zutatennamen"
+msgstr "Nach Zutat"
 
 #: src/templates/recipes/recipe_detail.html:288
 msgid "New servings count:"
-msgstr ""
+msgstr "Neue Portionenanzahl:"
 
 #: src/templates/recipes/recipe_detail.html:289
 msgid "Enter servings"
-msgstr ""
+msgstr "Portionen eingeben"
 
 #: src/templates/recipes/recipe_detail.html:290
 #, python-format
-msgid "Original: %(servings)s serving%(servings|pluralize)s"
-msgstr ""
+msgid "Original: %(servings)s serving%(servings)s"
+msgstr "Original: %(servings)s Portion(en)"
 
 #: src/templates/recipes/recipe_detail.html:296
 msgid "Select ingredient:"
-msgstr ""
+msgstr "Zutat auswählen:"
 
 #: src/templates/recipes/recipe_detail.html:298
 msgid "Choose ingredient..."
-msgstr ""
+msgstr "Zutat wählen..."
 
 #: src/templates/recipes/recipe_detail.html:301
 #, python-format
 msgid "%(name)s (original: %(amount)s %(unit)s)"
-msgstr ""
+msgstr "%(name)s (original: %(amount)s %(unit)s)"
 
 #: src/templates/recipes/recipe_detail.html:307
 msgid "New amount:"
-msgstr ""
+msgstr "Neue Menge:"
 
 #: src/templates/recipes/recipe_detail.html:308
 msgid "e.g., 500 or 2 1/2"
-msgstr ""
+msgstr "z.B. 500 oder 2 1/2"
 
 #: src/templates/recipes/recipe_detail.html:309
 msgid "Enter the amount you have (e.g., \\"
-msgstr ""
+msgstr "Geben Sie die Menge ein, die Sie haben (z.B. \\"
 
 #: src/templates/recipes/recipe_detail.html:320
 msgid "Reset to Original"
-msgstr ""
+msgstr "Auf Original zurücksetzen"
 
 #: src/templates/recipes/recipe_detail.html:323
 msgid "Apply"
-msgstr ""
+msgstr "Anwenden"
 
 #: src/templates/recipes/recipe_form.html:5
 #: src/templates/recipes/recipe_form.html:17
 #: src/templates/recipes/recipe_list.html:22
-#, fuzzy
-#| msgid "Recipes"
 msgid "New Recipe"
-msgstr "Rezepte"
+msgstr "Neues Rezept"
 
 #: src/templates/recipes/recipe_form.html:26
-#, fuzzy
-#| msgid "Recipes"
 msgid "Edit Recipe"
-msgstr "Rezepte"
+msgstr "Rezept bearbeiten"
 
 #: src/templates/recipes/recipe_form.html:26
 msgid "Create New Recipe"
 msgstr ""
 
 #: src/templates/recipes/recipe_form.html:36
-#, fuzzy
-#| msgid "Recipes"
 msgid "Recipe Details"
-msgstr "Rezepte"
+msgstr "Rezeptdetails"
 
 #: src/templates/recipes/recipe_form.html:39
 msgid "Please correct the errors below:"
@@ -1080,7 +1002,7 @@ msgstr ""
 
 #: src/templates/recipes/recipe_form.html:45
 msgid "Title"
-msgstr ""
+msgstr "Titel"
 
 #: src/templates/recipes/recipe_form.html:69
 msgid "Prep Time"
@@ -1105,10 +1027,8 @@ msgstr ""
 
 #: src/templates/recipes/recipe_form.html:138
 #: src/templates/recipes/recipe_form.html:180
-#, fuzzy
-#| msgid "Ingredient Names"
 msgid "Ingredient"
-msgstr "Zutatennamen"
+msgstr "Zutat"
 
 #: src/templates/recipes/recipe_form.html:140
 #: src/templates/recipes/recipe_form.html:182
@@ -1131,28 +1051,26 @@ msgstr ""
 #: src/templates/recipes/recipe_form.html:153
 #: src/templates/recipes/recipe_form.html:195
 msgid "Amount"
-msgstr ""
+msgstr "Menge"
 
 #: src/templates/recipes/recipe_form.html:165
 #: src/templates/recipes/recipe_form.html:207
 msgid "Note"
-msgstr ""
+msgstr "Notiz"
 
 #: src/templates/recipes/recipe_form.html:217
-#, fuzzy
-#| msgid "Ingredient Names"
 msgid "Add Ingredient"
-msgstr "Zutatennamen"
+msgstr "Zutat hinzufügen"
 
 #: src/templates/recipes/recipe_form.html:239
 #: src/templates/recipes/recipe_form.html:270
 msgid "Step"
-msgstr ""
+msgstr "Schritt"
 
 #: src/templates/recipes/recipe_form.html:254
 #: src/templates/recipes/recipe_form.html:285
 msgid "Content"
-msgstr ""
+msgstr "Inhalt"
 
 #: src/templates/recipes/recipe_form.html:256
 #: src/templates/recipes/recipe_form.html:287
@@ -1165,36 +1083,32 @@ msgstr ""
 
 #: src/templates/recipes/recipe_form.html:306
 msgid "Images"
-msgstr ""
+msgstr "Bilder"
 
 #: src/templates/recipes/recipe_form.html:318
 #: src/templates/recipes/recipe_form.html:333
 #: src/templates/recipes/recipe_form.html:352
 #: src/templates/recipes/recipe_form.html:367
 msgid "Image"
-msgstr ""
+msgstr "Bild"
 
 #: src/templates/recipes/recipe_form.html:337
 #: src/templates/recipes/recipe_form.html:371
 msgid "Caption"
-msgstr ""
+msgstr "Bildunterschrift"
 
 #: src/templates/recipes/recipe_form.html:381
 msgid "Add Image"
 msgstr ""
 
 #: src/templates/recipes/recipe_form.html:393
-#, fuzzy
-#| msgid "Recipes"
 msgid "Update Recipe"
-msgstr "Rezepte"
+msgstr "Rezept aktualisieren"
 
 #: src/templates/recipes/recipe_form.html:393
 #: src/templates/recipes/recipe_list.html:121
-#, fuzzy
-#| msgid "Recipes"
 msgid "Create Recipe"
-msgstr "Rezepte"
+msgstr "Rezept erstellen"
 
 #: src/templates/recipes/recipe_form.html:433
 msgid "Existing keyword"
@@ -1202,22 +1116,18 @@ msgstr ""
 
 #: src/templates/recipes/recipe_form.html:434
 msgid "Suggestions:"
-msgstr ""
+msgstr "Vorschläge:"
 
 #: src/templates/recipes/recipe_form.html:435
-#, fuzzy
-#| msgid "Keywords"
 msgid "New keyword"
-msgstr "Stichwörter"
+msgstr "Neues Stichwort"
 
 #: src/templates/recipes/recipe_import.html:4
 #: src/templates/recipes/recipe_import.html:12
 #: src/templates/recipes/recipe_import.html:20
 #: src/templates/recipes/recipe_import.html:48
-#, fuzzy
-#| msgid "Recipes"
 msgid "Import Recipe"
-msgstr "Rezepte"
+msgstr "Rezept importieren"
 
 #: src/templates/recipes/recipe_import.html:24
 msgid "Upload Recipe File"
@@ -1231,7 +1141,7 @@ msgstr ""
 
 #: src/templates/recipes/recipe_import.html:32
 msgid "Format"
-msgstr ""
+msgstr "Format"
 
 #: src/templates/recipes/recipe_import.html:38
 msgid "Select the format of your recipe file"
@@ -1254,10 +1164,8 @@ msgid "Here's an example of the expected JSON format:"
 msgstr ""
 
 #: src/templates/recipes/recipe_list.html:9
-#, fuzzy
-#| msgid "Recipes"
 msgid "All Recipes"
-msgstr "Rezepte"
+msgstr "Alle Rezepte"
 
 #: src/templates/recipes/recipe_list.html:14
 msgid "Import JSON"
@@ -1277,10 +1185,8 @@ msgstr ""
 
 #: src/templates/recipes/recipe_list.html:75
 #: src/templates/recipes/recipes_by_property.html:34
-#, fuzzy
-#| msgid "Recipes"
 msgid "View Recipe"
-msgstr "Rezepte"
+msgstr "Rezept anzeigen"
 
 #: src/templates/recipes/recipe_list.html:83
 msgid "Recipe pagination"
@@ -1310,10 +1216,8 @@ msgstr ""
 
 #: src/templates/recipes/recipes_by_property.html:4
 #: src/templates/recipes/recipes_by_property.html:9
-#, fuzzy
-#| msgid "Recipes"
 msgid "Recipes with"
-msgstr "Rezepte"
+msgstr "Rezepte mit"
 
 #: src/templates/recipes/recipes_by_property.html:10
 #, python-format
@@ -1340,10 +1244,8 @@ msgstr ""
 #: src/templates/recipes/rename_ingredient_name.html:4
 #: src/templates/recipes/rename_ingredient_name.html:9
 #: src/templates/recipes/rename_ingredient_name.html:37
-#, fuzzy
-#| msgid "Ingredient Names"
 msgid "Rename Ingredient Name"
-msgstr "Zutatennamen"
+msgstr "Zutatenname umbenennen"
 
 #: src/templates/recipes/rename_ingredient_name.html:15
 #, python-format
@@ -1362,10 +1264,8 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: src/templates/recipes/rename_ingredient_name.html:25
-#, fuzzy
-#| msgid "Ingredient Names"
 msgid "Current Name"
-msgstr "Zutatennamen"
+msgstr "Aktueller Name"
 
 #: src/templates/recipes/rename_ingredient_name.html:30
 msgid "New Name"
@@ -1379,24 +1279,18 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: src/templates/recipes/rename_ingredient_name.html:46
-#, fuzzy
-#| msgid "Ingredient Names"
 msgid "No ingredient name specified."
-msgstr "Zutatennamen"
+msgstr "Kein Zutatenname angegeben."
 
 #: src/templates/recipes/rename_ingredient_name.html:46
-#, fuzzy
-#| msgid "Ingredient Names"
 msgid "Go back to ingredient names"
-msgstr "Zutatennamen"
+msgstr "Zurück zu Zutatennamen"
 
 #: src/templates/recipes/rename_keyword.html:4
 #: src/templates/recipes/rename_keyword.html:9
 #: src/templates/recipes/rename_keyword.html:37
-#, fuzzy
-#| msgid "Keywords"
 msgid "Rename Keyword"
-msgstr "Stichwörter"
+msgstr "Stichwort umbenennen"
 
 #: src/templates/recipes/rename_keyword.html:15
 #, python-format
@@ -1415,16 +1309,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: src/templates/recipes/rename_keyword.html:25
-#, fuzzy
-#| msgid "Keywords"
 msgid "Current Keyword"
-msgstr "Stichwörter"
+msgstr "Aktuelles Stichwort"
 
 #: src/templates/recipes/rename_keyword.html:30
-#, fuzzy
-#| msgid "Keywords"
 msgid "New Keyword"
-msgstr "Stichwörter"
+msgstr "Neues Stichwort"
 
 #: src/templates/recipes/rename_keyword.html:32
 #, python-format
@@ -1472,10 +1362,8 @@ msgid "Current Unit"
 msgstr ""
 
 #: src/templates/recipes/rename_unit.html:30
-#, fuzzy
-#| msgid "Units"
 msgid "New Unit"
-msgstr "Einheiten"
+msgstr "Neue Einheit"
 
 #: src/templates/recipes/rename_unit.html:32
 #, python-format
@@ -1526,7 +1414,7 @@ msgstr ""
 
 #: src/templates/recipes/settings.html:47
 msgid "Benefits:"
-msgstr ""
+msgstr "Vorteile:"
 
 #: src/templates/recipes/settings.html:49
 msgid "Access recipes offline"
@@ -1546,13 +1434,11 @@ msgstr ""
 
 #: src/templates/recipes/settings.html:62
 msgid "Theme"
-msgstr ""
+msgstr "Design"
 
 #: src/templates/recipes/settings.html:65
-#, fuzzy
-#| msgid "Choose your preferred language for the interface"
 msgid "Choose your preferred color theme"
-msgstr "Wählen Sie Ihre bevorzugte Sprache für die Benutzeroberfläche"
+msgstr "Wählen Sie Ihr bevorzugtes Farbschema"
 
 #: src/templates/recipes/settings.html:67
 msgid "Light Theme"
@@ -1560,7 +1446,7 @@ msgstr ""
 
 #: src/templates/recipes/settings.html:68
 msgid "Light"
-msgstr ""
+msgstr "Hell"
 
 #: src/templates/recipes/settings.html:70
 msgid "Dark Theme"
@@ -1568,7 +1454,7 @@ msgstr ""
 
 #: src/templates/recipes/settings.html:71
 msgid "Dark"
-msgstr ""
+msgstr "Dunkel"
 
 #: src/templates/recipes/settings.html:73
 msgid "Auto (System)"
@@ -1576,7 +1462,7 @@ msgstr ""
 
 #: src/templates/recipes/settings.html:74
 msgid "Auto"
-msgstr ""
+msgstr "Automatisch"
 
 #: src/templates/recipes/settings.html:83
 msgid "AI Integration"
@@ -1587,24 +1473,20 @@ msgid "Configure AI/LLM settings for recipe extraction"
 msgstr ""
 
 #: src/templates/recipes/settings.html:93
-#, fuzzy
-#| msgid "Settings"
 msgid "Update AI Settings"
-msgstr "Einstellungen"
+msgstr "KI-Einstellungen aktualisieren"
 
 #: src/templates/recipes/settings.html:97
 msgid "No AI settings configured yet."
 msgstr ""
 
 #: src/templates/recipes/settings.html:103
-#, fuzzy
-#| msgid "Settings"
 msgid "Create AI Settings"
-msgstr "Einstellungen"
+msgstr "KI-Einstellungen erstellen"
 
 #: src/templates/recipes/settings.html:113
 msgid "Administration"
-msgstr ""
+msgstr "Administration"
 
 #: src/templates/recipes/settings.html:116
 msgid "Access the Django admin interface for advanced management"
@@ -1621,14 +1503,12 @@ msgstr ""
 
 #: src/templates/recipes/shopping_list.html:19
 msgid "Print"
-msgstr ""
+msgstr "Drucken"
 
 #: src/templates/recipes/shopping_list.html:22
 #: src/templates/recipes/shopping_list.html:105
-#, fuzzy
-#| msgid "Meal Plans"
 msgid "Back to Meal Plan"
-msgstr "Speisepläne"
+msgstr "Zurück zum Speiseplan"
 
 #: src/templates/recipes/shopping_list.html:99
 msgid "No ingredients found. Add some meals to your meal plan first!"
