@@ -6,7 +6,6 @@ import logging
 from datetime import timedelta
 
 from django.core.management.base import BaseCommand
-
 from recipes.models import Ingredient, Recipe, Step
 
 logger = logging.getLogger(__name__)
