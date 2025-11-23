@@ -8,6 +8,7 @@ from django.shortcuts import redirect, render
 from django.utils import translation
 
 from ..forms import AISettingsForm, UserSettingsForm
+from ..middleware import LANGUAGE_SESSION_KEY
 from ..models import AISettings, UserSettings
 
 logger = logging.getLogger(__name__)
@@ -37,7 +38,7 @@ def settings_view(request: HttpRequest) -> HttpResponse:
                 # Activate the new language immediately
                 language = user_form.cleaned_data["language"]
                 translation.activate(language)
-                request.session["django_language"] = language
+                request.session[LANGUAGE_SESSION_KEY] = language
                 messages.success(request, "Language settings saved successfully!")
                 logger.info(f"Language settings updated to {language}")
                 return redirect("settings")
