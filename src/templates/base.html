@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0d6efd">
-    <meta name="description" content="Your personal recipe manager for organizing, creating, and sharing recipes">
+    <meta name="description" content="{% trans 'Your personal recipe manager for organizing, creating, and sharing recipes' %}">
     <title>{% block title %}{% trans "Plated - Recipe Manager" %}{% endblock %}</title>
     {% load static %}
     <link rel="manifest" href="{% url 'manifest' %}">
@@ -92,7 +92,7 @@
 
     <footer class="text-center py-3 mt-5">
         <div class="container">
-            <p class="text-muted mb-0">Plated - Your Recipe Manager</p>
+            <p class="text-muted mb-0">{% trans "Plated - Your Recipe Manager" %}</p>
         </div>
     </footer>
 

@@ -1,17 +1,18 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Recipes with {{ property_type }}: {{ property_value }} - Plated{% endblock %}
+{% block title %}{% trans "Recipes with" %} {{ property_type }}: {{ property_value }} - Plated{% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-12">
-        <h1>Recipes with {{ property_type }}: <strong>{{ property_value }}</strong></h1>
-        <p class="lead text-muted">Showing all recipes that use this {{ property_type|lower }}.</p>
+        <h1>{% trans "Recipes with" %} {{ property_type }}: <strong>{{ property_value }}</strong></h1>
+        <p class="lead text-muted">{% blocktrans %}Showing all recipes that use this {{ property_type }}.{% endblocktrans %}</p>
         <hr>
 
         {% if recipes %}
         <div class="alert alert-info">
-            <i class="bi bi-info-circle"></i> Found {{ recipes|length }} recipe{{ recipes|length|pluralize }} using "{{ property_value }}".
+            <i class="bi bi-info-circle"></i> {% blocktrans count counter=recipes|length %}Found {{ counter }} recipe using "{{ property_value }}".{% plural %}Found {{ counter }} recipes using "{{ property_value }}".{% endblocktrans %}
         </div>
 
         <div class="row">
@@ -28,9 +29,9 @@
                         {% endif %}
                         <div class="d-flex justify-content-between align-items-center">
                             <small class="text-muted">
-                                <i class="bi bi-people"></i> {{ recipe.servings }} serving{{ recipe.servings|pluralize }}
+                                <i class="bi bi-people"></i> {% blocktrans count counter=recipe.servings %}{{ counter }} serving{% plural %}{{ counter }} servings{% endblocktrans %}
                             </small>
-                            <a href="{% url 'recipe_detail' recipe.pk %}" class="btn btn-sm btn-primary">View Recipe</a>
+                            <a href="{% url 'recipe_detail' recipe.pk %}" class="btn btn-sm btn-primary">{% trans "View Recipe" %}</a>
                         </div>
                     </div>
                 </div>
@@ -39,13 +40,13 @@
         </div>
         {% else %}
         <div class="alert alert-warning">
-            <p class="mb-0">No recipes found using "{{ property_value }}".</p>
+            <p class="mb-0">{% blocktrans %}No recipes found using "{{ property_value }}".{% endblocktrans %}</p>
         </div>
         {% endif %}
 
         <div class="mt-4">
             <a href="{% url back_url %}" class="btn btn-secondary">
-                <i class="bi bi-arrow-left"></i> Back to {{ property_type }} Management
+                <i class="bi bi-arrow-left"></i> {% blocktrans %}Back to {{ property_type }} Management{% endblocktrans %}
             </a>
         </div>
     </div>

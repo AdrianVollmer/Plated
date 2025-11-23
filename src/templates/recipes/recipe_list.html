@@ -1,24 +1,25 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Recipes - Plated{% endblock %}
+{% block title %}{% trans "Recipes" %} - Plated{% endblock %}
 
 {% block content %}
 <div class="row mb-4">
     <div class="col-12 col-md-8 mb-3 mb-md-0">
-        <h1 class="display-5">All Recipes</h1>
+        <h1 class="display-5">{% trans "All Recipes" %}</h1>
     </div>
     <div class="col-12 col-md-4 text-md-end">
         <div class="d-flex flex-column flex-md-row gap-2 justify-content-md-end">
             <a href="{% url 'recipe_import' %}" class="btn btn-outline-success">
-                <i class="bi bi-upload"></i> Import JSON
+                <i class="bi bi-upload"></i> {% trans "Import JSON" %}
             </a>
             {% if ai_settings_available %}
             <a href="{% url 'ai_extract_recipe' %}" class="btn btn-outline-primary">
-                <i class="bi bi-stars"></i> AI Extract
+                <i class="bi bi-stars"></i> {% trans "AI Extract" %}
             </a>
             {% endif %}
             <a href="{% url 'recipe_create' %}" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> New Recipe
+                <i class="bi bi-plus-circle"></i> {% trans "New Recipe" %}
             </a>
         </div>
     </div>
@@ -28,8 +29,8 @@
     <div class="col-12">
         <div class="search-container">
             <form method="get" class="input-group">
-                <input type="text" name="q" class="form-control search-input" placeholder="Search recipes by title, description, or keywords..." value="{{ request.GET.q }}">
-                <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i> Search</button>
+                <input type="text" name="q" class="form-control search-input" placeholder="{% trans 'Search recipes by title, description, or keywords...' %}" value="{{ request.GET.q }}">
+                <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i> {% trans "Search" %}</button>
             </form>
         </div>
     </div>
@@ -53,7 +54,7 @@
                     {% if recipe.description %}
                         {{ recipe.description|truncatewords:20 }}
                     {% else %}
-                        No description available.
+                        {% trans "No description available." %}
                     {% endif %}
                 </p>
                 <div class="recipe-card-meta">
@@ -71,7 +72,7 @@
                 </div>
             </div>
             <div class="recipe-card-footer">
-                <a href="{% url 'recipe_detail' recipe.pk %}" class="btn btn-sm btn-outline-primary w-100">View Recipe</a>
+                <a href="{% url 'recipe_detail' recipe.pk %}" class="btn btn-sm btn-outline-primary w-100">{% trans "View Recipe" %}</a>
             </div>
         </div>
     </div>
@@ -79,27 +80,27 @@
 </div>
 
 {% if is_paginated %}
-<nav aria-label="Recipe pagination" class="mt-4">
+<nav aria-label="{% trans 'Recipe pagination' %}" class="mt-4">
     <ul class="pagination justify-content-center">
         {% if page_obj.has_previous %}
         <li class="page-item">
-            <a class="page-link" href="?page=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">First</a>
+            <a class="page-link" href="?page=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">{% trans "First" %}</a>
         </li>
         <li class="page-item">
-            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Previous</a>
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">{% trans "Previous" %}</a>
         </li>
         {% endif %}
 
         <li class="page-item active">
-            <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            <span class="page-link">{% blocktrans with number=page_obj.number total=page_obj.paginator.num_pages %}Page {{ number }} of {{ total }}{% endblocktrans %}</span>
         </li>
 
         {% if page_obj.has_next %}
         <li class="page-item">
-            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Next</a>
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">{% trans "Next" %}</a>
         </li>
         <li class="page-item">
-            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Last</a>
+            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">{% trans "Last" %}</a>
         </li>
         {% endif %}
     </ul>
@@ -111,13 +112,13 @@
     <div class="empty-state-icon">
         <i class="bi bi-journal-text" style="font-size: 4rem;"></i>
     </div>
-    <h3 class="empty-state-title">No recipes found</h3>
+    <h3 class="empty-state-title">{% trans "No recipes found" %}</h3>
     {% if request.GET.q %}
-    <p class="empty-state-text">No recipes match your search "{{ request.GET.q }}"</p>
-    <a href="{% url 'recipe_list' %}" class="btn btn-secondary">Clear search</a>
+    <p class="empty-state-text">{% blocktrans with query=request.GET.q %}No recipes match your search "{{ query }}"{% endblocktrans %}</p>
+    <a href="{% url 'recipe_list' %}" class="btn btn-secondary">{% trans "Clear search" %}</a>
     {% else %}
-    <p class="empty-state-text">Get started by creating your first recipe!</p>
-    <a href="{% url 'recipe_create' %}" class="btn btn-primary">Create Recipe</a>
+    <p class="empty-state-text">{% trans "Get started by creating your first recipe!" %}</p>
+    <a href="{% url 'recipe_create' %}" class="btn btn-primary">{% trans "Create Recipe" %}</a>
     {% endif %}
 </div>
 {% endif %}

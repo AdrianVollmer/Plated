@@ -1,19 +1,20 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Rename Unit - Plated{% endblock %}
+{% block title %}{% trans "Rename Unit" %} - Plated{% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-md-8 offset-md-2">
-        <h1>Rename Unit</h1>
+        <h1>{% trans "Rename Unit" %}</h1>
         <hr>
 
         {% if old_unit %}
         <div class="alert alert-info">
             <h5 class="alert-heading">
-                <i class="bi bi-info-circle"></i> About to rename: <strong>{{ old_unit }}</strong>
+                <i class="bi bi-info-circle"></i> {% blocktrans %}About to rename: <strong>{{ old_unit }}</strong>{% endblocktrans %}
             </h5>
-            <p class="mb-0">This unit is used in <strong>{{ usage_count }}</strong> ingredient{{ usage_count|pluralize }} across your recipes.</p>
+            <p class="mb-0">{% blocktrans count counter=usage_count %}This unit is used in <strong>{{ counter }}</strong> ingredient across your recipes.{% plural %}This unit is used in <strong>{{ counter }}</strong> ingredients across your recipes.{% endblocktrans %}</p>
         </div>
 
         <form method="post">
@@ -21,28 +22,28 @@
             <input type="hidden" name="old_unit" value="{{ old_unit }}">
 
             <div class="mb-3">
-                <label for="old_unit_display" class="form-label">Current Unit</label>
+                <label for="old_unit_display" class="form-label">{% trans "Current Unit" %}</label>
                 <input type="text" class="form-control" id="old_unit_display" value="{{ old_unit }}" disabled>
             </div>
 
             <div class="mb-3">
-                <label for="new_unit" class="form-label">New Unit</label>
+                <label for="new_unit" class="form-label">{% trans "New Unit" %}</label>
                 <input type="text" class="form-control" id="new_unit" name="new_unit" autofocus>
-                <small class="form-text text-muted">All {{ usage_count }} occurrence{{ usage_count|pluralize }} will be updated. Leave blank to remove the unit.</small>
+                <small class="form-text text-muted">{% blocktrans count counter=usage_count %}All {{ counter }} occurrence will be updated. Leave blank to remove the unit.{% plural %}All {{ counter }} occurrences will be updated. Leave blank to remove the unit.{% endblocktrans %}</small>
             </div>
 
             <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-pencil"></i> Rename Unit
+                    <i class="bi bi-pencil"></i> {% trans "Rename Unit" %}
                 </button>
                 <a href="{% url 'manage_units' %}" class="btn btn-secondary">
-                    <i class="bi bi-x-circle"></i> Cancel
+                    <i class="bi bi-x-circle"></i> {% trans "Cancel" %}
                 </a>
             </div>
         </form>
         {% else %}
         <div class="alert alert-warning">
-            <p class="mb-0">No unit specified. <a href="{% url 'manage_units' %}">Go back to units</a>.</p>
+            <p class="mb-0">{% trans "No unit specified." %} <a href="{% url 'manage_units' %}">{% trans "Go back to units" %}</a>.</p>
         </div>
         {% endif %}
     </div>

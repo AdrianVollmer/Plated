@@ -1,19 +1,20 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
-{% block title %}{% if object %}Edit {{ object.title }}{% else %}New Recipe{% endif %} - Plated{% endblock %}
+{% block title %}{% if object %}{% trans "Edit" %} {{ object.title }}{% else %}{% trans "New Recipe" %}{% endif %} - Plated{% endblock %}
 
 {% block content %}
 <div class="row mb-3">
     <div class="col">
-        <nav aria-label="breadcrumb">
+        <nav aria-label="{% trans 'breadcrumb' %}">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'recipe_list' %}">Recipes</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'recipe_list' %}">{% trans "Recipes" %}</a></li>
                 {% if object %}
                 <li class="breadcrumb-item"><a href="{% url 'recipe_detail' object.pk %}">{{ object.title }}</a></li>
-                <li class="breadcrumb-item active">Edit</li>
+                <li class="breadcrumb-item active">{% trans "Edit" %}</li>
                 {% else %}
-                <li class="breadcrumb-item active">New Recipe</li>
+                <li class="breadcrumb-item active">{% trans "New Recipe" %}</li>
                 {% endif %}
             </ol>
         </nav>
@@ -22,7 +23,7 @@
 
 <div class="row mb-4">
     <div class="col-md-8 offset-md-2">
-        <h1 class="recipe-title">{% if object %}Edit Recipe{% else %}Create New Recipe{% endif %}</h1>
+        <h1 class="recipe-title">{% if object %}{% trans "Edit Recipe" %}{% else %}{% trans "Create New Recipe" %}{% endif %}</h1>
     </div>
 </div>
 
@@ -32,16 +33,16 @@
     <div class="row mb-4">
         <div class="col-md-8 offset-md-2">
             <div class="form-section">
-                <div class="form-section-header">Recipe Details</div>
+                <div class="form-section-header">{% trans "Recipe Details" %}</div>
                     {% if form.errors %}
                     <div class="alert alert-danger">
-                        <strong>Please correct the errors below:</strong>
+                        <strong>{% trans "Please correct the errors below:" %}</strong>
                         {{ form.errors }}
                     </div>
                     {% endif %}
 
                     <div class="mb-3">
-                        <label for="{{ form.title.id_for_label }}" class="form-label">Title *</label>
+                        <label for="{{ form.title.id_for_label }}" class="form-label">{% trans "Title" %} *</label>
                         {{ form.title }}
                         {% if form.title.errors %}
                         <div class="invalid-feedback d-block">{{ form.title.errors }}</div>
@@ -49,7 +50,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                        <label for="{{ form.description.id_for_label }}" class="form-label">{% trans "Description" %}</label>
                         {{ form.description }}
                         {% if form.description.errors %}
                         <div class="invalid-feedback d-block">{{ form.description.errors }}</div>
@@ -58,24 +59,24 @@
 
                     <div class="row">
                         <div class="col-md-4 mb-3">
-                            <label for="{{ form.servings.id_for_label }}" class="form-label">Servings *</label>
+                            <label for="{{ form.servings.id_for_label }}" class="form-label">{% trans "Servings" %} *</label>
                             {{ form.servings }}
                             {% if form.servings.errors %}
                             <div class="invalid-feedback d-block">{{ form.servings.errors }}</div>
                             {% endif %}
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label for="{{ form.prep_time.id_for_label }}" class="form-label">Prep Time</label>
+                            <label for="{{ form.prep_time.id_for_label }}" class="form-label">{% trans "Prep Time" %}</label>
                             {{ form.prep_time }}
-                            <small class="form-text text-muted">Format: HH:MM:SS</small>
+                            <small class="form-text text-muted">{% trans "Format: HH:MM:SS" %}</small>
                             {% if form.prep_time.errors %}
                             <div class="invalid-feedback d-block">{{ form.prep_time.errors }}</div>
                             {% endif %}
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label for="{{ form.wait_time.id_for_label }}" class="form-label">Cook/Wait Time</label>
+                            <label for="{{ form.wait_time.id_for_label }}" class="form-label">{% trans "Cook/Wait Time" %}</label>
                             {{ form.wait_time }}
-                            <small class="form-text text-muted">Format: HH:MM:SS</small>
+                            <small class="form-text text-muted">{% trans "Format: HH:MM:SS" %}</small>
                             {% if form.wait_time.errors %}
                             <div class="invalid-feedback d-block">{{ form.wait_time.errors }}</div>
                             {% endif %}
@@ -83,17 +84,17 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="{{ form.keywords.id_for_label }}" class="form-label">Keywords</label>
+                        <label for="{{ form.keywords.id_for_label }}" class="form-label">{% trans "Keywords" %}</label>
                         {{ form.keywords }}
                         <div id="keyword-suggestions" class="mt-1"></div>
-                        <small class="form-text text-muted">Comma-separated keywords (e.g., italian, pasta, vegetarian)</small>
+                        <small class="form-text text-muted">{% trans "Comma-separated keywords (e.g., italian, pasta, vegetarian)" %}</small>
                         {% if form.keywords.errors %}
                         <div class="invalid-feedback d-block">{{ form.keywords.errors }}</div>
                         {% endif %}
                     </div>
 
                     <div class="mb-3">
-                        <label for="{{ form.url.id_for_label }}" class="form-label">Source URL</label>
+                        <label for="{{ form.url.id_for_label }}" class="form-label">{% trans "Source URL" %}</label>
                         {{ form.url }}
                         {% if form.url.errors %}
                         <div class="invalid-feedback d-block">{{ form.url.errors }}</div>
@@ -101,7 +102,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="{{ form.special_equipment.id_for_label }}" class="form-label">Special Equipment</label>
+                        <label for="{{ form.special_equipment.id_for_label }}" class="form-label">{% trans "Special Equipment" %}</label>
                         {{ form.special_equipment }}
                         {% if form.special_equipment.errors %}
                         <div class="invalid-feedback d-block">{{ form.special_equipment.errors }}</div>
@@ -109,7 +110,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="{{ form.notes.id_for_label }}" class="form-label">Notes</label>
+                        <label for="{{ form.notes.id_for_label }}" class="form-label">{% trans "Notes" %}</label>
                         {{ form.notes }}
                         {% if form.notes.errors %}
                         <div class="invalid-feedback d-block">{{ form.notes.errors }}</div>
@@ -122,7 +123,7 @@
     <div class="row mb-4">
         <div class="col-md-8 offset-md-2">
             <div class="form-section">
-                <div class="form-section-header">Ingredients</div>
+                <div class="form-section-header">{% trans "Ingredients" %}</div>
                     {{ ingredient_formset.management_form }}
                     {% if ingredient_formset.errors %}
                     <div class="alert alert-danger">{{ ingredient_formset.errors }}</div>
@@ -134,34 +135,34 @@
                             {{ form.id }}
                             {{ form.DELETE }}
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <strong class="text-muted">Ingredient</strong>
+                                <strong class="text-muted">{% trans "Ingredient" %}</strong>
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <button type="button" class="btn btn-outline-secondary move-up-btn" title="Move up">
+                                    <button type="button" class="btn btn-outline-secondary move-up-btn" title="{% trans 'Move up' %}">
                                         <i class="bi bi-arrow-up"></i>
                                     </button>
-                                    <button type="button" class="btn btn-outline-secondary move-down-btn" title="Move down">
+                                    <button type="button" class="btn btn-outline-secondary move-down-btn" title="{% trans 'Move down' %}">
                                         <i class="bi bi-arrow-down"></i>
                                     </button>
-                                    <button type="button" class="btn btn-outline-danger delete-form-btn" title="Delete">
+                                    <button type="button" class="btn btn-outline-danger delete-form-btn" title="{% trans 'Delete' %}">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-2">
-                                    <label class="form-label small">Amount</label>
+                                    <label class="form-label small">{% trans "Amount" %}</label>
                                     {{ form.amount }}
                                 </div>
                                 <div class="col-md-2">
-                                    <label class="form-label small">Unit</label>
+                                    <label class="form-label small">{% trans "Unit" %}</label>
                                     {{ form.unit }}
                                 </div>
                                 <div class="col-md-5">
-                                    <label class="form-label small">Name *</label>
+                                    <label class="form-label small">{% trans "Name" %} *</label>
                                     {{ form.name }}
                                 </div>
                                 <div class="col-md-3">
-                                    <label class="form-label small">Note</label>
+                                    <label class="form-label small">{% trans "Note" %}</label>
                                     {{ form.note }}
                                 </div>
                             </div>
@@ -176,34 +177,34 @@
                             {{ ingredient_formset.empty_form.id }}
                             {{ ingredient_formset.empty_form.DELETE }}
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <strong class="text-muted">Ingredient</strong>
+                                <strong class="text-muted">{% trans "Ingredient" %}</strong>
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <button type="button" class="btn btn-outline-secondary move-up-btn" title="Move up">
+                                    <button type="button" class="btn btn-outline-secondary move-up-btn" title="{% trans 'Move up' %}">
                                         <i class="bi bi-arrow-up"></i>
                                     </button>
-                                    <button type="button" class="btn btn-outline-secondary move-down-btn" title="Move down">
+                                    <button type="button" class="btn btn-outline-secondary move-down-btn" title="{% trans 'Move down' %}">
                                         <i class="bi bi-arrow-down"></i>
                                     </button>
-                                    <button type="button" class="btn btn-outline-danger delete-form-btn" title="Delete">
+                                    <button type="button" class="btn btn-outline-danger delete-form-btn" title="{% trans 'Delete' %}">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-2">
-                                    <label class="form-label small">Amount</label>
+                                    <label class="form-label small">{% trans "Amount" %}</label>
                                     {{ ingredient_formset.empty_form.amount }}
                                 </div>
                                 <div class="col-md-2">
-                                    <label class="form-label small">Unit</label>
+                                    <label class="form-label small">{% trans "Unit" %}</label>
                                     {{ ingredient_formset.empty_form.unit }}
                                 </div>
                                 <div class="col-md-5">
-                                    <label class="form-label small">Name *</label>
+                                    <label class="form-label small">{% trans "Name" %} *</label>
                                     {{ ingredient_formset.empty_form.name }}
                                 </div>
                                 <div class="col-md-3">
-                                    <label class="form-label small">Note</label>
+                                    <label class="form-label small">{% trans "Note" %}</label>
                                     {{ ingredient_formset.empty_form.note }}
                                 </div>
                             </div>
@@ -213,7 +214,7 @@
 
                     <div class="text-center mt-3">
                         <button type="button" class="btn btn-sm btn-outline-primary" id="add-ingredient-btn">
-                            <i class="bi bi-plus-circle"></i> Add Ingredient
+                            <i class="bi bi-plus-circle"></i> {% trans "Add Ingredient" %}
                         </button>
                     </div>
                 </div>
@@ -223,7 +224,7 @@
     <div class="row mb-4">
         <div class="col-md-8 offset-md-2">
             <div class="form-section">
-                <div class="form-section-header">Instructions</div>
+                <div class="form-section-header">{% trans "Instructions" %}</div>
                     {{ step_formset.management_form }}
                     {% if step_formset.errors %}
                     <div class="alert alert-danger">{{ step_formset.errors }}</div>
@@ -235,24 +236,24 @@
                             {{ form.id }}
                             {{ form.DELETE }}
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <strong class="text-muted">Step <span class="step-number">{{ forloop.counter }}</span></strong>
+                                <strong class="text-muted">{% trans "Step" %} <span class="step-number">{{ forloop.counter }}</span></strong>
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <button type="button" class="btn btn-outline-secondary move-up-btn" title="Move up">
+                                    <button type="button" class="btn btn-outline-secondary move-up-btn" title="{% trans 'Move up' %}">
                                         <i class="bi bi-arrow-up"></i>
                                     </button>
-                                    <button type="button" class="btn btn-outline-secondary move-down-btn" title="Move down">
+                                    <button type="button" class="btn btn-outline-secondary move-down-btn" title="{% trans 'Move down' %}">
                                         <i class="bi bi-arrow-down"></i>
                                     </button>
-                                    <button type="button" class="btn btn-outline-danger delete-form-btn" title="Delete">
+                                    <button type="button" class="btn btn-outline-danger delete-form-btn" title="{% trans 'Delete' %}">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-12">
-                                    <label class="form-label small">Content</label>
+                                    <label class="form-label small">{% trans "Content" %}</label>
                                     {{ form.content }}
-                                    <small class="form-text text-muted">Markdown supported</small>
+                                    <small class="form-text text-muted">{% trans "Markdown supported" %}</small>
                                 </div>
                             </div>
                             {{ form.order }}
@@ -266,24 +267,24 @@
                             {{ step_formset.empty_form.id }}
                             {{ step_formset.empty_form.DELETE }}
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <strong class="text-muted">Step <span class="step-number">1</span></strong>
+                                <strong class="text-muted">{% trans "Step" %} <span class="step-number">1</span></strong>
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <button type="button" class="btn btn-outline-secondary move-up-btn" title="Move up">
+                                    <button type="button" class="btn btn-outline-secondary move-up-btn" title="{% trans 'Move up' %}">
                                         <i class="bi bi-arrow-up"></i>
                                     </button>
-                                    <button type="button" class="btn btn-outline-secondary move-down-btn" title="Move down">
+                                    <button type="button" class="btn btn-outline-secondary move-down-btn" title="{% trans 'Move down' %}">
                                         <i class="bi bi-arrow-down"></i>
                                     </button>
-                                    <button type="button" class="btn btn-outline-danger delete-form-btn" title="Delete">
+                                    <button type="button" class="btn btn-outline-danger delete-form-btn" title="{% trans 'Delete' %}">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-12">
-                                    <label class="form-label small">Content</label>
+                                    <label class="form-label small">{% trans "Content" %}</label>
                                     {{ step_formset.empty_form.content }}
-                                    <small class="form-text text-muted">Markdown supported</small>
+                                    <small class="form-text text-muted">{% trans "Markdown supported" %}</small>
                                 </div>
                             </div>
                             {{ step_formset.empty_form.order }}
@@ -292,7 +293,7 @@
 
                     <div class="text-center mt-3">
                         <button type="button" class="btn btn-sm btn-outline-primary" id="add-step-btn">
-                            <i class="bi bi-plus-circle"></i> Add Step
+                            <i class="bi bi-plus-circle"></i> {% trans "Add Step" %}
                         </button>
                     </div>
                 </div>
@@ -302,7 +303,7 @@
     <div class="row mb-4">
         <div class="col-md-8 offset-md-2">
             <div class="form-section">
-                <div class="form-section-header">Images</div>
+                <div class="form-section-header">{% trans "Images" %}</div>
                     {{ image_formset.management_form }}
                     {% if image_formset.errors %}
                     <div class="alert alert-danger">{{ image_formset.errors }}</div>
@@ -314,26 +315,26 @@
                             {{ form.id }}
                             {{ form.DELETE }}
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <strong class="text-muted">Image</strong>
+                                <strong class="text-muted">{% trans "Image" %}</strong>
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <button type="button" class="btn btn-outline-secondary move-up-btn" title="Move up">
+                                    <button type="button" class="btn btn-outline-secondary move-up-btn" title="{% trans 'Move up' %}">
                                         <i class="bi bi-arrow-up"></i>
                                     </button>
-                                    <button type="button" class="btn btn-outline-secondary move-down-btn" title="Move down">
+                                    <button type="button" class="btn btn-outline-secondary move-down-btn" title="{% trans 'Move down' %}">
                                         <i class="bi bi-arrow-down"></i>
                                     </button>
-                                    <button type="button" class="btn btn-outline-danger delete-form-btn" title="Delete">
+                                    <button type="button" class="btn btn-outline-danger delete-form-btn" title="{% trans 'Delete' %}">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-8">
-                                    <label class="form-label small">Image</label>
+                                    <label class="form-label small">{% trans "Image" %}</label>
                                     {{ form.image }}
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label small">Caption</label>
+                                    <label class="form-label small">{% trans "Caption" %}</label>
                                     {{ form.caption }}
                                 </div>
                             </div>
@@ -348,26 +349,26 @@
                             {{ image_formset.empty_form.id }}
                             {{ image_formset.empty_form.DELETE }}
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <strong class="text-muted">Image</strong>
+                                <strong class="text-muted">{% trans "Image" %}</strong>
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <button type="button" class="btn btn-outline-secondary move-up-btn" title="Move up">
+                                    <button type="button" class="btn btn-outline-secondary move-up-btn" title="{% trans 'Move up' %}">
                                         <i class="bi bi-arrow-up"></i>
                                     </button>
-                                    <button type="button" class="btn btn-outline-secondary move-down-btn" title="Move down">
+                                    <button type="button" class="btn btn-outline-secondary move-down-btn" title="{% trans 'Move down' %}">
                                         <i class="bi bi-arrow-down"></i>
                                     </button>
-                                    <button type="button" class="btn btn-outline-danger delete-form-btn" title="Delete">
+                                    <button type="button" class="btn btn-outline-danger delete-form-btn" title="{% trans 'Delete' %}">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-8">
-                                    <label class="form-label small">Image</label>
+                                    <label class="form-label small">{% trans "Image" %}</label>
                                     {{ image_formset.empty_form.image }}
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label small">Caption</label>
+                                    <label class="form-label small">{% trans "Caption" %}</label>
                                     {{ image_formset.empty_form.caption }}
                                 </div>
                             </div>
@@ -377,7 +378,7 @@
 
                     <div class="text-center mt-3">
                         <button type="button" class="btn btn-sm btn-outline-primary" id="add-image-btn">
-                            <i class="bi bi-plus-circle"></i> Add Image
+                            <i class="bi bi-plus-circle"></i> {% trans "Add Image" %}
                         </button>
                     </div>
                 </div>
@@ -388,8 +389,8 @@
     <div class="row mb-4">
         <div class="col-md-8 offset-md-2">
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                <a href="{% if object %}{% url 'recipe_detail' object.pk %}{% else %}{% url 'recipe_list' %}{% endif %}" class="btn btn-secondary">Cancel</a>
-                <button type="submit" class="btn btn-primary">{% if object %}Update Recipe{% else %}Create Recipe{% endif %}</button>
+                <a href="{% if object %}{% url 'recipe_detail' object.pk %}{% else %}{% url 'recipe_list' %}{% endif %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+                <button type="submit" class="btn btn-primary">{% if object %}{% trans "Update Recipe" %}{% else %}{% trans "Create Recipe" %}{% endif %}</button>
             </div>
         </div>
     </div>
@@ -427,6 +428,12 @@
 <script src="{% static 'dynamic-formset.js' %}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Translated strings for JavaScript
+    const i18n = {
+        existingKeyword: "{% trans 'Existing keyword' %}",
+        suggestions: "{% trans 'Suggestions:' %}",
+        newKeyword: "{% trans 'New keyword' %}"
+    };
     // Create datalist elements for autocomplete
     const nameDatalist = document.createElement('datalist');
     nameDatalist.id = 'ingredient-names-list';
@@ -517,7 +524,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const isExisting = existingKeywords.includes(currentKeyword);
 
             if (isExisting) {
-                suggestionsDiv.innerHTML = '<span class="badge bg-success"><i class="bi bi-check-circle"></i> Existing keyword</span>';
+                suggestionsDiv.innerHTML = '<span class="badge bg-success"><i class="bi bi-check-circle"></i> ' + i18n.existingKeyword + '</span>';
             } else {
                 // Find matching suggestions
                 const matches = existingKeywords.filter(k => k.includes(currentKeyword));
@@ -526,7 +533,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const matchHtml = matches.slice(0, 5).map(m =>
                         `<span class="badge bg-info me-1" style="cursor: pointer;" data-keyword="${m}">${m}</span>`
                     ).join('');
-                    suggestionsDiv.innerHTML = '<small class="text-muted">Suggestions: ' + matchHtml + '</small>';
+                    suggestionsDiv.innerHTML = '<small class="text-muted">' + i18n.suggestions + ' ' + matchHtml + '</small>';
 
                     // Add click handlers to suggestion badges
                     suggestionsDiv.querySelectorAll('.badge[data-keyword]').forEach(badge => {
@@ -535,7 +542,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         });
                     });
                 } else {
-                    suggestionsDiv.innerHTML = '<span class="badge bg-warning text-dark"><i class="bi bi-plus-circle"></i> New keyword</span>';
+                    suggestionsDiv.innerHTML = '<span class="badge bg-warning text-dark"><i class="bi bi-plus-circle"></i> ' + i18n.newKeyword + '</span>';
                 }
             }
         }

@@ -1,28 +1,29 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Delete {{ meal_plan.name }} - Plated{% endblock %}
+{% block title %}{% trans "Delete" %} {{ meal_plan.name }} - Plated{% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-md-6 offset-md-3">
         <div class="card border-danger">
             <div class="card-header bg-danger text-white">
-                <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Confirm Deletion</h5>
+                <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> {% trans "Confirm Deletion" %}</h5>
             </div>
             <div class="card-body">
-                <p>Are you sure you want to delete the meal plan <strong>{{ meal_plan.name }}</strong>?</p>
+                <p>{% blocktrans with name=meal_plan.name %}Are you sure you want to delete the meal plan <strong>{{ name }}</strong>?{% endblocktrans %}</p>
                 <p class="text-muted">
-                    This will remove all meal entries associated with this plan. This action cannot be undone.
+                    {% trans "This will remove all meal entries associated with this plan. This action cannot be undone." %}
                 </p>
 
                 <form method="post" class="mt-4">
                     {% csrf_token %}
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-danger">
-                            <i class="bi bi-trash"></i> Yes, Delete Meal Plan
+                            <i class="bi bi-trash"></i> {% trans "Yes, Delete Meal Plan" %}
                         </button>
                         <a href="{% url 'meal_plan_detail' meal_plan.pk %}" class="btn btn-outline-secondary">
-                            Cancel
+                            {% trans "Cancel" %}
                         </a>
                     </div>
                 </form>

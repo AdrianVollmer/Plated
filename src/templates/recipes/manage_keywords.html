@@ -1,24 +1,25 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Manage Keywords - Plated{% endblock %}
+{% block title %}{% trans "Manage Keywords" %} - Plated{% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-12">
-        <h1>Manage Keywords</h1>
-        <p class="lead text-muted">View all distinct keywords used across your recipes.</p>
+        <h1>{% trans "Manage Keywords" %}</h1>
+        <p class="lead text-muted">{% trans "View all distinct keywords used across your recipes." %}</p>
         <hr>
 
         <div class="row mb-4">
             <div class="col-md-6">
                 <form method="get" class="input-group">
-                    <input type="text" name="q" class="form-control" placeholder="Search keywords..." value="{{ query|default:'' }}">
+                    <input type="text" name="q" class="form-control" placeholder="{% trans 'Search keywords...' %}" value="{{ query|default:'' }}">
                     <button type="submit" class="btn btn-outline-primary">
-                        <i class="bi bi-search"></i> Search
+                        <i class="bi bi-search"></i> {% trans "Search" %}
                     </button>
                     {% if query %}
                     <a href="{% url 'manage_keywords' %}" class="btn btn-outline-secondary">
-                        <i class="bi bi-x"></i> Clear
+                        <i class="bi bi-x"></i> {% trans "Clear" %}
                     </a>
                     {% endif %}
                 </form>
@@ -27,17 +28,17 @@
 
         {% if keywords %}
         <div class="alert alert-info">
-            <i class="bi bi-info-circle"></i> Found {{ keywords|length }} distinct keyword{{ keywords|length|pluralize }}.
-            Use consistent keywords to help organize and find recipes.
+            <i class="bi bi-info-circle"></i> {% blocktrans count counter=keywords|length %}Found {{ counter }} distinct keyword.{% plural %}Found {{ counter }} distinct keywords.{% endblocktrans %}
+            {% trans "Use consistent keywords to help organize and find recipes." %}
         </div>
 
         <div class="table-responsive">
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <th>Keyword</th>
-                        <th class="text-end">Usage Count</th>
-                        <th class="text-end">Actions</th>
+                        <th>{% trans "Keyword" %}</th>
+                        <th class="text-end">{% trans "Usage Count" %}</th>
+                        <th class="text-end">{% trans "Actions" %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -47,27 +48,27 @@
                         <td class="text-end">
                             {% if keyword.usage_count > 0 %}
                             <a href="{% url 'recipes_with_keyword' keyword.keyword %}" class="badge bg-secondary text-decoration-none">
-                                {{ keyword.usage_count }} time{{ keyword.usage_count|pluralize }}
+                                {% blocktrans count counter=keyword.usage_count %}{{ counter }} time{% plural %}{{ counter }} times{% endblocktrans %}
                             </a>
                             {% else %}
-                            <span class="badge bg-secondary">0 times</span>
+                            <span class="badge bg-secondary">{% trans "0 times" %}</span>
                             {% endif %}
                         </td>
                         <td class="text-end">
                             <a href="{% url 'rename_keyword' %}?keyword={{ keyword.keyword|urlencode }}" class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-pencil"></i> Rename
+                                <i class="bi bi-pencil"></i> {% trans "Rename" %}
                             </a>
                             {% if keyword.usage_count == 0 %}
-                            <form method="post" action="{% url 'delete_keyword' %}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete \'{{ keyword.keyword }}\'?');">
+                            <form method="post" action="{% url 'delete_keyword' %}" class="d-inline" onsubmit="return confirm('{% trans "Are you sure you want to delete" %} \'{{ keyword.keyword }}\'?');">
                                 {% csrf_token %}
                                 <input type="hidden" name="keyword" value="{{ keyword.keyword }}">
                                 <button type="submit" class="btn btn-sm btn-outline-danger">
-                                    <i class="bi bi-trash"></i> Delete
+                                    <i class="bi bi-trash"></i> {% trans "Delete" %}
                                 </button>
                             </form>
                             {% else %}
-                            <button type="button" class="btn btn-sm btn-outline-secondary" disabled title="Cannot delete: in use">
-                                <i class="bi bi-trash"></i> Delete
+                            <button type="button" class="btn btn-sm btn-outline-secondary" disabled title="{% trans 'Cannot delete: in use' %}">
+                                <i class="bi bi-trash"></i> {% trans "Delete" %}
                             </button>
                             {% endif %}
                         </td>
@@ -79,16 +80,16 @@
         {% else %}
         <div class="alert alert-warning">
             {% if query %}
-            <p class="mb-0">No keywords found matching "{{ query }}".</p>
+            <p class="mb-0">{% blocktrans %}No keywords found matching "{{ query }}".{% endblocktrans %}</p>
             {% else %}
-            <p class="mb-0">No keywords found in your recipes yet.</p>
+            <p class="mb-0">{% trans "No keywords found in your recipes yet." %}</p>
             {% endif %}
         </div>
         {% endif %}
 
         <div class="mt-4">
             <a href="{% url 'recipe_list' %}" class="btn btn-secondary">
-                <i class="bi bi-arrow-left"></i> Back to Recipes
+                <i class="bi bi-arrow-left"></i> {% trans "Back to Recipes" %}
             </a>
         </div>
     </div>

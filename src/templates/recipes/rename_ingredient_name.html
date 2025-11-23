@@ -1,19 +1,20 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Rename Ingredient Name - Plated{% endblock %}
+{% block title %}{% trans "Rename Ingredient Name" %} - Plated{% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-md-8 offset-md-2">
-        <h1>Rename Ingredient Name</h1>
+        <h1>{% trans "Rename Ingredient Name" %}</h1>
         <hr>
 
         {% if old_name %}
         <div class="alert alert-info">
             <h5 class="alert-heading">
-                <i class="bi bi-info-circle"></i> About to rename: <strong>{{ old_name }}</strong>
+                <i class="bi bi-info-circle"></i> {% blocktrans %}About to rename: <strong>{{ old_name }}</strong>{% endblocktrans %}
             </h5>
-            <p class="mb-0">This ingredient name is used in <strong>{{ usage_count }}</strong> ingredient{{ usage_count|pluralize }} across your recipes.</p>
+            <p class="mb-0">{% blocktrans count counter=usage_count %}This ingredient name is used in <strong>{{ counter }}</strong> ingredient across your recipes.{% plural %}This ingredient name is used in <strong>{{ counter }}</strong> ingredients across your recipes.{% endblocktrans %}</p>
         </div>
 
         <form method="post">
@@ -21,28 +22,28 @@
             <input type="hidden" name="old_name" value="{{ old_name }}">
 
             <div class="mb-3">
-                <label for="old_name_display" class="form-label">Current Name</label>
+                <label for="old_name_display" class="form-label">{% trans "Current Name" %}</label>
                 <input type="text" class="form-control" id="old_name_display" value="{{ old_name }}" disabled>
             </div>
 
             <div class="mb-3">
-                <label for="new_name" class="form-label">New Name *</label>
+                <label for="new_name" class="form-label">{% trans "New Name" %} *</label>
                 <input type="text" class="form-control" id="new_name" name="new_name" required autofocus>
-                <small class="form-text text-muted">All {{ usage_count }} occurrence{{ usage_count|pluralize }} will be updated</small>
+                <small class="form-text text-muted">{% blocktrans count counter=usage_count %}All {{ counter }} occurrence will be updated{% plural %}All {{ counter }} occurrences will be updated{% endblocktrans %}</small>
             </div>
 
             <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-pencil"></i> Rename Ingredient Name
+                    <i class="bi bi-pencil"></i> {% trans "Rename Ingredient Name" %}
                 </button>
                 <a href="{% url 'manage_ingredient_names' %}" class="btn btn-secondary">
-                    <i class="bi bi-x-circle"></i> Cancel
+                    <i class="bi bi-x-circle"></i> {% trans "Cancel" %}
                 </a>
             </div>
         </form>
         {% else %}
         <div class="alert alert-warning">
-            <p class="mb-0">No ingredient name specified. <a href="{% url 'manage_ingredient_names' %}">Go back to ingredient names</a>.</p>
+            <p class="mb-0">{% trans "No ingredient name specified." %} <a href="{% url 'manage_ingredient_names' %}">{% trans "Go back to ingredient names" %}</a>.</p>
         </div>
         {% endif %}
     </div>

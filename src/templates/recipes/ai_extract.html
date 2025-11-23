@@ -1,34 +1,34 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}AI Recipe Extraction - Plated{% endblock %}
+{% block title %}{% trans "AI Recipe Extraction" %} - Plated{% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-md-8 offset-md-2">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="display-6">
-                <i class="bi bi-stars"></i> AI Recipe Extraction
+                <i class="bi bi-stars"></i> {% trans "AI Recipe Extraction" %}
             </h1>
             <a href="{% url 'recipe_list' %}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> Back
+                <i class="bi bi-arrow-left"></i> {% trans "Back" %}
             </a>
         </div>
 
         <div class="card">
             <div class="card-body">
                 <p class="text-muted mb-4">
-                    Paste recipe text, HTML, or provide a URL, and let AI extract the recipe information for you.
-                    You can also provide additional instructions like "translate to German" or "convert to metric units".
+                    {% trans "Paste recipe text, HTML, or provide a URL, and let AI extract the recipe information for you. You can also provide additional instructions like \"translate to German\" or \"convert to metric units\"." %}
                 </p>
 
                 {% if ai_settings %}
                 <div class="alert {% if ai_settings.timeout > 10 %}alert-info{% else %}alert-success{% endif %} mb-4">
                     <i class="bi bi-clock"></i>
-                    <strong>Timeout: {{ ai_settings.timeout }}s</strong>
+                    <strong>{% trans "Timeout:" %} {{ ai_settings.timeout }}s</strong>
                     {% if ai_settings.timeout > 10 %}
-                    - This job will run in the background. You can check its progress on the <a href="{% url 'jobs_list' %}" class="alert-link">Jobs page</a>.
+                    - {% trans "This job will run in the background. You can check its progress on the" %} <a href="{% url 'jobs_list' %}" class="alert-link">{% trans "Jobs page" %}</a>.
                     {% else %}
-                    - This job will run immediately and you'll wait for the result.
+                    - {% trans "This job will run immediately and you'll wait for the result." %}
                     {% endif %}
                 </div>
                 {% endif %}
@@ -81,7 +81,7 @@
                     <!-- Submit Button -->
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary btn-lg">
-                            <i class="bi bi-stars"></i> Extract Recipe with AI
+                            <i class="bi bi-stars"></i> {% trans "Extract Recipe with AI" %}
                         </button>
                     </div>
                 </form>
@@ -91,14 +91,14 @@
         <!-- Help Section -->
         <div class="card mt-4">
             <div class="card-header">
-                <h6 class="mb-0"><i class="bi bi-info-circle"></i> Tips</h6>
+                <h6 class="mb-0"><i class="bi bi-info-circle"></i> {% trans "Tips" %}</h6>
             </div>
             <div class="card-body">
                 <ul class="mb-0">
-                    <li><strong>Plain Text:</strong> Paste recipe text directly from any source.</li>
-                    <li><strong>HTML:</strong> Paste HTML code containing a recipe (e.g., copied from browser developer tools).</li>
-                    <li><strong>URL:</strong> Provide a direct link to a recipe webpage.</li>
-                    <li><strong>Instructions:</strong> Add custom instructions like "translate to Spanish", "convert to metric", or "make it vegan".</li>
+                    <li><strong>{% trans "Plain Text:" %}</strong> {% trans "Paste recipe text directly from any source." %}</li>
+                    <li><strong>{% trans "HTML:" %}</strong> {% trans "Paste HTML code containing a recipe (e.g., copied from browser developer tools)." %}</li>
+                    <li><strong>{% trans "URL:" %}</strong> {% trans "Provide a direct link to a recipe webpage." %}</li>
+                    <li><strong>{% trans "Instructions:" %}</strong> {% trans "Add custom instructions like \"translate to Spanish\", \"convert to metric\", or \"make it vegan\"." %}</li>
                 </ul>
             </div>
         </div>

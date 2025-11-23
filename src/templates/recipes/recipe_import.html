@@ -1,14 +1,15 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Import Recipe - Plated{% endblock %}
+{% block title %}{% trans "Import Recipe" %} - Plated{% endblock %}
 
 {% block content %}
 <div class="row mb-3">
     <div class="col">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'recipe_list' %}">Recipes</a></li>
-                <li class="breadcrumb-item active">Import Recipe</li>
+                <li class="breadcrumb-item"><a href="{% url 'recipe_list' %}">{% trans "Recipes" %}</a></li>
+                <li class="breadcrumb-item active">{% trans "Import Recipe" %}</li>
             </ol>
         </nav>
     </div>
@@ -16,37 +17,36 @@
 
 <div class="row">
     <div class="col-md-8 offset-md-2">
-        <h1 class="display-5 mb-4">Import Recipe</h1>
+        <h1 class="display-5 mb-4">{% trans "Import Recipe" %}</h1>
 
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Upload Recipe File</h5>
+                <h5 class="card-title">{% trans "Upload Recipe File" %}</h5>
                 <p class="card-text text-muted mb-4">
-                    Upload a recipe file to import it into your collection.
-                    Select the format from the dropdown below.
+                    {% trans "Upload a recipe file to import it into your collection. Select the format from the dropdown below." %}
                 </p>
 
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="mb-3">
-                        <label for="format" class="form-label">Format</label>
+                        <label for="format" class="form-label">{% trans "Format" %}</label>
                         <select class="form-select" id="format" name="format" required>
                             {% for format_id, format_name in formats %}
                             <option value="{{ format_id }}"{% if format_id == 'json' %} selected{% endif %}>{{ format_name }}</option>
                             {% endfor %}
                         </select>
-                        <div class="form-text">Select the format of your recipe file</div>
+                        <div class="form-text">{% trans "Select the format of your recipe file" %}</div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="recipe_file" class="form-label">Select Recipe File</label>
+                        <label for="recipe_file" class="form-label">{% trans "Select Recipe File" %}</label>
                         <input type="file" class="form-control" id="recipe_file" name="recipe_file" required>
-                        <div class="form-text">Upload your recipe file in the selected format</div>
+                        <div class="form-text">{% trans "Upload your recipe file in the selected format" %}</div>
                     </div>
 
                     <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary">Import Recipe</button>
-                        <a href="{% url 'recipe_list' %}" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">{% trans "Import Recipe" %}</button>
+                        <a href="{% url 'recipe_list' %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
                     </div>
                 </form>
             </div>
@@ -54,8 +54,8 @@
 
         <div class="card mt-4">
             <div class="card-body">
-                <h5 class="card-title">JSON Schema Example</h5>
-                <p class="card-text text-muted">Here's an example of the expected JSON format:</p>
+                <h5 class="card-title">{% trans "JSON Schema Example" %}</h5>
+                <p class="card-text text-muted">{% trans "Here's an example of the expected JSON format:" %}</p>
                 <pre class="code-block p-3 rounded"><code>{
   "title": "Chocolate Chip Cookies",
   "description": "Classic homemade cookies",

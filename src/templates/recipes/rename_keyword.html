@@ -1,19 +1,20 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Rename Keyword - Plated{% endblock %}
+{% block title %}{% trans "Rename Keyword" %} - Plated{% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-md-8 offset-md-2">
-        <h1>Rename Keyword</h1>
+        <h1>{% trans "Rename Keyword" %}</h1>
         <hr>
 
         {% if old_keyword %}
         <div class="alert alert-info">
             <h5 class="alert-heading">
-                <i class="bi bi-info-circle"></i> About to rename: <strong>{{ old_keyword }}</strong>
+                <i class="bi bi-info-circle"></i> {% blocktrans %}About to rename: <strong>{{ old_keyword }}</strong>{% endblocktrans %}
             </h5>
-            <p class="mb-0">This keyword is used in <strong>{{ usage_count }}</strong> recipe{{ usage_count|pluralize }} across your recipes.</p>
+            <p class="mb-0">{% blocktrans count counter=usage_count %}This keyword is used in <strong>{{ counter }}</strong> recipe across your recipes.{% plural %}This keyword is used in <strong>{{ counter }}</strong> recipes across your recipes.{% endblocktrans %}</p>
         </div>
 
         <form method="post">
@@ -21,28 +22,28 @@
             <input type="hidden" name="old_keyword" value="{{ old_keyword }}">
 
             <div class="mb-3">
-                <label for="old_keyword_display" class="form-label">Current Keyword</label>
+                <label for="old_keyword_display" class="form-label">{% trans "Current Keyword" %}</label>
                 <input type="text" class="form-control" id="old_keyword_display" value="{{ old_keyword }}" disabled>
             </div>
 
             <div class="mb-3">
-                <label for="new_keyword" class="form-label">New Keyword</label>
+                <label for="new_keyword" class="form-label">{% trans "New Keyword" %}</label>
                 <input type="text" class="form-control" id="new_keyword" name="new_keyword" required autofocus>
-                <small class="form-text text-muted">All {{ usage_count }} occurrence{{ usage_count|pluralize }} will be updated. Duplicate keywords will be automatically removed.</small>
+                <small class="form-text text-muted">{% blocktrans count counter=usage_count %}All {{ counter }} occurrence will be updated. Duplicate keywords will be automatically removed.{% plural %}All {{ counter }} occurrences will be updated. Duplicate keywords will be automatically removed.{% endblocktrans %}</small>
             </div>
 
             <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-pencil"></i> Rename Keyword
+                    <i class="bi bi-pencil"></i> {% trans "Rename Keyword" %}
                 </button>
                 <a href="{% url 'manage_keywords' %}" class="btn btn-secondary">
-                    <i class="bi bi-x-circle"></i> Cancel
+                    <i class="bi bi-x-circle"></i> {% trans "Cancel" %}
                 </a>
             </div>
         </form>
         {% else %}
         <div class="alert alert-warning">
-            <p class="mb-0">No keyword specified. <a href="{% url 'manage_keywords' %}">Go back to keywords</a>.</p>
+            <p class="mb-0">{% trans "No keyword specified." %} <a href="{% url 'manage_keywords' %}">{% trans "Go back to keywords" %}</a>.</p>
         </div>
         {% endif %}
     </div>
