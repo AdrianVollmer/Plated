@@ -1,11 +1,30 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Settings - Plated{% endblock %}
+{% block title %}{% trans "Settings" %} - Plated{% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-md-8 offset-md-2">
-        <h1 class="mb-4">Settings</h1>
+        <h1 class="mb-4">{% trans "Settings" %}</h1>
+
+        <!-- Language Settings Section -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">{% trans "Language" %}</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">{% trans "Choose your preferred language for the interface" %}</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="user_settings" value="1">
+                    {{ user_form.as_p }}
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle"></i> {% trans "Save Language" %}
+                    </button>
+                </form>
+            </div>
+        </div>
 
         <!-- PWA Installation Section -->
         <div class="card mb-4">

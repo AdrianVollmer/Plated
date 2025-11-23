@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from django.conf import settings as django_settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
@@ -207,3 +208,25 @@ class AIJob(models.Model):
 
     def __str__(self) -> str:
         return f"AI Job {self.pk} - {self.get_status_display()} ({self.created_at.strftime('%Y-%m-%d %H:%M')})"
+
+
+class UserSettings(models.Model):
+    """User-specific settings including language preference."""
+
+    # Use session_key as a unique identifier for users (works without authentication)
+    session_key = models.CharField(max_length=40, unique=True, db_index=True)
+    language = models.CharField(
+        max_length=10,
+        choices=[(lang[0], lang[1]) for lang in django_settings.LANGUAGES],
+        default=django_settings.LANGUAGE_CODE,
+        help_text="Preferred language for the interface",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "User Settings"
+        verbose_name_plural = "User Settings"
+
+    def __str__(self) -> str:
+        return f"Settings for {self.session_key} (Language: {self.get_language_display()})"

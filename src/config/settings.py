@@ -34,6 +34,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -102,6 +103,19 @@ TIME_ZONE = os.environ.get("TIME_ZONE", "UTC")
 USE_I18N = True
 
 USE_TZ = True
+
+# Supported languages for the application
+LANGUAGES = [
+    ("en", "English"),
+    ("es", "Español"),
+    ("fr", "Français"),
+    ("de", "Deutsch"),
+    ("it", "Italiano"),
+    ("pt", "Português"),
+]
+
+# Path where translation files will be stored
+LOCALE_PATHS = [BASE_DIR / "locale"]
 
 
 # Static files (CSS, JavaScript, Images)

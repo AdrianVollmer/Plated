@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from django import forms
 
-from .models import AISettings, Recipe
+from .models import AISettings, Recipe, UserSettings
 
 
 class RecipeForm(forms.ModelForm):
@@ -125,3 +125,17 @@ class AIRecipeExtractionForm(forms.Form):
         required=False,
         help_text="Additional instructions for the AI model",
     )
+
+
+class UserSettingsForm(forms.ModelForm):
+    """Form for managing user settings including language preference."""
+
+    class Meta:
+        model = UserSettings
+        fields = ["language"]
+        widgets = {
+            "language": forms.Select(attrs={"class": "form-select"}),
+        }
+        labels = {
+            "language": "Interface Language",
+        }
