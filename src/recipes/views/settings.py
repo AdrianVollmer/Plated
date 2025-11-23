@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 
+from django.conf import settings as django_settings
 from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
@@ -41,7 +42,10 @@ def settings_view(request: HttpRequest) -> HttpResponse:
                 request.session[LANGUAGE_SESSION_KEY] = language
                 messages.success(request, "Language settings saved successfully!")
                 logger.info(f"Language settings updated to {language}")
-                return redirect("settings")
+                # Set language cookie to persist across requests
+                response = redirect("settings")
+                response.set_cookie(django_settings.LANGUAGE_COOKIE_NAME, language)
+                return response
         # Handle AI settings form submission
         elif "ai_settings" in request.POST:
             if ai_settings:

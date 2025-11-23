@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 
+from django.conf import settings
 from django.http import HttpRequest, HttpResponse
 
 from .models import UserSettings
@@ -22,14 +23,21 @@ class UserLanguageMiddleware:
             request.session.create()
 
         # Try to get user's language preference from database
+        user_language = None
         try:
             user_settings = UserSettings.objects.get(session_key=request.session.session_key)
             # Set the language in the session for LocaleMiddleware to pick up
             if user_settings.language:
-                request.session[LANGUAGE_SESSION_KEY] = user_settings.language
+                user_language = user_settings.language
+                request.session[LANGUAGE_SESSION_KEY] = user_language
         except UserSettings.DoesNotExist:
             # No user settings yet, will use default language
             pass
 
         response = self.get_response(request)
+
+        # Set language cookie to persist across requests
+        if user_language:
+            response.set_cookie(settings.LANGUAGE_COOKIE_NAME, user_language)
+
         return response
