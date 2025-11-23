@@ -52,6 +52,16 @@
                     </li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
+                    {% if has_any_jobs %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'jobs_list' %}">
+                            Jobs
+                            {% if unseen_jobs_count > 0 %}
+                            <span class="badge bg-danger rounded-pill">{{ unseen_jobs_count }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+                    {% endif %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'settings' %}">Settings</a>
                     </li>

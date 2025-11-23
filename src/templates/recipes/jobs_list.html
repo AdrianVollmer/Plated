@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}AI Jobs - Plated{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1>AI Extraction Jobs</h1>
+        <p class="lead text-muted">View and manage your AI recipe extraction jobs</p>
+        <hr>
+
+        {% if jobs %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Created</th>
+                        <th>Status</th>
+                        <th>Input Type</th>
+                        <th>Timeout</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for job in jobs %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'job_detail' job.pk %}">#{{ job.pk }}</a>
+                            {% if not job.seen and job.status in "completed,failed" %}
+                            <span class="badge bg-info ms-1">New</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ job.created_at|date:"Y-m-d H:i" }}</td>
+                        <td>
+                            {% if job.status == "pending" %}
+                            <span class="badge bg-secondary">{{ job.get_status_display }}</span>
+                            {% elif job.status == "running" %}
+                            <span class="badge bg-warning">{{ job.get_status_display }}</span>
+                            {% elif job.status == "completed" %}
+                            <span class="badge bg-success">{{ job.get_status_display }}</span>
+                            {% elif job.status == "failed" %}
+                            <span class="badge bg-danger">{{ job.get_status_display }}</span>
+                            {% elif job.status == "cancelled" %}
+                            <span class="badge bg-secondary">{{ job.get_status_display }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ job.get_input_type_display }}</td>
+                        <td>{{ job.timeout }}s</td>
+                        <td class="text-end">
+                            <a href="{% url 'job_detail' job.pk %}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+                            {% if job.status == "failed" %}
+                            <form method="post" action="{% url 'job_retry' job.pk %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-warning" title="Retry">
+                                    <i class="bi bi-arrow-clockwise"></i>
+                                </button>
+                            </form>
+                            {% endif %}
+                            {% if job.status in "pending,running" %}
+                            <form method="post" action="{% url 'job_cancel' job.pk %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-secondary" title="Cancel">
+                                    <i class="bi bi-x-circle"></i>
+                                </button>
+                            </form>
+                            {% endif %}
+                            {% if job.status in "completed,failed,cancelled" %}
+                            <form method="post" action="{% url 'job_delete' job.pk %}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete job #{{ job.pk }}?');">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <script>
+            // Auto-refresh if there are pending or running jobs
+            {% if jobs|length > 0 %}
+            const hasPendingOrRunning = [{% for job in jobs %}{% if job.status in "pending,running" %}true,{% endif %}{% endfor %}].some(x => x);
+            if (hasPendingOrRunning) {
+                setTimeout(() => {
+                    location.reload();
+                }, 5000);  // Refresh every 5 seconds
+            }
+            {% endif %}
+        </script>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> No jobs found. <a href="{% url 'ai_extract_recipe' %}">Extract a recipe with AI</a> to create a job.
+        </div>
+        {% endif %}
+
+        <div class="mt-4">
+            <a href="{% url 'recipe_list' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Recipes
+            </a>
+            <a href="{% url 'ai_extract_recipe' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> New AI Extraction
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

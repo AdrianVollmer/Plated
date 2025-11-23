@@ -21,6 +21,18 @@
                     You can also provide additional instructions like "translate to German" or "convert to metric units".
                 </p>
 
+                {% if ai_settings %}
+                <div class="alert {% if ai_settings.timeout > 10 %}alert-info{% else %}alert-success{% endif %} mb-4">
+                    <i class="bi bi-clock"></i>
+                    <strong>Timeout: {{ ai_settings.timeout }}s</strong>
+                    {% if ai_settings.timeout > 10 %}
+                    - This job will run in the background. You can check its progress on the <a href="{% url 'jobs_list' %}" class="alert-link">Jobs page</a>.
+                    {% else %}
+                    - This job will run immediately and you'll wait for the result.
+                    {% endif %}
+                </div>
+                {% endif %}
+
                 <form method="post">
                     {% csrf_token %}
 

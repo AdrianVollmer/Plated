@@ -62,7 +62,7 @@ class AISettingsForm(forms.ModelForm):
 
     class Meta:
         model = AISettings
-        fields = ["api_url", "api_key", "model", "max_tokens", "temperature"]
+        fields = ["api_url", "api_key", "model", "max_tokens", "temperature", "timeout"]
         widgets = {
             "api_url": forms.URLInput(
                 attrs={
@@ -84,6 +84,7 @@ class AISettingsForm(forms.ModelForm):
             ),
             "max_tokens": forms.NumberInput(attrs={"class": "form-control", "min": 1, "max": 100000}),
             "temperature": forms.NumberInput(attrs={"class": "form-control", "min": 0.0, "max": 2.0, "step": 0.1}),
+            "timeout": forms.NumberInput(attrs={"class": "form-control", "min": 10, "max": 600}),
         }
 
 

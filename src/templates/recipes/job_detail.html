@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}AI Job #{{ job.pk }} - Plated{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <h1>AI Job #{{ job.pk }}</h1>
+        <hr>
+
+        <div class="card mb-3">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Job Status</h5>
+                {% if job.status == "pending" %}
+                <span class="badge bg-secondary">{{ job.get_status_display }}</span>
+                {% elif job.status == "running" %}
+                <span class="badge bg-warning">{{ job.get_status_display }}</span>
+                {% elif job.status == "completed" %}
+                <span class="badge bg-success">{{ job.get_status_display }}</span>
+                {% elif job.status == "failed" %}
+                <span class="badge bg-danger">{{ job.get_status_display }}</span>
+                {% elif job.status == "cancelled" %}
+                <span class="badge bg-secondary">{{ job.get_status_display }}</span>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-3">Created:</dt>
+                    <dd class="col-sm-9">{{ job.created_at|date:"Y-m-d H:i:s" }}</dd>
+
+                    <dt class="col-sm-3">Input Type:</dt>
+                    <dd class="col-sm-9">{{ job.get_input_type_display }}</dd>
+
+                    <dt class="col-sm-3">Timeout:</dt>
+                    <dd class="col-sm-9">{{ job.timeout }} seconds</dd>
+
+                    {% if job.started_at %}
+                    <dt class="col-sm-3">Started:</dt>
+                    <dd class="col-sm-9">{{ job.started_at|date:"Y-m-d H:i:s" }}</dd>
+                    {% endif %}
+
+                    {% if job.completed_at %}
+                    <dt class="col-sm-3">Completed:</dt>
+                    <dd class="col-sm-9">{{ job.completed_at|date:"Y-m-d H:i:s" }}</dd>
+                    {% endif %}
+                </dl>
+            </div>
+        </div>
+
+        {% if job.status == "running" or job.status == "pending" %}
+        <div class="alert alert-info">
+            <div class="d-flex align-items-center">
+                <div class="spinner-border spinner-border-sm me-2" role="status">
+                    <span class="visually-hidden">Processing...</span>
+                </div>
+                <div>
+                    Job is {{ job.get_status_display|lower }}. This page will automatically refresh...
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if job.status == "completed" %}
+        <div class="alert alert-success">
+            <i class="bi bi-check-circle-fill"></i> Recipe extracted successfully!
+        </div>
+        <div class="d-grid gap-2">
+            <a href="{% url 'job_use_result' job.pk %}" class="btn btn-primary btn-lg">
+                <i class="bi bi-file-earmark-plus"></i> Use This Recipe
+            </a>
+        </div>
+        {% endif %}
+
+        {% if job.status == "failed" %}
+        <div class="alert alert-danger">
+            <h5 class="alert-heading"><i class="bi bi-exclamation-triangle-fill"></i> Job Failed</h5>
+            <p class="mb-0">{{ job.error_message }}</p>
+        </div>
+        <form method="post" action="{% url 'job_retry' job.pk %}" class="d-grid">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-warning btn-lg">
+                <i class="bi bi-arrow-clockwise"></i> Retry Job
+            </button>
+        </form>
+        {% endif %}
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="mb-0">Input Content</h5>
+            </div>
+            <div class="card-body">
+                {% if job.instructions %}
+                <p><strong>Instructions:</strong> {{ job.instructions }}</p>
+                <hr>
+                {% endif %}
+                <pre class="bg-light p-3 rounded" style="max-height: 300px; overflow-y: auto;">{{ job.input_content }}</pre>
+            </div>
+        </div>
+
+        <div class="mt-4 d-flex gap-2">
+            <a href="{% url 'jobs_list' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Jobs
+            </a>
+            {% if job.status in "pending,running" %}
+            <form method="post" action="{% url 'job_cancel' job.pk %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-secondary">
+                    <i class="bi bi-x-circle"></i> Cancel Job
+                </button>
+            </form>
+            {% elif job.status in "completed,failed,cancelled" %}
+            <form method="post" action="{% url 'job_delete' job.pk %}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this job?');">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-danger">
+                    <i class="bi bi-trash"></i> Delete Job
+                </button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    // Auto-refresh if job is pending or running
+    {% if job.status in "pending,running" %}
+    setTimeout(() => {
+        location.reload();
+    }, 3000);  // Refresh every 3 seconds
+    {% endif %}
+</script>
+{% endblock %}

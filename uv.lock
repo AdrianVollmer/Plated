@@ -166,6 +166,19 @@ wheels = [
 ]
 
 [[package]]
+name = "django-background-tasks"
+version = "1.2.8"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+    { name = "six" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/dd/e3/d2c442305e922912f68fa157f92bec6661c150110bdce62c3bac58c62931/django_background_tasks-1.2.8.tar.gz", hash = "sha256:1ed5816f8d60f0ed436cd0435405e55e7b91e825fd69bcdada2d605ee1a97056", size = 21287, upload-time = "2024-08-16T14:39:21.56Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/61/ba/e8d45c180bbc2eb98d461db1931d53ed6786a294f0cc3847b22b6de22ff5/django_background_tasks-1.2.8-py3-none-any.whl", hash = "sha256:266b64316e364771afc3af73ae4c3e75f16782aa69e36c9e71d289cfd241347f", size = 25154, upload-time = "2024-08-16T14:39:20.227Z" },
+]
+
+[[package]]
 name = "django-stubs"
 version = "5.2.7"
 source = { registry = "https://pypi.org/simple" }
@@ -556,6 +569,7 @@ source = { editable = "." }
 dependencies = [
     { name = "colorlog" },
     { name = "django" },
+    { name = "django-background-tasks" },
     { name = "pillow" },
     { name = "requests" },
 ]
@@ -576,6 +590,7 @@ dev = [
 requires-dist = [
     { name = "colorlog", specifier = ">=6.10.1" },
     { name = "django", specifier = ">=5.2.8" },
+    { name = "django-background-tasks", specifier = ">=1.2.8" },
     { name = "pillow", specifier = ">=12.0.0" },
     { name = "requests", specifier = ">=2.32.5" },
 ]

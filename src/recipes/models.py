@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 
@@ -112,6 +113,11 @@ class AISettings(models.Model):
         default=0.7,
         help_text="Temperature for response randomness (0.0 to 2.0)",
     )
+    timeout = models.PositiveIntegerField(
+        default=60,
+        validators=[MinValueValidator(10), MaxValueValidator(600)],
+        help_text="Timeout in seconds (10-600). Jobs with timeout > 10s run in background.",
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -163,3 +169,41 @@ class MealPlanEntry(models.Model):
 
     def __str__(self) -> str:
         return f"{self.recipe.title} - {self.get_meal_type_display()} on {self.date}"
+
+
+class AIJob(models.Model):
+    """A background job for AI recipe extraction."""
+
+    STATUS_CHOICES = [
+        ("pending", "Pending"),
+        ("running", "Running"),
+        ("completed", "Completed"),
+        ("failed", "Failed"),
+        ("cancelled", "Cancelled"),
+    ]
+
+    INPUT_TYPE_CHOICES = [
+        ("text", "Text"),
+        ("html", "HTML"),
+        ("url", "URL"),
+    ]
+
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
+    input_type = models.CharField(max_length=10, choices=INPUT_TYPE_CHOICES)
+    input_content = models.TextField(help_text="The text, HTML, or URL to extract recipe from")
+    instructions = models.TextField(blank=True, help_text="Optional additional instructions for the AI")
+    result_data = models.JSONField(null=True, blank=True, help_text="Extracted recipe data as JSON")
+    error_message = models.TextField(blank=True, help_text="Error message if job failed")
+    created_at = models.DateTimeField(auto_now_add=True)
+    started_at = models.DateTimeField(null=True, blank=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+    seen = models.BooleanField(default=False, help_text="Whether user has seen this completed/failed job")
+    timeout = models.PositiveIntegerField(help_text="Timeout in seconds for this job")
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = "AI Job"
+        verbose_name_plural = "AI Jobs"
+
+    def __str__(self) -> str:
+        return f"AI Job {self.pk} - {self.get_status_display()} ({self.created_at.strftime('%Y-%m-%d %H:%M')})"

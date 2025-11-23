@@ -100,6 +100,15 @@ urlpatterns = [
     path("settings/", views.settings.settings_view, name="settings"),
     # AI Integration
     path("ai/extract/", views.ai.ai_extract_recipe, name="ai_extract_recipe"),
+    # Jobs
+    path("jobs/", views.jobs.jobs_list, name="jobs_list"),
+    path("jobs/<int:pk>/", views.jobs.job_detail, name="job_detail"),
+    path("jobs/<int:pk>/cancel/", views.jobs.job_cancel, name="job_cancel"),
+    path("jobs/<int:pk>/retry/", views.jobs.job_retry, name="job_retry"),
+    path("jobs/<int:pk>/delete/", views.jobs.job_delete, name="job_delete"),
+    path("jobs/<int:pk>/mark-seen/", views.jobs.job_mark_seen, name="job_mark_seen"),
+    path("jobs/<int:pk>/use-result/", views.jobs.job_use_result, name="job_use_result"),
+    path("api/jobs/<int:pk>/status/", views.jobs.api_job_status, name="api_job_status"),
     # PWA
     path("manifest.json", views.pwa.manifest_view, name="manifest"),
     path("service-worker.js", views.pwa.service_worker_view, name="service_worker"),
