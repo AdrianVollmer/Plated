@@ -12,7 +12,8 @@
       "Bash(TIME_ZONE=America/New_York LANGUAGE_CODE=es uv run python:*)",
       "Bash(find:*)",
       "Bash(XDG_DATA_HOME=/tmp/test_xdg uv run python manage.py shell:*)",
-      "Bash(LOG_DIR=/tmp/custom_logs uv run python:*)"
+      "Bash(LOG_DIR=/tmp/custom_logs uv run python:*)",
+      "Bash(DEBUG=False uv run python:*)"
     ],
     "deny": [],
     "ask": []
