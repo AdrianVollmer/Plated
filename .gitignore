@@ -12,7 +12,8 @@ src/plated/_version.py
 
 # Binaries
 db.sqlite3
-src/staticfiles
+src/plated/staticfiles
+src/plated/media
 
 # Logs
 src/logs/
