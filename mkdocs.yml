@@ -1,8 +1,8 @@
 site_name: Plated
 site_description: Modern recipe management application
-site_url: https://plated.example.com
-repo_url: https://github.com/yourusername/plated
-repo_name: plated
+site_url: https://adrianvollmer.github.io/Plated
+repo_url: https://github.com/AdrianVollmer/Plated
+repo_name: AdrianVollmer/Plated
 
 theme:
   name: material
@@ -67,4 +67,4 @@ nav:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/yourusername/plated
+      link: https://github.com/AdrianVollmer/Plated
