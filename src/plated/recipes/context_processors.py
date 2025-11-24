@@ -20,3 +20,21 @@ def jobs_context(request: HttpRequest) -> dict[str, Any]:
     return {
         "unseen_jobs_count": unseen_jobs_count,
     }
+
+
+def version_context(request: HttpRequest) -> dict[str, Any]:
+    """
+    Add version information to all templates.
+
+    Returns:
+        Dictionary with:
+        - app_version: Application version from VCS
+    """
+    try:
+        from plated._version import __version__  # type: ignore[import-untyped]
+    except ImportError:
+        __version__ = "unknown"
+
+    return {
+        "app_version": __version__,
+    }

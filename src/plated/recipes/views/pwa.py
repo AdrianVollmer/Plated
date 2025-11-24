@@ -4,6 +4,7 @@ import logging
 from pathlib import Path
 
 from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.shortcuts import render
 
 logger = logging.getLogger(__name__)
 
@@ -88,3 +89,16 @@ def service_worker_view(request: HttpRequest) -> HttpResponse:
     except FileNotFoundError:
         logger.error(f"Service worker not found at {service_worker_path}")
         return HttpResponse("Service worker not found", status=404)
+
+
+def about_view(request: HttpRequest) -> HttpResponse:
+    """Display the About page with version and project information."""
+    try:
+        from plated._version import __version__  # type: ignore[import-untyped]
+    except ImportError:
+        __version__ = "unknown"
+
+    context = {
+        "version": __version__,
+    }
+    return render(request, "about.html", context)

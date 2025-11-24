@@ -92,7 +92,12 @@
 
     <footer class="text-center py-3 mt-5">
         <div class="container">
-            <p class="text-muted mb-0">{% trans "Plated - Your Recipe Manager" %}</p>
+            <p class="text-muted mb-0">
+                {% trans "Plated - Your Recipe Manager" %} |
+                <a href="{% url 'about' %}" class="text-muted text-decoration-none">
+                    <i class="bi bi-info-circle"></i> {% trans "About" %} (v{{ app_version }})
+                </a>
+            </p>
         </div>
     </footer>
 

@@ -112,4 +112,6 @@ urlpatterns = [
     # PWA
     path("manifest.json", views.pwa.manifest_view, name="manifest"),
     path("service-worker.js", views.pwa.service_worker_view, name="service_worker"),
+    # About
+    path("about/", views.pwa.about_view, name="about"),
 ]

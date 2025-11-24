@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}
+    {% trans "About" %} - Plated
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h1 class="card-title mb-4">
+                        <i class="bi bi-info-circle"></i> {% trans "About Plated" %}
+                    </h1>
+                    <div class="mb-4">
+                        <h5>{% trans "Version" %}</h5>
+                        <p class="text-muted">{{ version }}</p>
+                    </div>
+                    <hr>
+                    <div class="mb-4">
+                        <h5>{% trans "What is Plated?" %}</h5>
+                        <p>
+                            {% trans "Plated is an open-source recipe management application designed to help you organize, create, and share your recipes. With Plated, you can:" %}
+                        </p>
+                        <ul>
+                            <li>{% trans "Store and organize your favorite recipes" %}</li>
+                            <li>{% trans "Create collections to group related recipes" %}</li>
+                            <li>{% trans "Plan meals with our meal planning feature" %}</li>
+                            <li>{% trans "Generate shopping lists from your meal plans" %}</li>
+                            <li>{% trans "Import and export recipes in JSON format" %}</li>
+                            <li>{% trans "Generate PDF versions of your recipes" %}</li>
+                            <li>{% trans "Use AI to extract recipes from websites (when configured)" %}</li>
+                        </ul>
+                    </div>
+                    <hr>
+                    <div class="mb-4">
+                        <h5>{% trans "Principles" %}</h5>
+                        <ul>
+                            <li>
+                                <strong>{% trans "Open Source" %}</strong> - {% trans "Plated is free and open-source software" %}
+                            </li>
+                            <li>
+                                <strong>{% trans "Open Data" %}</strong> - {% trans "Your recipes are yours, with easy import/export" %}
+                            </li>
+                            <li>
+                                <strong>{% trans "Simple" %}</strong> - {% trans "Clean, intuitive interface focused on usability" %}
+                            </li>
+                            <li>
+                                <strong>{% trans "Privacy-Focused" %}</strong> - {% trans "Self-hosted, your data stays with you" %}
+                            </li>
+                        </ul>
+                    </div>
+                    <hr>
+                    <div class="mb-4">
+                        <h5>{% trans "Technology Stack" %}</h5>
+                        <ul class="mb-0">
+                            <li>Django 5</li>
+                            <li>Bootstrap 5</li>
+                            <li>SQLite</li>
+                            <li>Progressive Web App (PWA) support</li>
+                        </ul>
+                    </div>
+                    <hr>
+                    <div class="mb-4">
+                        <h5>{% trans "Links" %}</h5>
+                        <ul class="mb-0">
+                            <li>
+                                <a href="https://github.com/AdrianVollmer/Plated"
+                                   target="_blank"
+                                   rel="noopener noreferrer"><i class="bi bi-github"></i> {% trans "GitHub Repository" %}</a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/AdrianVollmer/Plated/issues"
+                                   target="_blank"
+                                   rel="noopener noreferrer"><i class="bi bi-bug"></i> {% trans "Report an Issue" %}</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <a href="{% url 'recipe_list' %}" class="btn btn-primary">
+                            <i class="bi bi-arrow-left"></i> {% trans "Back to Recipes" %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
