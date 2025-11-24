@@ -10,15 +10,15 @@
     </div>
     <div class="col-12 col-md-4 text-md-end">
         <div class="d-flex flex-column flex-md-row gap-2 justify-content-md-end">
-            <a href="{% url 'recipe_import' %}" class="btn btn-outline-success">
+            <a href="{% url 'recipe_import' %}" class="btn btn-outline-success text-nowrap">
                 <i class="bi bi-upload"></i> {% trans "Import JSON" %}
             </a>
             {% if ai_settings_available %}
-            <a href="{% url 'ai_extract_recipe' %}" class="btn btn-outline-primary">
+            <a href="{% url 'ai_extract_recipe' %}" class="btn btn-outline-primary text-nowrap">
                 <i class="bi bi-stars"></i> {% trans "AI Extract" %}
             </a>
             {% endif %}
-            <a href="{% url 'recipe_create' %}" class="btn btn-primary">
+            <a href="{% url 'recipe_create' %}" class="btn btn-primary text-nowrap">
                 <i class="bi bi-plus-circle"></i> {% trans "New Recipe" %}
             </a>
         </div>

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'plated-v1';
+const CACHE_NAME = 'plated-v2';
 const urlsToCache = [
   '/',
   '/static/styles.css',
@@ -39,7 +39,7 @@ self.addEventListener('activate', (event) => {
   return self.clients.claim();
 });
 
-// Fetch event - serve from cache, fallback to network
+// Fetch event - network-first for pages, cache-first for assets
 self.addEventListener('fetch', (event) => {
   // Skip cross-origin requests
   if (!event.request.url.startsWith(self.location.origin) &&
@@ -47,44 +47,61 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Cache hit - return response
-        if (response) {
-          return response;
-        }
+  // Check if this is a static asset
+  const isStaticAsset = event.request.method === 'GET' &&
+    (event.request.url.includes('/static/') ||
+     event.request.url.includes('bootstrap') ||
+     event.request.url.includes('cdn.jsdelivr'));
 
-        // Clone the request
-        const fetchRequest = event.request.clone();
+  if (isStaticAsset) {
+    // Cache-first strategy for static assets
+    event.respondWith(
+      caches.match(event.request)
+        .then((response) => {
+          if (response) {
+            return response;
+          }
 
-        return fetch(fetchRequest).then((response) => {
+          return fetch(event.request).then((response) => {
+            if (!response || response.status !== 200 || response.type === 'error') {
+              return response;
+            }
+
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME)
+              .then((cache) => {
+                cache.put(event.request, responseToCache);
+              });
+
+            return response;
+          });
+        })
+    );
+  } else {
+    // Network-first strategy for dynamic content (HTML pages)
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
           // Check if valid response
           if (!response || response.status !== 200 || response.type === 'error') {
             return response;
           }
 
-          // Clone the response
-          const responseToCache = response.clone();
-
-          // Cache the fetched resource for static assets only
-          if (event.request.method === 'GET' &&
-              (event.request.url.includes('/static/') ||
-               event.request.url.includes('bootstrap') ||
-               event.request.url.includes('cdn.jsdelivr'))) {
-            caches.open(CACHE_NAME)
-              .then((cache) => {
-                cache.put(event.request, responseToCache);
-              });
-          }
-
           return response;
-        }).catch(() => {
-          // Return a custom offline page if available
-          if (event.request.mode === 'navigate') {
-            return caches.match('/');
-          }
-        });
-      })
-  );
+        })
+        .catch(() => {
+          // Network failed, try cache
+          return caches.match(event.request).then((response) => {
+            if (response) {
+              return response;
+            }
+
+            // Return cached homepage as fallback for navigation
+            if (event.request.mode === 'navigate') {
+              return caches.match('/');
+            }
+          });
+        })
+    );
+  }
 });

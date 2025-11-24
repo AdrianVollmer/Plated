@@ -33,7 +33,7 @@
 
         <hr>
 
-        <h2 class="mb-3">{% blocktrans count counter=collection.recipes.count %}Recipes ({{ counter }}){% endblocktrans %}</h2>
+        <h2 class="mb-3">{% blocktrans count counter=collection.recipes.count %}{{ counter }} Recipe{% plural %}{{ counter }} Recipes{% endblocktrans %}</h2>
 
         {% if collection.recipes.all %}
         <div class="row">
