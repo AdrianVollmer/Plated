@@ -1,21 +1,31 @@
 {% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#0d6efd">
-    <meta name="description" content="{% trans 'Your personal recipe manager for organizing, creating, and sharing recipes' %}">
-    <title>{% block title %}{% trans "Plated - Recipe Manager" %}{% endblock %}</title>
-    {% load static %}
-    <link rel="manifest" href="{% url 'manifest' %}">
-    <link rel="icon" type="image/png" sizes="192x192" href="{% static 'icons/icon-192x192.png' %}">
-    <link rel="apple-touch-icon" href="{% static 'icons/icon-192x192.png' %}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="{% static 'styles.css' %}" rel="stylesheet">
-    {% block extra_css %}{% endblock %}
-    <script>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="theme-color" content="#0d6efd">
+        <meta name="description"
+              content="{% trans 'Your personal recipe manager for organizing, creating, and sharing recipes' %}">
+        <title>
+            {% block title %}
+                {% trans "Plated - Recipe Manager" %}
+            {% endblock %}
+        </title>
+        {% load static %}
+        <link rel="manifest" href="{% url 'manifest' %}">
+        <link rel="icon"
+              type="image/png"
+              sizes="192x192"
+              href="{% static 'icons/icon-192x192.png' %}">
+        <link rel="apple-touch-icon" href="{% static 'icons/icon-192x192.png' %}">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+              rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+              rel="stylesheet">
+        <link href="{% static 'styles.css' %}" rel="stylesheet">
+        {% block extra_css %}{% endblock %}
+        <script>
         // Apply theme immediately to prevent flash
         (function() {
             const savedTheme = localStorage.getItem('plated-theme') || 'auto';
@@ -25,85 +35,92 @@
             }
             document.documentElement.setAttribute('data-theme', actualTheme);
         })();
-    </script>
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-custom">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'recipe_list' %}">Plated</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'recipe_list' %}">{% trans "Recipes" %}</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'collection_list' %}">{% trans "Collections" %}</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'meal_plan_list' %}">{% trans "Meal Plans" %}</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="manageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            {% trans "Manage" %}
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="manageDropdown">
-                            <li><a class="dropdown-item" href="{% url 'manage_ingredient_names' %}">{% trans "Ingredient Names" %}</a></li>
-                            <li><a class="dropdown-item" href="{% url 'manage_units' %}">{% trans "Units" %}</a></li>
-                            <li><a class="dropdown-item" href="{% url 'manage_keywords' %}">{% trans "Keywords" %}</a></li>
-                        </ul>
-                    </li>
-                </ul>
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'jobs_list' %}">
-                            {% trans "Jobs" %}
-                            {% if unseen_jobs_count > 0 %}
-                            <span class="badge bg-danger rounded-pill">{{ unseen_jobs_count }}</span>
-                            {% endif %}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'settings' %}">{% trans "Settings" %}</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <main class="container my-4">
-        {% if messages %}
-        <div class="row">
-            <div class="col-md-8 offset-md-2">
-                {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </script>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-custom">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'recipe_list' %}">Plated</a>
+                <button class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'recipe_list' %}">{% trans "Recipes" %}</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'collection_list' %}">{% trans "Collections" %}</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'meal_plan_list' %}">{% trans "Meal Plans" %}</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle"
+                               href="#"
+                               id="manageDropdown"
+                               role="button"
+                               data-bs-toggle="dropdown"
+                               aria-expanded="false">{% trans "Manage" %}</a>
+                            <ul class="dropdown-menu" aria-labelledby="manageDropdown">
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'manage_ingredient_names' %}">{% trans "Ingredient Names" %}</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'manage_units' %}">{% trans "Units" %}</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'manage_keywords' %}">{% trans "Keywords" %}</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'jobs_list' %}">
+                                {% trans "Jobs" %}
+                                {% if unseen_jobs_count > 0 %}<span class="badge bg-danger rounded-pill">{{ unseen_jobs_count }}</span>{% endif %}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'settings' %}">{% trans "Settings" %}</a>
+                        </li>
+                    </ul>
                 </div>
-                {% endfor %}
             </div>
-        </div>
-        {% endif %}
-
-        {% block content %}{% endblock %}
-    </main>
-
-    <footer class="text-center py-3 mt-5">
-        <div class="container">
-            <p class="text-muted mb-0">
-                {% trans "Plated - Your Recipe Manager" %} |
-                <a href="{% url 'about' %}" class="text-muted text-decoration-none">
-                    <i class="bi bi-info-circle"></i> {% trans "About" %} (v{{ app_version }})
-                </a>
-            </p>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{% static 'theme-switcher.js' %}"></script>
-    <script src="{% static 'pwa-install.js' %}"></script>
-    {% block extra_js %}{% endblock %}
-</body>
+        </nav>
+        <main class="container my-4">
+            {% if messages %}
+                <div class="row">
+                    <div class="col-md-8 offset-md-2">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show"
+                                 role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+            {% block content %}{% endblock %}
+        </main>
+        <footer class="text-center py-3 mt-5">
+            <div class="container">
+                <p class="text-muted mb-0">
+                    {% trans "Plated - Your Recipe Manager" %} |
+                    <a href="{% url 'about' %}" class="text-muted text-decoration-none">
+                        <i class="bi bi-info-circle"></i> {% trans "About" %} (v{{ app_version }})
+                    </a>
+                </p>
+            </div>
+        </footer>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="{% static 'theme-switcher.js' %}"></script>
+        <script src="{% static 'pwa-install.js' %}"></script>
+        {% block extra_js %}{% endblock %}
+    </body>
 </html>
