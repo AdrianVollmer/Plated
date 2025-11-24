@@ -5,6 +5,20 @@
 Plated is a Django-based web application for organizing, creating, and
 managing your recipes. Built with simplicity and usability in mind.
 
+## Screenshots
+
+=== "Desktop"
+    ![Desktop View](images/homepage-desktop.png)
+    *Plated on desktop - full recipe browsing experience*
+
+=== "Tablet"
+    ![Tablet View](images/homepage-tablet.png)
+    *Plated on tablet - responsive layout adapts to medium screens*
+
+=== "Mobile"
+    ![Mobile View](images/homepage-mobile.png)
+    *Plated on mobile - optimized for on-the-go cooking*
+
 ## Key Features
 
 - **Recipe Management** - Create, edit, and organize recipes with
