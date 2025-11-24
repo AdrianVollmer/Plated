@@ -5,6 +5,7 @@ import logging
 from django.contrib import messages
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.translation import gettext as _
 
 from ..models import AIJob
 from ..views.ai import process_ai_extraction_job
@@ -42,9 +43,12 @@ def job_cancel(request: HttpRequest, pk: int) -> HttpResponse:
         job.status = "cancelled"
         job.save()
         logger.info(f"AI Job {pk} cancelled by user")
-        messages.success(request, f"Job #{pk} has been cancelled.")
+        messages.success(request, _("Job #%(id)s has been cancelled.") % {"id": pk})
     else:
-        messages.error(request, f"Cannot cancel job #{pk} - it is {job.get_status_display()}.")
+        messages.error(
+            request,
+            _("Cannot cancel job #%(id)s - it is %(status)s.") % {"id": pk, "status": job.get_status_display()},
+        )
 
     return redirect("job_detail", pk=pk)
 
@@ -57,7 +61,10 @@ def job_retry(request: HttpRequest, pk: int) -> HttpResponse:
     job = get_object_or_404(AIJob, pk=pk)
 
     if job.status != "failed":
-        messages.error(request, f"Cannot retry job #{pk} - it is {job.get_status_display()}.")
+        messages.error(
+            request,
+            _("Cannot retry job #%(id)s - it is %(status)s.") % {"id": pk, "status": job.get_status_display()},
+        )
         return redirect("job_detail", pk=pk)
 
     # Create a new job with same parameters
@@ -73,7 +80,10 @@ def job_retry(request: HttpRequest, pk: int) -> HttpResponse:
     # Queue the background task
     process_ai_extraction_job(new_job.pk)
 
-    messages.success(request, f"Job #{pk} has been requeued as job #{new_job.pk}.")
+    messages.success(
+        request,
+        _("Job #%(old_id)s has been requeued as job #%(new_id)s.") % {"old_id": pk, "new_id": new_job.pk},
+    )
     return redirect("job_detail", pk=new_job.pk)
 
 
@@ -85,12 +95,16 @@ def job_delete(request: HttpRequest, pk: int) -> HttpResponse:
     job = get_object_or_404(AIJob, pk=pk)
 
     if job.status in ["pending", "running"]:
-        messages.error(request, f"Cannot delete job #{pk} while it is {job.get_status_display()}. Cancel it first.")
+        messages.error(
+            request,
+            _("Cannot delete job #%(id)s while it is %(status)s. Cancel it first.")
+            % {"id": pk, "status": job.get_status_display()},
+        )
         return redirect("job_detail", pk=pk)
 
     logger.info(f"Deleting AI Job {pk} (status: {job.status})")
     job.delete()
-    messages.success(request, f"Job #{pk} has been deleted.")
+    messages.success(request, _("Job #%(id)s has been deleted.") % {"id": pk})
     return redirect("jobs_list")
 
 
@@ -127,12 +141,12 @@ def job_use_result(request: HttpRequest, pk: int) -> HttpResponse:
     job = get_object_or_404(AIJob, pk=pk)
 
     if job.status != "completed" or not job.result_data:
-        messages.error(request, f"Job #{pk} does not have a completed result to use.")
+        messages.error(request, _("Job #%(id)s does not have a completed result to use.") % {"id": pk})
         return redirect("job_detail", pk=pk)
 
     # Store the result in session and redirect to recipe create
     request.session["ai_extracted_recipe"] = job.result_data
     logger.info(f"Using result from AI Job {pk} for recipe creation")
-    messages.success(request, "Recipe data loaded from job. Please review and save the recipe.")
+    messages.success(request, _("Recipe data loaded from job. Please review and save the recipe."))
 
     return redirect("recipe_create")

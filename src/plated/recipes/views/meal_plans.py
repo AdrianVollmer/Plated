@@ -11,6 +11,7 @@ from django.db.models import Prefetch, QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
+from django.utils.translation import gettext as _
 from django.views.generic import (
     CreateView,
     DeleteView,
@@ -115,7 +116,7 @@ class MealPlanCreateView(MealPlanFormMixin, CreateView):  # type: ignore[misc]
         logger.info(f"Meal plan created: '{form.instance.name}' (ID: {form.instance.pk})")
         messages.success(
             self.request,
-            f"Meal plan '{form.instance.name}' created successfully!",
+            _("Meal plan '%(name)s' created successfully!") % {"name": form.instance.name},
         )
         return result
 
@@ -133,7 +134,7 @@ class MealPlanUpdateView(MealPlanFormMixin, UpdateView):  # type: ignore[misc]
         logger.info(f"Meal plan updated: '{form.instance.name}' (ID: {form.instance.pk})")
         messages.success(
             self.request,
-            f"Meal plan '{form.instance.name}' updated successfully!",
+            _("Meal plan '%(name)s' updated successfully!") % {"name": form.instance.name},
         )
         return result
 
@@ -151,7 +152,7 @@ class MealPlanDeleteView(DeleteView):
         meal_plan_name = meal_plan.name
         meal_plan_id = meal_plan.pk
         logger.info(f"Meal plan deleted: '{meal_plan_name}' (ID: {meal_plan_id})")
-        messages.success(request, f"Meal plan '{meal_plan_name}' deleted successfully!")
+        messages.success(request, _("Meal plan '%(name)s' deleted successfully!") % {"name": meal_plan_name})
         return super().delete(request, *args, **kwargs)
 
 
@@ -177,9 +178,13 @@ def add_meal_entry(request: HttpRequest, pk: int) -> HttpResponse:
                 servings=int(servings),
             )
             logger.info(f"Added {recipe.title} to meal plan '{meal_plan.name}' on {date} for {meal_type}")
-            messages.success(request, f"Added {recipe.title} to {meal_type} on {date}")
+            messages.success(
+                request,
+                _("Added %(recipe)s to %(meal_type)s on %(date)s")
+                % {"recipe": recipe.title, "meal_type": meal_type, "date": date},
+            )
         else:
-            messages.error(request, "Missing required fields")
+            messages.error(request, _("Missing required fields"))
 
     return redirect("meal_plan_detail", pk=pk)
 
@@ -192,7 +197,7 @@ def remove_meal_entry(request: HttpRequest, pk: int, entry_id: int) -> HttpRespo
     entry_info = f"{entry.recipe.title} from {entry.get_meal_type_display()} on {entry.date}"
     entry.delete()
     logger.info(f"Removed {entry_info} from meal plan '{meal_plan.name}'")
-    messages.success(request, f"Removed {entry_info}")
+    messages.success(request, _("Removed %(entry)s") % {"entry": entry_info})
 
     return redirect("meal_plan_detail", pk=pk)
 

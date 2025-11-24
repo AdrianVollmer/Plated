@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.utils import timezone
+from django.utils.translation import gettext as _
 
 from ..forms import AIRecipeExtractionForm
 from ..models import AIJob, AISettings
@@ -24,7 +25,7 @@ def ai_extract_recipe(request: HttpRequest) -> HttpResponse:
     if not ai_settings:
         messages.error(
             request,
-            "AI settings are not configured. Please configure AI settings in the settings page.",
+            _("AI settings are not configured. Please configure AI settings in the settings page."),
         )
         return redirect("settings")
 
@@ -56,7 +57,8 @@ def ai_extract_recipe(request: HttpRequest) -> HttpResponse:
 
                 messages.success(
                     request,
-                    f"Recipe extraction job started (timeout: {timeout}s). Check the Jobs page to see the result.",
+                    _("Recipe extraction job started (timeout: %(timeout)ss). Check the Jobs page to see the result.")
+                    % {"timeout": timeout},
                 )
                 return redirect("jobs_list")
             else:
@@ -66,7 +68,7 @@ def ai_extract_recipe(request: HttpRequest) -> HttpResponse:
                     return prompt_ai(input_type, input_content, request, form, prompt, ai_settings)
                 except Exception as e:
                     logger.error(f"Unexpected error during AI recipe extraction: {e}", exc_info=True)
-                    messages.error(request, f"Unexpected error: {e}")
+                    messages.error(request, _("Unexpected error: %(error)s") % {"error": e})
                     return render(request, "recipes/ai_extract.html", {"form": form})
 
     else:
@@ -93,7 +95,7 @@ def prompt_ai(
             logger.debug(f"URL content fetched successfully: {len(content)} characters")
         except requests.RequestException as e:
             logger.error(f"Error fetching URL {input_content}: {e}")
-            messages.error(request, f"Error fetching URL: {e}")
+            messages.error(request, _("Error fetching URL: %(error)s") % {"error": e})
             return render(request, "recipes/ai_extract.html", {"form": form})
     else:
         content = input_content
@@ -120,7 +122,7 @@ def prompt_ai(
                 server_error = e.response.json()["error"]
         except KeyError:
             pass
-        error_msg = f"Error calling LLM API: {e}: {server_error}"
+        error_msg = _("Error calling LLM API: %(error)s: %(server_error)s") % {"error": e, "server_error": server_error}
         logger.error(error_msg)
         messages.error(request, error_msg)
         return render(request, "recipes/ai_extract.html", {"form": form})
@@ -168,7 +170,7 @@ def call_llm_api(
         logger.error(f"Unexpected API response format: {response_data}")
         messages.error(
             request,
-            "Unexpected response format from AI API. Please check your API configuration.",
+            _("Unexpected response format from AI API. Please check your API configuration."),
         )
         return render(request, "recipes/ai_extract.html", {"form": form})
 
@@ -190,7 +192,7 @@ def call_llm_api(
         logger.error(f"Error parsing recipe JSON: {e}\nJSON string: {recipe_json_str[:500]}")
         messages.error(
             request,
-            f"Error parsing AI response as JSON: {e}. The AI may have returned invalid JSON.",
+            _("Error parsing AI response as JSON: %(error)s. The AI may have returned invalid JSON.") % {"error": e},
         )
         return render(request, "recipes/ai_extract.html", {"form": form})
 
@@ -199,7 +201,7 @@ def call_llm_api(
     if errors:
         logger.warning(f"AI-extracted recipe validation failed: {len(errors)} errors")
         for error in errors[:5]:  # Show first 5 errors
-            messages.error(request, f"Validation error: {error}")
+            messages.error(request, _("Validation error: %(error)s") % {"error": error})
         return render(request, "recipes/ai_extract.html", {"form": form})
 
     # Store the recipe data in the session
@@ -208,7 +210,7 @@ def call_llm_api(
     logger.info("Recipe extracted successfully via AI, redirecting to recipe form")
     messages.success(
         request,
-        "Recipe extracted successfully! Please review and save the recipe.",
+        _("Recipe extracted successfully! Please review and save the recipe."),
     )
     return redirect("recipe_create")
 

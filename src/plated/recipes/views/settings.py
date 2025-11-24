@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.utils import translation
+from django.utils.translation import gettext as _
 
 from ..forms import AISettingsForm, UserSettingsForm
 from ..middleware import LANGUAGE_SESSION_KEY
@@ -40,7 +41,7 @@ def settings_view(request: HttpRequest) -> HttpResponse:
                 language = user_form.cleaned_data["language"]
                 translation.activate(language)
                 request.session[LANGUAGE_SESSION_KEY] = language
-                messages.success(request, "Language settings saved successfully!")
+                messages.success(request, _("Language settings saved successfully!"))
                 logger.info(f"Language settings updated to {language}")
                 # Set language cookie to persist across requests
                 response = redirect("settings")
@@ -55,7 +56,7 @@ def settings_view(request: HttpRequest) -> HttpResponse:
 
             if ai_form.is_valid():
                 ai_form.save()
-                messages.success(request, "AI settings saved successfully!")
+                messages.success(request, _("AI settings saved successfully!"))
                 logger.info("AI settings updated")
                 return redirect("settings")
 

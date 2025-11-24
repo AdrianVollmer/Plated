@@ -17,6 +17,7 @@ from django.forms import inlineformset_factory
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
+from django.utils.translation import gettext as _
 from django.views.generic import (
     CreateView,
     DeleteView,
@@ -222,12 +223,12 @@ def _validate_and_save_recipe_formsets(
     # Validate minimum requirements
     if ingredient_count == 0:
         logger.warning(f"Recipe {action} failed{recipe_info}: no ingredients provided")
-        messages.error(request, "Please add at least one ingredient to the recipe.")
+        messages.error(request, _("Please add at least one ingredient to the recipe."))
         return False, None, 0, 0
 
     if step_count == 0:
         logger.warning(f"Recipe {action} failed{recipe_info}: no steps provided")
-        messages.error(request, "Please add at least one instruction step to the recipe.")
+        messages.error(request, _("Please add at least one instruction step to the recipe."))
         return False, None, 0, 0
 
     return True, None, ingredient_count, step_count
@@ -334,11 +335,11 @@ class RecipeCreateView(CreateView):
                 f"Recipe created: '{self.object.title}' (ID: {self.object.pk}, "
                 f"Ingredients: {ingredient_count}, Steps: {step_count})"
             )
-            messages.success(self.request, f"Recipe '{self.object.title}' created successfully!")
+            messages.success(self.request, _("Recipe '%(title)s' created successfully!") % {"title": self.object.title})
             return redirect("recipe_detail", pk=self.object.pk)
         except Exception as e:
             logger.error(f"Error creating recipe: {e}", exc_info=True)
-            messages.error(self.request, f"Error creating recipe: {e}")
+            messages.error(self.request, _("Error creating recipe: %(error)s") % {"error": e})
             return self.form_invalid(form)
 
 
@@ -412,14 +413,14 @@ class RecipeUpdateView(UpdateView):
                 f"Recipe updated: '{self.object.title}' (ID: {self.object.pk}, "
                 f"Ingredients: {ingredient_count}, Steps: {step_count})"
             )
-            messages.success(self.request, f"Recipe '{self.object.title}' updated successfully!")
+            messages.success(self.request, _("Recipe '%(title)s' updated successfully!") % {"title": self.object.title})
             return redirect("recipe_detail", pk=self.object.pk)
         except Exception as e:
             logger.error(
                 f"Error updating recipe '{self.object.title}' (ID: {self.object.pk}): {e}",
                 exc_info=True,
             )
-            messages.error(self.request, f"Error updating recipe: {e}")
+            messages.error(self.request, _("Error updating recipe: %(error)s") % {"error": e})
             return self.form_invalid(form)
 
 
@@ -436,7 +437,7 @@ class RecipeDeleteView(DeleteView):
         recipe_title = recipe.title
         recipe_id = recipe.pk
         logger.info(f"Recipe deleted: '{recipe_title}' (ID: {recipe_id})")
-        messages.success(request, f"Recipe '{recipe_title}' deleted successfully!")
+        messages.success(request, _("Recipe '%(title)s' deleted successfully!") % {"title": recipe_title})
         return super().delete(request, *args, **kwargs)
 
 
@@ -452,7 +453,7 @@ def export_recipe(request: HttpRequest, pk: int) -> HttpResponse:
     handler = format_registry.get_handler(format_id)
     if not handler:
         logger.error(f"Recipe export failed: unknown format '{format_id}'")
-        messages.error(request, f"Unknown format: {format_id}")
+        messages.error(request, _("Unknown format: %(format)s") % {"format": format_id})
         return redirect("recipe_detail", pk=pk)
 
     try:
@@ -470,7 +471,7 @@ def export_recipe(request: HttpRequest, pk: int) -> HttpResponse:
         return response
     except Exception as e:
         logger.error(f"Error exporting recipe '{recipe.title}' (ID: {pk}): {e}", exc_info=True)
-        messages.error(request, f"Error exporting recipe: {e}")
+        messages.error(request, _("Error exporting recipe: %(error)s") % {"error": e})
         return redirect("recipe_detail", pk=pk)
 
 
@@ -483,7 +484,7 @@ def import_recipe(request: HttpRequest) -> HttpResponse:
 
         if "recipe_file" not in request.FILES:
             logger.warning("Recipe import failed: no file uploaded")
-            messages.error(request, "No file was uploaded.")
+            messages.error(request, _("No file was uploaded."))
             return redirect("recipe_import")
 
         recipe_file = cast(UploadedFile, request.FILES["recipe_file"])
@@ -494,7 +495,7 @@ def import_recipe(request: HttpRequest) -> HttpResponse:
         handler = format_registry.get_handler(format_id)
         if not handler:
             logger.error(f"Recipe import failed: unknown format '{format_id}'")
-            messages.error(request, f"Unknown format: {format_id}")
+            messages.error(request, _("Unknown format: %(format)s") % {"format": format_id})
             return redirect("recipe_import")
 
         # Read the file content
@@ -502,7 +503,7 @@ def import_recipe(request: HttpRequest) -> HttpResponse:
             content = recipe_file.read().decode("utf-8")
         except Exception as e:
             logger.error(f"Recipe import failed: error reading file {recipe_file.name}: {e}")
-            messages.error(request, f"Error reading file: {e}")
+            messages.error(request, _("Error reading file: %(error)s") % {"error": e})
             return redirect("recipe_import")
 
         # Import using the handler
@@ -513,7 +514,8 @@ def import_recipe(request: HttpRequest) -> HttpResponse:
             )
             messages.success(
                 request,
-                f"Recipe '{recipe.title}' imported successfully! You can now add images if needed.",
+                _("Recipe '%(title)s' imported successfully! You can now add images if needed.")
+                % {"title": recipe.title},
             )
             return redirect("recipe_detail", pk=recipe.pk)
 
@@ -522,7 +524,7 @@ def import_recipe(request: HttpRequest) -> HttpResponse:
                 f"Error creating recipe from import file {recipe_file.name}: {e}",
                 exc_info=True,
             )
-            messages.error(request, f"Error creating recipe: {e}")
+            messages.error(request, _("Error creating recipe: %(error)s") % {"error": e})
             return redirect("recipe_import")
 
     # GET request - show the upload form
@@ -544,7 +546,7 @@ def download_recipe_pdf(request: HttpRequest, pk: int) -> HttpResponse:
 
         if not typst_template.exists():
             logger.error(f"Typst template not found at {typst_template}")
-            messages.error(request, "Typst template file not found.")
+            messages.error(request, _("Typst template file not found."))
             return redirect("recipe_detail", pk=pk)
 
         # Create temporary directory for intermediate files
@@ -588,12 +590,12 @@ def download_recipe_pdf(request: HttpRequest, pk: int) -> HttpResponse:
                 logger.error("Typst executable not found on system")
                 messages.error(
                     request,
-                    "Typst is not installed. Please install Typst to generate PDFs.",
+                    _("Typst is not installed. Please install Typst to generate PDFs."),
                 )
                 return redirect("recipe_detail", pk=pk)
             except subprocess.TimeoutExpired:
                 logger.error(f"Typst compilation timed out for recipe '{recipe.title}' (ID: {pk})")
-                messages.error(request, "PDF generation timed out.")
+                messages.error(request, _("PDF generation timed out."))
                 return redirect("recipe_detail", pk=pk)
             except subprocess.CalledProcessError as e:
                 logger.error(
@@ -602,7 +604,7 @@ def download_recipe_pdf(request: HttpRequest, pk: int) -> HttpResponse:
                 )
                 messages.error(
                     request,
-                    f"Error generating PDF: {e.stderr if e.stderr else str(e)}",
+                    _("Error generating PDF: %(error)s") % {"error": e.stderr if e.stderr else str(e)},
                     # TODO render output in `<pre><code>` tags
                 )
                 return redirect("recipe_detail", pk=pk)
@@ -610,7 +612,7 @@ def download_recipe_pdf(request: HttpRequest, pk: int) -> HttpResponse:
             # Check if PDF was created
             if not output_pdf.exists():
                 logger.error(f"PDF file not created for recipe '{recipe.title}' (ID: {pk})")
-                messages.error(request, "PDF file was not generated.")
+                messages.error(request, _("PDF file was not generated."))
                 return redirect("recipe_detail", pk=pk)
 
             # Read the PDF file
@@ -632,7 +634,7 @@ def download_recipe_pdf(request: HttpRequest, pk: int) -> HttpResponse:
             f"Unexpected error generating PDF for recipe '{recipe.title}' (ID: {pk}): {e}",
             exc_info=True,
         )
-        messages.error(request, f"Error generating PDF: {e}")
+        messages.error(request, _("Error generating PDF: %(error)s") % {"error": e})
         return redirect("recipe_detail", pk=pk)
 
 

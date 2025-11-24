@@ -8,6 +8,7 @@ from django.db import models as django_models
 from django.db import transaction
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
+from django.utils.translation import gettext as _
 
 from ..models import Ingredient, Recipe
 
@@ -85,17 +86,17 @@ def _rename_ingredient_property(
         # Validate inputs
         if not old_value:
             logger.warning(f"{display_name} rename failed: missing old value")
-            messages.error(request, f"Old {display_name.lower()} is required.")
+            messages.error(request, _("Old %(name)s is required.") % {"name": display_name.lower()})
             return redirect(list_url_name)
 
         if requires_new_value and not new_value:
             logger.warning(f"{display_name} rename failed: missing new value")
-            messages.error(request, f"New {display_name.lower()} is required.")
+            messages.error(request, _("New %(name)s is required.") % {"name": display_name.lower()})
             return redirect(list_url_name)
 
         if old_value == new_value:
             logger.warning(f"{display_name} rename skipped: old and new values are identical ('{old_value}')")
-            messages.warning(request, f"Old and new {display_name.lower()}s are the same.")
+            messages.warning(request, _("Old and new %(name)ss are the same.") % {"name": display_name.lower()})
             return redirect(list_url_name)
 
         # Check if old value exists
@@ -104,7 +105,11 @@ def _rename_ingredient_property(
             logger.warning(
                 f"{display_name} rename failed: no ingredients found with {display_name.lower()} '{old_value}'"
             )
-            messages.error(request, f"No ingredients found with {display_name.lower()} '{old_value}'.")
+            messages.error(
+                request,
+                _("No ingredients found with %(name)s '%(value)s'.")
+                % {"name": display_name.lower(), "value": old_value},
+            )
             return redirect(list_url_name)
 
         # Update all ingredients with the old value
@@ -116,12 +121,15 @@ def _rename_ingredient_property(
             plural = "" if updated == 1 else "s"
             messages.success(
                 request,
-                f"Renamed '{old_value}' to '{new_value}' in {updated} ingredient{plural}.",
+                _("Renamed '%(old)s' to '%(new)s' in %(count)s ingredient%(plural)s.")
+                % {"old": old_value, "new": new_value, "count": updated, "plural": plural},
             )
             return redirect(list_url_name)
         except Exception as e:
             logger.error(f"Error renaming {display_name.lower()} '{old_value}' to '{new_value}': {e}", exc_info=True)
-            messages.error(request, f"Error renaming {display_name.lower()}: {e}")
+            messages.error(
+                request, _("Error renaming %(name)s: %(error)s") % {"name": display_name.lower(), "error": e}
+            )
             return redirect(list_url_name)
 
     # GET request - show rename form
@@ -262,7 +270,7 @@ def _delete_ingredient_property(
 
     value = request.POST.get(param_name, "").strip()
     if not value:
-        messages.error(request, f"{display_name} is required.")
+        messages.error(request, _("%(name)s is required.") % {"name": display_name})
         return redirect(list_url_name)
 
     # Check usage count
@@ -272,12 +280,15 @@ def _delete_ingredient_property(
         plural = "s" if usage_count > 1 else ""
         messages.error(
             request,
-            f"Cannot delete '{value}' because it is used in {usage_count} recipe{plural}.",
+            _("Cannot delete '%(value)s' because it is used in %(count)s recipe%(plural)s.")
+            % {"value": value, "count": usage_count, "plural": plural},
         )
         return redirect(list_url_name)
 
     logger.info(f"{display_name} deleted (no usage): '{value}'")
-    messages.success(request, f"{display_name} '{value}' deleted (no usage found).")
+    messages.success(
+        request, _("%(name)s '%(value)s' deleted (no usage found).") % {"name": display_name, "value": value}
+    )
     return redirect(list_url_name)
 
 
@@ -380,17 +391,17 @@ def rename_keyword(request: HttpRequest) -> HttpResponse:
         # Validate inputs
         if not old_keyword:
             logger.warning("Keyword rename failed: missing old keyword")
-            messages.error(request, "Old keyword is required.")
+            messages.error(request, _("Old keyword is required."))
             return redirect("manage_keywords")
 
         if not new_keyword:
             logger.warning("Keyword rename failed: missing new keyword")
-            messages.error(request, "New keyword is required.")
+            messages.error(request, _("New keyword is required."))
             return redirect("manage_keywords")
 
         if old_keyword == new_keyword:
             logger.warning(f"Keyword rename skipped: old and new keywords are identical ('{old_keyword}')")
-            messages.warning(request, "Old and new keywords are the same.")
+            messages.warning(request, _("Old and new keywords are the same."))
             return redirect("manage_keywords")
 
         # Find all recipes with the old keyword
@@ -400,7 +411,7 @@ def rename_keyword(request: HttpRequest) -> HttpResponse:
 
         if not recipes_to_update:
             logger.warning(f"Keyword rename failed: no recipes found with keyword '{old_keyword}'")
-            messages.error(request, f"No recipes found with keyword '{old_keyword}'.")
+            messages.error(request, _("No recipes found with keyword '%(keyword)s'.") % {"keyword": old_keyword})
             return redirect("manage_keywords")
 
         # Update keywords in all matching recipes
@@ -427,12 +438,13 @@ def rename_keyword(request: HttpRequest) -> HttpResponse:
             plural = "" if updated_count == 1 else "s"
             messages.success(
                 request,
-                f"Renamed '{old_keyword}' to '{new_keyword}' in {updated_count} recipe{plural}.",
+                _("Renamed '%(old)s' to '%(new)s' in %(count)s recipe%(plural)s.")
+                % {"old": old_keyword, "new": new_keyword, "count": updated_count, "plural": plural},
             )
             return redirect("manage_keywords")
         except Exception as e:
             logger.error(f"Error renaming keyword '{old_keyword}' to '{new_keyword}': {e}", exc_info=True)
-            messages.error(request, f"Error renaming keyword: {e}")
+            messages.error(request, _("Error renaming keyword: %(error)s") % {"error": e})
             return redirect("manage_keywords")
 
     # GET request - show rename form
@@ -455,7 +467,7 @@ def delete_keyword(request: HttpRequest) -> HttpResponse:
     if request.method == "POST":
         keyword = request.POST.get("keyword", "").strip()
         if not keyword:
-            messages.error(request, "Keyword is required.")
+            messages.error(request, _("Keyword is required."))
             return redirect("manage_keywords")
 
         # Check usage count - count how many recipes have this keyword
@@ -466,12 +478,13 @@ def delete_keyword(request: HttpRequest) -> HttpResponse:
             plural = "s" if usage_count > 1 else ""
             messages.error(
                 request,
-                f"Cannot delete '{keyword}' because it is used in {usage_count} recipe{plural}.",
+                _("Cannot delete '%(keyword)s' because it is used in %(count)s recipe%(plural)s.")
+                % {"keyword": keyword, "count": usage_count, "plural": plural},
             )
             return redirect("manage_keywords")
 
         logger.info(f"Keyword deleted (no usage): '{keyword}'")
-        messages.success(request, f"Keyword '{keyword}' deleted (no usage found).")
+        messages.success(request, _("Keyword '%(keyword)s' deleted (no usage found).") % {"keyword": keyword})
         return redirect("manage_keywords")
 
     return redirect("manage_keywords")

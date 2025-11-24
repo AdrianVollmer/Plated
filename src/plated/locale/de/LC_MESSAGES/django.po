@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Plated 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-23 17:23+0000\n"
+"POT-Creation-Date: 2025-11-24 17:27+0000\n"
 "PO-Revision-Date: 2025-11-23 13:10+0000\n"
 "Last-Translator: Claude <noreply@anthropic.com>\n"
 "Language-Team: German\n"
@@ -16,1243 +16,1703 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/templates/base.html:8
+#: src/plated/recipes/views/ai.py:28
+msgid ""
+"AI settings are not configured. Please configure AI settings in the settings "
+"page."
+msgstr ""
+"AI-Einstellungen sind nicht konfiguriert. Bitte konfiguriere die AI-Einstellungen auf der "
+"Einstellungsseite."
+
+#: src/plated/recipes/views/ai.py:60
+#, python-format
+msgid ""
+"Recipe extraction job started (timeout: %(timeout)ss). Check the Jobs page "
+"to see the result."
+msgstr ""
+"Rezeptextraktionsauftrag gestartet (Zeitüberschreitung: %(timeout)ss). Überprüfe die "
+"Auftragsseite, um das Ergebnis zu sehen."
+
+#: src/plated/recipes/views/ai.py:71
+#, python-format
+msgid "Unexpected error: %(error)s"
+msgstr "Unerwarteter Fehler: %(error)s"
+
+#: src/plated/recipes/views/ai.py:98
+#, python-format
+msgid "Error fetching URL: %(error)s"
+msgstr "Fehler beim Abrufen der URL: %(error)s"
+
+#: src/plated/recipes/views/ai.py:125
+#, python-format
+msgid "Error calling LLM API: %(error)s: %(server_error)s"
+msgstr "Fehler beim Aufruf der LLM API: %(error)s: %(server_error)s"
+
+#: src/plated/recipes/views/ai.py:173
+msgid ""
+"Unexpected response format from AI API. Please check your API configuration."
+msgstr ""
+"Unerwartetes Antwortformat von der AI API. Bitte überprüfe deine API-Konfiguration."
+
+#: src/plated/recipes/views/ai.py:195
+#, python-format
+msgid ""
+"Error parsing AI response as JSON: %(error)s. The AI may have returned "
+"invalid JSON."
+msgstr ""
+"Fehler beim Parsen der AI-Antwort als JSON: %(error)s. Die AI könnte ungültiges JSON "
+"zurückgegeben haben."
+
+#: src/plated/recipes/views/ai.py:204
+#, python-format
+msgid "Validation error: %(error)s"
+msgstr "Validierungsfehler: %(error)s"
+
+#: src/plated/recipes/views/ai.py:213
+msgid "Recipe extracted successfully! Please review and save the recipe."
+msgstr "Rezept erfolgreich extrahiert! Bitte überprüfe und speichere das Rezept."
+
+#: src/plated/recipes/views/collections.py:72
+#, python-format
+msgid "Collection '%(name)s' created successfully!"
+msgstr "Sammlung '%(name)s' erfolgreich erstellt!"
+
+#: src/plated/recipes/views/collections.py:90
+#, python-format
+msgid "Collection '%(name)s' updated successfully!"
+msgstr "Sammlung '%(name)s' erfolgreich aktualisiert!"
+
+#: src/plated/recipes/views/collections.py:108
+#, python-format
+msgid "Collection '%(name)s' deleted successfully!"
+msgstr "Sammlung '%(name)s' erfolgreich gelöscht!"
+
+#: src/plated/recipes/views/jobs.py:46
+#, python-format
+msgid "Job #%(id)s has been cancelled."
+msgstr "Auftrag #%(id)s wurde abgebrochen."
+
+#: src/plated/recipes/views/jobs.py:50
+#, python-format
+msgid "Cannot cancel job #%(id)s - it is %(status)s."
+msgstr "Kann Auftrag #%(id)s nicht abbrechen - er ist %(status)s."
+
+#: src/plated/recipes/views/jobs.py:66
+#, python-format
+msgid "Cannot retry job #%(id)s - it is %(status)s."
+msgstr "Kann Auftrag #%(id)s nicht wiederholen - er ist %(status)s."
+
+#: src/plated/recipes/views/jobs.py:85
+#, python-format
+msgid "Job #%(old_id)s has been requeued as job #%(new_id)s."
+msgstr "Auftrag #%(old_id)s wurde als Auftrag #%(new_id)s neu eingereiht."
+
+#: src/plated/recipes/views/jobs.py:100
+#, python-format
+msgid "Cannot delete job #%(id)s while it is %(status)s. Cancel it first."
+msgstr "Kann Auftrag #%(id)s nicht löschen, während er %(status)s ist. Brich ihn zuerst ab."
+
+#: src/plated/recipes/views/jobs.py:107
+#, python-format
+msgid "Job #%(id)s has been deleted."
+msgstr "Auftrag #%(id)s wurde gelöscht."
+
+#: src/plated/recipes/views/jobs.py:144
+#, python-format
+msgid "Job #%(id)s does not have a completed result to use."
+msgstr "Auftrag #%(id)s hat kein abgeschlossenes Ergebnis zur Verwendung."
+
+#: src/plated/recipes/views/jobs.py:150
+msgid "Recipe data loaded from job. Please review and save the recipe."
+msgstr "Rezeptdaten aus Auftrag geladen. Bitte überprüfe und speichere das Rezept."
+
+#: src/plated/recipes/views/meal_plans.py:119
+#, python-format
+msgid "Meal plan '%(name)s' created successfully!"
+msgstr "Speiseplan '%(name)s' erfolgreich erstellt!"
+
+#: src/plated/recipes/views/meal_plans.py:137
+#, python-format
+msgid "Meal plan '%(name)s' updated successfully!"
+msgstr "Speiseplan '%(name)s' erfolgreich aktualisiert!"
+
+#: src/plated/recipes/views/meal_plans.py:155
+#, python-format
+msgid "Meal plan '%(name)s' deleted successfully!"
+msgstr "Speiseplan '%(name)s' erfolgreich gelöscht!"
+
+#: src/plated/recipes/views/meal_plans.py:183
+#, python-format
+msgid "Added %(recipe)s to %(meal_type)s on %(date)s"
+msgstr "%(recipe)s zu %(meal_type)s am %(date)s hinzugefügt"
+
+#: src/plated/recipes/views/meal_plans.py:187
+msgid "Missing required fields"
+msgstr "Erforderliche Felder fehlen"
+
+#: src/plated/recipes/views/meal_plans.py:200
+#, python-format
+msgid "Removed %(entry)s"
+msgstr "%(entry)s entfernt"
+
+#: src/plated/recipes/views/properties.py:89
+#, python-format
+msgid "Old %(name)s is required."
+msgstr "Alte %(name)s ist erforderlich."
+
+#: src/plated/recipes/views/properties.py:94
+#, python-format
+msgid "New %(name)s is required."
+msgstr "Neue %(name)s ist erforderlich."
+
+#: src/plated/recipes/views/properties.py:99
+#, python-format
+msgid "Old and new %(name)ss are the same."
+msgstr "Alte und neue %(name)s sind identisch."
+
+#: src/plated/recipes/views/properties.py:110
+#, python-format
+msgid "No ingredients found with %(name)s '%(value)s'."
+msgstr "Keine Zutaten mit %(name)s '%(value)s' gefunden."
+
+#: src/plated/recipes/views/properties.py:124
+#, python-format
+msgid "Renamed '%(old)s' to '%(new)s' in %(count)s ingredient%(plural)s."
+msgstr "'%(old)s' in %(count)s Zutat%(plural)s zu '%(new)s' umbenannt."
+
+#: src/plated/recipes/views/properties.py:131
+#, python-format
+msgid "Error renaming %(name)s: %(error)s"
+msgstr "Fehler beim Umbenennen von %(name)s: %(error)s"
+
+#: src/plated/recipes/views/properties.py:273
+#, python-format
+msgid "%(name)s is required."
+msgstr "%(name)s ist erforderlich."
+
+#: src/plated/recipes/views/properties.py:283
+#, python-format
+msgid ""
+"Cannot delete '%(value)s' because it is used in %(count)s recipe%(plural)s."
+msgstr ""
+"Kann '%(value)s' nicht löschen, da es in %(count)s Rezept%(plural)s verwendet wird."
+
+#: src/plated/recipes/views/properties.py:290
+#, python-format
+msgid "%(name)s '%(value)s' deleted (no usage found)."
+msgstr "%(name)s '%(value)s' gelöscht (keine Verwendung gefunden)."
+
+#: src/plated/recipes/views/properties.py:394
+msgid "Old keyword is required."
+msgstr "Altes Stichwort ist erforderlich."
+
+#: src/plated/recipes/views/properties.py:399
+msgid "New keyword is required."
+msgstr "Neues Stichwort ist erforderlich."
+
+#: src/plated/recipes/views/properties.py:404
+msgid "Old and new keywords are the same."
+msgstr "Altes und neues Stichwort sind identisch."
+
+#: src/plated/recipes/views/properties.py:414
+#, python-format
+msgid "No recipes found with keyword '%(keyword)s'."
+msgstr "Keine Rezepte mit Stichwort '%(keyword)s' gefunden."
+
+#: src/plated/recipes/views/properties.py:441
+#, python-format
+msgid "Renamed '%(old)s' to '%(new)s' in %(count)s recipe%(plural)s."
+msgstr "'%(old)s' in %(count)s Rezept%(plural)s zu '%(new)s' umbenannt."
+
+#: src/plated/recipes/views/properties.py:447
+#, python-format
+msgid "Error renaming keyword: %(error)s"
+msgstr "Fehler beim Umbenennen des Stichworts: %(error)s"
+
+#: src/plated/recipes/views/properties.py:470
+msgid "Keyword is required."
+msgstr "Stichwort ist erforderlich."
+
+#: src/plated/recipes/views/properties.py:481
+#, python-format
+msgid ""
+"Cannot delete '%(keyword)s' because it is used in %(count)s recipe%(plural)s."
+msgstr ""
+"Kann '%(keyword)s' nicht löschen, da es in %(count)s Rezept%(plural)s verwendet wird."
+
+#: src/plated/recipes/views/properties.py:487
+#, python-format
+msgid "Keyword '%(keyword)s' deleted (no usage found)."
+msgstr "Stichwort '%(keyword)s' gelöscht (keine Verwendung gefunden)."
+
+#: src/plated/recipes/views/recipes.py:226
+msgid "Please add at least one ingredient to the recipe."
+msgstr "Bitte füge mindestens eine Zutat zum Rezept hinzu."
+
+#: src/plated/recipes/views/recipes.py:231
+msgid "Please add at least one instruction step to the recipe."
+msgstr "Bitte füge mindestens einen Anleitungsschritt zum Rezept hinzu."
+
+#: src/plated/recipes/views/recipes.py:338
+#, python-format
+msgid "Recipe '%(title)s' created successfully!"
+msgstr "Rezept '%(title)s' erfolgreich erstellt!"
+
+#: src/plated/recipes/views/recipes.py:342
+#: src/plated/recipes/views/recipes.py:527
+#, python-format
+msgid "Error creating recipe: %(error)s"
+msgstr "Fehler beim Erstellen des Rezepts: %(error)s"
+
+#: src/plated/recipes/views/recipes.py:416
+#, python-format
+msgid "Recipe '%(title)s' updated successfully!"
+msgstr "Rezept '%(title)s' erfolgreich aktualisiert!"
+
+#: src/plated/recipes/views/recipes.py:423
+#, python-format
+msgid "Error updating recipe: %(error)s"
+msgstr "Fehler beim Aktualisieren des Rezepts: %(error)s"
+
+#: src/plated/recipes/views/recipes.py:440
+#, python-format
+msgid "Recipe '%(title)s' deleted successfully!"
+msgstr "Rezept '%(title)s' erfolgreich gelöscht!"
+
+#: src/plated/recipes/views/recipes.py:456
+#: src/plated/recipes/views/recipes.py:498
+#, python-format
+msgid "Unknown format: %(format)s"
+msgstr "Unbekanntes Format: %(format)s"
+
+#: src/plated/recipes/views/recipes.py:474
+#, python-format
+msgid "Error exporting recipe: %(error)s"
+msgstr "Fehler beim Exportieren des Rezepts: %(error)s"
+
+#: src/plated/recipes/views/recipes.py:487
+msgid "No file was uploaded."
+msgstr "Keine Datei wurde hochgeladen."
+
+#: src/plated/recipes/views/recipes.py:506
+#, python-format
+msgid "Error reading file: %(error)s"
+msgstr "Fehler beim Lesen der Datei: %(error)s"
+
+#: src/plated/recipes/views/recipes.py:517
+#, python-format
+msgid ""
+"Recipe '%(title)s' imported successfully! You can now add images if needed."
+msgstr ""
+"Rezept '%(title)s' erfolgreich importiert! Du kannst jetzt bei Bedarf Bilder hinzufügen."
+
+#: src/plated/recipes/views/recipes.py:549
+msgid "Typst template file not found."
+msgstr "Typst-Vorlagendatei nicht gefunden."
+
+#: src/plated/recipes/views/recipes.py:593
+msgid "Typst is not installed. Please install Typst to generate PDFs."
+msgstr "Typst ist nicht installiert. Bitte installiere Typst, um PDFs zu generieren."
+
+#: src/plated/recipes/views/recipes.py:598
+msgid "PDF generation timed out."
+msgstr "PDF-Generierung hat die Zeitüberschreitung erreicht."
+
+#: src/plated/recipes/views/recipes.py:607
+#: src/plated/recipes/views/recipes.py:637
+#, python-format
+msgid "Error generating PDF: %(error)s"
+msgstr "Fehler beim Generieren des PDF: %(error)s"
+
+#: src/plated/recipes/views/recipes.py:615
+msgid "PDF file was not generated."
+msgstr "PDF-Datei wurde nicht generiert."
+
+#: src/plated/recipes/views/settings.py:44
+msgid "Language settings saved successfully!"
+msgstr "Spracheinstellungen erfolgreich gespeichert!"
+
+#: src/plated/recipes/views/settings.py:59
+msgid "AI settings saved successfully!"
+msgstr "AI-Einstellungen erfolgreich gespeichert!"
+
+#: src/plated/templates/about.html:4
+msgid "About"
+msgstr "Über"
+
+#: src/plated/templates/about.html:12
+msgid "About Plated"
+msgstr "Über Plated"
+
+#: src/plated/templates/about.html:15
+msgid "Version"
+msgstr "Version"
+
+#: src/plated/templates/about.html:20
+msgid "What is Plated?"
+msgstr "Was ist Plated?"
+
+#: src/plated/templates/about.html:22
+msgid ""
+"Plated is an open-source recipe management application designed to help you "
+"organize, create, and share your recipes. With Plated, you can:"
+msgstr ""
+"Plated ist eine Open-Source-Rezeptverwaltungsanwendung, die dir hilft, deine Rezepte zu "
+"organisieren, zu erstellen und zu teilen. Mit Plated kannst du:"
+
+#: src/plated/templates/about.html:25
+msgid "Store and organize your favorite recipes"
+msgstr "Speichere und organisiere deine Lieblingsrezepte"
+
+#: src/plated/templates/about.html:26
+msgid "Create collections to group related recipes"
+msgstr "Erstelle Sammlungen, um verwandte Rezepte zu gruppieren"
+
+#: src/plated/templates/about.html:27
+msgid "Plan meals with our meal planning feature"
+msgstr "Plane Mahlzeiten mit unserer Essensplanungsfunktion"
+
+#: src/plated/templates/about.html:28
+msgid "Generate shopping lists from your meal plans"
+msgstr "Generiere Einkaufslisten aus deinen Speiseplänen"
+
+#: src/plated/templates/about.html:29
+msgid "Import and export recipes in JSON format"
+msgstr "Importiere und exportiere Rezepte im JSON-Format"
+
+#: src/plated/templates/about.html:30
+msgid "Generate PDF versions of your recipes"
+msgstr "Generiere PDF-Versionen deiner Rezepte"
+
+#: src/plated/templates/about.html:31
+msgid "Use AI to extract recipes from websites (when configured)"
+msgstr "Nutze AI, um Rezepte von Webseiten zu extrahieren (wenn konfiguriert)"
+
+#: src/plated/templates/about.html:36
+msgid "Principles"
+msgstr "Prinzipien"
+
+#: src/plated/templates/about.html:39
+msgid "Open Source"
+msgstr "Open Source"
+
+#: src/plated/templates/about.html:39
+msgid "Plated is free and open-source software"
+msgstr "Plated ist freie und quelloffene Software"
+
+#: src/plated/templates/about.html:42
+msgid "Open Data"
+msgstr "Offene Daten"
+
+#: src/plated/templates/about.html:42
+msgid "Your recipes are yours, with easy import/export"
+msgstr "Deine Rezepte gehören dir, mit einfachem Import/Export"
+
+#: src/plated/templates/about.html:45
+msgid "Simple"
+msgstr "Einfach"
+
+#: src/plated/templates/about.html:45
+msgid "Clean, intuitive interface focused on usability"
+msgstr "Klare, intuitive Benutzeroberfläche mit Fokus auf Benutzerfreundlichkeit"
+
+#: src/plated/templates/about.html:48
+msgid "Privacy-Focused"
+msgstr "Datenschutzorientiert"
+
+#: src/plated/templates/about.html:48
+msgid "Self-hosted, your data stays with you"
+msgstr "Selbst gehostet, deine Daten bleiben bei dir"
+
+#: src/plated/templates/about.html:54
+msgid "Technology Stack"
+msgstr "Technologie-Stack"
+
+#: src/plated/templates/about.html:64
+msgid "Links"
+msgstr "Links"
+
+#: src/plated/templates/about.html:69
+msgid "GitHub Repository"
+msgstr "GitHub-Repository"
+
+#: src/plated/templates/about.html:74
+msgid "Report an Issue"
+msgstr "Problem melden"
+
+#: src/plated/templates/about.html:80
+#: src/plated/templates/recipes/jobs_list.html:105
+#: src/plated/templates/recipes/manage_ingredient_names.html:92
+#: src/plated/templates/recipes/manage_keywords.html:92
+#: src/plated/templates/recipes/manage_units.html:92
+msgid "Back to Recipes"
+msgstr "Zurück zu Rezepten"
+
+#: src/plated/templates/base.html:9
 msgid ""
 "Your personal recipe manager for organizing, creating, and sharing recipes"
-msgstr "Ihr persönlicher Rezeptmanager zum Organisieren, Erstellen und Teilen von Rezepten"
+msgstr ""
+"Ihr persönlicher Rezeptmanager zum Organisieren, Erstellen und Teilen von "
+"Rezepten"
 
-#: src/templates/base.html:9
+#: src/plated/templates/base.html:12
 msgid "Plated - Recipe Manager"
 msgstr "Plated - Rezeptverwaltung"
 
-#: src/templates/base.html:40 src/templates/recipes/collection_form.html:41
-#: src/templates/recipes/recipe_confirm_delete.html:11
-#: src/templates/recipes/recipe_detail.html:13
-#: src/templates/recipes/recipe_form.html:12
-#: src/templates/recipes/recipe_import.html:11
-#: src/templates/recipes/recipe_list.html:4
+#: src/plated/templates/base.html:53
+#: src/plated/templates/recipes/collection_form.html:41
+#: src/plated/templates/recipes/recipe_confirm_delete.html:11
+#: src/plated/templates/recipes/recipe_detail.html:13
+#: src/plated/templates/recipes/recipe_form.html:12
+#: src/plated/templates/recipes/recipe_import.html:11
+#: src/plated/templates/recipes/recipe_list.html:4
 msgid "Recipes"
 msgstr "Rezepte"
 
-#: src/templates/base.html:43
+#: src/plated/templates/base.html:56
 msgid "Collections"
 msgstr "Sammlungen"
 
-#: src/templates/base.html:46 src/templates/recipes/meal_plan_list.html:4
-#: src/templates/recipes/meal_plan_list.html:10
+#: src/plated/templates/base.html:59
+#: src/plated/templates/recipes/meal_plan_list.html:4
+#: src/plated/templates/recipes/meal_plan_list.html:10
 msgid "Meal Plans"
 msgstr "Speisepläne"
 
-#: src/templates/base.html:50
+#: src/plated/templates/base.html:67
 msgid "Manage"
 msgstr "Verwalten"
 
-#: src/templates/base.html:53
+#: src/plated/templates/base.html:70
 msgid "Ingredient Names"
 msgstr "Zutatennamen"
 
-#: src/templates/base.html:54
+#: src/plated/templates/base.html:73
 msgid "Units"
 msgstr "Einheiten"
 
-#: src/templates/base.html:55 src/templates/recipes/recipe_form.html:87
+#: src/plated/templates/base.html:76
+#: src/plated/templates/recipes/recipe_form.html:87
 msgid "Keywords"
 msgstr "Stichwörter"
 
-#: src/templates/base.html:62
+#: src/plated/templates/base.html:84
 msgid "Jobs"
 msgstr "Aufträge"
 
-#: src/templates/base.html:69 src/templates/recipes/settings.html:4
-#: src/templates/recipes/settings.html:9
+#: src/plated/templates/base.html:89
+#: src/plated/templates/recipes/settings.html:4
+#: src/plated/templates/recipes/settings.html:9
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: src/templates/base.html:95
+#: src/plated/templates/base.html:114
 msgid "Plated - Your Recipe Manager"
 msgstr "Plated - Ihr Rezeptmanager"
 
-#: src/templates/recipes/ai_extract.html:4
-#: src/templates/recipes/ai_extract.html:11
+#: src/plated/templates/recipes/ai_extract.html:4
+#: src/plated/templates/recipes/ai_extract.html:11
 msgid "AI Recipe Extraction"
 msgstr "KI-Rezeptextraktion"
 
-#: src/templates/recipes/ai_extract.html:14
+#: src/plated/templates/recipes/ai_extract.html:14
 msgid "Back"
 msgstr "Zurück"
 
-#: src/templates/recipes/ai_extract.html:21
+#: src/plated/templates/recipes/ai_extract.html:21
 msgid ""
 "Paste recipe text, HTML, or provide a URL, and let AI extract the recipe "
 "information for you. You can also provide additional instructions like \\"
-msgstr "Fügen Sie Rezepttext, HTML ein oder geben Sie eine URL an, und lassen Sie die KI die Rezeptinformationen für Sie extrahieren. Sie können auch zusätzliche Anweisungen wie \\ angeben"
+msgstr ""
+"Fügen Sie Rezepttext, HTML ein oder geben Sie eine URL an, und lassen Sie "
+"die KI die Rezeptinformationen für Sie extrahieren. Sie können auch "
+"zusätzliche Anweisungen wie \\ angeben"
 
-#: src/templates/recipes/ai_extract.html:27
-#: src/templates/recipes/job_detail.html:35
+#: src/plated/templates/recipes/ai_extract.html:27
+#: src/plated/templates/recipes/job_detail.html:35
 msgid "Timeout:"
 msgstr "Zeitüberschreitung:"
 
-#: src/templates/recipes/ai_extract.html:29
+#: src/plated/templates/recipes/ai_extract.html:29
 msgid "This job will run in the background. You can check its progress on the"
-msgstr "Dieser Auftrag wird im Hintergrund ausgeführt. Sie können den Fortschritt auf der"
+msgstr ""
+"Dieser Auftrag wird im Hintergrund ausgeführt. Sie können den Fortschritt "
+"auf der"
 
-#: src/templates/recipes/ai_extract.html:29
+#: src/plated/templates/recipes/ai_extract.html:29
 msgid "Jobs page"
 msgstr "Auftragsseite"
 
-#: src/templates/recipes/ai_extract.html:31
+#: src/plated/templates/recipes/ai_extract.html:31
 msgid "This job will run immediately and you'll wait for the result."
 msgstr "Dieser Auftrag wird sofort ausgeführt und Sie warten auf das Ergebnis."
 
-#: src/templates/recipes/ai_extract.html:84
+#: src/plated/templates/recipes/ai_extract.html:84
 msgid "Extract Recipe with AI"
 msgstr "Rezept mit KI extrahieren"
 
-#: src/templates/recipes/ai_extract.html:94
+#: src/plated/templates/recipes/ai_extract.html:94
 msgid "Tips"
 msgstr "Tipps"
 
-#: src/templates/recipes/ai_extract.html:98
+#: src/plated/templates/recipes/ai_extract.html:98
 msgid "Plain Text:"
 msgstr "Klartext:"
 
-#: src/templates/recipes/ai_extract.html:98
+#: src/plated/templates/recipes/ai_extract.html:98
 msgid "Paste recipe text directly from any source."
 msgstr "Fügen Sie Rezepttext direkt aus beliebiger Quelle ein."
 
-#: src/templates/recipes/ai_extract.html:99
+#: src/plated/templates/recipes/ai_extract.html:99
 msgid "HTML:"
 msgstr "HTML:"
 
-#: src/templates/recipes/ai_extract.html:99
+#: src/plated/templates/recipes/ai_extract.html:99
 msgid ""
 "Paste HTML code containing a recipe (e.g., copied from browser developer "
 "tools)."
-msgstr "Fügen Sie HTML-Code ein, der ein Rezept enthält (z.B. aus den Browser-Entwicklertools kopiert)."
+msgstr ""
+"Fügen Sie HTML-Code ein, der ein Rezept enthält (z.B. aus den Browser-"
+"Entwicklertools kopiert)."
 
-#: src/templates/recipes/ai_extract.html:100
+#: src/plated/templates/recipes/ai_extract.html:100
 msgid "URL:"
 msgstr "URL:"
 
-#: src/templates/recipes/ai_extract.html:100
+#: src/plated/templates/recipes/ai_extract.html:100
 msgid "Provide a direct link to a recipe webpage."
 msgstr "Geben Sie einen direkten Link zu einer Rezeptwebseite an."
 
-#: src/templates/recipes/ai_extract.html:101
-#: src/templates/recipes/job_detail.html:94
+#: src/plated/templates/recipes/ai_extract.html:101
+#: src/plated/templates/recipes/job_detail.html:94
 msgid "Instructions:"
 msgstr "Anweisungen:"
 
-#: src/templates/recipes/ai_extract.html:101
+#: src/plated/templates/recipes/ai_extract.html:101
 msgid "Add custom instructions like \\"
 msgstr "Fügen Sie benutzerdefinierte Anweisungen hinzu wie \\"
 
-#: src/templates/recipes/collection_confirm_delete.html:4
-#: src/templates/recipes/collection_confirm_delete.html:9
+#: src/plated/templates/recipes/collection_confirm_delete.html:4
+#: src/plated/templates/recipes/collection_confirm_delete.html:9
 msgid "Delete Collection"
 msgstr "Sammlung löschen"
 
-#: src/templates/recipes/collection_confirm_delete.html:14
-#: src/templates/recipes/meal_plan_confirm_delete.html:11
-#: src/templates/recipes/recipe_confirm_delete.html:23
+#: src/plated/templates/recipes/collection_confirm_delete.html:14
+#: src/plated/templates/recipes/meal_plan_confirm_delete.html:11
+#: src/plated/templates/recipes/recipe_confirm_delete.html:23
 msgid "Confirm Deletion"
 msgstr "Löschen bestätigen"
 
-#: src/templates/recipes/collection_confirm_delete.html:16
+#: src/plated/templates/recipes/collection_confirm_delete.html:16
 #, python-format
 msgid ""
 "Are you sure you want to delete the collection <strong>\"%(name)s\"</strong>?"
-msgstr "Möchten Sie die Sammlung <strong>\"%(name)s\"</strong> wirklich löschen?"
+msgstr ""
+"Möchten Sie die Sammlung <strong>\"%(name)s\"</strong> wirklich löschen?"
 
-#: src/templates/recipes/collection_confirm_delete.html:17
+#: src/plated/templates/recipes/collection_confirm_delete.html:17
 msgid ""
 "This action cannot be undone. The recipes themselves will not be deleted, "
 "only the collection."
-msgstr "Diese Aktion kann nicht rückgängig gemacht werden. Die Rezepte selbst werden nicht gelöscht, nur die Sammlung."
+msgstr ""
+"Diese Aktion kann nicht rückgängig gemacht werden. Die Rezepte selbst werden "
+"nicht gelöscht, nur die Sammlung."
 
-#: src/templates/recipes/collection_confirm_delete.html:24
+#: src/plated/templates/recipes/collection_confirm_delete.html:24
 msgid "Yes, Delete Collection"
 msgstr "Ja, Sammlung löschen"
 
-#: src/templates/recipes/collection_confirm_delete.html:27
-#: src/templates/recipes/collection_form.html:58
-#: src/templates/recipes/jobs_list.html:66
-#: src/templates/recipes/meal_plan_confirm_delete.html:26
-#: src/templates/recipes/meal_plan_form.html:56
-#: src/templates/recipes/recipe_confirm_delete.html:32
-#: src/templates/recipes/recipe_detail.html:322
-#: src/templates/recipes/recipe_form.html:392
-#: src/templates/recipes/recipe_import.html:49
-#: src/templates/recipes/rename_ingredient_name.html:40
-#: src/templates/recipes/rename_keyword.html:40
-#: src/templates/recipes/rename_unit.html:40
+#: src/plated/templates/recipes/collection_confirm_delete.html:27
+#: src/plated/templates/recipes/collection_form.html:58
+#: src/plated/templates/recipes/jobs_list.html:66
+#: src/plated/templates/recipes/meal_plan_confirm_delete.html:26
+#: src/plated/templates/recipes/meal_plan_form.html:56
+#: src/plated/templates/recipes/recipe_confirm_delete.html:32
+#: src/plated/templates/recipes/recipe_detail.html:322
+#: src/plated/templates/recipes/recipe_form.html:390
+#: src/plated/templates/recipes/recipe_import.html:49
+#: src/plated/templates/recipes/rename_ingredient_name.html:40
+#: src/plated/templates/recipes/rename_keyword.html:40
+#: src/plated/templates/recipes/rename_unit.html:40
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: src/templates/recipes/collection_detail.html:17
+#: src/plated/templates/recipes/collection_detail.html:17
 #, python-format
 msgid "Created %(date)s"
 msgstr "Erstellt am %(date)s"
 
-#: src/templates/recipes/collection_detail.html:19
+#: src/plated/templates/recipes/collection_detail.html:19
 #, python-format
 msgid "Updated %(date)s"
 msgstr "Aktualisiert am %(date)s"
 
-#: src/templates/recipes/collection_detail.html:26
-#: src/templates/recipes/collection_list.html:42
-#: src/templates/recipes/meal_plan_detail.html:24
-#: src/templates/recipes/meal_plan_form.html:4
-#: src/templates/recipes/meal_plan_list.html:47
-#: src/templates/recipes/recipe_detail.html:38
-#: src/templates/recipes/recipe_detail.html:56
-#: src/templates/recipes/recipe_form.html:5
-#: src/templates/recipes/recipe_form.html:15
+#: src/plated/templates/recipes/collection_detail.html:26
+#: src/plated/templates/recipes/collection_list.html:42
+#: src/plated/templates/recipes/meal_plan_detail.html:24
+#: src/plated/templates/recipes/meal_plan_form.html:4
+#: src/plated/templates/recipes/meal_plan_list.html:47
+#: src/plated/templates/recipes/recipe_detail.html:38
+#: src/plated/templates/recipes/recipe_detail.html:56
+#: src/plated/templates/recipes/recipe_form.html:5
+#: src/plated/templates/recipes/recipe_form.html:15
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: src/templates/recipes/collection_detail.html:29
-#: src/templates/recipes/collection_list.html:45
-#: src/templates/recipes/jobs_list.html:74
-#: src/templates/recipes/manage_ingredient_names.html:66
-#: src/templates/recipes/manage_ingredient_names.html:71
-#: src/templates/recipes/manage_keywords.html:66
-#: src/templates/recipes/manage_keywords.html:71
-#: src/templates/recipes/manage_units.html:66
-#: src/templates/recipes/manage_units.html:71
-#: src/templates/recipes/meal_plan_confirm_delete.html:4
-#: src/templates/recipes/meal_plan_detail.html:27
-#: src/templates/recipes/meal_plan_list.html:53
-#: src/templates/recipes/recipe_confirm_delete.html:4
-#: src/templates/recipes/recipe_confirm_delete.html:13
-#: src/templates/recipes/recipe_detail.html:41
-#: src/templates/recipes/recipe_detail.html:59
-#: src/templates/recipes/recipe_form.html:146
-#: src/templates/recipes/recipe_form.html:188
-#: src/templates/recipes/recipe_form.html:247
-#: src/templates/recipes/recipe_form.html:278
-#: src/templates/recipes/recipe_form.html:326
-#: src/templates/recipes/recipe_form.html:360
+#: src/plated/templates/recipes/collection_detail.html:29
+#: src/plated/templates/recipes/collection_list.html:45
+#: src/plated/templates/recipes/jobs_list.html:74
+#: src/plated/templates/recipes/manage_ingredient_names.html:66
+#: src/plated/templates/recipes/manage_ingredient_names.html:71
+#: src/plated/templates/recipes/manage_keywords.html:66
+#: src/plated/templates/recipes/manage_keywords.html:71
+#: src/plated/templates/recipes/manage_units.html:66
+#: src/plated/templates/recipes/manage_units.html:71
+#: src/plated/templates/recipes/meal_plan_confirm_delete.html:4
+#: src/plated/templates/recipes/meal_plan_detail.html:27
+#: src/plated/templates/recipes/meal_plan_list.html:53
+#: src/plated/templates/recipes/recipe_confirm_delete.html:4
+#: src/plated/templates/recipes/recipe_confirm_delete.html:13
+#: src/plated/templates/recipes/recipe_detail.html:41
+#: src/plated/templates/recipes/recipe_detail.html:59
+#: src/plated/templates/recipes/recipe_form.html:146
+#: src/plated/templates/recipes/recipe_form.html:188
+#: src/plated/templates/recipes/recipe_form.html:247
+#: src/plated/templates/recipes/recipe_form.html:277
+#: src/plated/templates/recipes/recipe_form.html:324
+#: src/plated/templates/recipes/recipe_form.html:358
 msgid "Delete"
 msgstr "Löschen"
 
-#: src/templates/recipes/collection_detail.html:36
-#, python-format
-msgid "Recipes (%(counter)s)"
-msgstr "Rezepte (%(counter)s)"
+#: src/plated/templates/recipes/collection_detail.html:36
+#, fuzzy, python-format
+#| msgid "%(counter)s recipe"
+#| msgid_plural "%(counter)s recipes"
+msgid "%(counter)s Recipe"
+msgid_plural "%(counter)s Recipes"
+msgstr[0] "%(counter)s Rezept"
+msgstr[1] "%(counter)s Rezepte"
 
-#: src/templates/recipes/collection_detail.html:72
+#: src/plated/templates/recipes/collection_detail.html:72
 msgid "No recipes in this collection yet."
 msgstr "Noch keine Rezepte in dieser Sammlung."
 
-#: src/templates/recipes/collection_detail.html:72
+#: src/plated/templates/recipes/collection_detail.html:72
 msgid "Edit the collection"
 msgstr "Sammlung bearbeiten"
 
-#: src/templates/recipes/collection_detail.html:72
+#: src/plated/templates/recipes/collection_detail.html:72
 msgid "to add recipes."
 msgstr "um Rezepte hinzuzufügen."
 
-#: src/templates/recipes/collection_detail.html:78
+#: src/plated/templates/recipes/collection_detail.html:78
 msgid "Back to Collections"
 msgstr "Zurück zu Sammlungen"
 
-#: src/templates/recipes/collection_form.html:4
-#: src/templates/recipes/collection_form.html:9
+#: src/plated/templates/recipes/collection_form.html:4
+#: src/plated/templates/recipes/collection_form.html:9
 msgid "Edit Collection"
 msgstr "Sammlung bearbeiten"
 
-#: src/templates/recipes/collection_form.html:4
-#: src/templates/recipes/collection_form.html:9
-#: src/templates/recipes/collection_list.html:12
+#: src/plated/templates/recipes/collection_form.html:4
+#: src/plated/templates/recipes/collection_form.html:9
+#: src/plated/templates/recipes/collection_list.html:12
 msgid "New Collection"
 msgstr "Neue Sammlung"
 
-#: src/templates/recipes/collection_form.html:16
+#: src/plated/templates/recipes/collection_form.html:16
 msgid "Collection Name"
 msgstr "Sammlungsname"
 
-#: src/templates/recipes/collection_form.html:28
-#: src/templates/recipes/meal_plan_form.html:25
-#: src/templates/recipes/recipe_detail.html:184
-#: src/templates/recipes/recipe_form.html:53
+#: src/plated/templates/recipes/collection_form.html:28
+#: src/plated/templates/recipes/meal_plan_form.html:25
+#: src/plated/templates/recipes/recipe_detail.html:184
+#: src/plated/templates/recipes/recipe_form.html:53
 msgid "Description"
 msgstr "Beschreibung"
 
-#: src/templates/recipes/collection_form.html:37
+#: src/plated/templates/recipes/collection_form.html:37
 msgid "Optional description of this collection"
 msgstr "Optionale Beschreibung dieser Sammlung"
 
-#: src/templates/recipes/collection_form.html:55
+#: src/plated/templates/recipes/collection_form.html:55
 msgid "Update Collection"
 msgstr "Sammlung aktualisieren"
 
-#: src/templates/recipes/collection_form.html:55
+#: src/plated/templates/recipes/collection_form.html:55
 msgid "Create Collection"
 msgstr "Sammlung erstellen"
 
-#: src/templates/recipes/collection_list.html:4
-#: src/templates/recipes/collection_list.html:10
+#: src/plated/templates/recipes/collection_list.html:4
+#: src/plated/templates/recipes/collection_list.html:10
 msgid "Recipe Collections"
 msgstr "Rezeptsammlungen"
 
-#: src/templates/recipes/collection_list.html:32
+#: src/plated/templates/recipes/collection_list.html:32
 #, python-format
 msgid "%(counter)s recipe"
 msgid_plural "%(counter)s recipes"
 msgstr[0] "%(counter)s Rezept"
 msgstr[1] "%(counter)s Rezepte"
 
-#: src/templates/recipes/collection_list.html:39
-#: src/templates/recipes/jobs_list.html:53
-#: src/templates/recipes/meal_plan_list.html:44
+#: src/plated/templates/recipes/collection_list.html:39
+#: src/plated/templates/recipes/jobs_list.html:53
+#: src/plated/templates/recipes/meal_plan_list.html:44
 msgid "View"
 msgstr "Anzeigen"
 
-#: src/templates/recipes/collection_list.html:55
-#: src/templates/recipes/meal_plan_list.html:63
+#: src/plated/templates/recipes/collection_list.html:55
+#: src/plated/templates/recipes/meal_plan_list.html:63
 msgid "Page navigation"
 msgstr "Seitennavigation"
 
-#: src/templates/recipes/collection_list.html:59
-#: src/templates/recipes/meal_plan_list.html:67
-#: src/templates/recipes/recipe_list.html:87
+#: src/plated/templates/recipes/collection_list.html:59
+#: src/plated/templates/recipes/meal_plan_list.html:67
+#: src/plated/templates/recipes/recipe_list.html:87
 msgid "First"
 msgstr "Erste"
 
-#: src/templates/recipes/collection_list.html:62
-#: src/templates/recipes/meal_plan_list.html:70
-#: src/templates/recipes/recipe_list.html:90
+#: src/plated/templates/recipes/collection_list.html:62
+#: src/plated/templates/recipes/meal_plan_list.html:70
+#: src/plated/templates/recipes/recipe_list.html:90
 msgid "Previous"
 msgstr "Vorherige"
 
-#: src/templates/recipes/collection_list.html:67
-#: src/templates/recipes/meal_plan_list.html:75
+#: src/plated/templates/recipes/collection_list.html:67
+#: src/plated/templates/recipes/meal_plan_list.html:75
 #, python-format
 msgid "Page %(current)s of %(total)s"
 msgstr "Seite %(current)s von %(total)s"
 
-#: src/templates/recipes/collection_list.html:72
-#: src/templates/recipes/meal_plan_list.html:80
-#: src/templates/recipes/recipe_list.html:100
+#: src/plated/templates/recipes/collection_list.html:72
+#: src/plated/templates/recipes/meal_plan_list.html:80
+#: src/plated/templates/recipes/recipe_list.html:100
 msgid "Next"
 msgstr "Nächste"
 
-#: src/templates/recipes/collection_list.html:75
-#: src/templates/recipes/meal_plan_list.html:83
-#: src/templates/recipes/recipe_list.html:103
+#: src/plated/templates/recipes/collection_list.html:75
+#: src/plated/templates/recipes/meal_plan_list.html:83
+#: src/plated/templates/recipes/recipe_list.html:103
 msgid "Last"
 msgstr "Letzte"
 
-#: src/templates/recipes/collection_list.html:84
+#: src/plated/templates/recipes/collection_list.html:84
 msgid "No collections yet."
 msgstr "Noch keine Sammlungen vorhanden."
 
-#: src/templates/recipes/collection_list.html:84
+#: src/plated/templates/recipes/collection_list.html:84
 msgid "Create your first collection"
 msgstr "Erstellen Sie Ihre erste Sammlung"
 
-#: src/templates/recipes/collection_list.html:84
+#: src/plated/templates/recipes/collection_list.html:84
 msgid "to organize your recipes!"
 msgstr "um Ihre Rezepte zu organisieren!"
 
-#: src/templates/recipes/job_detail.html:4
-#: src/templates/recipes/job_detail.html:9
+#: src/plated/templates/recipes/job_detail.html:4
+#: src/plated/templates/recipes/job_detail.html:9
 msgid "AI Job"
 msgstr "KI-Auftrag"
 
-#: src/templates/recipes/job_detail.html:14
+#: src/plated/templates/recipes/job_detail.html:14
 msgid "Job Status"
 msgstr "Auftragsstatus"
 
-#: src/templates/recipes/job_detail.html:29
-#: src/templates/recipes/recipe_detail.html:258
+#: src/plated/templates/recipes/job_detail.html:29
+#: src/plated/templates/recipes/recipe_detail.html:258
 msgid "Created:"
 msgstr "Erstellt:"
 
-#: src/templates/recipes/job_detail.html:32
+#: src/plated/templates/recipes/job_detail.html:32
 msgid "Input Type:"
 msgstr "Eingabetyp:"
 
-#: src/templates/recipes/job_detail.html:36
+#: src/plated/templates/recipes/job_detail.html:36
 #, python-format
 msgid "%(seconds)s seconds"
 msgstr "%(seconds)s Sekunden"
 
-#: src/templates/recipes/job_detail.html:39
+#: src/plated/templates/recipes/job_detail.html:39
 msgid "Started:"
 msgstr "Gestartet:"
 
-#: src/templates/recipes/job_detail.html:44
+#: src/plated/templates/recipes/job_detail.html:44
 msgid "Completed:"
 msgstr "Abgeschlossen:"
 
-#: src/templates/recipes/job_detail.html:55
+#: src/plated/templates/recipes/job_detail.html:55
 msgid "Processing..."
 msgstr "Verarbeitung läuft..."
 
-#: src/templates/recipes/job_detail.html:58
+#: src/plated/templates/recipes/job_detail.html:58
 #, python-format
 msgid "Job is %(status)s. This page will automatically refresh..."
 msgstr "Auftrag ist %(status)s. Diese Seite wird automatisch aktualisiert..."
 
-#: src/templates/recipes/job_detail.html:66
+#: src/plated/templates/recipes/job_detail.html:66
 msgid "Recipe extracted successfully!"
 msgstr "Rezept erfolgreich extrahiert!"
 
-#: src/templates/recipes/job_detail.html:70
+#: src/plated/templates/recipes/job_detail.html:70
 msgid "Use This Recipe"
 msgstr "Dieses Rezept verwenden"
 
-#: src/templates/recipes/job_detail.html:77
+#: src/plated/templates/recipes/job_detail.html:77
 msgid "Job Failed"
 msgstr "Auftrag fehlgeschlagen"
 
-#: src/templates/recipes/job_detail.html:83
+#: src/plated/templates/recipes/job_detail.html:83
 msgid "Retry Job"
 msgstr "Auftrag wiederholen"
 
-#: src/templates/recipes/job_detail.html:90
+#: src/plated/templates/recipes/job_detail.html:90
 msgid "Input Content"
 msgstr "Eingabeinhalt"
 
-#: src/templates/recipes/job_detail.html:103
+#: src/plated/templates/recipes/job_detail.html:103
 msgid "Back to Jobs"
 msgstr "Zurück zu Aufträgen"
 
-#: src/templates/recipes/job_detail.html:109
+#: src/plated/templates/recipes/job_detail.html:109
 msgid "Cancel Job"
 msgstr "Auftrag abbrechen"
 
-#: src/templates/recipes/job_detail.html:113
+#: src/plated/templates/recipes/job_detail.html:113
 msgid "Are you sure you want to delete this job?"
 msgstr "Möchten Sie diesen Auftrag wirklich löschen?"
 
-#: src/templates/recipes/job_detail.html:116
+#: src/plated/templates/recipes/job_detail.html:116
 msgid "Delete Job"
 msgstr "Auftrag löschen"
 
-#: src/templates/recipes/jobs_list.html:4
+#: src/plated/templates/recipes/jobs_list.html:4
 msgid "AI Jobs"
 msgstr "KI-Aufträge"
 
-#: src/templates/recipes/jobs_list.html:9
+#: src/plated/templates/recipes/jobs_list.html:9
 msgid "AI Extraction Jobs"
 msgstr "KI-Extraktionsaufträge"
 
-#: src/templates/recipes/jobs_list.html:10
+#: src/plated/templates/recipes/jobs_list.html:10
 msgid "View and manage your AI recipe extraction jobs"
-msgstr "Zeigen Sie Ihre KI-Rezeptextraktionsaufträge an und verwalten Sie diese"
+msgstr ""
+"Zeigen Sie Ihre KI-Rezeptextraktionsaufträge an und verwalten Sie diese"
 
-#: src/templates/recipes/jobs_list.html:18
+#: src/plated/templates/recipes/jobs_list.html:18
 msgid "ID"
 msgstr "ID"
 
-#: src/templates/recipes/jobs_list.html:19
+#: src/plated/templates/recipes/jobs_list.html:19
 msgid "Created"
 msgstr "Erstellt"
 
-#: src/templates/recipes/jobs_list.html:20
+#: src/plated/templates/recipes/jobs_list.html:20
 msgid "Status"
 msgstr "Status"
 
-#: src/templates/recipes/jobs_list.html:21
+#: src/plated/templates/recipes/jobs_list.html:21
 msgid "Input Type"
 msgstr "Eingabetyp"
 
-#: src/templates/recipes/jobs_list.html:22
+#: src/plated/templates/recipes/jobs_list.html:22
 msgid "Timeout"
 msgstr "Zeitüberschreitung"
 
-#: src/templates/recipes/jobs_list.html:23
-#: src/templates/recipes/manage_ingredient_names.html:41
-#: src/templates/recipes/manage_keywords.html:41
-#: src/templates/recipes/manage_units.html:41
+#: src/plated/templates/recipes/jobs_list.html:23
+#: src/plated/templates/recipes/manage_ingredient_names.html:41
+#: src/plated/templates/recipes/manage_keywords.html:41
+#: src/plated/templates/recipes/manage_units.html:41
 msgid "Actions"
 msgstr "Aktionen"
 
-#: src/templates/recipes/jobs_list.html:32
+#: src/plated/templates/recipes/jobs_list.html:32
 msgid "New"
 msgstr "Neu"
 
-#: src/templates/recipes/jobs_list.html:58
+#: src/plated/templates/recipes/jobs_list.html:58
 msgid "Retry"
 msgstr "Wiederholen"
 
-#: src/templates/recipes/jobs_list.html:72
+#: src/plated/templates/recipes/jobs_list.html:72
 msgid "Are you sure you want to delete job"
 msgstr "Möchten Sie den Auftrag wirklich löschen"
 
-#: src/templates/recipes/jobs_list.html:99
+#: src/plated/templates/recipes/jobs_list.html:99
 msgid "No jobs found."
 msgstr "Keine Aufträge gefunden."
 
-#: src/templates/recipes/jobs_list.html:99
+#: src/plated/templates/recipes/jobs_list.html:99
 msgid "Extract a recipe with AI"
 msgstr "Extrahieren Sie ein Rezept mit KI"
 
-#: src/templates/recipes/jobs_list.html:99
+#: src/plated/templates/recipes/jobs_list.html:99
 msgid "to create a job."
 msgstr "um einen Auftrag zu erstellen."
 
-#: src/templates/recipes/jobs_list.html:105
-#: src/templates/recipes/manage_ingredient_names.html:92
-#: src/templates/recipes/manage_keywords.html:92
-#: src/templates/recipes/manage_units.html:92
-msgid "Back to Recipes"
-msgstr "Zurück zu Rezepten"
-
-#: src/templates/recipes/jobs_list.html:108
+#: src/plated/templates/recipes/jobs_list.html:108
 msgid "New AI Extraction"
 msgstr "Neue KI-Extraktion"
 
-#: src/templates/recipes/manage_ingredient_names.html:4
-#: src/templates/recipes/manage_ingredient_names.html:9
+#: src/plated/templates/recipes/manage_ingredient_names.html:4
+#: src/plated/templates/recipes/manage_ingredient_names.html:9
 msgid "Manage Ingredient Names"
 msgstr "Zutatennamen verwalten"
 
-#: src/templates/recipes/manage_ingredient_names.html:10
+#: src/plated/templates/recipes/manage_ingredient_names.html:10
 msgid "View all distinct ingredient names used across your recipes."
-msgstr "Sehen Sie alle eindeutigen Zutatennamen, die in Ihren Rezepten verwendet werden."
+msgstr ""
+"Sehen Sie alle eindeutigen Zutatennamen, die in Ihren Rezepten verwendet "
+"werden."
 
-#: src/templates/recipes/manage_ingredient_names.html:16
+#: src/plated/templates/recipes/manage_ingredient_names.html:16
 msgid "Search ingredient names..."
 msgstr "Zutatennamen suchen..."
 
-#: src/templates/recipes/manage_ingredient_names.html:18
-#: src/templates/recipes/manage_keywords.html:18
-#: src/templates/recipes/manage_units.html:18
-#: src/templates/recipes/recipe_list.html:33
+#: src/plated/templates/recipes/manage_ingredient_names.html:18
+#: src/plated/templates/recipes/manage_keywords.html:18
+#: src/plated/templates/recipes/manage_units.html:18
+#: src/plated/templates/recipes/recipe_list.html:33
 msgid "Search"
 msgstr "Suchen"
 
-#: src/templates/recipes/manage_ingredient_names.html:22
-#: src/templates/recipes/manage_keywords.html:22
-#: src/templates/recipes/manage_units.html:22
+#: src/plated/templates/recipes/manage_ingredient_names.html:22
+#: src/plated/templates/recipes/manage_keywords.html:22
+#: src/plated/templates/recipes/manage_units.html:22
 msgid "Clear"
 msgstr "Löschen"
 
-#: src/templates/recipes/manage_ingredient_names.html:31
+#: src/plated/templates/recipes/manage_ingredient_names.html:31
 #, python-format
 msgid "Found %(counter)s distinct ingredient name."
 msgid_plural "Found %(counter)s distinct ingredient names."
 msgstr[0] "%(counter)s eindeutiger Zutatenname gefunden."
 msgstr[1] "%(counter)s eindeutige Zutatennamen gefunden."
 
-#: src/templates/recipes/manage_ingredient_names.html:32
+#: src/plated/templates/recipes/manage_ingredient_names.html:32
 msgid "Use consistent naming to help with autocomplete when creating recipes."
-msgstr "Verwenden Sie konsistente Bezeichnungen, um die Autovervollständigung beim Erstellen von Rezepten zu unterstützen."
+msgstr ""
+"Verwenden Sie konsistente Bezeichnungen, um die Autovervollständigung beim "
+"Erstellen von Rezepten zu unterstützen."
 
-#: src/templates/recipes/manage_ingredient_names.html:39
+#: src/plated/templates/recipes/manage_ingredient_names.html:39
 msgid "Ingredient Name"
 msgstr "Zutatenname"
 
-#: src/templates/recipes/manage_ingredient_names.html:40
-#: src/templates/recipes/manage_keywords.html:40
-#: src/templates/recipes/manage_units.html:40
+#: src/plated/templates/recipes/manage_ingredient_names.html:40
+#: src/plated/templates/recipes/manage_keywords.html:40
+#: src/plated/templates/recipes/manage_units.html:40
 msgid "Usage Count"
 msgstr "Verwendungsanzahl"
 
-#: src/templates/recipes/manage_ingredient_names.html:51
-#: src/templates/recipes/manage_keywords.html:51
-#: src/templates/recipes/manage_units.html:51
+#: src/plated/templates/recipes/manage_ingredient_names.html:51
+#: src/plated/templates/recipes/manage_keywords.html:51
+#: src/plated/templates/recipes/manage_units.html:51
 #, python-format
 msgid "%(counter)s time"
 msgid_plural "%(counter)s times"
 msgstr[0] "%(counter)s Mal"
 msgstr[1] "%(counter)s Mal"
 
-#: src/templates/recipes/manage_ingredient_names.html:54
-#: src/templates/recipes/manage_keywords.html:54
-#: src/templates/recipes/manage_units.html:54
+#: src/plated/templates/recipes/manage_ingredient_names.html:54
+#: src/plated/templates/recipes/manage_keywords.html:54
+#: src/plated/templates/recipes/manage_units.html:54
 msgid "0 times"
 msgstr "0 Mal"
 
-#: src/templates/recipes/manage_ingredient_names.html:59
-#: src/templates/recipes/manage_keywords.html:59
-#: src/templates/recipes/manage_units.html:59
+#: src/plated/templates/recipes/manage_ingredient_names.html:59
+#: src/plated/templates/recipes/manage_keywords.html:59
+#: src/plated/templates/recipes/manage_units.html:59
 msgid "Rename"
 msgstr "Umbenennen"
 
-#: src/templates/recipes/manage_ingredient_names.html:62
-#: src/templates/recipes/manage_keywords.html:62
-#: src/templates/recipes/manage_units.html:62
+#: src/plated/templates/recipes/manage_ingredient_names.html:62
+#: src/plated/templates/recipes/manage_keywords.html:62
+#: src/plated/templates/recipes/manage_units.html:62
 msgid "Are you sure you want to delete"
 msgstr "Möchten Sie wirklich löschen"
 
-#: src/templates/recipes/manage_ingredient_names.html:70
-#: src/templates/recipes/manage_keywords.html:70
-#: src/templates/recipes/manage_units.html:70
+#: src/plated/templates/recipes/manage_ingredient_names.html:70
+#: src/plated/templates/recipes/manage_keywords.html:70
+#: src/plated/templates/recipes/manage_units.html:70
 msgid "Cannot delete: in use"
 msgstr "Kann nicht gelöscht werden: wird verwendet"
 
-#: src/templates/recipes/manage_ingredient_names.html:83
+#: src/plated/templates/recipes/manage_ingredient_names.html:83
 #, python-format
 msgid "No ingredient names found matching \"%(query)s\"."
 msgstr "Keine Zutatennamen gefunden, die mit \"%(query)s\" übereinstimmen."
 
-#: src/templates/recipes/manage_ingredient_names.html:85
+#: src/plated/templates/recipes/manage_ingredient_names.html:85
 msgid "No ingredients found in your recipes yet."
 msgstr "Noch keine Zutaten in Ihren Rezepten gefunden."
 
-#: src/templates/recipes/manage_keywords.html:4
-#: src/templates/recipes/manage_keywords.html:9
+#: src/plated/templates/recipes/manage_keywords.html:4
+#: src/plated/templates/recipes/manage_keywords.html:9
 msgid "Manage Keywords"
 msgstr "Stichwörter verwalten"
 
-#: src/templates/recipes/manage_keywords.html:10
+#: src/plated/templates/recipes/manage_keywords.html:10
 msgid "View all distinct keywords used across your recipes."
-msgstr "Sehen Sie alle eindeutigen Stichwörter, die in Ihren Rezepten verwendet werden."
+msgstr ""
+"Sehen Sie alle eindeutigen Stichwörter, die in Ihren Rezepten verwendet "
+"werden."
 
-#: src/templates/recipes/manage_keywords.html:16
+#: src/plated/templates/recipes/manage_keywords.html:16
 msgid "Search keywords..."
 msgstr "Stichwörter suchen..."
 
-#: src/templates/recipes/manage_keywords.html:31
+#: src/plated/templates/recipes/manage_keywords.html:31
 #, python-format
 msgid "Found %(counter)s distinct keyword."
 msgid_plural "Found %(counter)s distinct keywords."
 msgstr[0] "%(counter)s eindeutiges Stichwort gefunden."
 msgstr[1] "%(counter)s eindeutige Stichwörter gefunden."
 
-#: src/templates/recipes/manage_keywords.html:32
+#: src/plated/templates/recipes/manage_keywords.html:32
 msgid "Use consistent keywords to help organize and find recipes."
-msgstr "Verwenden Sie konsistente Stichwörter, um Rezepte zu organisieren und zu finden."
+msgstr ""
+"Verwenden Sie konsistente Stichwörter, um Rezepte zu organisieren und zu "
+"finden."
 
-#: src/templates/recipes/manage_keywords.html:39
+#: src/plated/templates/recipes/manage_keywords.html:39
 msgid "Keyword"
 msgstr "Stichwort"
 
-#: src/templates/recipes/manage_keywords.html:83
+#: src/plated/templates/recipes/manage_keywords.html:83
 #, python-format
 msgid "No keywords found matching \"%(query)s\"."
 msgstr "Keine Stichwörter gefunden, die mit \"%(query)s\" übereinstimmen."
 
-#: src/templates/recipes/manage_keywords.html:85
+#: src/plated/templates/recipes/manage_keywords.html:85
 msgid "No keywords found in your recipes yet."
 msgstr "Noch keine Stichwörter in Ihren Rezepten gefunden."
 
-#: src/templates/recipes/manage_units.html:4
-#: src/templates/recipes/manage_units.html:9
+#: src/plated/templates/recipes/manage_units.html:4
+#: src/plated/templates/recipes/manage_units.html:9
 msgid "Manage Units"
 msgstr "Einheiten verwalten"
 
-#: src/templates/recipes/manage_units.html:10
+#: src/plated/templates/recipes/manage_units.html:10
 msgid "View all distinct measurement units used across your recipes."
-msgstr "Sehen Sie alle eindeutigen Maßeinheiten, die in Ihren Rezepten verwendet werden."
+msgstr ""
+"Sehen Sie alle eindeutigen Maßeinheiten, die in Ihren Rezepten verwendet "
+"werden."
 
-#: src/templates/recipes/manage_units.html:16
+#: src/plated/templates/recipes/manage_units.html:16
 msgid "Search units..."
 msgstr "Einheiten suchen..."
 
-#: src/templates/recipes/manage_units.html:31
+#: src/plated/templates/recipes/manage_units.html:31
 #, python-format
 msgid "Found %(counter)s distinct unit."
 msgid_plural "Found %(counter)s distinct units."
 msgstr[0] "%(counter)s eindeutige Einheit gefunden."
 msgstr[1] "%(counter)s eindeutige Einheiten gefunden."
 
-#: src/templates/recipes/manage_units.html:32
+#: src/plated/templates/recipes/manage_units.html:32
 msgid "Use consistent units to help with autocomplete when creating recipes."
-msgstr "Verwenden Sie konsistente Einheiten, um die Autovervollständigung beim Erstellen von Rezepten zu unterstützen."
+msgstr ""
+"Verwenden Sie konsistente Einheiten, um die Autovervollständigung beim "
+"Erstellen von Rezepten zu unterstützen."
 
-#: src/templates/recipes/manage_units.html:39
-#: src/templates/recipes/recipe_form.html:157
-#: src/templates/recipes/recipe_form.html:199
+#: src/plated/templates/recipes/manage_units.html:39
+#: src/plated/templates/recipes/recipe_form.html:157
+#: src/plated/templates/recipes/recipe_form.html:199
 msgid "Unit"
 msgstr "Einheit"
 
-#: src/templates/recipes/manage_units.html:83
+#: src/plated/templates/recipes/manage_units.html:83
 #, python-format
 msgid "No units found matching \"%(query)s\"."
 msgstr "Keine Einheiten gefunden, die mit \"%(query)s\" übereinstimmen."
 
-#: src/templates/recipes/manage_units.html:85
+#: src/plated/templates/recipes/manage_units.html:85
 msgid "No units found in your recipes yet."
 msgstr "Noch keine Einheiten in Ihren Rezepten gefunden."
 
-#: src/templates/recipes/meal_plan_confirm_delete.html:14
+#: src/plated/templates/recipes/meal_plan_confirm_delete.html:14
 #, python-format
 msgid ""
 "Are you sure you want to delete the meal plan <strong>%(name)s</strong>?"
 msgstr "Möchten Sie den Speiseplan <strong>%(name)s</strong> wirklich löschen?"
 
-#: src/templates/recipes/meal_plan_confirm_delete.html:16
+#: src/plated/templates/recipes/meal_plan_confirm_delete.html:16
 msgid ""
 "This will remove all meal entries associated with this plan. This action "
 "cannot be undone."
-msgstr "Dadurch werden alle Mahlzeiteinträge gelöscht, die mit diesem Plan verbunden sind. Diese Aktion kann nicht rückgängig gemacht werden."
+msgstr ""
+"Dadurch werden alle Mahlzeiteinträge gelöscht, die mit diesem Plan verbunden "
+"sind. Diese Aktion kann nicht rückgängig gemacht werden."
 
-#: src/templates/recipes/meal_plan_confirm_delete.html:23
+#: src/plated/templates/recipes/meal_plan_confirm_delete.html:23
 msgid "Yes, Delete Meal Plan"
 msgstr "Ja, Speiseplan löschen"
 
-#: src/templates/recipes/meal_plan_detail.html:21
-#: src/templates/recipes/meal_plan_list.html:50
-#: src/templates/recipes/shopping_list.html:4
-#: src/templates/recipes/shopping_list.html:11
+#: src/plated/templates/recipes/meal_plan_detail.html:21
+#: src/plated/templates/recipes/meal_plan_list.html:50
+#: src/plated/templates/recipes/shopping_list.html:4
+#: src/plated/templates/recipes/shopping_list.html:11
 msgid "Shopping List"
 msgstr "Einkaufsliste"
 
-#: src/templates/recipes/meal_plan_detail.html:35
+#: src/plated/templates/recipes/meal_plan_detail.html:35
 msgid "Add Meal"
 msgstr "Mahlzeit hinzufügen"
 
-#: src/templates/recipes/meal_plan_detail.html:41
+#: src/plated/templates/recipes/meal_plan_detail.html:41
 msgid "Recipe"
 msgstr "Rezept"
 
-#: src/templates/recipes/meal_plan_detail.html:43
+#: src/plated/templates/recipes/meal_plan_detail.html:43
 msgid "Select a recipe..."
 msgstr "Wählen Sie ein Rezept..."
 
-#: src/templates/recipes/meal_plan_detail.html:49
-#: src/templates/recipes/meal_plan_detail.html:85
+#: src/plated/templates/recipes/meal_plan_detail.html:49
+#: src/plated/templates/recipes/meal_plan_detail.html:85
 msgid "Date"
 msgstr "Datum"
 
-#: src/templates/recipes/meal_plan_detail.html:55
+#: src/plated/templates/recipes/meal_plan_detail.html:55
 msgid "Meal Type"
 msgstr "Mahlzeittyp"
 
-#: src/templates/recipes/meal_plan_detail.html:57
-#: src/templates/recipes/meal_plan_detail.html:86
+#: src/plated/templates/recipes/meal_plan_detail.html:57
+#: src/plated/templates/recipes/meal_plan_detail.html:86
 msgid "Breakfast"
 msgstr "Frühstück"
 
-#: src/templates/recipes/meal_plan_detail.html:58
-#: src/templates/recipes/meal_plan_detail.html:87
+#: src/plated/templates/recipes/meal_plan_detail.html:58
+#: src/plated/templates/recipes/meal_plan_detail.html:87
 msgid "Lunch"
 msgstr "Mittagessen"
 
-#: src/templates/recipes/meal_plan_detail.html:59
-#: src/templates/recipes/meal_plan_detail.html:88
+#: src/plated/templates/recipes/meal_plan_detail.html:59
+#: src/plated/templates/recipes/meal_plan_detail.html:88
 msgid "Dinner"
 msgstr "Abendessen"
 
-#: src/templates/recipes/meal_plan_detail.html:60
-#: src/templates/recipes/meal_plan_detail.html:89
+#: src/plated/templates/recipes/meal_plan_detail.html:60
+#: src/plated/templates/recipes/meal_plan_detail.html:89
 msgid "Snack"
 msgstr "Snack"
 
-#: src/templates/recipes/meal_plan_detail.html:64
-#: src/templates/recipes/recipe_detail.html:97
-#: src/templates/recipes/recipe_detail.html:141
-#: src/templates/recipes/recipe_form.html:62
+#: src/plated/templates/recipes/meal_plan_detail.html:64
+#: src/plated/templates/recipes/recipe_detail.html:97
+#: src/plated/templates/recipes/recipe_detail.html:141
+#: src/plated/templates/recipes/recipe_form.html:62
 msgid "Servings"
 msgstr "Portionen"
 
-#: src/templates/recipes/meal_plan_detail.html:68
+#: src/plated/templates/recipes/meal_plan_detail.html:68
 msgid "Add"
 msgstr "Hinzufügen"
 
-#: src/templates/recipes/meal_plan_detail.html:77
+#: src/plated/templates/recipes/meal_plan_detail.html:77
 msgid "Meal Schedule"
 msgstr "Mahlzeitenplan"
 
-#: src/templates/recipes/meal_plan_detail.html:110
-#: src/templates/recipes/recipes_by_property.html:32
+#: src/plated/templates/recipes/meal_plan_detail.html:110
+#: src/plated/templates/recipes/recipes_by_property.html:32
 #, python-format
 msgid "%(counter)s serving"
 msgid_plural "%(counter)s servings"
 msgstr[0] "%(counter)s Portion"
 msgstr[1] "%(counter)s Portionen"
 
-#: src/templates/recipes/meal_plan_detail.html:115
+#: src/plated/templates/recipes/meal_plan_detail.html:115
 msgid "Remove"
 msgstr "Entfernen"
 
-#: src/templates/recipes/meal_plan_detail.html:131
+#: src/plated/templates/recipes/meal_plan_detail.html:131
 msgid "No dates in this meal plan."
 msgstr "Keine Termine in diesem Speiseplan."
 
-#: src/templates/recipes/meal_plan_detail.html:138
+#: src/plated/templates/recipes/meal_plan_detail.html:138
 msgid "Back to Meal Plans"
 msgstr "Zurück zu Speiseplänen"
 
-#: src/templates/recipes/meal_plan_form.html:4
-#: src/templates/recipes/meal_plan_list.html:12
+#: src/plated/templates/recipes/meal_plan_form.html:4
+#: src/plated/templates/recipes/meal_plan_list.html:12
 msgid "New Meal Plan"
 msgstr "Neuer Speiseplan"
 
-#: src/templates/recipes/meal_plan_form.html:9
+#: src/plated/templates/recipes/meal_plan_form.html:9
 msgid "Edit Meal Plan"
 msgstr "Speiseplan bearbeiten"
 
-#: src/templates/recipes/meal_plan_form.html:9
+#: src/plated/templates/recipes/meal_plan_form.html:9
 msgid "Create New Meal Plan"
 msgstr "Neuen Speiseplan erstellen"
 
-#: src/templates/recipes/meal_plan_form.html:17
-#: src/templates/recipes/recipe_form.html:161
-#: src/templates/recipes/recipe_form.html:203
+#: src/plated/templates/recipes/meal_plan_form.html:17
+#: src/plated/templates/recipes/recipe_form.html:161
+#: src/plated/templates/recipes/recipe_form.html:203
 msgid "Name"
 msgstr "Name"
 
-#: src/templates/recipes/meal_plan_form.html:30
+#: src/plated/templates/recipes/meal_plan_form.html:30
 msgid "Optional description for this meal plan"
 msgstr "Optionale Beschreibung für diesen Speiseplan"
 
-#: src/templates/recipes/meal_plan_form.html:35
+#: src/plated/templates/recipes/meal_plan_form.html:35
 msgid "Start Date"
 msgstr "Startdatum"
 
-#: src/templates/recipes/meal_plan_form.html:43
+#: src/plated/templates/recipes/meal_plan_form.html:43
 msgid "End Date"
 msgstr "Enddatum"
 
-#: src/templates/recipes/meal_plan_form.html:53
+#: src/plated/templates/recipes/meal_plan_form.html:53
 msgid "Update Meal Plan"
 msgstr "Speiseplan aktualisieren"
 
-#: src/templates/recipes/meal_plan_form.html:53
+#: src/plated/templates/recipes/meal_plan_form.html:53
 msgid "Create Meal Plan"
 msgstr "Speiseplan erstellen"
 
-#: src/templates/recipes/meal_plan_list.html:37
+#: src/plated/templates/recipes/meal_plan_list.html:37
 #, python-format
 msgid "%(counter)s meal"
 msgid_plural "%(counter)s meals"
 msgstr[0] "%(counter)s Mahlzeit"
 msgstr[1] "%(counter)s Mahlzeiten"
 
-#: src/templates/recipes/meal_plan_list.html:92
+#: src/plated/templates/recipes/meal_plan_list.html:92
 msgid "No meal plans yet."
 msgstr "Noch keine Speisepläne vorhanden."
 
-#: src/templates/recipes/meal_plan_list.html:92
+#: src/plated/templates/recipes/meal_plan_list.html:92
 msgid "Create your first meal plan"
 msgstr "Erstellen Sie Ihren ersten Speiseplan"
 
-#: src/templates/recipes/meal_plan_list.html:92
+#: src/plated/templates/recipes/meal_plan_list.html:92
 msgid "to organize your weekly meals!"
 msgstr "um Ihre wöchentlichen Mahlzeiten zu organisieren!"
 
-#: src/templates/recipes/recipe_confirm_delete.html:9
-#: src/templates/recipes/recipe_form.html:10
+#: src/plated/templates/recipes/recipe_confirm_delete.html:9
+#: src/plated/templates/recipes/recipe_form.html:10
 msgid "breadcrumb"
 msgstr "Brotkrumen-Navigation"
 
-#: src/templates/recipes/recipe_confirm_delete.html:26
+#: src/plated/templates/recipes/recipe_confirm_delete.html:26
 #, python-format
 msgid "Are you sure you want to delete the recipe <strong>%(title)s</strong>?"
 msgstr "Möchten Sie das Rezept <strong>%(title)s</strong> wirklich löschen?"
 
-#: src/templates/recipes/recipe_confirm_delete.html:27
+#: src/plated/templates/recipes/recipe_confirm_delete.html:27
 msgid ""
 "This action cannot be undone. All ingredients, steps, and images associated "
 "with this recipe will also be deleted."
-msgstr "Diese Aktion kann nicht rückgängig gemacht werden. Alle Zutaten, Schritte und Bilder, die mit diesem Rezept verbunden sind, werden ebenfalls gelöscht."
+msgstr ""
+"Diese Aktion kann nicht rückgängig gemacht werden. Alle Zutaten, Schritte "
+"und Bilder, die mit diesem Rezept verbunden sind, werden ebenfalls gelöscht."
 
-#: src/templates/recipes/recipe_confirm_delete.html:33
+#: src/plated/templates/recipes/recipe_confirm_delete.html:33
 msgid "Delete Recipe"
 msgstr "Rezept löschen"
 
-#: src/templates/recipes/recipe_detail.html:29
-#: src/templates/recipes/recipe_detail.html:48
+#: src/plated/templates/recipes/recipe_detail.html:29
+#: src/plated/templates/recipes/recipe_detail.html:48
 msgid "Download"
 msgstr "Herunterladen"
 
-#: src/templates/recipes/recipe_detail.html:94
-#: src/templates/recipes/recipe_detail.html:138
+#: src/plated/templates/recipes/recipe_detail.html:94
+#: src/plated/templates/recipes/recipe_detail.html:138
 msgid "Quick Info"
 msgstr "Kurzinfo"
 
-#: src/templates/recipes/recipe_detail.html:100
-#: src/templates/recipes/recipe_detail.html:144
+#: src/plated/templates/recipes/recipe_detail.html:100
+#: src/plated/templates/recipes/recipe_detail.html:144
 msgid "Scale recipe"
 msgstr "Rezept skalieren"
 
-#: src/templates/recipes/recipe_detail.html:101
-#: src/templates/recipes/recipe_detail.html:145
+#: src/plated/templates/recipes/recipe_detail.html:101
+#: src/plated/templates/recipes/recipe_detail.html:145
 msgid "Scale"
 msgstr "Skalieren"
 
-#: src/templates/recipes/recipe_detail.html:107
-#: src/templates/recipes/recipe_detail.html:151
+#: src/plated/templates/recipes/recipe_detail.html:107
+#: src/plated/templates/recipes/recipe_detail.html:151
 msgid "Prep"
 msgstr "Vorbereitung"
 
-#: src/templates/recipes/recipe_detail.html:113
-#: src/templates/recipes/recipe_detail.html:157
+#: src/plated/templates/recipes/recipe_detail.html:113
+#: src/plated/templates/recipes/recipe_detail.html:157
 msgid "Cook"
 msgstr "Kochen"
 
-#: src/templates/recipes/recipe_detail.html:127
-#: src/templates/recipes/recipe_detail.html:171
+#: src/plated/templates/recipes/recipe_detail.html:127
+#: src/plated/templates/recipes/recipe_detail.html:171
 msgid "Source"
 msgstr "Quelle"
 
-#: src/templates/recipes/recipe_detail.html:194
-#: src/templates/recipes/recipe_form.html:126
-#: src/templates/recipes/shopping_list.html:30
+#: src/plated/templates/recipes/recipe_detail.html:194
+#: src/plated/templates/recipes/recipe_form.html:126
+#: src/plated/templates/recipes/shopping_list.html:30
 msgid "Ingredients"
 msgstr "Zutaten"
 
-#: src/templates/recipes/recipe_detail.html:209
+#: src/plated/templates/recipes/recipe_detail.html:209
 msgid "No ingredients listed."
 msgstr "Keine Zutaten aufgelistet."
 
-#: src/templates/recipes/recipe_detail.html:218
-#: src/templates/recipes/recipe_form.html:227
+#: src/plated/templates/recipes/recipe_detail.html:218
+#: src/plated/templates/recipes/recipe_form.html:227
 msgid "Instructions"
 msgstr "Anleitungen"
 
-#: src/templates/recipes/recipe_detail.html:228
+#: src/plated/templates/recipes/recipe_detail.html:228
 msgid "No instructions provided."
 msgstr "Keine Anleitungen angegeben."
 
-#: src/templates/recipes/recipe_detail.html:238
-#: src/templates/recipes/recipe_form.html:105
+#: src/plated/templates/recipes/recipe_detail.html:238
+#: src/plated/templates/recipes/recipe_form.html:105
 msgid "Special Equipment"
 msgstr "Spezielle Ausrüstung"
 
-#: src/templates/recipes/recipe_detail.html:249
-#: src/templates/recipes/recipe_form.html:113
+#: src/plated/templates/recipes/recipe_detail.html:249
+#: src/plated/templates/recipes/recipe_form.html:113
 msgid "Notes"
 msgstr "Notizen"
 
-#: src/templates/recipes/recipe_detail.html:259
+#: src/plated/templates/recipes/recipe_detail.html:259
 msgid "Last updated:"
 msgstr "Zuletzt aktualisiert:"
 
-#: src/templates/recipes/recipe_detail.html:268
+#: src/plated/templates/recipes/recipe_detail.html:268
 msgid "Scale Recipe"
 msgstr "Rezept skalieren"
 
-#: src/templates/recipes/recipe_detail.html:269
+#: src/plated/templates/recipes/recipe_detail.html:269
 msgid "Close"
 msgstr "Schließen"
 
-#: src/templates/recipes/recipe_detail.html:275
+#: src/plated/templates/recipes/recipe_detail.html:275
 msgid "By Servings"
 msgstr "Nach Portionen"
 
-#: src/templates/recipes/recipe_detail.html:280
+#: src/plated/templates/recipes/recipe_detail.html:280
 msgid "By Ingredient"
 msgstr "Nach Zutat"
 
-#: src/templates/recipes/recipe_detail.html:288
+#: src/plated/templates/recipes/recipe_detail.html:288
 msgid "New servings count:"
 msgstr "Neue Portionenanzahl:"
 
-#: src/templates/recipes/recipe_detail.html:289
+#: src/plated/templates/recipes/recipe_detail.html:289
 msgid "Enter servings"
 msgstr "Portionen eingeben"
 
-#: src/templates/recipes/recipe_detail.html:290
-#, python-format
-msgid "Original: %(servings)s serving%(servings)s"
+#: src/plated/templates/recipes/recipe_detail.html:290
+#, fuzzy, python-format
+#| msgid "Original: %(servings)s serving%(servings)s"
+msgid "Original: %(servings)s serving%(servings|pluralize)s"
 msgstr "Original: %(servings)s Portion(en)"
 
-#: src/templates/recipes/recipe_detail.html:296
+#: src/plated/templates/recipes/recipe_detail.html:296
 msgid "Select ingredient:"
 msgstr "Zutat auswählen:"
 
-#: src/templates/recipes/recipe_detail.html:298
+#: src/plated/templates/recipes/recipe_detail.html:298
 msgid "Choose ingredient..."
 msgstr "Zutat wählen..."
 
-#: src/templates/recipes/recipe_detail.html:301
+#: src/plated/templates/recipes/recipe_detail.html:301
 #, python-format
 msgid "%(name)s (original: %(amount)s %(unit)s)"
 msgstr "%(name)s (original: %(amount)s %(unit)s)"
 
-#: src/templates/recipes/recipe_detail.html:307
+#: src/plated/templates/recipes/recipe_detail.html:307
 msgid "New amount:"
 msgstr "Neue Menge:"
 
-#: src/templates/recipes/recipe_detail.html:308
+#: src/plated/templates/recipes/recipe_detail.html:308
 msgid "e.g., 500 or 2 1/2"
 msgstr "z.B. 500 oder 2 1/2"
 
-#: src/templates/recipes/recipe_detail.html:309
+#: src/plated/templates/recipes/recipe_detail.html:309
 msgid "Enter the amount you have (e.g., \\"
 msgstr "Geben Sie die Menge ein, die Sie haben (z.B. \\"
 
-#: src/templates/recipes/recipe_detail.html:320
+#: src/plated/templates/recipes/recipe_detail.html:320
 msgid "Reset to Original"
 msgstr "Auf Original zurücksetzen"
 
-#: src/templates/recipes/recipe_detail.html:323
+#: src/plated/templates/recipes/recipe_detail.html:323
 msgid "Apply"
 msgstr "Anwenden"
 
-#: src/templates/recipes/recipe_form.html:5
-#: src/templates/recipes/recipe_form.html:17
-#: src/templates/recipes/recipe_list.html:22
+#: src/plated/templates/recipes/recipe_form.html:5
+#: src/plated/templates/recipes/recipe_form.html:17
+#: src/plated/templates/recipes/recipe_list.html:22
 msgid "New Recipe"
 msgstr "Neues Rezept"
 
-#: src/templates/recipes/recipe_form.html:26
+#: src/plated/templates/recipes/recipe_form.html:26
 msgid "Edit Recipe"
 msgstr "Rezept bearbeiten"
 
-#: src/templates/recipes/recipe_form.html:26
+#: src/plated/templates/recipes/recipe_form.html:26
 msgid "Create New Recipe"
-msgstr ""
+msgstr "Neues Rezept erstellen"
 
-#: src/templates/recipes/recipe_form.html:36
+#: src/plated/templates/recipes/recipe_form.html:36
 msgid "Recipe Details"
 msgstr "Rezeptdetails"
 
-#: src/templates/recipes/recipe_form.html:39
+#: src/plated/templates/recipes/recipe_form.html:39
 msgid "Please correct the errors below:"
-msgstr ""
+msgstr "Bitte korrigiere die folgenden Fehler:"
 
-#: src/templates/recipes/recipe_form.html:45
+#: src/plated/templates/recipes/recipe_form.html:45
 msgid "Title"
 msgstr "Titel"
 
-#: src/templates/recipes/recipe_form.html:69
+#: src/plated/templates/recipes/recipe_form.html:69
 msgid "Prep Time"
-msgstr ""
+msgstr "Vorbereitungszeit"
 
-#: src/templates/recipes/recipe_form.html:71
-#: src/templates/recipes/recipe_form.html:79
+#: src/plated/templates/recipes/recipe_form.html:71
+#: src/plated/templates/recipes/recipe_form.html:79
 msgid "Format: HH:MM:SS"
-msgstr ""
+msgstr "Format: HH:MM:SS"
 
-#: src/templates/recipes/recipe_form.html:77
+#: src/plated/templates/recipes/recipe_form.html:77
 msgid "Cook/Wait Time"
-msgstr ""
+msgstr "Koch-/Wartezeit"
 
-#: src/templates/recipes/recipe_form.html:90
+#: src/plated/templates/recipes/recipe_form.html:90
 msgid "Comma-separated keywords (e.g., italian, pasta, vegetarian)"
-msgstr ""
+msgstr "Kommagetrennte Stichwörter (z.B. italienisch, pasta, vegetarisch)"
 
-#: src/templates/recipes/recipe_form.html:97
+#: src/plated/templates/recipes/recipe_form.html:97
 msgid "Source URL"
-msgstr ""
+msgstr "Quell-URL"
 
-#: src/templates/recipes/recipe_form.html:138
-#: src/templates/recipes/recipe_form.html:180
+#: src/plated/templates/recipes/recipe_form.html:138
+#: src/plated/templates/recipes/recipe_form.html:180
 msgid "Ingredient"
 msgstr "Zutat"
 
-#: src/templates/recipes/recipe_form.html:140
-#: src/templates/recipes/recipe_form.html:182
-#: src/templates/recipes/recipe_form.html:241
-#: src/templates/recipes/recipe_form.html:272
-#: src/templates/recipes/recipe_form.html:320
-#: src/templates/recipes/recipe_form.html:354
+#: src/plated/templates/recipes/recipe_form.html:140
+#: src/plated/templates/recipes/recipe_form.html:182
+#: src/plated/templates/recipes/recipe_form.html:241
+#: src/plated/templates/recipes/recipe_form.html:271
+#: src/plated/templates/recipes/recipe_form.html:318
+#: src/plated/templates/recipes/recipe_form.html:352
 msgid "Move up"
-msgstr ""
+msgstr "Nach oben verschieben"
 
-#: src/templates/recipes/recipe_form.html:143
-#: src/templates/recipes/recipe_form.html:185
-#: src/templates/recipes/recipe_form.html:244
-#: src/templates/recipes/recipe_form.html:275
-#: src/templates/recipes/recipe_form.html:323
-#: src/templates/recipes/recipe_form.html:357
+#: src/plated/templates/recipes/recipe_form.html:143
+#: src/plated/templates/recipes/recipe_form.html:185
+#: src/plated/templates/recipes/recipe_form.html:244
+#: src/plated/templates/recipes/recipe_form.html:274
+#: src/plated/templates/recipes/recipe_form.html:321
+#: src/plated/templates/recipes/recipe_form.html:355
 msgid "Move down"
-msgstr ""
+msgstr "Nach unten verschieben"
 
-#: src/templates/recipes/recipe_form.html:153
-#: src/templates/recipes/recipe_form.html:195
+#: src/plated/templates/recipes/recipe_form.html:153
+#: src/plated/templates/recipes/recipe_form.html:195
 msgid "Amount"
 msgstr "Menge"
 
-#: src/templates/recipes/recipe_form.html:165
-#: src/templates/recipes/recipe_form.html:207
+#: src/plated/templates/recipes/recipe_form.html:165
+#: src/plated/templates/recipes/recipe_form.html:207
 msgid "Note"
 msgstr "Notiz"
 
-#: src/templates/recipes/recipe_form.html:217
+#: src/plated/templates/recipes/recipe_form.html:217
 msgid "Add Ingredient"
 msgstr "Zutat hinzufügen"
 
-#: src/templates/recipes/recipe_form.html:239
-#: src/templates/recipes/recipe_form.html:270
+#: src/plated/templates/recipes/recipe_form.html:239
+#: src/plated/templates/recipes/recipe_form.html:269
 msgid "Step"
 msgstr "Schritt"
 
-#: src/templates/recipes/recipe_form.html:254
-#: src/templates/recipes/recipe_form.html:285
+#: src/plated/templates/recipes/recipe_form.html:254
+#: src/plated/templates/recipes/recipe_form.html:284
 msgid "Content"
 msgstr "Inhalt"
 
-#: src/templates/recipes/recipe_form.html:256
-#: src/templates/recipes/recipe_form.html:287
-msgid "Markdown supported"
-msgstr ""
-
-#: src/templates/recipes/recipe_form.html:296
+#: src/plated/templates/recipes/recipe_form.html:294
 msgid "Add Step"
-msgstr ""
+msgstr "Schritt hinzufügen"
 
-#: src/templates/recipes/recipe_form.html:306
+#: src/plated/templates/recipes/recipe_form.html:304
 msgid "Images"
 msgstr "Bilder"
 
-#: src/templates/recipes/recipe_form.html:318
-#: src/templates/recipes/recipe_form.html:333
-#: src/templates/recipes/recipe_form.html:352
-#: src/templates/recipes/recipe_form.html:367
+#: src/plated/templates/recipes/recipe_form.html:316
+#: src/plated/templates/recipes/recipe_form.html:331
+#: src/plated/templates/recipes/recipe_form.html:350
+#: src/plated/templates/recipes/recipe_form.html:365
 msgid "Image"
 msgstr "Bild"
 
-#: src/templates/recipes/recipe_form.html:337
-#: src/templates/recipes/recipe_form.html:371
+#: src/plated/templates/recipes/recipe_form.html:335
+#: src/plated/templates/recipes/recipe_form.html:369
 msgid "Caption"
 msgstr "Bildunterschrift"
 
-#: src/templates/recipes/recipe_form.html:381
+#: src/plated/templates/recipes/recipe_form.html:379
 msgid "Add Image"
-msgstr ""
+msgstr "Bild hinzufügen"
 
-#: src/templates/recipes/recipe_form.html:393
+#: src/plated/templates/recipes/recipe_form.html:391
 msgid "Update Recipe"
 msgstr "Rezept aktualisieren"
 
-#: src/templates/recipes/recipe_form.html:393
-#: src/templates/recipes/recipe_list.html:121
+#: src/plated/templates/recipes/recipe_form.html:391
+#: src/plated/templates/recipes/recipe_list.html:121
 msgid "Create Recipe"
 msgstr "Rezept erstellen"
 
-#: src/templates/recipes/recipe_form.html:433
+#: src/plated/templates/recipes/recipe_form.html:431
 msgid "Existing keyword"
-msgstr ""
+msgstr "Existierendes Stichwort"
 
-#: src/templates/recipes/recipe_form.html:434
+#: src/plated/templates/recipes/recipe_form.html:432
 msgid "Suggestions:"
 msgstr "Vorschläge:"
 
-#: src/templates/recipes/recipe_form.html:435
+#: src/plated/templates/recipes/recipe_form.html:433
 msgid "New keyword"
 msgstr "Neues Stichwort"
 
-#: src/templates/recipes/recipe_import.html:4
-#: src/templates/recipes/recipe_import.html:12
-#: src/templates/recipes/recipe_import.html:20
-#: src/templates/recipes/recipe_import.html:48
+#: src/plated/templates/recipes/recipe_import.html:4
+#: src/plated/templates/recipes/recipe_import.html:12
+#: src/plated/templates/recipes/recipe_import.html:20
+#: src/plated/templates/recipes/recipe_import.html:48
 msgid "Import Recipe"
 msgstr "Rezept importieren"
 
-#: src/templates/recipes/recipe_import.html:24
+#: src/plated/templates/recipes/recipe_import.html:24
 msgid "Upload Recipe File"
-msgstr ""
+msgstr "Rezeptdatei hochladen"
 
-#: src/templates/recipes/recipe_import.html:26
+#: src/plated/templates/recipes/recipe_import.html:26
 msgid ""
 "Upload a recipe file to import it into your collection. Select the format "
 "from the dropdown below."
 msgstr ""
+"Lade eine Rezeptdatei hoch, um sie in deine Sammlung zu importieren. Wähle das Format "
+"aus dem Dropdown unten."
 
-#: src/templates/recipes/recipe_import.html:32
+#: src/plated/templates/recipes/recipe_import.html:32
 msgid "Format"
 msgstr "Format"
 
-#: src/templates/recipes/recipe_import.html:38
+#: src/plated/templates/recipes/recipe_import.html:38
 msgid "Select the format of your recipe file"
-msgstr ""
+msgstr "Wähle das Format deiner Rezeptdatei"
 
-#: src/templates/recipes/recipe_import.html:42
+#: src/plated/templates/recipes/recipe_import.html:42
 msgid "Select Recipe File"
-msgstr ""
+msgstr "Rezeptdatei auswählen"
 
-#: src/templates/recipes/recipe_import.html:44
+#: src/plated/templates/recipes/recipe_import.html:44
 msgid "Upload your recipe file in the selected format"
-msgstr ""
+msgstr "Lade deine Rezeptdatei im ausgewählten Format hoch"
 
-#: src/templates/recipes/recipe_import.html:57
+#: src/plated/templates/recipes/recipe_import.html:57
 msgid "JSON Schema Example"
-msgstr ""
+msgstr "JSON-Schema-Beispiel"
 
-#: src/templates/recipes/recipe_import.html:58
+#: src/plated/templates/recipes/recipe_import.html:58
 msgid "Here's an example of the expected JSON format:"
-msgstr ""
+msgstr "Hier ist ein Beispiel des erwarteten JSON-Formats:"
 
-#: src/templates/recipes/recipe_list.html:9
+#: src/plated/templates/recipes/recipe_list.html:9
 msgid "All Recipes"
 msgstr "Alle Rezepte"
 
-#: src/templates/recipes/recipe_list.html:14
+#: src/plated/templates/recipes/recipe_list.html:14
 msgid "Import JSON"
-msgstr ""
+msgstr "JSON importieren"
 
-#: src/templates/recipes/recipe_list.html:18
+#: src/plated/templates/recipes/recipe_list.html:18
 msgid "AI Extract"
-msgstr ""
+msgstr "AI-Extraktion"
 
-#: src/templates/recipes/recipe_list.html:32
+#: src/plated/templates/recipes/recipe_list.html:32
 msgid "Search recipes by title, description, or keywords..."
-msgstr ""
+msgstr "Suche Rezepte nach Titel, Beschreibung oder Stichwörtern..."
 
-#: src/templates/recipes/recipe_list.html:57
+#: src/plated/templates/recipes/recipe_list.html:57
 msgid "No description available."
-msgstr ""
+msgstr "Keine Beschreibung verfügbar."
 
-#: src/templates/recipes/recipe_list.html:75
-#: src/templates/recipes/recipes_by_property.html:34
+#: src/plated/templates/recipes/recipe_list.html:75
+#: src/plated/templates/recipes/recipes_by_property.html:34
 msgid "View Recipe"
 msgstr "Rezept anzeigen"
 
-#: src/templates/recipes/recipe_list.html:83
+#: src/plated/templates/recipes/recipe_list.html:83
 msgid "Recipe pagination"
-msgstr ""
+msgstr "Rezept-Seitennummerierung"
 
-#: src/templates/recipes/recipe_list.html:95
+#: src/plated/templates/recipes/recipe_list.html:95
 #, python-format
 msgid "Page %(number)s of %(total)s"
-msgstr ""
+msgstr "Seite %(number)s von %(total)s"
 
-#: src/templates/recipes/recipe_list.html:115
+#: src/plated/templates/recipes/recipe_list.html:115
 msgid "No recipes found"
-msgstr ""
+msgstr "Keine Rezepte gefunden"
 
-#: src/templates/recipes/recipe_list.html:117
+#: src/plated/templates/recipes/recipe_list.html:117
 #, python-format
 msgid "No recipes match your search \"%(query)s\""
-msgstr ""
+msgstr "Keine Rezepte entsprechen deiner Suche \"%(query)s\""
 
-#: src/templates/recipes/recipe_list.html:118
+#: src/plated/templates/recipes/recipe_list.html:118
 msgid "Clear search"
-msgstr ""
+msgstr "Suche löschen"
 
-#: src/templates/recipes/recipe_list.html:120
+#: src/plated/templates/recipes/recipe_list.html:120
 msgid "Get started by creating your first recipe!"
-msgstr ""
+msgstr "Leg los, indem du dein erstes Rezept erstellst!"
 
-#: src/templates/recipes/recipes_by_property.html:4
-#: src/templates/recipes/recipes_by_property.html:9
+#: src/plated/templates/recipes/recipes_by_property.html:4
+#: src/plated/templates/recipes/recipes_by_property.html:9
 msgid "Recipes with"
 msgstr "Rezepte mit"
 
-#: src/templates/recipes/recipes_by_property.html:10
+#: src/plated/templates/recipes/recipes_by_property.html:10
 #, python-format
 msgid "Showing all recipes that use this %(property_type)s."
-msgstr ""
+msgstr "Zeige alle Rezepte, die diese %(property_type)s verwenden."
 
-#: src/templates/recipes/recipes_by_property.html:15
+#: src/plated/templates/recipes/recipes_by_property.html:15
 #, python-format
 msgid "Found %(counter)s recipe using \"%(property_value)s\"."
 msgid_plural "Found %(counter)s recipes using \"%(property_value)s\"."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(counter)s Rezept gefunden, das \"%(property_value)s\" verwendet."
+msgstr[1] "%(counter)s Rezepte gefunden, die \"%(property_value)s\" verwenden."
 
-#: src/templates/recipes/recipes_by_property.html:43
+#: src/plated/templates/recipes/recipes_by_property.html:43
 #, python-format
 msgid "No recipes found using \"%(property_value)s\"."
-msgstr ""
+msgstr "Keine Rezepte gefunden, die \"%(property_value)s\" verwenden."
 
-#: src/templates/recipes/recipes_by_property.html:49
+#: src/plated/templates/recipes/recipes_by_property.html:49
 #, python-format
 msgid "Back to %(property_type)s Management"
-msgstr ""
+msgstr "Zurück zur %(property_type)s-Verwaltung"
 
-#: src/templates/recipes/rename_ingredient_name.html:4
-#: src/templates/recipes/rename_ingredient_name.html:9
-#: src/templates/recipes/rename_ingredient_name.html:37
+#: src/plated/templates/recipes/rename_ingredient_name.html:4
+#: src/plated/templates/recipes/rename_ingredient_name.html:9
+#: src/plated/templates/recipes/rename_ingredient_name.html:37
 msgid "Rename Ingredient Name"
 msgstr "Zutatenname umbenennen"
 
-#: src/templates/recipes/rename_ingredient_name.html:15
+#: src/plated/templates/recipes/rename_ingredient_name.html:15
 #, python-format
 msgid "About to rename: <strong>%(old_name)s</strong>"
-msgstr ""
+msgstr "Wird umbenannt: <strong>%(old_name)s</strong>"
 
-#: src/templates/recipes/rename_ingredient_name.html:17
+#: src/plated/templates/recipes/rename_ingredient_name.html:17
 #, python-format
 msgid ""
 "This ingredient name is used in <strong>%(counter)s</strong> ingredient "
@@ -1261,43 +1721,45 @@ msgid_plural ""
 "This ingredient name is used in <strong>%(counter)s</strong> ingredients "
 "across your recipes."
 msgstr[0] ""
+"Dieser Zutatenname wird in <strong>%(counter)s</strong> Zutat in deinen Rezepten verwendet."
 msgstr[1] ""
+"Dieser Zutatenname wird in <strong>%(counter)s</strong> Zutaten in deinen Rezepten verwendet."
 
-#: src/templates/recipes/rename_ingredient_name.html:25
+#: src/plated/templates/recipes/rename_ingredient_name.html:25
 msgid "Current Name"
 msgstr "Aktueller Name"
 
-#: src/templates/recipes/rename_ingredient_name.html:30
+#: src/plated/templates/recipes/rename_ingredient_name.html:30
 msgid "New Name"
-msgstr ""
+msgstr "Neuer Name"
 
-#: src/templates/recipes/rename_ingredient_name.html:32
+#: src/plated/templates/recipes/rename_ingredient_name.html:32
 #, python-format
 msgid "All %(counter)s occurrence will be updated"
 msgid_plural "All %(counter)s occurrences will be updated"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(counter)s Vorkommen wird aktualisiert"
+msgstr[1] "Alle %(counter)s Vorkommen werden aktualisiert"
 
-#: src/templates/recipes/rename_ingredient_name.html:46
+#: src/plated/templates/recipes/rename_ingredient_name.html:46
 msgid "No ingredient name specified."
 msgstr "Kein Zutatenname angegeben."
 
-#: src/templates/recipes/rename_ingredient_name.html:46
+#: src/plated/templates/recipes/rename_ingredient_name.html:46
 msgid "Go back to ingredient names"
 msgstr "Zurück zu Zutatennamen"
 
-#: src/templates/recipes/rename_keyword.html:4
-#: src/templates/recipes/rename_keyword.html:9
-#: src/templates/recipes/rename_keyword.html:37
+#: src/plated/templates/recipes/rename_keyword.html:4
+#: src/plated/templates/recipes/rename_keyword.html:9
+#: src/plated/templates/recipes/rename_keyword.html:37
 msgid "Rename Keyword"
 msgstr "Stichwort umbenennen"
 
-#: src/templates/recipes/rename_keyword.html:15
+#: src/plated/templates/recipes/rename_keyword.html:15
 #, python-format
 msgid "About to rename: <strong>%(old_keyword)s</strong>"
-msgstr ""
+msgstr "Wird umbenannt: <strong>%(old_keyword)s</strong>"
 
-#: src/templates/recipes/rename_keyword.html:17
+#: src/plated/templates/recipes/rename_keyword.html:17
 #, python-format
 msgid ""
 "This keyword is used in <strong>%(counter)s</strong> recipe across your "
@@ -1306,17 +1768,19 @@ msgid_plural ""
 "This keyword is used in <strong>%(counter)s</strong> recipes across your "
 "recipes."
 msgstr[0] ""
+"Dieses Stichwort wird in <strong>%(counter)s</strong> Rezept verwendet."
 msgstr[1] ""
+"Dieses Stichwort wird in <strong>%(counter)s</strong> Rezepten verwendet."
 
-#: src/templates/recipes/rename_keyword.html:25
+#: src/plated/templates/recipes/rename_keyword.html:25
 msgid "Current Keyword"
 msgstr "Aktuelles Stichwort"
 
-#: src/templates/recipes/rename_keyword.html:30
+#: src/plated/templates/recipes/rename_keyword.html:30
 msgid "New Keyword"
 msgstr "Neues Stichwort"
 
-#: src/templates/recipes/rename_keyword.html:32
+#: src/plated/templates/recipes/rename_keyword.html:32
 #, python-format
 msgid ""
 "All %(counter)s occurrence will be updated. Duplicate keywords will be "
@@ -1325,28 +1789,30 @@ msgid_plural ""
 "All %(counter)s occurrences will be updated. Duplicate keywords will be "
 "automatically removed."
 msgstr[0] ""
+"%(counter)s Vorkommen wird aktualisiert. Doppelte Stichwörter werden automatisch entfernt."
 msgstr[1] ""
+"Alle %(counter)s Vorkommen werden aktualisiert. Doppelte Stichwörter werden automatisch entfernt."
 
-#: src/templates/recipes/rename_keyword.html:46
+#: src/plated/templates/recipes/rename_keyword.html:46
 msgid "No keyword specified."
-msgstr ""
+msgstr "Kein Stichwort angegeben."
 
-#: src/templates/recipes/rename_keyword.html:46
+#: src/plated/templates/recipes/rename_keyword.html:46
 msgid "Go back to keywords"
-msgstr ""
+msgstr "Zurück zu Stichwörtern"
 
-#: src/templates/recipes/rename_unit.html:4
-#: src/templates/recipes/rename_unit.html:9
-#: src/templates/recipes/rename_unit.html:37
+#: src/plated/templates/recipes/rename_unit.html:4
+#: src/plated/templates/recipes/rename_unit.html:9
+#: src/plated/templates/recipes/rename_unit.html:37
 msgid "Rename Unit"
-msgstr ""
+msgstr "Einheit umbenennen"
 
-#: src/templates/recipes/rename_unit.html:15
+#: src/plated/templates/recipes/rename_unit.html:15
 #, python-format
 msgid "About to rename: <strong>%(old_unit)s</strong>"
-msgstr ""
+msgstr "Wird umbenannt: <strong>%(old_unit)s</strong>"
 
-#: src/templates/recipes/rename_unit.html:17
+#: src/plated/templates/recipes/rename_unit.html:17
 #, python-format
 msgid ""
 "This unit is used in <strong>%(counter)s</strong> ingredient across your "
@@ -1355,161 +1821,170 @@ msgid_plural ""
 "This unit is used in <strong>%(counter)s</strong> ingredients across your "
 "recipes."
 msgstr[0] ""
+"Diese Einheit wird in <strong>%(counter)s</strong> Zutat in deinen Rezepten verwendet."
 msgstr[1] ""
+"Diese Einheit wird in <strong>%(counter)s</strong> Zutaten in deinen Rezepten verwendet."
 
-#: src/templates/recipes/rename_unit.html:25
+#: src/plated/templates/recipes/rename_unit.html:25
 msgid "Current Unit"
-msgstr ""
+msgstr "Aktuelle Einheit"
 
-#: src/templates/recipes/rename_unit.html:30
+#: src/plated/templates/recipes/rename_unit.html:30
 msgid "New Unit"
 msgstr "Neue Einheit"
 
-#: src/templates/recipes/rename_unit.html:32
+#: src/plated/templates/recipes/rename_unit.html:32
 #, python-format
 msgid ""
 "All %(counter)s occurrence will be updated. Leave blank to remove the unit."
 msgid_plural ""
 "All %(counter)s occurrences will be updated. Leave blank to remove the unit."
 msgstr[0] ""
+"%(counter)s Vorkommen wird aktualisiert. Leer lassen, um die Einheit zu entfernen."
 msgstr[1] ""
+"Alle %(counter)s Vorkommen werden aktualisiert. Leer lassen, um die Einheit zu entfernen."
 
-#: src/templates/recipes/rename_unit.html:46
+#: src/plated/templates/recipes/rename_unit.html:46
 msgid "No unit specified."
-msgstr ""
+msgstr "Keine Einheit angegeben."
 
-#: src/templates/recipes/rename_unit.html:46
+#: src/plated/templates/recipes/rename_unit.html:46
 msgid "Go back to units"
-msgstr ""
+msgstr "Zurück zu Einheiten"
 
-#: src/templates/recipes/settings.html:14
+#: src/plated/templates/recipes/settings.html:14
 msgid "Language"
 msgstr "Sprache"
 
-#: src/templates/recipes/settings.html:17
+#: src/plated/templates/recipes/settings.html:17
 msgid "Choose your preferred language for the interface"
 msgstr "Wählen Sie Ihre bevorzugte Sprache für die Benutzeroberfläche"
 
-#: src/templates/recipes/settings.html:23
+#: src/plated/templates/recipes/settings.html:23
 msgid "Save Language"
 msgstr "Sprache speichern"
 
-#: src/templates/recipes/settings.html:32
+#: src/plated/templates/recipes/settings.html:32
 msgid "Progressive Web App"
-msgstr ""
+msgstr "Progressive Web App"
 
-#: src/templates/recipes/settings.html:35
+#: src/plated/templates/recipes/settings.html:35
 msgid ""
 "Install Plated as an app on your device for offline access and a native app "
 "experience"
 msgstr ""
+"Installiere Plated als App auf deinem Gerät für Offline-Zugriff und ein natives App-Erlebnis"
 
-#: src/templates/recipes/settings.html:37
+#: src/plated/templates/recipes/settings.html:37
 msgid "Plated is installed as a PWA and can work offline!"
-msgstr ""
+msgstr "Plated ist als PWA installiert und kann offline arbeiten!"
 
-#: src/templates/recipes/settings.html:43
+#: src/plated/templates/recipes/settings.html:43
 msgid "Install Plated App"
-msgstr ""
+msgstr "Plated-App installieren"
 
-#: src/templates/recipes/settings.html:47
+#: src/plated/templates/recipes/settings.html:47
 msgid "Benefits:"
 msgstr "Vorteile:"
 
-#: src/templates/recipes/settings.html:49
+#: src/plated/templates/recipes/settings.html:49
 msgid "Access recipes offline"
-msgstr ""
+msgstr "Greife offline auf Rezepte zu"
 
-#: src/templates/recipes/settings.html:50
+#: src/plated/templates/recipes/settings.html:50
 msgid "Install on home screen like a native app"
-msgstr ""
+msgstr "Installiere auf dem Startbildschirm wie eine native App"
 
-#: src/templates/recipes/settings.html:51
+#: src/plated/templates/recipes/settings.html:51
 msgid "Faster loading times"
-msgstr ""
+msgstr "Schnellere Ladezeiten"
 
-#: src/templates/recipes/settings.html:52
+#: src/plated/templates/recipes/settings.html:52
 msgid "Works across all your devices"
-msgstr ""
+msgstr "Funktioniert auf allen deinen Geräten"
 
-#: src/templates/recipes/settings.html:62
+#: src/plated/templates/recipes/settings.html:62
 msgid "Theme"
 msgstr "Design"
 
-#: src/templates/recipes/settings.html:65
+#: src/plated/templates/recipes/settings.html:65
 msgid "Choose your preferred color theme"
 msgstr "Wählen Sie Ihr bevorzugtes Farbschema"
 
-#: src/templates/recipes/settings.html:67
+#: src/plated/templates/recipes/settings.html:67
 msgid "Light Theme"
-msgstr ""
+msgstr "Helles Design"
 
-#: src/templates/recipes/settings.html:68
+#: src/plated/templates/recipes/settings.html:68
 msgid "Light"
 msgstr "Hell"
 
-#: src/templates/recipes/settings.html:70
+#: src/plated/templates/recipes/settings.html:70
 msgid "Dark Theme"
-msgstr ""
+msgstr "Dunkles Design"
 
-#: src/templates/recipes/settings.html:71
+#: src/plated/templates/recipes/settings.html:71
 msgid "Dark"
 msgstr "Dunkel"
 
-#: src/templates/recipes/settings.html:73
+#: src/plated/templates/recipes/settings.html:73
 msgid "Auto (System)"
-msgstr ""
+msgstr "Automatisch (System)"
 
-#: src/templates/recipes/settings.html:74
+#: src/plated/templates/recipes/settings.html:74
 msgid "Auto"
 msgstr "Automatisch"
 
-#: src/templates/recipes/settings.html:83
+#: src/plated/templates/recipes/settings.html:83
 msgid "AI Integration"
-msgstr ""
+msgstr "AI-Integration"
 
-#: src/templates/recipes/settings.html:86
+#: src/plated/templates/recipes/settings.html:86
 msgid "Configure AI/LLM settings for recipe extraction"
-msgstr ""
+msgstr "Konfiguriere AI/LLM-Einstellungen für Rezeptextraktion"
 
-#: src/templates/recipes/settings.html:93
+#: src/plated/templates/recipes/settings.html:93
 msgid "Update AI Settings"
 msgstr "KI-Einstellungen aktualisieren"
 
-#: src/templates/recipes/settings.html:97
+#: src/plated/templates/recipes/settings.html:97
 msgid "No AI settings configured yet."
-msgstr ""
+msgstr "Noch keine AI-Einstellungen konfiguriert."
 
-#: src/templates/recipes/settings.html:103
+#: src/plated/templates/recipes/settings.html:103
 msgid "Create AI Settings"
 msgstr "KI-Einstellungen erstellen"
 
-#: src/templates/recipes/settings.html:113
+#: src/plated/templates/recipes/settings.html:113
 msgid "Administration"
 msgstr "Administration"
 
-#: src/templates/recipes/settings.html:116
+#: src/plated/templates/recipes/settings.html:116
 msgid "Access the Django admin interface for advanced management"
-msgstr ""
+msgstr "Greife auf die Django-Admin-Oberfläche für erweiterte Verwaltung zu"
 
-#: src/templates/recipes/settings.html:118
+#: src/plated/templates/recipes/settings.html:118
 msgid "Open Admin Panel"
-msgstr ""
+msgstr "Admin-Panel öffnen"
 
-#: src/templates/recipes/shopping_list.html:13
+#: src/plated/templates/recipes/shopping_list.html:13
 #, python-format
 msgid "For <strong>%(name)s</strong>"
-msgstr ""
+msgstr "Für <strong>%(name)s</strong>"
 
-#: src/templates/recipes/shopping_list.html:19
+#: src/plated/templates/recipes/shopping_list.html:19
 msgid "Print"
 msgstr "Drucken"
 
-#: src/templates/recipes/shopping_list.html:22
-#: src/templates/recipes/shopping_list.html:105
+#: src/plated/templates/recipes/shopping_list.html:22
+#: src/plated/templates/recipes/shopping_list.html:105
 msgid "Back to Meal Plan"
 msgstr "Zurück zum Speiseplan"
 
-#: src/templates/recipes/shopping_list.html:99
+#: src/plated/templates/recipes/shopping_list.html:99
 msgid "No ingredients found. Add some meals to your meal plan first!"
-msgstr ""
+msgstr "Keine Zutaten gefunden. Füge zuerst einige Mahlzeiten zu deinem Speiseplan hinzu!"
+
+#, python-format
+#~ msgid "Recipes (%(counter)s)"
+#~ msgstr "Rezepte (%(counter)s)"

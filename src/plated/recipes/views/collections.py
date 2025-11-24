@@ -7,6 +7,7 @@ from django import forms
 from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
 from django.urls import reverse_lazy
+from django.utils.translation import gettext as _
 from django.views.generic import (
     CreateView,
     DeleteView,
@@ -68,7 +69,7 @@ class CollectionCreateView(CollectionFormMixin, CreateView):  # type: ignore[mis
         logger.info(f"Collection created: '{form.instance.name}' (ID: {form.instance.pk})")
         messages.success(
             self.request,
-            f"Collection '{form.instance.name}' created successfully!",
+            _("Collection '%(name)s' created successfully!") % {"name": form.instance.name},
         )
         return result
 
@@ -86,7 +87,7 @@ class CollectionUpdateView(CollectionFormMixin, UpdateView):  # type: ignore[mis
         logger.info(f"Collection updated: '{form.instance.name}' (ID: {form.instance.pk})")
         messages.success(
             self.request,
-            f"Collection '{form.instance.name}' updated successfully!",
+            _("Collection '%(name)s' updated successfully!") % {"name": form.instance.name},
         )
         return result
 
@@ -104,5 +105,5 @@ class CollectionDeleteView(DeleteView):
         collection_name = collection.name
         collection_id = collection.pk
         logger.info(f"Collection deleted: '{collection_name}' (ID: {collection_id})")
-        messages.success(request, f"Collection '{collection_name}' deleted successfully!")
+        messages.success(request, _("Collection '%(name)s' deleted successfully!") % {"name": collection_name})
         return super().delete(request, *args, **kwargs)
