@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://adrianvollmer.github.io/Plated/</loc>
+         <lastmod>2025-11-26</lastmod>
+    </url>
+    <url>
+         <loc>https://adrianvollmer.github.io/Plated/deployment/</loc>
+         <lastmod>2025-11-26</lastmod>
+    </url>
+    <url>
+         <loc>https://adrianvollmer.github.io/Plated/features/</loc>
+         <lastmod>2025-11-26</lastmod>
+    </url>
+    <url>
+         <loc>https://adrianvollmer.github.io/Plated/internationalization/</loc>
+         <lastmod>2025-11-26</lastmod>
+    </url>
+    <url>
+         <loc>https://adrianvollmer.github.io/Plated/installation/docker/</loc>
+         <lastmod>2025-11-26</lastmod>
+    </url>
+    <url>
+         <loc>https://adrianvollmer.github.io/Plated/installation/native/</loc>
+         <lastmod>2025-11-26</lastmod>
+    </url>
+</urlset>
