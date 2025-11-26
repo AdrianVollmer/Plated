@@ -2,7 +2,8 @@
 
 **Modern recipe management for your kitchen.**
 
-A Django-based web application for organizing, creating, and managing recipes with a beautiful, mobile-friendly interface.
+A Django-based web application for organizing, creating, and managing
+recipes with a beautiful, mobile-friendly interface.
 
 ## Features
 
@@ -20,8 +21,8 @@ A Django-based web application for organizing, creating, and managing recipes wi
 
 ### Docker (Recommended)
 
-```bash
-git clone https://github.com/yourusername/plated.git
+``` bash
+git clone https://github.com/AdrianVollmer/Plated.git
 cd plated/docker
 docker-compose up -d
 ```
@@ -30,12 +31,12 @@ Access at `http://localhost:8000`
 
 ### Native Installation
 
-```bash
-git clone https://github.com/yourusername/plated.git
+``` bash
+git clone https://github.com/AdrianVollmer/Plated.git
 cd plated
 uv sync
-uv run python src/manage.py migrate
-uv run python src/manage.py runserver
+uv run python src/plated/manage.py migrate
+uv run python src/plated/manage.py runserver
 ```
 
 ## Documentation
@@ -44,7 +45,7 @@ Comprehensive documentation is available in the `docs/` directory.
 
 ### View Documentation Locally
 
-```bash
+``` bash
 uv run mkdocs serve
 ```
 
@@ -52,15 +53,9 @@ Then open `http://localhost:8001` in your browser.
 
 ### Build Documentation
 
-```bash
+``` bash
 uv run mkdocs build
 ```
-
-### Documentation Contents
-
-- [Installation Guide](docs/installation/native.md) - Native and Docker installation
-- [Deployment Guide](docs/deployment.md) - Production deployment
-- [Features Guide](docs/features.md) - Complete feature documentation
 
 ## Technology Stack
 
@@ -74,13 +69,13 @@ uv run mkdocs build
 
 ### Run Tests
 
-```bash
+``` bash
 uv run pytest
 ```
 
 ### Code Quality
 
-```bash
+``` bash
 # Format code
 uv run ruff format src/
 
@@ -93,8 +88,4 @@ uv run mypy src/
 
 ## License
 
-[Add your license here]
-
-## Contributing
-
-[Add contributing guidelines here]
+MIT
