@@ -17,6 +17,13 @@ DEBUG = os.environ.get("DEBUG", "True").lower() in ("true", "1", "yes")
 
 ALLOWED_HOSTS: list[str] = os.environ.get("ALLOWED_HOSTS", "").split(",") if os.environ.get("ALLOWED_HOSTS") else []
 
+# CSRF settings for reverse proxy
+CSRF_TRUSTED_ORIGINS: list[str] = (
+    os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",") if os.environ.get("CSRF_TRUSTED_ORIGINS") else []
+)
+
+# Trust X-Forwarded-Proto header from nginx
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # Application definition
 
