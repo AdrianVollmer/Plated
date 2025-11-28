@@ -822,15 +822,31 @@ footer {
 @media (max-width: 768px) {
     .recipe-title {
         font-size: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .recipe-header .row {
+        row-gap: 0;
     }
 
     .recipe-section {
         padding: 1.5rem;
     }
 
+    /* Improved mobile step numbering - text flows around number */
+    .instruction-item {
+        padding: 1rem;
+        padding-left: 1rem;
+    }
+
     .instruction-item::before {
-        position: static;
-        margin-bottom: 0.75rem;
+        position: relative;
+        float: left;
+        margin-right: 1rem;
+        margin-bottom: 0.5rem;
+        width: 2.25rem;
+        height: 2.25rem;
+        font-size: 1rem;
     }
 
     .instruction-list-wrapper {
