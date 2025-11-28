@@ -20,8 +20,8 @@ services:
       - DEBUG
       - ALLOWED_HOSTS
       - CSRF_TRUSTED_ORIGINS
-      # Database location (inside container)
-      - DATABASE_PATH=/app/data/db.sqlite3
+      # Database configuration (SQLite by default, can use PostgreSQL via DATABASE_URL)
+      - DATABASE_URL=sqlite:////app/data/db.sqlite3
       # Static and media paths
       - STATIC_ROOT=/app/staticfiles
       - MEDIA_ROOT=/app/media

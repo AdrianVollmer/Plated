@@ -121,7 +121,7 @@ services:
       - SECRET_KEY=${SECRET_KEY}
       - DEBUG=False
       - ALLOWED_HOSTS=${ALLOWED_HOSTS}
-      - DATABASE_PATH=/app/data/db.sqlite3
+      - DATABASE_URL=sqlite:////app/data/db.sqlite3
       - STATIC_ROOT=/app/staticfiles
       - MEDIA_ROOT=/app/media
 

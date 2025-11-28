@@ -138,12 +138,20 @@ Create a `.env` file in the project root (optional):
 SECRET_KEY=your-secret-key-here
 DEBUG=True
 ALLOWED_HOSTS=localhost,127.0.0.1
-DATABASE_PATH=/path/to/db.sqlite3
+
+# Database configuration (SQLite by default)
+DATABASE_URL=sqlite:///path/to/db.sqlite3
+
+# Or for PostgreSQL:
+# DATABASE_URL=postgresql://user:password@localhost:5432/plated
+
 STATIC_ROOT=/path/to/staticfiles
 MEDIA_ROOT=/path/to/media
 ```
 
 See [settings.py](../src/config/settings.py) for all available options.
+
+**Note:** The old `DATABASE_PATH` variable is still supported for backward compatibility, but `DATABASE_URL` is preferred.
 
 ## Troubleshooting
 

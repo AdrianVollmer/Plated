@@ -5,6 +5,8 @@ Django settings for config project.
 import os
 from pathlib import Path
 
+import dj_database_url
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -78,12 +80,22 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": Path(os.environ.get("DATABASE_PATH", str(BASE_DIR / "db.sqlite3"))),
+# Support both DATABASE_URL (preferred) and DATABASE_PATH (backward compatibility)
+if database_url := os.environ.get("DATABASE_URL"):
+    # Use DATABASE_URL if provided (supports PostgreSQL, SQLite, etc.)
+    DATABASES = {"default": dj_database_url.parse(database_url)}
+elif database_path := os.environ.get("DATABASE_PATH"):
+    # Backward compatibility: use DATABASE_PATH for SQLite
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": str(Path(database_path)),
+        }
     }
-}
+else:
+    # Default: SQLite database in BASE_DIR
+    default_db_path = BASE_DIR / "db.sqlite3"
+    DATABASES = {"default": dj_database_url.parse(f"sqlite:///{default_db_path}")}
 
 
 # Password validation

@@ -43,7 +43,7 @@ Customize settings in `docker/docker-compose.yml` or create `docker/.env`:
 | `DEBUG` | `False` | Enable debug mode |
 | `ALLOWED_HOSTS` | `localhost,127.0.0.1` | Allowed hostnames |
 | `PORT` | `8000` | Host port mapping |
-| `DATABASE_PATH` | `/app/data/db.sqlite3` | Database location |
+| `DATABASE_URL` | `sqlite:////app/data/db.sqlite3` | Database URL (SQLite or PostgreSQL) |
 | `STATIC_ROOT` | `/app/staticfiles` | Static files directory |
 | `MEDIA_ROOT` | `/app/media` | Media uploads directory |
 
