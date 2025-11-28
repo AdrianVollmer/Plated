@@ -1,16 +1,26 @@
 from __future__ import annotations
 
 import logging
-from typing import Any
 
 from django.contrib import messages
-from django.db import models as django_models
-from django.db import transaction
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.utils.translation import gettext as _
 
-from ..models import Ingredient, Recipe
+from ..services import (
+    get_ingredient_names_for_autocomplete,
+    get_ingredient_property_with_counts,
+    get_keyword_usage_count,
+    get_keywords_for_autocomplete,
+    get_keywords_with_counts,
+    get_recipes_by_ingredient_name,
+    get_recipes_by_keyword,
+    get_recipes_by_unit,
+    get_units_for_autocomplete,
+    get_usage_count,
+    rename_ingredient_property,
+    rename_keyword,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -37,21 +47,12 @@ def _manage_ingredient_property(
         list_url_name: URL name for redirect
         context_var_name: Name for the context variable in template
     """
-    # Get all distinct values with usage counts
-    queryset = (
-        Ingredient.objects.values(field_name).annotate(usage_count=django_models.Count("id")).order_by(field_name)
-    )
-
-    # For units, exclude empty values
-    if field_name == "unit":
-        queryset = queryset.exclude(**{field_name: ""})
-
-    # Handle search query
+    # Get all distinct values with usage counts from service
     query = request.GET.get("q")
-    if query:
-        queryset = queryset.filter(**{f"{field_name}__icontains": query})
+    exclude_empty = field_name == "unit"
+    items = get_ingredient_property_with_counts(field_name, exclude_empty=exclude_empty, search_query=query)
 
-    return render(request, template_name, {context_var_name: queryset, "query": query})
+    return render(request, template_name, {context_var_name: items, "query": query})
 
 
 def _rename_ingredient_property(
@@ -83,47 +84,25 @@ def _rename_ingredient_property(
 
         logger.info(f"{display_name} rename requested: '{old_value}' -> '{new_value}'")
 
-        # Validate inputs
-        if not old_value:
-            logger.warning(f"{display_name} rename failed: missing old value")
-            messages.error(request, _("Old %(name)s is required.") % {"name": display_name.lower()})
-            return redirect(list_url_name)
-
+        # Validate inputs (some validation is also done in service)
         if requires_new_value and not new_value:
             logger.warning(f"{display_name} rename failed: missing new value")
             messages.error(request, _("New %(name)s is required.") % {"name": display_name.lower()})
             return redirect(list_url_name)
 
-        if old_value == new_value:
-            logger.warning(f"{display_name} rename skipped: old and new values are identical ('{old_value}')")
-            messages.warning(request, _("Old and new %(name)ss are the same.") % {"name": display_name.lower()})
-            return redirect(list_url_name)
-
-        # Check if old value exists
-        count = Ingredient.objects.filter(**{field_name: old_value}).count()
-        if count == 0:
-            logger.warning(
-                f"{display_name} rename failed: no ingredients found with {display_name.lower()} '{old_value}'"
-            )
-            messages.error(
-                request,
-                _("No ingredients found with %(name)s '%(value)s'.")
-                % {"name": display_name.lower(), "value": old_value},
-            )
-            return redirect(list_url_name)
-
-        # Update all ingredients with the old value
+        # Use service to rename
         try:
-            with transaction.atomic():
-                updated = Ingredient.objects.filter(**{field_name: old_value}).update(**{field_name: new_value})
-
-            logger.info(f"{display_name} renamed: '{old_value}' -> '{new_value}' ({updated} occurrences)")
+            updated = rename_ingredient_property(field_name, old_value, new_value)
             plural = "" if updated == 1 else "s"
             messages.success(
                 request,
                 _("Renamed '%(old)s' to '%(new)s' in %(count)s ingredient%(plural)s.")
                 % {"old": old_value, "new": new_value, "count": updated, "plural": plural},
             )
+            return redirect(list_url_name)
+        except ValueError as e:
+            logger.warning(f"{display_name} rename failed: {e}")
+            messages.error(request, str(e))
             return redirect(list_url_name)
         except Exception as e:
             logger.error(f"Error renaming {display_name.lower()} '{old_value}' to '{new_value}': {e}", exc_info=True)
@@ -134,7 +113,7 @@ def _rename_ingredient_property(
 
     # GET request - show rename form
     old_value = request.GET.get(field_name, "")
-    usage_count = Ingredient.objects.filter(**{field_name: old_value}).count() if old_value else 0
+    usage_count = get_usage_count(field_name, old_value) if old_value else 0
 
     context = {
         old_param: old_value,
@@ -196,20 +175,8 @@ def rename_unit(request: HttpRequest) -> HttpResponse:
 
 def manage_keywords(request: HttpRequest) -> HttpResponse:
     """View and manage distinct keywords."""
-    # Count keyword usage across all recipes
-    keyword_counts: dict[str, int] = {}
-    for keywords_str in _get_all_recipe_keywords():
-        for keyword in _parse_keywords(keywords_str):
-            keyword_counts[keyword] = keyword_counts.get(keyword, 0) + 1
-
-    # Convert to list of dicts and sort
-    keywords: list[dict[str, Any]] = [{"keyword": k, "usage_count": v} for k, v in keyword_counts.items()]
-    keywords.sort(key=lambda x: str(x["keyword"]).lower())
-
-    # Handle search query
     query = request.GET.get("q")
-    if query:
-        keywords = [k for k in keywords if query.lower() in str(k["keyword"]).lower()]
+    keywords = get_keywords_with_counts(search_query=query)
 
     return render(
         request,
@@ -220,7 +187,7 @@ def manage_keywords(request: HttpRequest) -> HttpResponse:
 
 def recipes_with_ingredient_name(request: HttpRequest, name: str) -> HttpResponse:
     """Show all recipes that use a specific ingredient name."""
-    recipes = Recipe.objects.filter(ingredients__name=name).distinct()
+    recipes = get_recipes_by_ingredient_name(name)
     return render(
         request,
         "recipes/recipes_by_property.html",
@@ -235,7 +202,7 @@ def recipes_with_ingredient_name(request: HttpRequest, name: str) -> HttpRespons
 
 def recipes_with_unit(request: HttpRequest, unit: str) -> HttpResponse:
     """Show all recipes that use a specific unit."""
-    recipes = Recipe.objects.filter(ingredients__unit=unit).distinct()
+    recipes = get_recipes_by_unit(unit)
     return render(
         request,
         "recipes/recipes_by_property.html",
@@ -273,8 +240,8 @@ def _delete_ingredient_property(
         messages.error(request, _("%(name)s is required.") % {"name": display_name})
         return redirect(list_url_name)
 
-    # Check usage count
-    usage_count = Ingredient.objects.filter(**{field_name: value}).count()
+    # Check usage count using service
+    usage_count = get_usage_count(field_name, value)
     if usage_count > 0:
         logger.warning(f"Cannot delete {display_name.lower()} '{value}': usage count is {usage_count}")
         plural = "s" if usage_count > 1 else ""
@@ -294,15 +261,13 @@ def _delete_ingredient_property(
 
 def recipes_with_keyword(request: HttpRequest, keyword: str) -> HttpResponse:
     """Show all recipes that use a specific keyword."""
-    recipes = Recipe.objects.filter(keywords__icontains=keyword).distinct()
-    # Further filter to ensure exact keyword match (not just substring)
-    filtered_recipes = [recipe for recipe in recipes if keyword in _parse_keywords(recipe.keywords)]
+    recipes = get_recipes_by_keyword(keyword)
 
     return render(
         request,
         "recipes/recipes_by_property.html",
         {
-            "recipes": filtered_recipes,
+            "recipes": recipes,
             "property_type": "Keyword",
             "property_value": keyword,
             "back_url": "manage_keywords",
@@ -334,53 +299,23 @@ def delete_unit(request: HttpRequest) -> HttpResponse:
 
 def get_ingredient_names(request: HttpRequest) -> JsonResponse:
     """API endpoint to get distinct ingredient names for autocomplete."""
-    names = Ingredient.objects.values_list("name", flat=True).distinct().order_by("name")
-    return JsonResponse({"names": list(names)})
+    names = get_ingredient_names_for_autocomplete()
+    return JsonResponse({"names": names})
 
 
 def get_ingredient_units(request: HttpRequest) -> JsonResponse:
     """API endpoint to get distinct ingredient units for autocomplete."""
-    units = Ingredient.objects.exclude(unit="").values_list("unit", flat=True).distinct().order_by("unit")
-    return JsonResponse({"units": list(units)})
-
-
-def _parse_keywords(keywords_str: str) -> list[str]:
-    """
-    Parse a comma-separated keyword string into a list of cleaned keywords.
-
-    Args:
-        keywords_str: Comma-separated string of keywords
-
-    Returns:
-        List of cleaned, non-empty keywords
-    """
-    return [kw.strip() for kw in keywords_str.split(",") if kw.strip()]
-
-
-def _get_all_recipe_keywords() -> list[str]:
-    """
-    Get all distinct keywords from recipes as a flat list.
-
-    Returns:
-        List of all keyword strings (comma-separated) from recipes
-    """
-    return list(Recipe.objects.exclude(keywords="").values_list("keywords", flat=True))
+    units = get_units_for_autocomplete()
+    return JsonResponse({"units": units})
 
 
 def get_keywords(request: HttpRequest) -> JsonResponse:
     """API endpoint to get distinct keywords for autocomplete."""
-    # Get all keywords and flatten into a unique set
-    keywords_set = set()
-    for keywords_str in _get_all_recipe_keywords():
-        keywords_set.update(_parse_keywords(keywords_str))
-
-    # Convert to sorted list
-    keywords_list = sorted(keywords_set, key=str.lower)
-
+    keywords_list = get_keywords_for_autocomplete()
     return JsonResponse({"keywords": keywords_list})
 
 
-def rename_keyword(request: HttpRequest) -> HttpResponse:
+def rename_keyword_view(request: HttpRequest) -> HttpResponse:
     """Rename a keyword across all recipes."""
     if request.method == "POST":
         old_keyword = request.POST.get("old_keyword", "").strip()
@@ -388,59 +323,19 @@ def rename_keyword(request: HttpRequest) -> HttpResponse:
 
         logger.info(f"Keyword rename requested: '{old_keyword}' -> '{new_keyword}'")
 
-        # Validate inputs
-        if not old_keyword:
-            logger.warning("Keyword rename failed: missing old keyword")
-            messages.error(request, _("Old keyword is required."))
-            return redirect("manage_keywords")
-
-        if not new_keyword:
-            logger.warning("Keyword rename failed: missing new keyword")
-            messages.error(request, _("New keyword is required."))
-            return redirect("manage_keywords")
-
-        if old_keyword == new_keyword:
-            logger.warning(f"Keyword rename skipped: old and new keywords are identical ('{old_keyword}')")
-            messages.warning(request, _("Old and new keywords are the same."))
-            return redirect("manage_keywords")
-
-        # Find all recipes with the old keyword
-        recipes_to_update = [
-            recipe for recipe in Recipe.objects.exclude(keywords="") if old_keyword in _parse_keywords(recipe.keywords)
-        ]
-
-        if not recipes_to_update:
-            logger.warning(f"Keyword rename failed: no recipes found with keyword '{old_keyword}'")
-            messages.error(request, _("No recipes found with keyword '%(keyword)s'.") % {"keyword": old_keyword})
-            return redirect("manage_keywords")
-
-        # Update keywords in all matching recipes
+        # Use service to rename
         try:
-            with transaction.atomic():
-                updated_count = 0
-                for recipe in recipes_to_update:
-                    keywords_list = _parse_keywords(recipe.keywords)
-                    # Replace old keyword with new keyword
-                    keywords_list = [new_keyword if kw == old_keyword else kw for kw in keywords_list]
-                    # Deduplicate while preserving order
-                    seen = set()
-                    deduplicated = []
-                    for kw in keywords_list:
-                        if kw not in seen:
-                            seen.add(kw)
-                            deduplicated.append(kw)
-                    # Update the recipe
-                    recipe.keywords = ", ".join(deduplicated)
-                    recipe.save()
-                    updated_count += 1
-
-            logger.info(f"Keyword renamed: '{old_keyword}' -> '{new_keyword}' ({updated_count} recipes updated)")
+            updated_count = rename_keyword(old_keyword, new_keyword)
             plural = "" if updated_count == 1 else "s"
             messages.success(
                 request,
                 _("Renamed '%(old)s' to '%(new)s' in %(count)s recipe%(plural)s.")
                 % {"old": old_keyword, "new": new_keyword, "count": updated_count, "plural": plural},
             )
+            return redirect("manage_keywords")
+        except ValueError as e:
+            logger.warning(f"Keyword rename failed: {e}")
+            messages.error(request, str(e))
             return redirect("manage_keywords")
         except Exception as e:
             logger.error(f"Error renaming keyword '{old_keyword}' to '{new_keyword}': {e}", exc_info=True)
@@ -449,11 +344,7 @@ def rename_keyword(request: HttpRequest) -> HttpResponse:
 
     # GET request - show rename form
     old_keyword = request.GET.get("keyword", "")
-    usage_count = (
-        sum(1 for keywords_str in _get_all_recipe_keywords() if old_keyword in _parse_keywords(keywords_str))
-        if old_keyword
-        else 0
-    )
+    usage_count = get_keyword_usage_count(old_keyword) if old_keyword else 0
 
     context = {
         "old_keyword": old_keyword,
@@ -470,8 +361,8 @@ def delete_keyword(request: HttpRequest) -> HttpResponse:
             messages.error(request, _("Keyword is required."))
             return redirect("manage_keywords")
 
-        # Check usage count - count how many recipes have this keyword
-        usage_count = sum(1 for keywords_str in _get_all_recipe_keywords() if keyword in _parse_keywords(keywords_str))
+        # Check usage count using service
+        usage_count = get_keyword_usage_count(keyword)
 
         if usage_count > 0:
             logger.warning(f"Cannot delete keyword '{keyword}': usage count is {usage_count}")

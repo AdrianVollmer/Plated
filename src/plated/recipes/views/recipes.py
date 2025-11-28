@@ -2,18 +2,11 @@ from __future__ import annotations
 
 import json
 import logging
-import shutil
-import subprocess
-import tempfile
-from pathlib import Path
 from typing import Any, cast
 
-from django import forms
 from django.contrib import messages
 from django.core.files.uploadedfile import UploadedFile
-from django.db import models as django_models
 from django.db import transaction
-from django.forms import inlineformset_factory
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
@@ -27,108 +20,21 @@ from django.views.generic import (
 )
 
 from ..forms import RecipeForm
-from ..models import AISettings, Ingredient, Recipe, RecipeImage, Step
-from ..schema import deserialize_recipe, serialize_recipe
+from ..models import AISettings, Recipe
+from ..schema import deserialize_recipe
+from ..services import (
+    PDFGenerationError,
+    create_image_formset,
+    create_ingredient_formset,
+    create_step_formset,
+    generate_recipe_pdf,
+    get_recipes_for_autocomplete,
+    sanitize_filename,
+    search_recipes,
+    validate_recipe_formsets,
+)
 
 logger = logging.getLogger(__name__)
-
-
-def _create_bootstrap_widget(field_name: str, model_field: Any) -> forms.Widget:
-    """
-    Create a Bootstrap-styled widget based on field type.
-
-    Args:
-        field_name: Name of the field
-        model_field: Django model field instance
-
-    Returns:
-        Appropriately styled widget
-    """
-    base_class = "form-control"
-    small_class = "form-control form-control-sm"
-
-    # Determine widget type based on field
-    if isinstance(model_field, django_models.TextField):
-        return forms.Textarea(attrs={"class": base_class, "rows": 3})
-    elif isinstance(model_field, django_models.IntegerField):
-        return forms.NumberInput(attrs={"class": small_class})
-    elif isinstance(model_field, django_models.ImageField):
-        # Image fields use default widget
-        return forms.FileInput(attrs={"class": base_class})
-    else:
-        # Default to text input for CharField and others
-        return forms.TextInput(attrs={"class": small_class})
-
-
-def _create_inline_formset(
-    parent_model: type[django_models.Model],
-    child_model: type[django_models.Model],
-    fields: tuple[str, ...],
-    extra: int = 0,
-    custom_widgets: dict[str, forms.Widget] | None = None,
-) -> Any:
-    """
-    Create an inline formset with automatic Bootstrap styling.
-
-    Args:
-        parent_model: Parent model class
-        child_model: Child model class
-        fields: Tuple of field names to include
-        extra: Number of empty forms to display
-        custom_widgets: Optional dict of custom widgets to override defaults
-
-    Returns:
-        Formset factory
-    """
-    # Build widgets dict with Bootstrap styling
-    widgets: dict[str, type[forms.Widget] | forms.Widget] = {}
-    for field_name in fields:
-        if custom_widgets and field_name in custom_widgets:
-            # Use custom widget if provided
-            widgets[field_name] = custom_widgets[field_name]
-        else:
-            # Auto-generate Bootstrap widget
-            model_field = child_model._meta.get_field(field_name)
-            widgets[field_name] = _create_bootstrap_widget(field_name, model_field)
-
-    return inlineformset_factory(
-        parent_model,
-        child_model,
-        fields=fields,
-        extra=extra,
-        can_delete=True,
-        widgets=widgets,
-    )
-
-
-def get_ingredient_formset(extra: int = 5):
-    """Create an ingredient formset with Bootstrap styling."""
-    return _create_inline_formset(
-        Recipe,
-        Ingredient,
-        fields=("amount", "unit", "name", "note", "order"),
-        extra=extra,
-    )
-
-
-def get_step_formset(extra: int = 3):
-    """Create a step formset with Bootstrap styling."""
-    return _create_inline_formset(
-        Recipe,
-        Step,
-        fields=("content", "order"),
-        extra=extra,
-    )
-
-
-def get_image_formset(extra: int = 2):
-    """Create an image formset with Bootstrap styling."""
-    return _create_inline_formset(
-        Recipe,
-        RecipeImage,
-        fields=("image", "caption", "order"),
-        extra=extra,
-    )
 
 
 class RecipeListView(ListView):
@@ -143,11 +49,7 @@ class RecipeListView(ListView):
         """Return recipes, optionally filtered by search query."""
         queryset = super().get_queryset()
         query = self.request.GET.get("q")
-        if query:
-            logger.info(f"Recipe search performed with query: '{query}'")
-            queryset = queryset.filter(title__icontains=query) | queryset.filter(keywords__icontains=query)
-            logger.debug(f"Search returned {queryset.count()} results")
-        return queryset
+        return search_recipes(queryset, query)
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         """Add AI settings availability to context."""
@@ -175,76 +77,6 @@ class RecipeDetailView(DetailView):
         context["all_collections"] = all_collections
         context["recipe_collection_ids"] = recipe_collection_ids
         return context
-
-
-def _validate_and_save_recipe_formsets(
-    request: HttpRequest,
-    form: RecipeForm,
-    ingredient_formset: Any,
-    step_formset: Any,
-    image_formset: Any,
-    recipe_instance: Recipe | None = None,
-    is_create: bool = True,
-) -> tuple[bool, HttpResponse | None, int, int]:
-    """
-    Common validation and saving logic for recipe formsets.
-
-    Returns:
-        tuple: (success, response, ingredient_count, step_count)
-        - success: True if validation passed
-        - response: HttpResponse to return if validation failed, None otherwise
-        - ingredient_count: Number of valid ingredients
-        - step_count: Number of valid steps
-    """
-    action = "creation" if is_create else "update"
-    recipe_info = (
-        "" if is_create or recipe_instance is None else f" for '{recipe_instance.title}' (ID: {recipe_instance.pk})"
-    )
-
-    # Validate formsets
-    if not ingredient_formset.is_valid():
-        logger.warning(f"Recipe {action} failed{recipe_info}: ingredient formset validation error")
-        form.add_error(None, "Invalid ingredient data")
-        return False, None, 0, 0
-
-    if not step_formset.is_valid():
-        logger.warning(f"Recipe {action} failed{recipe_info}: step formset validation error")
-        form.add_error(None, "Invalid step data")
-        return False, None, 0, 0
-
-    if not image_formset.is_valid():
-        logger.warning(f"Recipe {action} failed{recipe_info}: image formset validation error")
-        form.add_error(None, "Invalid image data")
-        return False, None, 0, 0
-
-    # Count non-deleted forms
-    ingredient_count = sum(
-        1
-        for form_item in ingredient_formset
-        if form_item.cleaned_data
-        and not form_item.cleaned_data.get("DELETE", False)
-        and form_item.cleaned_data.get("name")
-    )
-    step_count = sum(
-        1
-        for form_item in step_formset
-        if form_item.cleaned_data
-        and not form_item.cleaned_data.get("DELETE", False)
-        and form_item.cleaned_data.get("content")
-    )
-
-    # Validate minimum requirements
-    if ingredient_count == 0:
-        logger.warning(f"Recipe {action} failed{recipe_info}: no ingredients provided")
-        messages.error(request, _("Please add at least one ingredient to the recipe."))
-        return False, None, 0, 0
-
-    if step_count == 0:
-        logger.warning(f"Recipe {action} failed{recipe_info}: no steps provided")
-        messages.error(request, _("Please add at least one instruction step to the recipe."))
-        return False, None, 0, 0
-
-    return True, None, ingredient_count, step_count
 
 
 class RecipeCreateView(CreateView):
@@ -290,9 +122,9 @@ class RecipeCreateView(CreateView):
         extra_ingredients = max(1, len(ai_ingredients_data))
         extra_steps = max(1, len(ai_steps_data))
 
-        IngredientFormSet = get_ingredient_formset(extra=extra_ingredients)  # noqa: N806
-        StepFormSet = get_step_formset(extra=extra_steps)  # noqa: N806
-        ImageFormSet = get_image_formset(extra=0)  # noqa: N806
+        IngredientFormSet = create_ingredient_formset(extra=extra_ingredients)  # noqa: N806
+        StepFormSet = create_step_formset(extra=extra_steps)  # noqa: N806
+        ImageFormSet = create_image_formset(extra=0)  # noqa: N806
 
         if self.request.POST:
             data["ingredient_formset"] = IngredientFormSet(self.request.POST, prefix="ingredients")
@@ -325,12 +157,14 @@ class RecipeCreateView(CreateView):
         step_formset = context["step_formset"]
         image_formset = context["image_formset"]
 
-        # Validate formsets using common helper
-        success, response, ingredient_count, step_count = _validate_and_save_recipe_formsets(
-            self.request, form, ingredient_formset, step_formset, image_formset, is_create=True
+        # Validate formsets using service
+        validation = validate_recipe_formsets(
+            self.request, ingredient_formset, step_formset, image_formset, is_create=True
         )
 
-        if not success:
+        if not validation.is_valid:
+            for error in validation.errors:
+                form.add_error(None, error)
             return self.form_invalid(form)
 
         # Save everything in a transaction
@@ -346,7 +180,7 @@ class RecipeCreateView(CreateView):
 
             logger.info(
                 f"Recipe created: '{self.object.title}' (ID: {self.object.pk}, "
-                f"Ingredients: {ingredient_count}, Steps: {step_count})"
+                f"Ingredients: {validation.ingredient_count}, Steps: {validation.step_count})"
             )
             messages.success(self.request, _("Recipe '%(title)s' created successfully!") % {"title": self.object.title})
             return redirect("recipe_detail", pk=self.object.pk)
@@ -368,9 +202,9 @@ class RecipeUpdateView(UpdateView):
         data = super().get_context_data(**kwargs)
 
         # No extra forms - users can add more dynamically if needed
-        IngredientFormSet = get_ingredient_formset(extra=0)  # noqa: N806
-        StepFormSet = get_step_formset(extra=0)  # noqa: N806
-        ImageFormSet = get_image_formset(extra=0)  # noqa: N806
+        IngredientFormSet = create_ingredient_formset(extra=0)  # noqa: N806
+        StepFormSet = create_step_formset(extra=0)  # noqa: N806
+        ImageFormSet = create_image_formset(extra=0)  # noqa: N806
 
         if self.request.POST:
             data["ingredient_formset"] = IngredientFormSet(
@@ -397,10 +231,9 @@ class RecipeUpdateView(UpdateView):
         step_formset = context["step_formset"]
         image_formset = context["image_formset"]
 
-        # Validate formsets using common helper
-        success, response, ingredient_count, step_count = _validate_and_save_recipe_formsets(
+        # Validate formsets using service
+        validation = validate_recipe_formsets(
             self.request,
-            form,
             ingredient_formset,
             step_formset,
             image_formset,
@@ -408,7 +241,9 @@ class RecipeUpdateView(UpdateView):
             is_create=False,
         )
 
-        if not success:
+        if not validation.is_valid:
+            for error in validation.errors:
+                form.add_error(None, error)
             return self.form_invalid(form)
 
         # Save everything in a transaction
@@ -424,7 +259,7 @@ class RecipeUpdateView(UpdateView):
 
             logger.info(
                 f"Recipe updated: '{self.object.title}' (ID: {self.object.pk}, "
-                f"Ingredients: {ingredient_count}, Steps: {step_count})"
+                f"Ingredients: {validation.ingredient_count}, Steps: {validation.step_count})"
             )
             messages.success(self.request, _("Recipe '%(title)s' updated successfully!") % {"title": self.object.title})
             return redirect("recipe_detail", pk=self.object.pk)
@@ -548,111 +383,25 @@ def import_recipe(request: HttpRequest) -> HttpResponse:
 def download_recipe_pdf(request: HttpRequest, pk: int) -> HttpResponse:
     """Generate and download a recipe as a PDF using Typst."""
     recipe = get_object_or_404(Recipe, pk=pk)
-    logger.info(f"PDF generation initiated for recipe: '{recipe.title}' (ID: {pk})")
 
     try:
-        recipe_data = serialize_recipe(recipe)
+        pdf_content = generate_recipe_pdf(recipe)
 
-        # Get the path to the Typst template
-        base_dir = Path(__file__).resolve().parent.parent
-        typst_template = base_dir / "typst" / "recipe.typ"
+        # Create response with PDF
+        response = HttpResponse(pdf_content, content_type="application/pdf")
 
-        if not typst_template.exists():
-            logger.error(f"Typst template not found at {typst_template}")
-            messages.error(request, _("Typst template file not found."))
-            return redirect("recipe_detail", pk=pk)
+        # Sanitize filename
+        safe_title = sanitize_filename(recipe.title)
+        response["Content-Disposition"] = f'attachment; filename="{safe_title}.pdf"'
 
-        # Create temporary directory for intermediate files
-        with tempfile.TemporaryDirectory(prefix="plated_typst_") as temp_dir:
-            temp_path = Path(temp_dir)
-            logger.debug(f"Using temporary directory: {temp_dir}")
-
-            # Copy typst template to temp directory
-            temp_typst = temp_path / "recipe.typ"
-            shutil.copy(typst_template, temp_typst)
-
-            # Write recipe JSON to temp directory (same location as typst file)
-            recipe_json_path = temp_path / "recipe.json"
-            with open(recipe_json_path, "w", encoding="utf-8") as f:
-                json.dump(recipe_data, f, indent=2, ensure_ascii=False)
-
-            # Prepare output PDF path
-            output_pdf = temp_path / "recipe.pdf"
-
-            # Prepare Typst input data with relative paths
-            typst_input_data = json.dumps({"recipe": "recipe.json"})
-
-            # Call Typst to compile the PDF
-            try:
-                logger.debug(f"Running Typst compiler for recipe '{recipe.title}'")
-                subprocess.run(
-                    [
-                        "typst",
-                        "compile",
-                        str(temp_typst),
-                        str(output_pdf),
-                        "--input",
-                        f"data={typst_input_data}",
-                    ],
-                    capture_output=True,
-                    text=True,
-                    timeout=30,
-                    check=True,
-                )
-            except FileNotFoundError:
-                logger.error("Typst executable not found on system")
-                messages.error(
-                    request,
-                    _("Typst is not installed. Please install Typst to generate PDFs."),
-                )
-                return redirect("recipe_detail", pk=pk)
-            except subprocess.TimeoutExpired:
-                logger.error(f"Typst compilation timed out for recipe '{recipe.title}' (ID: {pk})")
-                messages.error(request, _("PDF generation timed out."))
-                return redirect("recipe_detail", pk=pk)
-            except subprocess.CalledProcessError as e:
-                logger.error(
-                    f"Typst compilation failed for recipe '{recipe.title}' (ID: {pk}): {e.stderr}",
-                    exc_info=True,
-                )
-                messages.error(
-                    request,
-                    _("Error generating PDF: %(error)s") % {"error": e.stderr if e.stderr else str(e)},
-                    # TODO render output in `<pre><code>` tags
-                )
-                return redirect("recipe_detail", pk=pk)
-
-            # Check if PDF was created
-            if not output_pdf.exists():
-                logger.error(f"PDF file not created for recipe '{recipe.title}' (ID: {pk})")
-                messages.error(request, _("PDF file was not generated."))
-                return redirect("recipe_detail", pk=pk)
-
-            # Read the PDF file
-            with open(output_pdf, "rb") as pdf_file:
-                pdf_content = pdf_file.read()
-
-            # Create response with PDF
-            response = HttpResponse(pdf_content, content_type="application/pdf")
-
-            # Sanitize filename
-            safe_title = "".join(c if c.isalnum() or c in (" ", "-", "_") else "_" for c in recipe.title)
-            safe_title = safe_title.replace(" ", "_")
-            response["Content-Disposition"] = f'attachment; filename="{safe_title}.pdf"'
-
-            logger.info(f"PDF generated successfully for recipe '{recipe.title}' (ID: {pk})")
-            return response
-    except Exception as e:
-        logger.error(
-            f"Unexpected error generating PDF for recipe '{recipe.title}' (ID: {pk}): {e}",
-            exc_info=True,
-        )
+        return response
+    except PDFGenerationError as e:
+        logger.error(f"PDF generation failed for recipe '{recipe.title}' (ID: {pk}): {e}")
         messages.error(request, _("Error generating PDF: %(error)s") % {"error": e})
         return redirect("recipe_detail", pk=pk)
 
 
 def get_recipes_api(request: HttpRequest) -> HttpResponse:
     """API endpoint to get all recipes for autocomplete."""
-    recipes = Recipe.objects.all().order_by("title")
-    recipes_data = [{"id": recipe.pk, "title": recipe.title} for recipe in recipes]
+    recipes_data = get_recipes_for_autocomplete()
     return HttpResponse(json.dumps(recipes_data), content_type="application/json")
