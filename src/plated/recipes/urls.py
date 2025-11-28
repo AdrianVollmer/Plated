@@ -52,6 +52,7 @@ urlpatterns = [
         views.collections.CollectionDeleteView.as_view(),
         name="collection_delete",
     ),
+    path("collections/<int:pk>/pdf/", views.collections.download_collection_pdf, name="collection_pdf"),
     # Meal plan management
     path("meal-plans/", views.meal_plans.MealPlanListView.as_view(), name="meal_plan_list"),
     path("meal-plans/<int:pk>/", views.meal_plans.MealPlanDetailView.as_view(), name="meal_plan_detail"),
@@ -69,6 +70,10 @@ urlpatterns = [
         name="remove_meal_entry",
     ),
     path("meal-plans/<int:pk>/shopping-list/", views.meal_plans.shopping_list, name="shopping_list"),
+    path("meal-plans/<int:pk>/pdf/", views.meal_plans.download_meal_plan_pdf, name="meal_plan_pdf"),
+    path(
+        "meal-plans/<int:pk>/shopping-list/pdf/", views.meal_plans.download_shopping_list_pdf, name="shopping_list_pdf"
+    ),
     # Ingredient and Unit management
     path(
         "manage/ingredient-names/",

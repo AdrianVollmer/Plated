@@ -15,7 +15,10 @@
                 </p>
             </div>
             <div class="d-flex gap-2">
-                <button onclick="window.print()" class="btn btn-primary">
+                <a href="{% url 'shopping_list_pdf' meal_plan.pk %}" class="btn btn-success">
+                    <i class="bi bi-file-pdf"></i> {% trans "Download PDF" %}
+                </a>
+                <button onclick="window.print()" class="btn btn-outline-primary">
                     <i class="bi bi-printer"></i> {% trans "Print" %}
                 </button>
                 <a href="{% url 'meal_plan_detail' meal_plan.pk %}" class="btn btn-outline-secondary">
