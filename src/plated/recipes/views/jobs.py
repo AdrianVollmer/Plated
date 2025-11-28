@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import threading
 
 from django.contrib import messages
 from django.http import HttpRequest, HttpResponse, JsonResponse
@@ -8,7 +9,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import gettext as _
 
 from ..models import AIJob
-from ..views.ai import process_ai_extraction_job
+from ..services import ai_service
 
 logger = logging.getLogger(__name__)
 
@@ -78,7 +79,9 @@ def job_retry(request: HttpRequest, pk: int) -> HttpResponse:
     logger.info(f"Created new AI Job {new_job.pk} as retry of job {pk}")
 
     # Queue the background task
-    process_ai_extraction_job(new_job.pk)
+    thread = threading.Thread(target=ai_service.process_ai_extraction_job, args=(new_job.pk,), daemon=True)
+    thread.start()
+    logger.debug(f"Started background thread for retry job {new_job.pk}")
 
     messages.success(
         request,

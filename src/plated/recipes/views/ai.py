@@ -1,19 +1,16 @@
 from __future__ import annotations
 
-import json
 import logging
 import threading
 
-import requests
 from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
-from django.utils import timezone
 from django.utils.translation import gettext as _
 
 from ..forms import AIRecipeExtractionForm
-from ..models import AIJob, AISettings
-from ..schema import get_recipe_json_schema, validate_recipe_data
+from ..models import AISettings
+from ..services import ai_service
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +31,7 @@ def ai_extract_recipe(request: HttpRequest) -> HttpResponse:
         if form.is_valid():
             input_type = form.cleaned_data["input_type"]
             input_content = form.cleaned_data["input_content"]
-            prompt = form.cleaned_data["prompt"]
+            instructions = form.cleaned_data["prompt"]
 
             logger.info(f"AI recipe extraction initiated with input_type: {input_type}")
 
@@ -42,36 +39,11 @@ def ai_extract_recipe(request: HttpRequest) -> HttpResponse:
             timeout = ai_settings.timeout
 
             if timeout > 10:
-                # Create background job
-                job = AIJob.objects.create(
-                    status="pending",
-                    input_type=input_type,
-                    input_content=input_content,
-                    instructions=prompt,
-                    timeout=timeout,
-                )
-                logger.info(f"Created AI Job {job.pk} with timeout {timeout}s (background mode)")
-
-                # Start the background task in a thread
-                thread = threading.Thread(target=process_ai_extraction_job, args=(job.pk,), daemon=True)
-                thread.start()
-                logger.debug(f"Started background thread for job {job.pk}")
-
-                messages.success(
-                    request,
-                    _("Recipe extraction job started (timeout: %(timeout)ss). Check the Jobs page to see the result.")
-                    % {"timeout": timeout},
-                )
-                return redirect("jobs_list")
+                # Create and run background job
+                return _create_background_job(request, input_type, input_content, instructions, timeout)
             else:
                 # Run synchronously for quick jobs
-                logger.info(f"Running AI extraction synchronously (timeout: {timeout}s)")
-                try:
-                    return prompt_ai(input_type, input_content, request, form, prompt, ai_settings)
-                except Exception as e:
-                    logger.error(f"Unexpected error during AI recipe extraction: {e}", exc_info=True)
-                    messages.error(request, _("Unexpected error: %(error)s") % {"error": e})
-                    return render(request, "recipes/ai_extract.html", {"form": form})
+                return _extract_recipe_sync(request, form, input_type, input_content, instructions, ai_settings)
 
     else:
         form = AIRecipeExtractionForm()
@@ -79,265 +51,73 @@ def ai_extract_recipe(request: HttpRequest) -> HttpResponse:
     return render(request, "recipes/ai_extract.html", {"form": form, "ai_settings": ai_settings})
 
 
-def prompt_ai(
-    input_type: str,
-    input_content: str,
-    request: HttpRequest,
-    form: AIRecipeExtractionForm,
-    prompt,
-    ai_settings,
+def _create_background_job(
+    request: HttpRequest, input_type: str, input_content: str, instructions: str, timeout: int
 ) -> HttpResponse:
-    # Fetch content if it's a URL
-    if input_type == "url":
-        logger.debug(f"Fetching content from URL: {input_content}")
-        try:
-            response = requests.get(input_content, timeout=30)
-            response.raise_for_status()
-            content = response.text
-            logger.debug(f"URL content fetched successfully: {len(content)} characters")
-        except requests.RequestException as e:
-            logger.error(f"Error fetching URL {input_content}: {e}")
-            messages.error(request, _("Error fetching URL: %(error)s") % {"error": e})
-            return render(request, "recipes/ai_extract.html", {"form": form})
-    else:
-        content = input_content
+    """Create a background job for AI extraction."""
+    from ..models import AIJob
 
-    # Build the prompt for the LLM
-    schema_description = "Extract the recipe information from the provided content and return it as a JSON object"
-
-    # Get the JSON schema for recipe extraction
-    recipe_schema = get_recipe_json_schema()
-
-    system_message = schema_description
-    if prompt:
-        system_message += f"\n\nAdditional instructions: {prompt}"
-
-    # Call the LLM API
-    try:
-        prompt = system_message + "\n\n" + content
-        return call_llm_api(request, form, ai_settings, prompt, recipe_schema)
-
-    except requests.RequestException as e:
-        server_error = ""
-        try:
-            if e.response is not None:
-                server_error = e.response.json()["error"]
-        except KeyError:
-            pass
-        error_msg = _("Error calling LLM API: %(error)s: %(server_error)s") % {"error": e, "server_error": server_error}
-        logger.error(error_msg)
-        messages.error(request, error_msg)
-        return render(request, "recipes/ai_extract.html", {"form": form})
-
-
-def call_llm_api(
-    request: HttpRequest, form: AIRecipeExtractionForm, ai_settings: AISettings, prompt: str, recipe_schema
-) -> HttpResponse:
-    # Try OpenAI-compatible API format
-    api_payload = {
-        "model": ai_settings.model,
-        "prompt": prompt,
-        "options": {
-            "temperature": ai_settings.temperature,
-        },
-        "format": recipe_schema,
-        "stream": False,
-    }
-
-    logger.debug(f"Calling LLM API: {ai_settings.api_url} / {api_payload}")
-
-    api_response = requests.post(
-        ai_settings.api_url,
-        headers={
-            "Authorization": f"Bearer {ai_settings.api_key}",
-            "Content-Type": "application/json",
-        },
-        json=api_payload,
-        timeout=ai_settings.timeout,
+    job = AIJob.objects.create(
+        status="pending",
+        input_type=input_type,
+        input_content=input_content,
+        instructions=instructions,
+        timeout=timeout,
     )
-    api_response.raise_for_status()
-    response_data = api_response.json()
+    logger.info(f"Created AI Job {job.pk} with timeout {timeout}s (background mode)")
 
-    logger.debug("LLM API call successful")
+    # Start the background task in a thread
+    thread = threading.Thread(target=ai_service.process_ai_extraction_job, args=(job.pk,), daemon=True)
+    thread.start()
+    logger.debug(f"Started background thread for job {job.pk}")
 
-    # Extract the response text (try OpenAI format first)
-    if "choices" in response_data and len(response_data["choices"]) > 0:
-        recipe_json_str = response_data["choices"][0]["message"]["content"]
-    elif "content" in response_data:
-        # Alternative format
-        recipe_json_str = response_data["content"]
-    elif "response" in response_data:
-        recipe_json_str = response_data["response"]
-    else:
-        logger.error(f"Unexpected API response format: {response_data}")
-        messages.error(
-            request,
-            _("Unexpected response format from AI API. Please check your API configuration."),
-        )
-        return render(request, "recipes/ai_extract.html", {"form": form})
-
-    # Clean up the response (remove markdown code blocks if present)
-    recipe_json_str = recipe_json_str.strip()
-    if recipe_json_str.startswith("```json"):
-        recipe_json_str = recipe_json_str[7:]
-    if recipe_json_str.startswith("```"):
-        recipe_json_str = recipe_json_str[3:]
-    if recipe_json_str.endswith("```"):
-        recipe_json_str = recipe_json_str[:-3]
-    recipe_json_str = recipe_json_str.strip()
-
-    # Parse the JSON
-    try:
-        recipe_data = json.loads(recipe_json_str)
-        logger.debug("Recipe JSON parsed successfully")
-    except json.JSONDecodeError as e:
-        logger.error(f"Error parsing recipe JSON: {e}\nJSON string: {recipe_json_str[:500]}")
-        messages.error(
-            request,
-            _("Error parsing AI response as JSON: %(error)s. The AI may have returned invalid JSON.") % {"error": e},
-        )
-        return render(request, "recipes/ai_extract.html", {"form": form})
-
-    # Validate the recipe data
-    errors = validate_recipe_data(recipe_data)
-    if errors:
-        logger.warning(f"AI-extracted recipe validation failed: {len(errors)} errors")
-        for error in errors[:5]:  # Show first 5 errors
-            messages.error(request, _("Validation error: %(error)s") % {"error": error})
-        return render(request, "recipes/ai_extract.html", {"form": form})
-
-    # Store the recipe data in the session
-    request.session["ai_extracted_recipe"] = recipe_data
-    logger.debug(f"AI extraction result: {recipe_data}")
-    logger.info("Recipe extracted successfully via AI, redirecting to recipe form")
     messages.success(
         request,
-        _("Recipe extracted successfully! Please review and save the recipe."),
+        _("Recipe extraction job started (timeout: %(timeout)ss). Check the Jobs page to see the result.")
+        % {"timeout": timeout},
     )
-    return redirect("recipe_create")
+    return redirect("jobs_list")
 
 
-def process_ai_extraction_job(job_id: int) -> None:
-    """
-    Process an AI recipe extraction job in a background thread.
-
-    Args:
-        job_id: ID of the AIJob to process
-    """
-    try:
-        job = AIJob.objects.get(pk=job_id)
-    except AIJob.DoesNotExist:
-        logger.error(f"AI Job {job_id} not found")
-        return
-
-    # Check if job is already cancelled
-    if job.status == "cancelled":
-        logger.info(f"AI Job {job_id} was cancelled before processing")
-        return
-
-    # Mark job as running
-    job.status = "running"
-    job.started_at = timezone.now()
-    job.save()
-
-    logger.info(f"Starting AI Job {job_id} (timeout: {job.timeout}s)")
+def _extract_recipe_sync(
+    request: HttpRequest,
+    form: AIRecipeExtractionForm,
+    input_type: str,
+    input_content: str,
+    instructions: str,
+    ai_settings: AISettings,
+) -> HttpResponse:
+    """Extract recipe synchronously and return the response."""
+    logger.info(f"Running AI extraction synchronously (timeout: {ai_settings.timeout}s)")
 
     try:
-        # Get AI settings
-        ai_settings = AISettings.objects.first()
-        if not ai_settings:
-            raise Exception("AI settings not configured")
+        recipe_data = ai_service.extract_and_validate_recipe(input_type, input_content, ai_settings, instructions)
 
-        # Fetch content if it's a URL
-        if job.input_type == "url":
-            logger.debug(f"Fetching content from URL: {job.input_content}")
-            response = requests.get(job.input_content, timeout=30)
-            response.raise_for_status()
-            content = response.text
-            logger.debug(f"URL content fetched successfully: {len(content)} characters")
-        else:
-            content = job.input_content
-
-        # Build the prompt for the LLM
-        schema_description = "Extract the recipe information from the provided content and return it as a JSON object"
-        recipe_schema = get_recipe_json_schema()
-
-        system_message = schema_description
-        if job.instructions:
-            system_message += f"\n\nAdditional instructions: {job.instructions}"
-
-        prompt = system_message + "\n\n" + content
-
-        # Call the LLM API with job's timeout
-        api_payload = {
-            "model": ai_settings.model,
-            "prompt": prompt,
-            "options": {
-                "temperature": ai_settings.temperature,
-            },
-            "format": recipe_schema,
-            "stream": False,
-        }
-
-        logger.debug(f"Calling LLM API for job {job_id}: {ai_settings.api_url}")
-
-        api_response = requests.post(
-            ai_settings.api_url,
-            headers={
-                "Authorization": f"Bearer {ai_settings.api_key}",
-                "Content-Type": "application/json",
-            },
-            json=api_payload,
-            timeout=job.timeout,
+        # Store the recipe data in the session
+        request.session["ai_extracted_recipe"] = recipe_data
+        logger.info("Recipe extracted successfully via AI, redirecting to recipe form")
+        messages.success(
+            request,
+            _("Recipe extracted successfully! Please review and save the recipe."),
         )
-        api_response.raise_for_status()
-        response_data = api_response.json()
+        return redirect("recipe_create")
 
-        logger.debug(f"LLM API call successful for job {job_id}")
+    except ai_service.URLFetchError as e:
+        logger.error(f"URL fetch error: {e}")
+        messages.error(request, str(e))
+        return render(request, "recipes/ai_extract.html", {"form": form})
 
-        # Extract the response text
-        if "choices" in response_data and len(response_data["choices"]) > 0:
-            recipe_json_str = response_data["choices"][0]["message"]["content"]
-        elif "content" in response_data:
-            recipe_json_str = response_data["content"]
-        elif "response" in response_data:
-            recipe_json_str = response_data["response"]
-        else:
-            raise Exception(f"Unexpected API response format: {response_data}")
+    except ai_service.LLMAPIError as e:
+        logger.error(f"LLM API error: {e}")
+        messages.error(request, str(e))
+        return render(request, "recipes/ai_extract.html", {"form": form})
 
-        # Clean up the response
-        recipe_json_str = recipe_json_str.strip()
-        if recipe_json_str.startswith("```json"):
-            recipe_json_str = recipe_json_str[7:]
-        if recipe_json_str.startswith("```"):
-            recipe_json_str = recipe_json_str[3:]
-        if recipe_json_str.endswith("```"):
-            recipe_json_str = recipe_json_str[:-3]
-        recipe_json_str = recipe_json_str.strip()
-
-        # Parse the JSON
-        recipe_data = json.loads(recipe_json_str)
-        logger.debug(f"Recipe JSON parsed successfully for job {job_id}")
-
-        # Validate the recipe data
-        errors = validate_recipe_data(recipe_data)
-        if errors:
-            error_msg = f"Validation failed: {'; '.join(errors[:3])}"
-            if len(errors) > 3:
-                error_msg += f" (and {len(errors) - 3} more errors)"
-            raise Exception(error_msg)
-
-        # Mark job as completed
-        job.status = "completed"
-        job.result_data = recipe_data
-        job.completed_at = timezone.now()
-        job.save()
-
-        logger.info(f"AI Job {job_id} completed successfully")
+    except ai_service.InvalidResponseError as e:
+        logger.error(f"Invalid response error: {e}")
+        messages.error(request, str(e))
+        return render(request, "recipes/ai_extract.html", {"form": form})
 
     except Exception as e:
-        logger.error(f"AI Job {job_id} failed: {e}", exc_info=True)
-        job.status = "failed"
-        job.error_message = str(e)
-        job.completed_at = timezone.now()
-        job.save()
+        logger.error(f"Unexpected error during AI recipe extraction: {e}", exc_info=True)
+        messages.error(request, _("Unexpected error: %(error)s") % {"error": e})
+        return render(request, "recipes/ai_extract.html", {"form": form})
