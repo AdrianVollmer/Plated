@@ -34,6 +34,9 @@
                     </ul>
                 </div>
                 <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addToCollectionModal">
+                        <i class="bi bi-collection"></i> {% trans "Add to Collection" %}
+                    </button>
                     <a href="{% url 'recipe_update' recipe.pk %}" class="btn btn-outline-primary">
                         <i class="bi bi-pencil"></i> {% trans "Edit" %}
                     </a>
@@ -52,6 +55,9 @@
                         <li><a class="dropdown-item" href="{% url 'recipe_export' recipe.pk %}"><i class="bi bi-file-earmark-code"></i> JSON</a></li>
                     </ul>
                 </div>
+                <button type="button" class="btn btn-outline-secondary me-2" data-bs-toggle="modal" data-bs-target="#addToCollectionModal">
+                    <i class="bi bi-collection"></i> {% trans "Add to Collection" %}
+                </button>
                 <a href="{% url 'recipe_update' recipe.pk %}" class="btn btn-outline-primary me-2">
                     <i class="bi bi-pencil"></i> {% trans "Edit" %}
                 </a>
@@ -257,6 +263,50 @@
     <div class="col-md-8 offset-md-2 text-muted small">
         <p class="mb-0">{% trans "Created:" %} {{ recipe.created_at|date:"F j, Y, g:i a" }}</p>
         <p>{% trans "Last updated:" %} {{ recipe.updated_at|date:"F j, Y, g:i a" }}</p>
+    </div>
+</div>
+
+<!-- Add to Collection Modal -->
+<div class="modal fade" id="addToCollectionModal" tabindex="-1" aria-labelledby="addToCollectionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addToCollectionModalLabel"><i class="bi bi-collection"></i> {% trans "Add to Collection" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+            </div>
+            <form method="post" action="{% url 'add_recipe_to_collections' recipe.pk %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    {% if all_collections %}
+                        <p class="text-muted mb-3">{% trans "Select the collections you want to add this recipe to:" %}</p>
+                        <div class="list-group">
+                            {% for collection in all_collections %}
+                                <label class="list-group-item d-flex align-items-center">
+                                    <input class="form-check-input me-3" type="checkbox" name="collections" value="{{ collection.id }}" {% if collection.id in recipe_collection_ids %}checked{% endif %}>
+                                    <div>
+                                        <div class="fw-bold">{{ collection.name }}</div>
+                                        {% if collection.description %}
+                                            <small class="text-muted">{{ collection.description|truncatewords:15 }}</small>
+                                        {% endif %}
+                                    </div>
+                                </label>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">{% trans "No collections yet. Create a collection first to organize your recipes." %}</p>
+                        <a href="{% url 'collection_create' %}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> {% trans "Create Collection" %}
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+                    {% if all_collections %}
+                        <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 

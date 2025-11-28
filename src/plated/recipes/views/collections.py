@@ -6,6 +6,7 @@ from typing import Any
 from django import forms
 from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
 from django.views.generic import (
@@ -16,7 +17,7 @@ from django.views.generic import (
     UpdateView,
 )
 
-from ..models import RecipeCollection
+from ..models import Recipe, RecipeCollection
 
 logger = logging.getLogger(__name__)
 
@@ -107,3 +108,38 @@ class CollectionDeleteView(DeleteView):
         logger.info(f"Collection deleted: '{collection_name}' (ID: {collection_id})")
         messages.success(request, _("Collection '%(name)s' deleted successfully!") % {"name": collection_name})
         return super().delete(request, *args, **kwargs)
+
+
+def add_recipe_to_collections(request: HttpRequest, recipe_pk: int) -> HttpResponse:
+    """Add or remove a recipe from collections."""
+    recipe = get_object_or_404(Recipe, pk=recipe_pk)
+
+    if request.method == "POST":
+        # Get the list of collection IDs from the form
+        collection_ids = request.POST.getlist("collections")
+        logger.debug(f"Adding recipe {recipe_pk} to collections: {collection_ids}")
+
+        # Get all collections
+        all_collections = RecipeCollection.objects.all()
+
+        # Update collections: add or remove recipe based on checkbox state
+        for collection in all_collections:
+            if str(collection.pk) in collection_ids:
+                # Add recipe to collection if not already there
+                if recipe not in collection.recipes.all():
+                    collection.recipes.add(recipe)
+                    logger.info(f"Added recipe '{recipe.title}' to collection '{collection.name}'")
+            else:
+                # Remove recipe from collection if it's there
+                if recipe in collection.recipes.all():
+                    collection.recipes.remove(recipe)
+                    logger.info(f"Removed recipe '{recipe.title}' from collection '{collection.name}'")
+
+        messages.success(
+            request,
+            _("Recipe '%(recipe)s' collections updated successfully!") % {"recipe": recipe.title},
+        )
+        return redirect("recipe_detail", pk=recipe_pk)
+
+    # GET request - redirect to recipe detail
+    return redirect("recipe_detail", pk=recipe_pk)

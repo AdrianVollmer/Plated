@@ -163,6 +163,19 @@ class RecipeDetailView(DetailView):
     template_name = "recipes/recipe_detail.html"
     context_object_name = "recipe"
 
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        """Add all collections and recipe's current collections to context."""
+        context = super().get_context_data(**kwargs)
+        from ..models import RecipeCollection
+
+        recipe = self.get_object()
+        all_collections = RecipeCollection.objects.all()
+        recipe_collection_ids = set(recipe.collections.values_list("id", flat=True))
+
+        context["all_collections"] = all_collections
+        context["recipe_collection_ids"] = recipe_collection_ids
+        return context
+
 
 def _validate_and_save_recipe_formsets(
     request: HttpRequest,

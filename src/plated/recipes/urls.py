@@ -19,6 +19,12 @@ urlpatterns = [
     path("recipe/import/", views.recipes.import_recipe, name="recipe_import"),
     # PDF Generation
     path("recipe/<int:pk>/pdf/", views.recipes.download_recipe_pdf, name="recipe_pdf"),
+    # Add to collections
+    path(
+        "recipe/<int:recipe_pk>/add-to-collections/",
+        views.collections.add_recipe_to_collections,
+        name="add_recipe_to_collections",
+    ),
     # API endpoints for autocomplete
     path("api/ingredient-names/", views.properties.get_ingredient_names, name="api_ingredient_names"),
     path("api/ingredient-units/", views.properties.get_ingredient_units, name="api_ingredient_units"),
