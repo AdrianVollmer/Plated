@@ -34,16 +34,23 @@
                         </p>
                     </div>
                     <div class="card-footer bg-transparent border-top-0">
-                        <div class="d-flex gap-2">
-                            <a href="{% url 'collection_detail' collection.pk %}" class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-eye"></i> {% trans "View" %}
-                            </a>
-                            <a href="{% url 'collection_update' collection.pk %}" class="btn btn-sm btn-outline-secondary">
-                                <i class="bi bi-pencil"></i> {% trans "Edit" %}
-                            </a>
-                            <a href="{% url 'collection_delete' collection.pk %}" class="btn btn-sm btn-outline-danger">
-                                <i class="bi bi-trash"></i> {% trans "Delete" %}
-                            </a>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary" type="button" id="collectionActionsMenu{{ collection.pk }}" data-bs-toggle="dropdown" aria-expanded="false" aria-label="{% trans 'Collection actions' %}">
+                                <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="collectionActionsMenu{{ collection.pk }}">
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'collection_update' collection.pk %}">
+                                        <i class="bi bi-pencil"></i> {% trans "Edit" %}
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item text-danger" href="{% url 'collection_delete' collection.pk %}">
+                                        <i class="bi bi-trash"></i> {% trans "Delete" %}
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>

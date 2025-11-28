@@ -39,19 +39,29 @@
                         </p>
                     </div>
                     <div class="card-footer bg-transparent border-top-0">
-                        <div class="d-flex flex-wrap gap-2">
-                            <a href="{% url 'meal_plan_detail' meal_plan.pk %}" class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-eye"></i> {% trans "View" %}
-                            </a>
-                            <a href="{% url 'meal_plan_update' meal_plan.pk %}" class="btn btn-sm btn-outline-secondary">
-                                <i class="bi bi-pencil"></i> {% trans "Edit" %}
-                            </a>
-                            <a href="{% url 'shopping_list' meal_plan.pk %}" class="btn btn-sm btn-outline-success">
-                                <i class="bi bi-cart"></i> {% trans "Shopping List" %}
-                            </a>
-                            <a href="{% url 'meal_plan_delete' meal_plan.pk %}" class="btn btn-sm btn-outline-danger">
-                                <i class="bi bi-trash"></i> {% trans "Delete" %}
-                            </a>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary" type="button" id="mealPlanActionsMenu{{ meal_plan.pk }}" data-bs-toggle="dropdown" aria-expanded="false" aria-label="{% trans 'Meal plan actions' %}">
+                                <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="mealPlanActionsMenu{{ meal_plan.pk }}">
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'shopping_list' meal_plan.pk %}">
+                                        <i class="bi bi-cart"></i> {% trans "Shopping List" %}
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'meal_plan_update' meal_plan.pk %}">
+                                        <i class="bi bi-pencil"></i> {% trans "Edit" %}
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item text-danger" href="{% url 'meal_plan_delete' meal_plan.pk %}">
+                                        <i class="bi bi-trash"></i> {% trans "Delete" %}
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
