@@ -23,47 +23,50 @@
             <h1 class="recipe-title">{{ recipe.title }}</h1>
         </div>
         <div class="col-12 col-md-6">
-            <div class="d-md-none mb-3" role="group">
-                <div class="btn-group w-100 mb-2" role="group">
-                    <button type="button" class="btn btn-outline-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-download"></i> {% trans "Download" %}
+            <div class="text-end">
+                <div class="dropdown d-inline-block">
+                    <button class="btn btn-outline-secondary" type="button" id="recipeActionsMenu" data-bs-toggle="dropdown" aria-expanded="false" aria-label="{% trans 'Recipe actions' %}">
+                        <i class="bi bi-three-dots-vertical"></i>
                     </button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item pdf-download-link" href="{% url 'recipe_pdf' recipe.pk %}"><i class="bi bi-file-pdf"></i> PDF</a></li>
-                        <li><a class="dropdown-item" href="{% url 'recipe_export' recipe.pk %}"><i class="bi bi-file-earmark-code"></i> JSON</a></li>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="recipeActionsMenu">
+                        <li>
+                            <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#scaleRecipeModal">
+                                <i class="bi bi-sliders"></i> {% trans "Scale Recipe" %}
+                            </button>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <h6 class="dropdown-header"><i class="bi bi-download"></i> {% trans "Download" %}</h6>
+                        </li>
+                        <li>
+                            <a class="dropdown-item pdf-download-link" href="{% url 'recipe_pdf' recipe.pk %}">
+                                <i class="bi bi-file-pdf"></i> {% trans "PDF" %}
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'recipe_export' recipe.pk %}">
+                                <i class="bi bi-file-earmark-code"></i> {% trans "JSON" %}
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addToCollectionModal">
+                                <i class="bi bi-collection"></i> {% trans "Add to Collection" %}
+                            </button>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'recipe_update' recipe.pk %}">
+                                <i class="bi bi-pencil"></i> {% trans "Edit" %}
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item text-danger" href="{% url 'recipe_delete' recipe.pk %}">
+                                <i class="bi bi-trash"></i> {% trans "Delete" %}
+                            </a>
+                        </li>
                     </ul>
                 </div>
-                <div class="d-grid gap-2">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addToCollectionModal">
-                        <i class="bi bi-collection"></i> {% trans "Add to Collection" %}
-                    </button>
-                    <a href="{% url 'recipe_update' recipe.pk %}" class="btn btn-outline-primary">
-                        <i class="bi bi-pencil"></i> {% trans "Edit" %}
-                    </a>
-                    <a href="{% url 'recipe_delete' recipe.pk %}" class="btn btn-outline-danger">
-                        <i class="bi bi-trash"></i> {% trans "Delete" %}
-                    </a>
-                </div>
-            </div>
-            <div class="d-none d-md-block text-md-end">
-                <div class="btn-group me-2" role="group">
-                    <button type="button" class="btn btn-outline-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-download"></i> {% trans "Download" %}
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item pdf-download-link" href="{% url 'recipe_pdf' recipe.pk %}"><i class="bi bi-file-pdf"></i> PDF</a></li>
-                        <li><a class="dropdown-item" href="{% url 'recipe_export' recipe.pk %}"><i class="bi bi-file-earmark-code"></i> JSON</a></li>
-                    </ul>
-                </div>
-                <button type="button" class="btn btn-outline-secondary me-2" data-bs-toggle="modal" data-bs-target="#addToCollectionModal">
-                    <i class="bi bi-collection"></i> {% trans "Add to Collection" %}
-                </button>
-                <a href="{% url 'recipe_update' recipe.pk %}" class="btn btn-outline-primary me-2">
-                    <i class="bi bi-pencil"></i> {% trans "Edit" %}
-                </a>
-                <a href="{% url 'recipe_delete' recipe.pk %}" class="btn btn-outline-danger">
-                    <i class="bi bi-trash"></i> {% trans "Delete" %}
-                </a>
             </div>
         </div>
     </div>
@@ -103,9 +106,6 @@
                     <div class="recipe-info-label"><i class="bi bi-people"></i> {% trans "Servings" %}</div>
                     <div class="recipe-info-value">
                         <span id="servings-display">{{ recipe.servings }}</span>
-                        <button type="button" class="btn btn-sm btn-outline-primary ms-2" data-bs-toggle="modal" data-bs-target="#scaleRecipeModal" title="{% trans 'Scale recipe' %}">
-                            <i class="bi bi-sliders"></i> {% trans "Scale" %}
-                        </button>
                     </div>
                 </div>
                 {% if recipe.prep_time %}
@@ -147,9 +147,6 @@
                     <div class="recipe-info-label"><i class="bi bi-people"></i> {% trans "Servings" %}</div>
                     <div class="recipe-info-value">
                         <span id="servings-display">{{ recipe.servings }}</span>
-                        <button type="button" class="btn btn-sm btn-outline-primary ms-2" data-bs-toggle="modal" data-bs-target="#scaleRecipeModal" title="{% trans 'Scale recipe' %}">
-                            <i class="bi bi-sliders"></i> {% trans "Scale" %}
-                        </button>
                     </div>
                 </div>
                 {% if recipe.prep_time %}
