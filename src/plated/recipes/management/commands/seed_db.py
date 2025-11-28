@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import logging
-from datetime import timedelta
+from datetime import date, timedelta
 
 from django.core.management.base import BaseCommand
-from recipes.models import Ingredient, Recipe, Step
+from recipes.models import Ingredient, MealPlan, MealPlanEntry, Recipe, RecipeCollection, Step
 
 logger = logging.getLogger(__name__)
 
@@ -27,12 +27,19 @@ class Command(BaseCommand):
         logger.info("Database seeding command started")
 
         if kwargs["clear"]:
-            self.stdout.write("Clearing existing recipes...")
-            logger.info("Clearing all existing recipes from database")
+            self.stdout.write("Clearing existing data...")
+            logger.info("Clearing all existing data from database")
             recipe_count = Recipe.objects.count()
+            collection_count = RecipeCollection.objects.count()
+            meal_plan_count = MealPlan.objects.count()
             Recipe.objects.all().delete()
-            logger.info(f"Deleted {recipe_count} recipes from database")
-            self.stdout.write(self.style.SUCCESS("Cleared all recipes"))
+            RecipeCollection.objects.all().delete()
+            MealPlan.objects.all().delete()
+            logger.info(
+                f"Deleted {recipe_count} recipes, {collection_count} collections, "
+                f"and {meal_plan_count} meal plans from database"
+            )
+            self.stdout.write(self.style.SUCCESS("Cleared all recipes, collections, and meal plans"))
 
         self.stdout.write("Seeding database with sample recipes...")
         logger.info("Starting to seed database with sample recipes")
@@ -231,18 +238,192 @@ class Command(BaseCommand):
         for i, content in enumerate(steps5, 1):
             Step.objects.create(recipe=recipe5, order=i, content=content)
 
+        # Create Recipe Collections
+        self.stdout.write("\nCreating recipe collections...")
+        logger.info("Creating recipe collections")
+
+        collection1 = RecipeCollection.objects.create(
+            name="Quick & Easy Weeknight Dinners",
+            description="Fast recipes perfect for busy weeknights when you need dinner on the table quickly.",
+        )
+        collection1.recipes.add(recipe3)  # Thai Basil Chicken
+
+        collection2 = RecipeCollection.objects.create(
+            name="Comfort Food Favorites",
+            description="Classic comfort food recipes that warm the soul and bring back happy memories.",
+        )
+        collection2.recipes.add(recipe1, recipe2)  # Cookies and Tomato Soup
+
+        collection3 = RecipeCollection.objects.create(
+            name="Meal Prep Essentials",
+            description="Recipes that are perfect for preparing in advance to save time during the week.",
+        )
+        collection3.recipes.add(recipe4, recipe5)  # Overnight Oats and Pizza Dough
+
+        collection4 = RecipeCollection.objects.create(
+            name="Vegetarian Delights",
+            description="Delicious meat-free recipes that even non-vegetarians will love.",
+        )
+        collection4.recipes.add(recipe2, recipe4)  # Tomato Soup and Overnight Oats
+
+        # Create Meal Plans
+        self.stdout.write("\nCreating meal plans...")
+        logger.info("Creating meal plans")
+
+        # Meal Plan 1: This Week's Meals
+        today = date.today()
+        meal_plan1 = MealPlan.objects.create(
+            name="This Week's Meals",
+            description="A balanced week of delicious and varied meals",
+            start_date=today,
+            end_date=today + timedelta(days=6),
+        )
+
+        # Add entries to meal plan 1
+        MealPlanEntry.objects.create(
+            meal_plan=meal_plan1,
+            recipe=recipe4,
+            date=today,
+            meal_type="breakfast",
+            servings=2,
+            notes="Prep Sunday night for Monday morning",
+        )
+        MealPlanEntry.objects.create(
+            meal_plan=meal_plan1,
+            recipe=recipe3,
+            date=today,
+            meal_type="dinner",
+            servings=4,
+        )
+        MealPlanEntry.objects.create(
+            meal_plan=meal_plan1,
+            recipe=recipe4,
+            date=today + timedelta(days=1),
+            meal_type="breakfast",
+            servings=2,
+        )
+        MealPlanEntry.objects.create(
+            meal_plan=meal_plan1,
+            recipe=recipe2,
+            date=today + timedelta(days=1),
+            meal_type="lunch",
+            servings=4,
+            notes="Great with grilled cheese",
+        )
+        MealPlanEntry.objects.create(
+            meal_plan=meal_plan1,
+            recipe=recipe3,
+            date=today + timedelta(days=2),
+            meal_type="dinner",
+            servings=4,
+        )
+        MealPlanEntry.objects.create(
+            meal_plan=meal_plan1,
+            recipe=recipe4,
+            date=today + timedelta(days=3),
+            meal_type="breakfast",
+            servings=1,
+        )
+
+        # Meal Plan 2: Weekend Baking & Comfort Food
+        meal_plan2 = MealPlan.objects.create(
+            name="Weekend Baking & Comfort Food",
+            description="A cozy weekend plan focused on homemade baking and comfort foods",
+            start_date=today + timedelta(days=5),
+            end_date=today + timedelta(days=6),
+        )
+
+        # Add entries to meal plan 2
+        MealPlanEntry.objects.create(
+            meal_plan=meal_plan2,
+            recipe=recipe1,
+            date=today + timedelta(days=5),
+            meal_type="snack",
+            servings=24,
+            notes="Bake in the afternoon for the whole week",
+        )
+        MealPlanEntry.objects.create(
+            meal_plan=meal_plan2,
+            recipe=recipe2,
+            date=today + timedelta(days=5),
+            meal_type="lunch",
+            servings=6,
+        )
+        MealPlanEntry.objects.create(
+            meal_plan=meal_plan2,
+            recipe=recipe5,
+            date=today + timedelta(days=6),
+            meal_type="dinner",
+            servings=8,
+            notes="Pizza night! Use dough for two 12-inch pizzas",
+        )
+
+        # Meal Plan 3: Next Month Preview
+        next_month_start = today + timedelta(days=30)
+        meal_plan3 = MealPlan.objects.create(
+            name="Next Month's Quick Meals",
+            description="Planning ahead with quick and easy recipes",
+            start_date=next_month_start,
+            end_date=next_month_start + timedelta(days=4),
+        )
+
+        # Add entries to meal plan 3
+        MealPlanEntry.objects.create(
+            meal_plan=meal_plan3,
+            recipe=recipe4,
+            date=next_month_start,
+            meal_type="breakfast",
+            servings=1,
+        )
+        MealPlanEntry.objects.create(
+            meal_plan=meal_plan3,
+            recipe=recipe3,
+            date=next_month_start,
+            meal_type="dinner",
+            servings=2,
+        )
+        MealPlanEntry.objects.create(
+            meal_plan=meal_plan3,
+            recipe=recipe2,
+            date=next_month_start + timedelta(days=1),
+            meal_type="lunch",
+            servings=3,
+        )
+
+        # Summary
         total_recipes = Recipe.objects.count()
-        logger.info(f"Database seeding completed successfully. Total recipes in database: {total_recipes}")
+        total_collections = RecipeCollection.objects.count()
+        total_meal_plans = MealPlan.objects.count()
+        total_meal_plan_entries = MealPlanEntry.objects.count()
+
+        logger.info(
+            f"Database seeding completed successfully. "
+            f"Total recipes: {total_recipes}, Collections: {total_collections}, "
+            f"Meal Plans: {total_meal_plans}, Meal Plan Entries: {total_meal_plan_entries}"
+        )
         logger.debug(
             f"Created recipes: {recipe1.title}, {recipe2.title}, {recipe3.title}, {recipe4.title}, {recipe5.title}"
         )
 
-        self.stdout.write(self.style.SUCCESS(f"Successfully created {total_recipes} sample recipes!"))
+        self.stdout.write(self.style.SUCCESS("\n✓ Successfully created sample data!"))
         self.stdout.write(
-            "\nCreated recipes:"
+            "\nRecipes:"
             f"\n  • {recipe1.title}"
             f"\n  • {recipe2.title}"
             f"\n  • {recipe3.title}"
             f"\n  • {recipe4.title}"
             f"\n  • {recipe5.title}"
+        )
+        self.stdout.write(
+            "\nCollections:"
+            f"\n  • {collection1.name} ({collection1.recipes.count()} recipes)"
+            f"\n  • {collection2.name} ({collection2.recipes.count()} recipes)"
+            f"\n  • {collection3.name} ({collection3.recipes.count()} recipes)"
+            f"\n  • {collection4.name} ({collection4.recipes.count()} recipes)"
+        )
+        self.stdout.write(
+            "\nMeal Plans:"
+            f"\n  • {meal_plan1.name} ({meal_plan1.entries.count()} entries)"
+            f"\n  • {meal_plan2.name} ({meal_plan2.entries.count()} entries)"
+            f"\n  • {meal_plan3.name} ({meal_plan3.entries.count()} entries)"
         )
