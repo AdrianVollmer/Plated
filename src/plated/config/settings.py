@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "background_task",
     "recipes",
 ]
 
@@ -204,5 +203,14 @@ LOGGING = {
             "level": "DEBUG" if DEBUG else "INFO",
             "propagate": False,
         },
+        #  "django": {
+        #      "handlers": ["console"],
+        #      "level": "INFO",
+        #      "propagate": False,
+        #  },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "DEBUG" if DEBUG else "INFO",
     },
 }

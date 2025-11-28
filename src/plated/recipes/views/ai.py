@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import json
 import logging
+import threading
 
 import requests
-from background_task import background  # type: ignore[import-untyped]
 from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
@@ -52,8 +52,10 @@ def ai_extract_recipe(request: HttpRequest) -> HttpResponse:
                 )
                 logger.info(f"Created AI Job {job.pk} with timeout {timeout}s (background mode)")
 
-                # Queue the background task
-                process_ai_extraction_job(job.pk)
+                # Start the background task in a thread
+                thread = threading.Thread(target=process_ai_extraction_job, args=(job.pk,), daemon=True)
+                thread.start()
+                logger.debug(f"Started background thread for job {job.pk}")
 
                 messages.success(
                     request,
@@ -215,10 +217,9 @@ def call_llm_api(
     return redirect("recipe_create")
 
 
-@background(schedule=0)
 def process_ai_extraction_job(job_id: int) -> None:
     """
-    Background task to process an AI recipe extraction job.
+    Process an AI recipe extraction job in a background thread.
 
     Args:
         job_id: ID of the AIJob to process
