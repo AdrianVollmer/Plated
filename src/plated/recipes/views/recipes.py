@@ -555,7 +555,7 @@ def download_recipe_pdf(request: HttpRequest, pk: int) -> HttpResponse:
 
         # Get the path to the Typst template
         base_dir = Path(__file__).resolve().parent.parent
-        typst_template = base_dir / "recipe.typ"
+        typst_template = base_dir / "typst" / "recipe.typ"
 
         if not typst_template.exists():
             logger.error(f"Typst template not found at {typst_template}")
