@@ -31,7 +31,7 @@ Aesthetics is important, but even more important is usability.
 - We make heavy use of `uv`. Always run python programs with
   `uv run ...`.
 
-## Coding convetions
+## Coding conventions
 
 - Try to keep code readable and maintainable
 - Apply the DRY principle as much as possible (but not more)
@@ -49,3 +49,5 @@ explain the "why" behind the changes. The "what" can be read from the
 diff, even though a short itemized summary to reflect intent can't hurt.
 
 When adding new features, document them in `docs/`.
+
+When modifying models, check whether it makes sense to update the `seed_db.py`.
