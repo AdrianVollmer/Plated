@@ -151,6 +151,10 @@ class MealPlanDeleteView(DeleteView):
     template_name = "recipes/meal_plan_confirm_delete.html"
     success_url = reverse_lazy("meal_plan_list")
 
+    def get_success_url(self) -> str:
+        """Redirect to meal plan list page after deletion."""
+        return str(reverse_lazy("meal_plan_list"))
+
     def delete(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         """Delete the meal plan and show a success message."""
         meal_plan = self.get_object()
