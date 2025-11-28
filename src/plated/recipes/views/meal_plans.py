@@ -219,8 +219,11 @@ def shopping_list(request: HttpRequest, pk: int) -> HttpResponse:
         pk=pk,
     )
 
-    # Aggregate ingredients by name
-    ingredients_dict: dict[str, dict[str, Any]] = defaultdict(lambda: {"items": [], "total_amount": ""})
+    # Aggregate ingredients by name and unit
+    from fractions import Fraction
+
+    ingredients_dict: dict[str, dict[str, float]] = defaultdict(lambda: defaultdict(float))
+    ingredients_non_numeric: dict[str, list[str]] = defaultdict(list)
 
     for entry in meal_plan.entries.all():
         recipe = entry.recipe
@@ -228,24 +231,58 @@ def shopping_list(request: HttpRequest, pk: int) -> HttpResponse:
 
         for ingredient in recipe.ingredients.all():
             key = ingredient.name.lower()
-            ingredients_dict[key]["items"].append(
-                {
-                    "amount": ingredient.amount,
-                    "unit": ingredient.unit,
-                    "note": ingredient.note,
-                    "recipe": recipe.title,
-                    "date": entry.date,
-                    "meal_type": entry.get_meal_type_display(),
-                    "servings_multiplier": servings_multiplier,
-                }
-            )
+            unit = ingredient.unit.strip() if ingredient.unit else ""
 
-    # Sort ingredients alphabetically
-    sorted_ingredients = sorted(ingredients_dict.items())
+            # Try to parse and aggregate amounts
+            if ingredient.amount:
+                amount_str = ingredient.amount.strip()
+                try:
+                    # Try to parse as fraction or decimal
+                    amount_value = float(Fraction(amount_str)) * servings_multiplier
+                    ingredients_dict[key][unit] += amount_value
+                except (ValueError, ZeroDivisionError):
+                    # If can't parse, store as non-numeric
+                    display = f"{amount_str} {unit}" if unit else amount_str
+                    if display not in ingredients_non_numeric[key]:
+                        ingredients_non_numeric[key].append(display)
+            else:
+                # No amount specified
+                if unit:
+                    display = unit
+                    if display not in ingredients_non_numeric[key]:
+                        ingredients_non_numeric[key].append(display)
+
+    # Build formatted ingredient list
+    ingredients_list: list[tuple[str, str]] = []
+    for name in sorted(set(ingredients_dict.keys()) | set(ingredients_non_numeric.keys())):
+        parts = []
+
+        # Add numeric amounts grouped by unit
+        if name in ingredients_dict:
+            for unit in sorted(ingredients_dict[name].keys()):
+                total = ingredients_dict[name][unit]
+                # Format number nicely
+                if total == int(total):
+                    amount_str = str(int(total))
+                else:
+                    # Show up to 2 decimal places, remove trailing zeros
+                    amount_str = f"{total:.2f}".rstrip("0").rstrip(".")
+
+                if unit:
+                    parts.append(f"{amount_str} {unit}")
+                else:
+                    parts.append(amount_str)
+
+        # Add non-numeric amounts
+        if name in ingredients_non_numeric:
+            parts.extend(ingredients_non_numeric[name])
+
+        display_value = ", ".join(parts) if parts else ""
+        ingredients_list.append((name, display_value))
 
     context = {
         "meal_plan": meal_plan,
-        "ingredients": sorted_ingredients,
+        "ingredients": ingredients_list,
     }
 
     return render(request, "recipes/shopping_list.html", context)

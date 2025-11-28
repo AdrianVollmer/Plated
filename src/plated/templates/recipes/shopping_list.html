@@ -35,28 +35,14 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
-                        <ul class="list-group">
-                            {% for ingredient_name, data in ingredients %}
+                        <ul class="list-group list-group-flush">
+                            {% for ingredient_name, display_value in ingredients %}
                                 {% if forloop.counter0 < ingredients|length|floatformat:0|add:"1"|floatformat:0|divisibleby:2 or ingredients|length|divisibleby:2 %}
-                                <li class="list-group-item">
+                                <li class="list-group-item py-1 px-0">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="ingredient-{{ forloop.counter }}">
-                                        <label class="form-check-label w-100" for="ingredient-{{ forloop.counter }}">
-                                            <strong>{{ ingredient_name|title }}</strong>
-                                            <ul class="list-unstyled ms-3 mt-1 small text-muted">
-                                                {% for item in data.items %}
-                                                <li>
-                                                    {% if item.amount %}{{ item.amount }}{% endif %}
-                                                    {% if item.unit %} {{ item.unit }}{% endif %}
-                                                    {% if item.note %} ({{ item.note }}){% endif %}
-                                                    - {{ item.recipe }}
-                                                    <small>({{ item.date|date:"M d" }} - {{ item.meal_type }})</small>
-                                                    {% if item.servings_multiplier != 1 %}
-                                                    <small>[×{{ item.servings_multiplier|floatformat:1 }}]</small>
-                                                    {% endif %}
-                                                </li>
-                                                {% endfor %}
-                                            </ul>
+                                        <label class="form-check-label" for="ingredient-{{ forloop.counter }}">
+                                            {{ ingredient_name|title }}{% if display_value %}: {{ display_value }}{% endif %}
                                         </label>
                                     </div>
                                 </li>
@@ -65,28 +51,14 @@
                         </ul>
                     </div>
                     <div class="col-md-6">
-                        <ul class="list-group">
-                            {% for ingredient_name, data in ingredients %}
+                        <ul class="list-group list-group-flush">
+                            {% for ingredient_name, display_value in ingredients %}
                                 {% if forloop.counter0 >= ingredients|length|floatformat:0|add:"1"|floatformat:0|divisibleby:2 and not ingredients|length|divisibleby:2 %}
-                                <li class="list-group-item">
+                                <li class="list-group-item py-1 px-0">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="ingredient-{{ forloop.counter }}">
-                                        <label class="form-check-label w-100" for="ingredient-{{ forloop.counter }}">
-                                            <strong>{{ ingredient_name|title }}</strong>
-                                            <ul class="list-unstyled ms-3 mt-1 small text-muted">
-                                                {% for item in data.items %}
-                                                <li>
-                                                    {% if item.amount %}{{ item.amount }}{% endif %}
-                                                    {% if item.unit %} {{ item.unit }}{% endif %}
-                                                    {% if item.note %} ({{ item.note }}){% endif %}
-                                                    - {{ item.recipe }}
-                                                    <small>({{ item.date|date:"M d" }} - {{ item.meal_type }})</small>
-                                                    {% if item.servings_multiplier != 1 %}
-                                                    <small>[×{{ item.servings_multiplier|floatformat:1 }}]</small>
-                                                    {% endif %}
-                                                </li>
-                                                {% endfor %}
-                                            </ul>
+                                        <label class="form-check-label" for="ingredient-{{ forloop.counter }}">
+                                            {{ ingredient_name|title }}{% if display_value %}: {{ display_value }}{% endif %}
                                         </label>
                                     </div>
                                 </li>
