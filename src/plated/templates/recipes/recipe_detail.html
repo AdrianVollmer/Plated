@@ -73,67 +73,69 @@
 </div>
 
 {% if recipe.images.all %}
-<div class="row mb-4">
-    <div class="col-md-8">
-        <div id="recipeCarousel" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                {% for image in recipe.images.all %}
-                <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                    <img src="{{ image.image.url }}" class="d-block w-100" alt="{{ image.caption|default:recipe.title }}" style="max-height: 500px; object-fit: cover;">
-                    {% if image.caption %}
-                    <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
-                        <p>{{ image.caption }}</p>
+<div class="card mb-4">
+    <div class="row g-0">
+        <div class="col-md-8">
+            <div id="recipeCarousel" class="carousel slide h-100" data-bs-ride="carousel">
+                <div class="carousel-inner h-100">
+                    {% for image in recipe.images.all %}
+                    <div class="carousel-item h-100 {% if forloop.first %}active{% endif %}">
+                        <img src="{{ image.image.url }}" class="d-block w-100 h-100" alt="{{ image.caption|default:recipe.title }}" style="object-fit: cover;">
+                        {% if image.caption %}
+                        <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
+                            <p>{{ image.caption }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% if recipe.images.count > 1 %}
+                <button class="carousel-control-prev" type="button" data-bs-target="#recipeCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#recipeCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card-body h-100">
+                <h5 class="card-title">{% trans "Quick Info" %}</h5>
+                <div class="recipe-info-grid">
+                    <div class="recipe-info-item">
+                        <div class="recipe-info-label"><i class="bi bi-people"></i> {% trans "Servings" %}</div>
+                        <div class="recipe-info-value">
+                            <span id="servings-display">{{ recipe.servings }}</span>
+                        </div>
+                    </div>
+                    {% if recipe.prep_time %}
+                    <div class="recipe-info-item">
+                        <div class="recipe-info-label"><i class="bi bi-clock"></i> {% trans "Prep" %}</div>
+                        <div class="recipe-info-value">{{ recipe.prep_time }}</div>
+                    </div>
+                    {% endif %}
+                    {% if recipe.wait_time %}
+                    <div class="recipe-info-item">
+                        <div class="recipe-info-label"><i class="bi bi-hourglass"></i> {% trans "Cook" %}</div>
+                        <div class="recipe-info-value">{{ recipe.wait_time }}</div>
                     </div>
                     {% endif %}
                 </div>
-                {% endfor %}
-            </div>
-            {% if recipe.images.count > 1 %}
-            <button class="carousel-control-prev" type="button" data-bs-target="#recipeCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon"></span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#recipeCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon"></span>
-            </button>
-            {% endif %}
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="recipe-section">
-            <h5 class="recipe-section-title">{% trans "Quick Info" %}</h5>
-            <div class="recipe-info-grid">
-                <div class="recipe-info-item">
-                    <div class="recipe-info-label"><i class="bi bi-people"></i> {% trans "Servings" %}</div>
-                    <div class="recipe-info-value">
-                        <span id="servings-display">{{ recipe.servings }}</span>
-                    </div>
-                </div>
-                {% if recipe.prep_time %}
-                <div class="recipe-info-item">
-                    <div class="recipe-info-label"><i class="bi bi-clock"></i> {% trans "Prep" %}</div>
-                    <div class="recipe-info-value">{{ recipe.prep_time }}</div>
+                {% if recipe.keywords %}
+                <div class="mt-3">
+                    {% for keyword in recipe.keywords|split:"," %}
+                    <a href="{% url 'recipes_with_keyword' keyword %}" class="keyword-tag text-decoration-none">{{ keyword }}</a>
+                    {% endfor %}
                 </div>
                 {% endif %}
-                {% if recipe.wait_time %}
-                <div class="recipe-info-item">
-                    <div class="recipe-info-label"><i class="bi bi-hourglass"></i> {% trans "Cook" %}</div>
-                    <div class="recipe-info-value">{{ recipe.wait_time }}</div>
+                {% if recipe.url %}
+                <div class="mt-3 pt-3" style="border-top: 1px solid var(--border-subtle);">
+                    <div class="recipe-info-label mb-2"><i class="bi bi-link-45deg"></i> {% trans "Source" %}</div>
+                    <a href="{{ recipe.url }}" target="_blank" rel="noopener noreferrer" style="color: var(--primary); text-decoration: none; word-break: break-all; font-size: 0.9rem;">{{ recipe.url }}</a>
                 </div>
                 {% endif %}
             </div>
-            {% if recipe.keywords %}
-            <div class="mt-3">
-                {% for keyword in recipe.keywords|split:"," %}
-                <a href="{% url 'recipes_with_keyword' keyword %}" class="keyword-tag text-decoration-none">{{ keyword }}</a>
-                {% endfor %}
-            </div>
-            {% endif %}
-            {% if recipe.url %}
-            <div class="mt-3 pt-3" style="border-top: 1px solid var(--border-subtle);">
-                <div class="recipe-info-label mb-2"><i class="bi bi-link-45deg"></i> {% trans "Source" %}</div>
-                <a href="{{ recipe.url }}" target="_blank" rel="noopener noreferrer" style="color: var(--primary); text-decoration: none; word-break: break-all; font-size: 0.9rem;">{{ recipe.url }}</a>
-            </div>
-            {% endif %}
         </div>
     </div>
 </div>
