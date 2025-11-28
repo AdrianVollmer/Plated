@@ -116,11 +116,7 @@ USE_TZ = True
 # Supported languages for the application
 LANGUAGES = [
     ("en", "English"),
-    ("es", "Español"),
-    ("fr", "Français"),
     ("de", "Deutsch"),
-    ("it", "Italiano"),
-    ("pt", "Português"),
 ]
 
 # Path where translation files will be stored

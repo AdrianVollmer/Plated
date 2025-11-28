@@ -141,11 +141,7 @@ The interface will immediately update to your chosen language.
 ### Available Languages
 
 - English
-- Spanish (Español)
-- French (Français)
 - German (Deutsch)
-- Italian (Italiano)
-- Portuguese (Português)
 
 For information on adding new languages or contributing translations, see the [Internationalization](internationalization.md) documentation.
 

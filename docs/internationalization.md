@@ -19,11 +19,7 @@ The interface will immediately switch to the selected language.
 Currently supported languages:
 
 - English (en)
-- Spanish (es)
-- French (fr)
 - German (de)
-- Italian (it)
-- Portuguese (pt)
 
 ## Developer Guide
 
