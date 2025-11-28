@@ -109,6 +109,7 @@ urlpatterns = [
     ),
     # Settings
     path("settings/", views.settings.settings_view, name="settings"),
+    path("settings/export/<str:format_type>/", views.settings.export_database, name="export_database"),
     # AI Integration
     path("ai/extract/", views.ai.ai_extract_recipe, name="ai_extract_recipe"),
     # Jobs

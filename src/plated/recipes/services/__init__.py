@@ -1,6 +1,14 @@
 """Services for recipe operations."""
 
 from .base import RecipeFormatHandler
+from .export_service import (
+    ExportError,
+    export_json_database,
+    export_sql_dump,
+    export_sqlite_database,
+    get_available_export_formats,
+    get_export_filename,
+)
 from .formset_service import (
     FormsetValidationResult,
     create_image_formset,
@@ -64,4 +72,11 @@ __all__ = [
     "get_recipes_by_unit",
     "get_recipes_by_keyword",
     "parse_keywords",
+    # Export services
+    "export_sqlite_database",
+    "export_json_database",
+    "export_sql_dump",
+    "get_available_export_formats",
+    "get_export_filename",
+    "ExportError",
 ]
