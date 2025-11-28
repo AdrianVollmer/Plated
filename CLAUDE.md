@@ -44,4 +44,8 @@ Aesthetics is important, but even more important is usability.
 Issues are in `issues/`. When you are told to solve one issue, delete
 the issue file and commit your changes with git.
 
-When commiting, supply author information on the command line.
+When commiting, supply author information on the command line. Try to
+explain the "why" behind the changes. The "what" can be read from the
+diff, even though a short itemized summary to reflect intent can't hurt.
+
+When adding new features, document them in `docs/`.
