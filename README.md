@@ -23,7 +23,7 @@ recipes with a beautiful, mobile-friendly interface.
 
 ``` bash
 git clone https://github.com/AdrianVollmer/Plated.git
-cd plated/docker
+cd Plated
 docker-compose up -d
 ```
 
@@ -33,7 +33,7 @@ Access at `http://localhost:8000`
 
 ``` bash
 git clone https://github.com/AdrianVollmer/Plated.git
-cd plated
+cd Plated
 uv sync
 uv run python src/plated/manage.py migrate
 uv run python src/plated/manage.py runserver
