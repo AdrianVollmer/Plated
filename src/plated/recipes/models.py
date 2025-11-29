@@ -3,6 +3,7 @@ from __future__ import annotations
 from django.conf import settings as django_settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class Recipe(models.Model):
@@ -11,10 +12,10 @@ class Recipe(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     servings = models.PositiveIntegerField(default=1)
-    keywords = models.CharField(max_length=500, blank=True, help_text="Comma-separated keywords")
-    prep_time = models.DurationField(null=True, blank=True, help_text="Time to prepare ingredients")
-    wait_time = models.DurationField(null=True, blank=True, help_text="Time for cooking/baking/waiting")
-    url = models.URLField(blank=True, help_text="Source URL if recipe is from the web")
+    keywords = models.CharField(max_length=500, blank=True, help_text=_("Comma-separated keywords"))
+    prep_time = models.DurationField(null=True, blank=True, help_text=_("Time to prepare ingredients"))
+    wait_time = models.DurationField(null=True, blank=True, help_text=_("Time for cooking/baking/waiting"))
+    url = models.URLField(blank=True, help_text=_("Source URL if recipe is from the web"))
     notes = models.TextField(blank=True)
     special_equipment = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -31,10 +32,10 @@ class Ingredient(models.Model):
     """An ingredient in a recipe."""
 
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="ingredients")
-    amount = models.CharField(max_length=50, blank=True, help_text="e.g., '2', '1/2', '1-2'")
-    unit = models.CharField(max_length=50, blank=True, help_text="e.g., 'cups', 'tbsp', 'g'")
+    amount = models.CharField(max_length=50, blank=True, help_text=_("e.g., '2', '1/2', '1-2'"))
+    unit = models.CharField(max_length=50, blank=True, help_text=_("e.g., 'cups', 'tbsp', 'g'"))
     name = models.CharField(max_length=200)
-    note = models.CharField(max_length=200, blank=True, help_text="e.g., 'chopped', 'room temperature'")
+    note = models.CharField(max_length=200, blank=True, help_text=_("e.g., 'chopped', 'room temperature'"))
     order = models.PositiveIntegerField(default=0)
 
     class Meta:
@@ -57,7 +58,7 @@ class Step(models.Model):
 
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="steps")
     order = models.PositiveIntegerField(default=0)
-    content = models.TextField(help_text="Step instructions")
+    content = models.TextField(help_text=_("Step instructions"))
 
     class Meta:
         ordering = ["order"]
@@ -102,22 +103,22 @@ class AISettings(models.Model):
     """Settings for AI/LLM integration."""
 
     api_url = models.URLField(
-        help_text="URL of the LLM API endpoint (e.g., https://api.openai.com/v1/chat/completions)"
+        help_text=_("URL of the LLM API endpoint (e.g., https://api.openai.com/v1/chat/completions)")
     )
-    api_key = models.CharField(max_length=500, help_text="API key for authentication", blank=True, null=True)
+    api_key = models.CharField(max_length=500, help_text=_("API key for authentication"), blank=True, null=True)
     model = models.CharField(
         max_length=200,
-        help_text="Model name (e.g., gpt-4, claude-3-sonnet-20240229)",
+        help_text=_("Model name (e.g., gpt-4, claude-3-sonnet-20240229)"),
     )
-    max_tokens = models.PositiveIntegerField(default=4096, help_text="Maximum tokens for the response")
+    max_tokens = models.PositiveIntegerField(default=4096, help_text=_("Maximum tokens for the response"))
     temperature = models.FloatField(
         default=0.7,
-        help_text="Temperature for response randomness (0.0 to 2.0)",
+        help_text=_("Temperature for response randomness (0.0 to 2.0)"),
     )
     timeout = models.PositiveIntegerField(
         default=60,
         validators=[MinValueValidator(10), MaxValueValidator(600)],
-        help_text="Timeout in seconds (10-600). Jobs with timeout > 10s run in background.",
+        help_text=_("Timeout in seconds (10-600). Jobs with timeout > 10s run in background."),
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -161,7 +162,7 @@ class MealPlanEntry(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="meal_plan_entries")
     date = models.DateField()
     meal_type = models.CharField(max_length=20, choices=MEAL_TYPE_CHOICES)
-    servings = models.PositiveIntegerField(default=1, help_text="Number of servings for this meal")
+    servings = models.PositiveIntegerField(default=1, help_text=_("Number of servings for this meal"))
     notes = models.TextField(blank=True)
 
     class Meta:
@@ -191,15 +192,15 @@ class AIJob(models.Model):
 
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
     input_type = models.CharField(max_length=10, choices=INPUT_TYPE_CHOICES)
-    input_content = models.TextField(help_text="The text, HTML, or URL to extract recipe from")
-    instructions = models.TextField(blank=True, help_text="Optional additional instructions for the AI")
-    result_data = models.JSONField(null=True, blank=True, help_text="Extracted recipe data as JSON")
-    error_message = models.TextField(blank=True, help_text="Error message if job failed")
+    input_content = models.TextField(help_text=_("The text, HTML, or URL to extract recipe from"))
+    instructions = models.TextField(blank=True, help_text=_("Optional additional instructions for the AI"))
+    result_data = models.JSONField(null=True, blank=True, help_text=_("Extracted recipe data as JSON"))
+    error_message = models.TextField(blank=True, help_text=_("Error message if job failed"))
     created_at = models.DateTimeField(auto_now_add=True)
     started_at = models.DateTimeField(null=True, blank=True)
     completed_at = models.DateTimeField(null=True, blank=True)
-    seen = models.BooleanField(default=False, help_text="Whether user has seen this completed/failed job")
-    timeout = models.PositiveIntegerField(help_text="Timeout in seconds for this job")
+    seen = models.BooleanField(default=False, help_text=_("Whether user has seen this completed/failed job"))
+    timeout = models.PositiveIntegerField(help_text=_("Timeout in seconds for this job"))
 
     class Meta:
         ordering = ["-created_at"]
@@ -219,7 +220,7 @@ class UserSettings(models.Model):
         max_length=10,
         choices=[(lang[0], lang[1]) for lang in django_settings.LANGUAGES],
         default=django_settings.LANGUAGE_CODE,
-        help_text="Preferred language for the interface",
+        help_text=_("Preferred language for the interface"),
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
