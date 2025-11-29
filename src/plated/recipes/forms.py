@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from django import forms
+from django.utils.translation import gettext_lazy as _
 
 from .models import AISettings, Recipe, UserSettings
 
@@ -22,33 +23,33 @@ class RecipeForm(forms.ModelForm):
             "special_equipment",
         ]
         widgets = {
-            "title": forms.TextInput(attrs={"class": "form-control", "placeholder": "Recipe title"}),
+            "title": forms.TextInput(attrs={"class": "form-control", "placeholder": _("Recipe title")}),
             "description": forms.Textarea(
                 attrs={
                     "class": "form-control",
                     "rows": 3,
-                    "placeholder": "Brief description",
+                    "placeholder": _("Brief description"),
                 }
             ),
             "servings": forms.NumberInput(attrs={"class": "form-control", "min": 1}),
             "prep_time": forms.TextInput(
                 attrs={
                     "class": "form-control",
-                    "placeholder": "e.g., 00:30:00 for 30 minutes",
-                    "help_text": "Format: HH:MM:SS",
+                    "placeholder": _("e.g., 00:30:00 for 30 minutes"),
+                    "help_text": _("Format: HH:MM:SS"),
                 }
             ),
             "wait_time": forms.TextInput(
                 attrs={
                     "class": "form-control",
-                    "placeholder": "e.g., 01:00:00 for 1 hour",
-                    "help_text": "Format: HH:MM:SS",
+                    "placeholder": _("e.g., 01:00:00 for 1 hour"),
+                    "help_text": _("Format: HH:MM:SS"),
                 }
             ),
             "keywords": forms.TextInput(
                 attrs={
                     "class": "form-control",
-                    "placeholder": "italian, pasta, vegetarian",
+                    "placeholder": _("italian, pasta, vegetarian"),
                 }
             ),
             "url": forms.URLInput(attrs={"class": "form-control", "placeholder": "https://..."}),
@@ -79,7 +80,7 @@ class AISettingsForm(forms.ModelForm):
             "model": forms.TextInput(
                 attrs={
                     "class": "form-control",
-                    "placeholder": "gpt-4 or claude-3-sonnet-20240229",
+                    "placeholder": _("gpt-4 or claude-3-sonnet-20240229"),
                 }
             ),
             "max_tokens": forms.NumberInput(attrs={"class": "form-control", "min": 1, "max": 100000}),
@@ -92,38 +93,38 @@ class AIRecipeExtractionForm(forms.Form):
     """Form for extracting recipes using AI."""
 
     INPUT_TYPES = [
-        ("text", "Plain Text"),
-        ("html", "HTML"),
-        ("url", "URL"),
+        ("text", _("Plain Text")),
+        ("html", _("HTML")),
+        ("url", _("URL")),
     ]
 
     input_type = forms.ChoiceField(
         choices=INPUT_TYPES,
         widget=forms.RadioSelect(attrs={"class": "form-check-input"}),
         initial="text",
-        label="Input Type",
+        label=_("Input Type"),
     )
     input_content = forms.CharField(
         widget=forms.Textarea(
             attrs={
                 "class": "form-control",
                 "rows": 10,
-                "placeholder": "Paste recipe text, HTML, or URL here...",
+                "placeholder": _("Paste recipe text, HTML, or URL here..."),
             }
         ),
-        label="Recipe Content",
+        label=_("Recipe Content"),
     )
     prompt = forms.CharField(
         widget=forms.Textarea(
             attrs={
                 "class": "form-control",
                 "rows": 3,
-                "placeholder": "e.g., 'translate to German and use metric units'",
+                "placeholder": _("e.g., 'translate to German and use metric units'"),
             }
         ),
-        label="Instructions (Optional)",
+        label=_("Instructions (Optional)"),
         required=False,
-        help_text="Additional instructions for the AI model",
+        help_text=_("Additional instructions for the AI model"),
     )
 
 
@@ -137,5 +138,5 @@ class UserSettingsForm(forms.ModelForm):
             "language": forms.Select(attrs={"class": "form-select"}),
         }
         labels = {
-            "language": "Interface Language",
+            "language": _("Interface Language"),
         }
