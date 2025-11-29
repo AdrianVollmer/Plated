@@ -4,6 +4,18 @@
 {% block title %}{% trans "Delete" %} {{ meal_plan.name }} - Plated{% endblock %}
 
 {% block content %}
+<div class="row mb-3">
+    <div class="col-md-6 offset-md-3">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'meal_plan_list' %}">{% trans "Meal Plans" %}</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'meal_plan_detail' meal_plan.pk %}">{{ meal_plan.name }}</a></li>
+                <li class="breadcrumb-item active">{% trans "Delete" %}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
 <div class="row">
     <div class="col-md-6 offset-md-3">
         <div class="card border-danger">

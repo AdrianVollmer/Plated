@@ -4,6 +4,17 @@
 {% block title %}{% trans "AI Job" %} #{{ job.pk }} - Plated{% endblock %}
 
 {% block content %}
+<div class="row mb-3">
+    <div class="col-md-8 offset-md-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'jobs_list' %}">{% trans "AI Jobs" %}</a></li>
+                <li class="breadcrumb-item active">{% trans "Job" %} #{{ job.pk }}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
 <div class="row">
     <div class="col-md-8 offset-md-2">
         <h1>{% trans "AI Job" %} #{{ job.pk }}</h1>
@@ -98,11 +109,8 @@
             </div>
         </div>
 
+        {% if job.status in "pending,running" %}
         <div class="mt-4 d-flex gap-2">
-            <a href="{% url 'jobs_list' %}" class="btn btn-secondary">
-                <i class="bi bi-arrow-left"></i> {% trans "Back to Jobs" %}
-            </a>
-            {% if job.status in "pending,running" %}
             <form method="post" action="{% url 'job_cancel' job.pk %}" class="d-inline">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-outline-secondary">

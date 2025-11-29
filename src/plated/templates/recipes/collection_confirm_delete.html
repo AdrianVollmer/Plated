@@ -4,6 +4,18 @@
 {% block title %}{% trans "Delete Collection" %} - Plated{% endblock %}
 
 {% block content %}
+<div class="row mb-3">
+    <div class="col-md-8 offset-md-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'collection_list' %}">{% trans "Collections" %}</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'collection_detail' object.pk %}">{{ object.name }}</a></li>
+                <li class="breadcrumb-item active">{% trans "Delete" %}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
 <div class="row">
     <div class="col-md-8 offset-md-2">
         <h1>{% trans "Delete Collection" %}</h1>

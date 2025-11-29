@@ -4,6 +4,17 @@
 {% block title %}{% trans "Rename Keyword" %} - Plated{% endblock %}
 
 {% block content %}
+<div class="row mb-3">
+    <div class="col-md-8 offset-md-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'manage_keywords' %}">{% trans "Manage Keywords" %}</a></li>
+                <li class="breadcrumb-item active">{% trans "Rename" %}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
 <div class="row">
     <div class="col-md-8 offset-md-2">
         <h1>{% trans "Rename Keyword" %}</h1>

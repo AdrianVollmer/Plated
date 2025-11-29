@@ -4,6 +4,22 @@
 {% block title %}{% if object %}{% trans "Edit Collection" %}{% else %}{% trans "New Collection" %}{% endif %} - Plated{% endblock %}
 
 {% block content %}
+<div class="row mb-3">
+    <div class="col-md-8 offset-md-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'collection_list' %}">{% trans "Collections" %}</a></li>
+                {% if object %}
+                <li class="breadcrumb-item"><a href="{% url 'collection_detail' object.pk %}">{{ object.name }}</a></li>
+                <li class="breadcrumb-item active">{% trans "Edit" %}</li>
+                {% else %}
+                <li class="breadcrumb-item active">{% trans "New Collection" %}</li>
+                {% endif %}
+            </ol>
+        </nav>
+    </div>
+</div>
+
 <div class="row">
     <div class="col-md-8 offset-md-2">
         <h1>{% if object %}{% trans "Edit Collection" %}{% else %}{% trans "New Collection" %}{% endif %}</h1>
