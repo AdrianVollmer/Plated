@@ -9,12 +9,9 @@ This is a Python app for managing recipes.
 - Simple
 - Thoughtful UI/UX
 - Minimal JavaScript
-
-We prefer server-side render pages.
-
-We focus on exporting and importing data to several formats.
-
-Aesthetics is important, but even more important is usability.
+- We prefer server-side render pages.
+- We focus on exporting and importing data to several formats.
+- Aesthetics is important, but even more important is usability.
 
 ## Tech Stack
 
@@ -33,21 +30,23 @@ Aesthetics is important, but even more important is usability.
 
 ## Coding conventions
 
-- Try to keep code readable and maintainable
-- Apply the DRY principle as much as possible (but not more)
-- When a file approaches 1000 lines, split it up into sub modules
+- Try to keep code readable, maintainable and testable.
+- Apply the DRY principle as much as possible (but not more).
+- When a file approaches 1000 lines, split it up into sub modules.
 - When a function approaches 60 lines or indentation levels greater than
-  4 or 5, consider splitting the function into several
+  4 or 5, consider splitting the function into several.
 
 ## Development
 
-Issues are in `issues/`. When you are told to solve one issue, delete
-the issue file and commit your changes with git.
-
-When commiting, supply author information on the command line. Try to
-explain the "why" behind the changes. The "what" can be read from the
-diff, even though a short itemized summary to reflect intent can't hurt.
-
-When adding new features, document them in `docs/`.
-
-When modifying models, check whether it makes sense to update the `seed_db.py`.
+- Issues are in `issues/`. When you are told to solve one issue, delete
+  the issue file and commit your changes with git.
+- When commiting, supply author information on the command line. Try to
+  explain the "why" behind the changes. The "what" can be read from the
+  diff, even though a short itemized summary to reflect intent can't
+  hurt.
+- Run `uv run python src/plated/manage.py test recipes` before
+  comitting.
+- When adding new features, document them in `docs/`. Add Django test
+  cases.
+- When modifying models, check whether it makes sense to update the
+  `seed_db.py`.
