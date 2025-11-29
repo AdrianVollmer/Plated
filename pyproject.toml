@@ -56,9 +56,10 @@ ignore = []
 "*/migrations/*.py" = ["E501"]
 "*/management/commands/seed_db.py" = ["E501"]
 "*/settings.py" = ["S105"]  # Django dev secret key
-"*/views/recipes.py" = ["S101", "S603", "S607"]  # assert for type narrowing, subprocess for typst
-"*/views/collections.py" = ["S101", "S603", "S607"]  # assert for type narrowing, subprocess for typst
-"*/views/meal_plans.py" = ["S101", "S603", "S607"]  # assert for type narrowing, subprocess for typst
+"*/views/recipes.py" = ["S101"]  # assert for type narrowing
+"*/views/collections.py" = ["S101"]  # assert for type narrowing
+"*/views/meal_plans.py" = ["S101"]  # assert for type narrowing
+"*/services/typst_service.py" = ["S603", "S607"]  # subprocess for typst compilation
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "config.settings"

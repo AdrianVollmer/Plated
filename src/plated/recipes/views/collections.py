@@ -1,11 +1,6 @@
 from __future__ import annotations
 
-import json
 import logging
-import shutil
-import subprocess
-import tempfile
-from pathlib import Path
 from typing import Any
 
 from django import forms
@@ -24,6 +19,7 @@ from django.views.generic import (
 
 from ..models import Recipe, RecipeCollection
 from ..schema import serialize_recipe
+from ..services import typst_service
 
 logger = logging.getLogger(__name__)
 
@@ -156,7 +152,6 @@ def download_collection_pdf(request: HttpRequest, pk: int) -> HttpResponse:
     collection = get_object_or_404(
         RecipeCollection.objects.prefetch_related("recipes__ingredients", "recipes__steps"), pk=pk
     )
-    logger.info(f"PDF generation initiated for collection: '{collection.name}' (ID: {pk})")
 
     try:
         # Serialize collection data
@@ -166,98 +161,36 @@ def download_collection_pdf(request: HttpRequest, pk: int) -> HttpResponse:
             "recipes": [serialize_recipe(recipe) for recipe in collection.recipes.all()],
         }
 
-        # Get the path to the Typst template
-        base_dir = Path(__file__).resolve().parent.parent
-        typst_template = base_dir / "typst" / "collection.typ"
-
-        if not typst_template.exists():
-            logger.error(f"Typst template not found at {typst_template}")
-            messages.error(request, _("Typst template file not found."))
-            return redirect("collection_detail", pk=pk)
-
-        # Create temporary directory for intermediate files
-        with tempfile.TemporaryDirectory(prefix="plated_typst_") as temp_dir:
-            temp_path = Path(temp_dir)
-            logger.debug(f"Using temporary directory: {temp_dir}")
-
-            # Copy typst template to temp directory
-            temp_typst = temp_path / "collection.typ"
-            shutil.copy(typst_template, temp_typst)
-
-            # Write collection JSON to temp directory
-            collection_json_path = temp_path / "collection.json"
-            with open(collection_json_path, "w", encoding="utf-8") as f:
-                json.dump(collection_data, f, indent=2, ensure_ascii=False)
-
-            # Prepare output PDF path
-            output_pdf = temp_path / "collection.pdf"
-
-            # Prepare Typst input data with relative paths
-            typst_input_data = json.dumps({"collection": "collection.json"})
-
-            # Call Typst to compile the PDF
-            try:
-                logger.debug(f"Running Typst compiler for collection '{collection.name}'")
-                subprocess.run(
-                    [
-                        "typst",
-                        "compile",
-                        str(temp_typst),
-                        str(output_pdf),
-                        "--input",
-                        f"data={typst_input_data}",
-                    ],
-                    capture_output=True,
-                    text=True,
-                    timeout=60,
-                    check=True,
-                )
-            except FileNotFoundError:
-                logger.error("Typst executable not found on system")
-                messages.error(
-                    request,
-                    _("Typst is not installed. Please install Typst to generate PDFs."),
-                )
-                return redirect("collection_detail", pk=pk)
-            except subprocess.TimeoutExpired:
-                logger.error(f"Typst compilation timed out for collection '{collection.name}' (ID: {pk})")
-                messages.error(request, _("PDF generation timed out."))
-                return redirect("collection_detail", pk=pk)
-            except subprocess.CalledProcessError as e:
-                logger.error(
-                    f"Typst compilation failed for collection '{collection.name}' (ID: {pk}): {e.stderr}",
-                    exc_info=True,
-                )
-                messages.error(
-                    request,
-                    _("Error generating PDF: %(error)s") % {"error": e.stderr if e.stderr else str(e)},
-                )
-                return redirect("collection_detail", pk=pk)
-
-            # Check if PDF was created
-            if not output_pdf.exists():
-                logger.error(f"PDF file not created for collection '{collection.name}' (ID: {pk})")
-                messages.error(request, _("PDF file was not generated."))
-                return redirect("collection_detail", pk=pk)
-
-            # Read the PDF file
-            with open(output_pdf, "rb") as pdf_file:
-                pdf_content = pdf_file.read()
-
-            # Create response with PDF
-            response = HttpResponse(pdf_content, content_type="application/pdf")
-
-            # Sanitize filename
-            safe_name = "".join(c if c.isalnum() or c in (" ", "-", "_") else "_" for c in collection.name)
-            safe_name = safe_name.replace(" ", "_")
-            response["Content-Disposition"] = f'attachment; filename="{safe_name}.pdf"'
-
-            logger.info(f"PDF generated successfully for collection '{collection.name}' (ID: {pk})")
-            return response
-    except Exception as e:
-        logger.error(
-            f"Unexpected error generating PDF for collection '{collection.name}' (ID: {pk}): {e}",
-            exc_info=True,
+        # Generate PDF using the Typst service
+        pdf_content = typst_service.generate_typst_pdf(
+            template_name="collection.typ",
+            data=collection_data,
+            context_name="collection",
+            entity_name="collection",
+            entity_id=pk,
         )
-        messages.error(request, _("Error generating PDF: %(error)s") % {"error": e})
+
+        # Create response with PDF
+        response = HttpResponse(pdf_content, content_type="application/pdf")
+
+        # Sanitize filename
+        safe_name = typst_service.sanitize_filename(collection.name)
+        response["Content-Disposition"] = f'attachment; filename="{safe_name}.pdf"'
+
+        return response
+
+    except typst_service.TypstTemplateNotFoundError:
+        messages.error(request, _("Typst template file not found."))
+        return redirect("collection_detail", pk=pk)
+    except typst_service.TypstExecutableNotFoundError:
+        messages.error(request, _("Typst is not installed. Please install Typst to generate PDFs."))
+        return redirect("collection_detail", pk=pk)
+    except typst_service.TypstTimeoutError:
+        messages.error(request, _("PDF generation timed out."))
+        return redirect("collection_detail", pk=pk)
+    except typst_service.TypstCompilationError as e:
+        messages.error(request, _("Error generating PDF: %(error)s") % {"error": str(e)})
+        return redirect("collection_detail", pk=pk)
+    except typst_service.TypstError as e:
+        messages.error(request, _("Error generating PDF: %(error)s") % {"error": str(e)})
         return redirect("collection_detail", pk=pk)
