@@ -1,7 +1,7 @@
 # Use Python 3.12 slim image
 FROM python:3.12-slim
 
-ARG PLATED_GIT_URL=${PLATED_GIT_URL:-git+https://github.com/AdrianVollmer/Plated.git}
+ARG PLATED_GIT_URL=${PLATED_GIT_URL:-https://github.com/AdrianVollmer/Plated.git}
 ARG PLATED_GIT_REF=${PLATED_GIT_REF:-latest}
 
 # Set environment variables
@@ -24,7 +24,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app
 
 # Install app and dependencies
-RUN cd /app && python -m venv .venv && . /app/.venv/bin/activate && pip install gunicorn "$PLATED_GIT_URL@$PLATED_GIT_REF"
+RUN cd /app && \
+    git clone "$PLATED_GIT_URL" --branch "$PLATED_GIT_REF" --depth 1 . && \
+    python -m venv .venv && \
+    . /app/.venv/bin/activate && \
+    pip install gunicorn .
 
 # Create directories for volumes
 RUN mkdir -p /app/data /app/staticfiles /app/media
