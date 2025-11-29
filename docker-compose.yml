@@ -5,6 +5,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      environment:
+        # Set to a different version (e.g. v0.0.3) or to `main`
+        - "PLATED_GIT_REF=latest"
     ports:
       - "${PORT:-8000}:80"
     volumes:
