@@ -21,7 +21,7 @@ from django.views.generic import (
 )
 
 from ..models import MealPlan, MealPlanEntry, Recipe
-from ..services import typst_service
+from ..services import meal_plan_service, typst_service
 
 logger = logging.getLogger(__name__)
 
@@ -225,66 +225,8 @@ def shopping_list(request: HttpRequest, pk: int) -> HttpResponse:
         pk=pk,
     )
 
-    # Aggregate ingredients by name and unit
-    from fractions import Fraction
-
-    ingredients_dict: dict[str, dict[str, float]] = defaultdict(lambda: defaultdict(float))
-    ingredients_non_numeric: dict[str, list[str]] = defaultdict(list)
-
-    for entry in meal_plan.entries.all():
-        recipe = entry.recipe
-        servings_multiplier = entry.servings / recipe.servings if recipe.servings > 0 else 1
-
-        for ingredient in recipe.ingredients.all():
-            key = ingredient.name.lower()
-            unit = ingredient.unit.strip() if ingredient.unit else ""
-
-            # Try to parse and aggregate amounts
-            if ingredient.amount:
-                amount_str = ingredient.amount.strip()
-                try:
-                    # Try to parse as fraction or decimal
-                    amount_value = float(Fraction(amount_str)) * servings_multiplier
-                    ingredients_dict[key][unit] += amount_value
-                except (ValueError, ZeroDivisionError):
-                    # If can't parse, store as non-numeric
-                    display = f"{amount_str} {unit}" if unit else amount_str
-                    if display not in ingredients_non_numeric[key]:
-                        ingredients_non_numeric[key].append(display)
-            else:
-                # No amount specified
-                if unit:
-                    display = unit
-                    if display not in ingredients_non_numeric[key]:
-                        ingredients_non_numeric[key].append(display)
-
-    # Build formatted ingredient list
-    ingredients_list: list[tuple[str, str]] = []
-    for name in sorted(set(ingredients_dict.keys()) | set(ingredients_non_numeric.keys())):
-        parts = []
-
-        # Add numeric amounts grouped by unit
-        if name in ingredients_dict:
-            for unit in sorted(ingredients_dict[name].keys()):
-                total = ingredients_dict[name][unit]
-                # Format number nicely
-                if total == int(total):
-                    amount_str = str(int(total))
-                else:
-                    # Show up to 2 decimal places, remove trailing zeros
-                    amount_str = f"{total:.2f}".rstrip("0").rstrip(".")
-
-                if unit:
-                    parts.append(f"{amount_str} {unit}")
-                else:
-                    parts.append(amount_str)
-
-        # Add non-numeric amounts
-        if name in ingredients_non_numeric:
-            parts.extend(ingredients_non_numeric[name])
-
-        display_value = ", ".join(parts) if parts else ""
-        ingredients_list.append((name, display_value))
+    # Use service to aggregate ingredients
+    ingredients_list = meal_plan_service.aggregate_shopping_list(meal_plan)
 
     context = {
         "meal_plan": meal_plan,
@@ -309,31 +251,8 @@ def download_meal_plan_pdf(request: HttpRequest, pk: int) -> HttpResponse:
     )
 
     try:
-        # Serialize meal plan data
-        entries_data = []
-        for entry in meal_plan.entries.all():
-            prep_time_mins = int(entry.recipe.prep_time.total_seconds() / 60) if entry.recipe.prep_time else 0
-            wait_time_mins = int(entry.recipe.wait_time.total_seconds() / 60) if entry.recipe.wait_time else 0
-
-            entries_data.append(
-                {
-                    "date": str(entry.date),
-                    "meal_type": entry.meal_type,
-                    "recipe_title": entry.recipe.title,
-                    "servings": entry.servings,
-                    "notes": entry.notes,
-                    "prep_time_minutes": prep_time_mins,
-                    "wait_time_minutes": wait_time_mins,
-                }
-            )
-
-        meal_plan_data = {
-            "name": meal_plan.name,
-            "description": meal_plan.description,
-            "start_date": str(meal_plan.start_date),
-            "end_date": str(meal_plan.end_date),
-            "entries": entries_data,
-        }
+        # Use service to prepare PDF data
+        meal_plan_data = meal_plan_service.prepare_meal_plan_pdf_data(meal_plan)
 
         # Generate PDF using the Typst service
         pdf_content = typst_service.generate_typst_pdf(
@@ -383,43 +302,8 @@ def download_shopping_list_pdf(request: HttpRequest, pk: int) -> HttpResponse:
     )
 
     try:
-        # Aggregate ingredients by name
-        ingredients_dict: dict[str, dict[str, Any]] = defaultdict(lambda: {"items": [], "total_amount": ""})
-
-        for entry in meal_plan.entries.all():
-            recipe = entry.recipe
-
-            for ingredient in recipe.ingredients.all():
-                key = ingredient.name.lower()
-                ingredients_dict[key]["items"].append(
-                    {
-                        "amount": ingredient.amount,
-                        "unit": ingredient.unit,
-                        "recipe": recipe.title,
-                    }
-                )
-
-        # Sort ingredients alphabetically
-        sorted_ingredients = []
-        for name, data in sorted(ingredients_dict.items()):
-            sorted_ingredients.append(
-                {
-                    "name": name.title(),
-                    "items": data["items"],
-                    "total_amount": data.get("total_amount", ""),
-                }
-            )
-
-        # Count unique recipes
-        recipe_ids = set(entry.recipe_id for entry in meal_plan.entries.all())
-
-        shopping_list_data = {
-            "meal_plan_name": meal_plan.name,
-            "start_date": str(meal_plan.start_date),
-            "end_date": str(meal_plan.end_date),
-            "ingredients": sorted_ingredients,
-            "recipe_count": len(recipe_ids),
-        }
+        # Use service to prepare shopping list data
+        shopping_list_data = meal_plan_service.prepare_shopping_list_pdf_data(meal_plan)
 
         # Generate PDF using the Typst service
         pdf_content = typst_service.generate_typst_pdf(

@@ -17,6 +17,11 @@ from .formset_service import (
     validate_recipe_formsets,
 )
 from .json_format import JSONFormatHandler
+from .meal_plan_service import (
+    aggregate_shopping_list,
+    prepare_meal_plan_pdf_data,
+    prepare_shopping_list_pdf_data,
+)
 from .property_service import (
     get_ingredient_names_for_autocomplete,
     get_ingredient_property_with_counts,
@@ -58,6 +63,10 @@ __all__ = [
     "search_recipes",
     "get_recipes_for_autocomplete",
     "sanitize_filename",
+    # Meal plan services
+    "aggregate_shopping_list",
+    "prepare_meal_plan_pdf_data",
+    "prepare_shopping_list_pdf_data",
     # Property services
     "get_ingredient_property_with_counts",
     "get_keywords_with_counts",
