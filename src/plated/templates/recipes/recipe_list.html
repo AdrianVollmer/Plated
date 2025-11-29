@@ -6,7 +6,7 @@
 {% block content %}
 <div class="row mb-4">
     <div class="col-12 col-md-8 mb-3 mb-md-0">
-        <h1 class="display-5">{% trans "All Recipes" %}</h1>
+        <h1>{% trans "Recipes" %}</h1>
     </div>
     <div class="col-12 col-md-4 text-md-end">
         <div class="d-flex flex-column flex-md-row gap-2 justify-content-md-end">
@@ -40,41 +40,40 @@
 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
     {% for recipe in recipes %}
     <div class="col">
-        <div class="recipe-card">
-            {% if recipe.images.first %}
-            <img src="{{ recipe.images.first.image.url }}" class="recipe-card-img" alt="{{ recipe.title }}">
-            {% else %}
-            <div class="recipe-card-img d-flex align-items-center justify-content-center">
-                <i class="bi bi-image" style="font-size: 3rem; color: var(--text-tertiary);"></i>
-            </div>
-            {% endif %}
-            <div class="recipe-card-body">
-                <h5 class="recipe-card-title">{{ recipe.title }}</h5>
-                <p class="recipe-card-text">
-                    {% if recipe.description %}
-                        {{ recipe.description|truncatewords:20 }}
-                    {% else %}
-                        {% trans "No description available." %}
-                    {% endif %}
-                </p>
-                <div class="recipe-card-meta">
-                    <div>
-                        <i class="bi bi-clock"></i>
-                        {% if recipe.prep_time %}
-                            {{ recipe.prep_time }}
+        <a href="{% url 'recipe_detail' recipe.pk %}" class="text-decoration-none">
+            <div class="recipe-card">
+                {% if recipe.images.first %}
+                <img src="{{ recipe.images.first.image.url }}" class="recipe-card-img" alt="{{ recipe.title }}">
+                {% else %}
+                <div class="recipe-card-img d-flex align-items-center justify-content-center">
+                    <i class="bi bi-image" style="font-size: 3rem; color: var(--text-tertiary);"></i>
+                </div>
+                {% endif %}
+                <div class="recipe-card-body">
+                    <h5 class="recipe-card-title">{{ recipe.title }}</h5>
+                    <p class="recipe-card-text">
+                        {% if recipe.description %}
+                            {{ recipe.description|truncatewords:20 }}
                         {% else %}
-                            --
+                            {% trans "No description available." %}
                         {% endif %}
-                    </div>
-                    <div>
-                        <i class="bi bi-people"></i> {{ recipe.servings }}
+                    </p>
+                    <div class="recipe-card-meta">
+                        <div>
+                            <i class="bi bi-clock"></i>
+                            {% if recipe.prep_time %}
+                                {{ recipe.prep_time }}
+                            {% else %}
+                                --
+                            {% endif %}
+                        </div>
+                        <div>
+                            <i class="bi bi-people"></i> {{ recipe.servings }}
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="recipe-card-footer">
-                <a href="{% url 'recipe_detail' recipe.pk %}" class="btn btn-sm btn-outline-primary w-100">{% trans "View Recipe" %}</a>
-            </div>
-        </div>
+        </a>
     </div>
     {% endfor %}
 </div>

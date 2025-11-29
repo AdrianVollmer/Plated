@@ -243,12 +243,19 @@ main.container {
     height: 100%;
     display: flex;
     flex-direction: column;
+    cursor: pointer;
 }
 
 .recipe-card:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-lg);
     border-color: var(--primary-light);
+}
+
+/* Make the entire recipe card clickable */
+a:has(.recipe-card) {
+    display: block;
+    height: 100%;
 }
 
 .recipe-card-img {
