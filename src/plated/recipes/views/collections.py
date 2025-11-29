@@ -102,6 +102,12 @@ class CollectionDeleteView(DeleteView):
     template_name = "recipes/collection_confirm_delete.html"
     success_url = reverse_lazy("collection_list")
 
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        """Add collection to context for template consistency."""
+        context = super().get_context_data(**kwargs)
+        context["collection"] = self.object
+        return context
+
     def delete(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         """Delete the collection and show a success message."""
         collection = self.get_object()

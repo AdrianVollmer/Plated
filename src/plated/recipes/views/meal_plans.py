@@ -147,6 +147,12 @@ class MealPlanDeleteView(DeleteView):
     template_name = "recipes/meal_plan_confirm_delete.html"
     success_url = reverse_lazy("meal_plan_list")
 
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        """Add meal_plan to context for template consistency."""
+        context = super().get_context_data(**kwargs)
+        context["meal_plan"] = self.object
+        return context
+
     def get_success_url(self) -> str:
         """Redirect to meal plan list page after deletion."""
         return str(reverse_lazy("meal_plan_list"))
