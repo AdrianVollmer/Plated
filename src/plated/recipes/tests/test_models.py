@@ -306,4 +306,4 @@ class MealPlanEntryModelTest(TestCase):
             meal_type="breakfast",
         )
         self.assertIn("Test Recipe", str(entry))
-        self.assertIn("breakfast", str(entry))
+        self.assertIn("Breakfast", str(entry))  # Meal type is capitalized in __str__

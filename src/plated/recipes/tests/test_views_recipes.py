@@ -27,7 +27,7 @@ class RecipeListViewTest(TestCase):
 
     def test_recipe_list_search(self) -> None:
         """Test searching recipes."""
-        response = self.client.get(reverse("recipe_list"), {"search": "pasta"})
+        response = self.client.get(reverse("recipe_list"), {"q": "pasta"})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Pasta")
         self.assertNotContains(response, "Salad")
@@ -94,7 +94,7 @@ class RecipeCreateViewTest(TestCase):
         self.assertContains(response, "title")
 
     def test_recipe_create_basic(self) -> None:
-        """Test creating a basic recipe without ingredients or steps."""
+        """Test creating a basic recipe with one step (required by validation)."""
         response = self.client.post(
             reverse("recipe_create"),
             {
@@ -104,8 +104,13 @@ class RecipeCreateViewTest(TestCase):
                 # Formsets require management form data
                 "ingredients-TOTAL_FORMS": "0",
                 "ingredients-INITIAL_FORMS": "0",
-                "steps-TOTAL_FORMS": "0",
+                # At least one step is required by validation
+                "steps-TOTAL_FORMS": "1",
                 "steps-INITIAL_FORMS": "0",
+                "steps-0-content": "Prepare the recipe",
+                "steps-0-order": "0",
+                "images-TOTAL_FORMS": "0",
+                "images-INITIAL_FORMS": "0",
             },
             follow=True,
         )
@@ -138,6 +143,9 @@ class RecipeCreateViewTest(TestCase):
                 "steps-0-order": "0",
                 "steps-1-content": "Cook in pan with butter",
                 "steps-1-order": "1",
+                # Images formset
+                "images-TOTAL_FORMS": "0",
+                "images-INITIAL_FORMS": "0",
             },
             follow=True,
         )
@@ -190,9 +198,14 @@ class RecipeUpdateViewTest(TestCase):
                 "ingredients-0-amount": "1",
                 "ingredients-0-unit": "cup",
                 "ingredients-0-order": "0",
-                # Steps formset
-                "steps-TOTAL_FORMS": "0",
+                # At least one step is required by validation
+                "steps-TOTAL_FORMS": "1",
                 "steps-INITIAL_FORMS": "0",
+                "steps-0-content": "Mix and bake",
+                "steps-0-order": "0",
+                # Images formset
+                "images-TOTAL_FORMS": "0",
+                "images-INITIAL_FORMS": "0",
             },
             follow=True,
         )
