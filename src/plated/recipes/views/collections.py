@@ -18,7 +18,7 @@ from django.views.generic import (
 )
 
 from ..models import Recipe, RecipeCollection
-from ..schema import serialize_recipe
+from ..schemas import serialize_recipe
 from ..services import typst_service
 
 logger = logging.getLogger(__name__)

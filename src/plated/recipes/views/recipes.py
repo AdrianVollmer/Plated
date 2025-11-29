@@ -21,7 +21,7 @@ from django.views.generic import (
 
 from ..forms import RecipeForm
 from ..models import AISettings, Recipe
-from ..schema import deserialize_recipe
+from ..schemas import deserialize_recipe
 from ..services import (
     PDFGenerationError,
     create_image_formset,

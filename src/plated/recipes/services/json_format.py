@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from typing import TYPE_CHECKING
 
-from ..schema import deserialize_recipe, serialize_recipe, validate_recipe_data
+from ..schemas import deserialize_recipe, serialize_recipe, validate_recipe_data
 from .base import RecipeFormatHandler
 
 if TYPE_CHECKING:

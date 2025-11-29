@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 import requests
 from django.utils import timezone
 
-from ..schema import get_recipe_json_schema, validate_recipe_data
+from ..schemas import get_recipe_json_schema, validate_recipe_data
 
 if TYPE_CHECKING:
     from ..models import AISettings

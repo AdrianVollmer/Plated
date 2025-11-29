@@ -110,7 +110,7 @@ def generate_recipe_pdf(recipe: Recipe, language: str = "en") -> bytes:
     """
     from django.utils import translation
 
-    from ..schema import serialize_recipe
+    from ..schemas import serialize_recipe
 
     logger.info(f"PDF generation initiated for recipe: '{recipe.title}' (ID: {recipe.pk}) in language '{language}'")
 
