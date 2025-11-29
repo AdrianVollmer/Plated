@@ -28,149 +28,90 @@ logger = logging.getLogger(__name__)
 # Ingredient and Unit Management Views
 
 
-def _manage_ingredient_property(
-    request: HttpRequest,
-    field_name: str,
-    display_name: str,
-    template_name: str,
-    list_url_name: str,
-    context_var_name: str,
-) -> HttpResponse:
-    """
-    Generic view for managing ingredient properties (name or unit).
-
-    Args:
-        request: HTTP request
-        field_name: Field name on Ingredient model ('name' or 'unit')
-        display_name: Human-readable name for display
-        template_name: Template to render
-        list_url_name: URL name for redirect
-        context_var_name: Name for the context variable in template
-    """
-    # Get all distinct values with usage counts from service
-    query = request.GET.get("q")
-    exclude_empty = field_name == "unit"
-    items = get_ingredient_property_with_counts(field_name, exclude_empty=exclude_empty, search_query=query)
-
-    return render(request, template_name, {context_var_name: items, "query": query})
-
-
-def _rename_ingredient_property(
-    request: HttpRequest,
-    field_name: str,
-    display_name: str,
-    old_param: str,
-    new_param: str,
-    template_name: str,
-    list_url_name: str,
-    requires_new_value: bool = True,
-) -> HttpResponse:
-    """
-    Generic view for renaming ingredient properties (name or unit).
-
-    Args:
-        request: HTTP request
-        field_name: Field name on Ingredient model
-        display_name: Human-readable name for messages
-        old_param: POST parameter name for old value
-        new_param: POST parameter name for new value
-        template_name: Template to render for GET requests
-        list_url_name: URL name for redirect
-        requires_new_value: Whether new value is required (False allows clearing)
-    """
-    if request.method == "POST":
-        old_value = request.POST.get(old_param, "").strip()
-        new_value = request.POST.get(new_param, "").strip()
-
-        logger.info(f"{display_name} rename requested: '{old_value}' -> '{new_value}'")
-
-        # Validate inputs (some validation is also done in service)
-        if requires_new_value and not new_value:
-            logger.warning(f"{display_name} rename failed: missing new value")
-            messages.error(request, _("New %(name)s is required.") % {"name": display_name.lower()})
-            return redirect(list_url_name)
-
-        # Use service to rename
-        try:
-            updated = rename_ingredient_property(field_name, old_value, new_value)
-            plural = "" if updated == 1 else "s"
-            messages.success(
-                request,
-                _("Renamed '%(old)s' to '%(new)s' in %(count)s ingredient%(plural)s.")
-                % {"old": old_value, "new": new_value, "count": updated, "plural": plural},
-            )
-            return redirect(list_url_name)
-        except ValueError as e:
-            logger.warning(f"{display_name} rename failed: {e}")
-            messages.error(request, str(e))
-            return redirect(list_url_name)
-        except Exception as e:
-            logger.error(f"Error renaming {display_name.lower()} '{old_value}' to '{new_value}': {e}", exc_info=True)
-            messages.error(
-                request, _("Error renaming %(name)s: %(error)s") % {"name": display_name.lower(), "error": e}
-            )
-            return redirect(list_url_name)
-
-    # GET request - show rename form
-    old_value = request.GET.get(field_name, "")
-    usage_count = get_usage_count(field_name, old_value) if old_value else 0
-
-    context = {
-        old_param: old_value,
-        "usage_count": usage_count,
-    }
-    return render(request, template_name, context)
-
-
 def manage_ingredient_names(request: HttpRequest) -> HttpResponse:
     """View and manage distinct ingredient names."""
-    return _manage_ingredient_property(
-        request,
-        field_name="name",
-        display_name="Ingredient Name",
-        template_name="recipes/manage_ingredient_names.html",
-        list_url_name="manage_ingredient_names",
-        context_var_name="ingredients",
-    )
+    query = request.GET.get("q")
+    ingredients = get_ingredient_property_with_counts("name", exclude_empty=False, search_query=query)
+    return render(request, "recipes/manage_ingredient_names.html", {"ingredients": ingredients, "query": query})
 
 
 def rename_ingredient_name(request: HttpRequest) -> HttpResponse:
     """Rename an ingredient name across all recipes."""
-    return _rename_ingredient_property(
-        request,
-        field_name="name",
-        display_name="Ingredient Name",
-        old_param="old_name",
-        new_param="new_name",
-        template_name="recipes/rename_ingredient_name.html",
-        list_url_name="manage_ingredient_names",
-    )
+    if request.method == "POST":
+        old_name = request.POST.get("old_name", "").strip()
+        new_name = request.POST.get("new_name", "").strip()
+
+        logger.info(f"Ingredient name rename requested: '{old_name}' -> '{new_name}'")
+
+        if not new_name:
+            logger.warning("Ingredient name rename failed: missing new value")
+            messages.error(request, _("New ingredient name is required."))
+            return redirect("manage_ingredient_names")
+
+        try:
+            updated = rename_ingredient_property("name", old_name, new_name)
+            plural = "" if updated == 1 else "s"
+            messages.success(
+                request,
+                _("Renamed '%(old)s' to '%(new)s' in %(count)s ingredient%(plural)s.")
+                % {"old": old_name, "new": new_name, "count": updated, "plural": plural},
+            )
+            return redirect("manage_ingredient_names")
+        except ValueError as e:
+            logger.warning(f"Ingredient name rename failed: {e}")
+            messages.error(request, str(e))
+            return redirect("manage_ingredient_names")
+        except Exception as e:
+            logger.error(f"Error renaming ingredient name '{old_name}' to '{new_name}': {e}", exc_info=True)
+            messages.error(request, _("Error renaming ingredient name: %(error)s") % {"error": e})
+            return redirect("manage_ingredient_names")
+
+    # GET request - show rename form
+    old_name = request.GET.get("name", "")
+    usage_count = get_usage_count("name", old_name) if old_name else 0
+
+    return render(request, "recipes/rename_ingredient_name.html", {"old_name": old_name, "usage_count": usage_count})
 
 
 def manage_units(request: HttpRequest) -> HttpResponse:
     """View and manage distinct units."""
-    return _manage_ingredient_property(
-        request,
-        field_name="unit",
-        display_name="Unit",
-        template_name="recipes/manage_units.html",
-        list_url_name="manage_units",
-        context_var_name="units",
-    )
+    query = request.GET.get("q")
+    units = get_ingredient_property_with_counts("unit", exclude_empty=True, search_query=query)
+    return render(request, "recipes/manage_units.html", {"units": units, "query": query})
 
 
 def rename_unit(request: HttpRequest) -> HttpResponse:
     """Rename a unit across all recipes."""
-    return _rename_ingredient_property(
-        request,
-        field_name="unit",
-        display_name="Unit",
-        old_param="old_unit",
-        new_param="new_unit",
-        template_name="recipes/rename_unit.html",
-        list_url_name="manage_units",
-        requires_new_value=False,  # Allow clearing unit
-    )
+    if request.method == "POST":
+        old_unit = request.POST.get("old_unit", "").strip()
+        new_unit = request.POST.get("new_unit", "").strip()
+
+        logger.info(f"Unit rename requested: '{old_unit}' -> '{new_unit}'")
+
+        # Note: new_unit can be empty to clear the unit
+        try:
+            updated = rename_ingredient_property("unit", old_unit, new_unit)
+            plural = "" if updated == 1 else "s"
+            messages.success(
+                request,
+                _("Renamed '%(old)s' to '%(new)s' in %(count)s ingredient%(plural)s.")
+                % {"old": old_unit, "new": new_unit, "count": updated, "plural": plural},
+            )
+            return redirect("manage_units")
+        except ValueError as e:
+            logger.warning(f"Unit rename failed: {e}")
+            messages.error(request, str(e))
+            return redirect("manage_units")
+        except Exception as e:
+            logger.error(f"Error renaming unit '{old_unit}' to '{new_unit}': {e}", exc_info=True)
+            messages.error(request, _("Error renaming unit: %(error)s") % {"error": e})
+            return redirect("manage_units")
+
+    # GET request - show rename form
+    old_unit = request.GET.get("unit", "")
+    usage_count = get_usage_count("unit", old_unit) if old_unit else 0
+
+    return render(request, "recipes/rename_unit.html", {"old_unit": old_unit, "usage_count": usage_count})
 
 
 def manage_keywords(request: HttpRequest) -> HttpResponse:
@@ -215,50 +156,6 @@ def recipes_with_unit(request: HttpRequest, unit: str) -> HttpResponse:
     )
 
 
-def _delete_ingredient_property(
-    request: HttpRequest,
-    field_name: str,
-    display_name: str,
-    param_name: str,
-    list_url_name: str,
-) -> HttpResponse:
-    """
-    Generic view for deleting unused ingredient properties.
-
-    Args:
-        request: HTTP request
-        field_name: Field name on Ingredient model
-        display_name: Human-readable name for messages
-        param_name: POST parameter name
-        list_url_name: URL name for redirect
-    """
-    if request.method != "POST":
-        return redirect(list_url_name)
-
-    value = request.POST.get(param_name, "").strip()
-    if not value:
-        messages.error(request, _("%(name)s is required.") % {"name": display_name})
-        return redirect(list_url_name)
-
-    # Check usage count using service
-    usage_count = get_usage_count(field_name, value)
-    if usage_count > 0:
-        logger.warning(f"Cannot delete {display_name.lower()} '{value}': usage count is {usage_count}")
-        plural = "s" if usage_count > 1 else ""
-        messages.error(
-            request,
-            _("Cannot delete '%(value)s' because it is used in %(count)s recipe%(plural)s.")
-            % {"value": value, "count": usage_count, "plural": plural},
-        )
-        return redirect(list_url_name)
-
-    logger.info(f"{display_name} deleted (no usage): '{value}'")
-    messages.success(
-        request, _("%(name)s '%(value)s' deleted (no usage found).") % {"name": display_name, "value": value}
-    )
-    return redirect(list_url_name)
-
-
 def recipes_with_keyword(request: HttpRequest, keyword: str) -> HttpResponse:
     """Show all recipes that use a specific keyword."""
     recipes = get_recipes_by_keyword(keyword)
@@ -277,24 +174,56 @@ def recipes_with_keyword(request: HttpRequest, keyword: str) -> HttpResponse:
 
 def delete_ingredient_name(request: HttpRequest) -> HttpResponse:
     """Delete an ingredient name if its usage count is 0."""
-    return _delete_ingredient_property(
-        request,
-        field_name="name",
-        display_name="Ingredient name",
-        param_name="name",
-        list_url_name="manage_ingredient_names",
-    )
+    if request.method != "POST":
+        return redirect("manage_ingredient_names")
+
+    name = request.POST.get("name", "").strip()
+    if not name:
+        messages.error(request, _("Ingredient name is required."))
+        return redirect("manage_ingredient_names")
+
+    # Check usage count using service
+    usage_count = get_usage_count("name", name)
+    if usage_count > 0:
+        logger.warning(f"Cannot delete ingredient name '{name}': usage count is {usage_count}")
+        plural = "s" if usage_count > 1 else ""
+        messages.error(
+            request,
+            _("Cannot delete '%(value)s' because it is used in %(count)s recipe%(plural)s.")
+            % {"value": name, "count": usage_count, "plural": plural},
+        )
+        return redirect("manage_ingredient_names")
+
+    logger.info(f"Ingredient name deleted (no usage): '{name}'")
+    messages.success(request, _("Ingredient name '%(value)s' deleted (no usage found).") % {"value": name})
+    return redirect("manage_ingredient_names")
 
 
 def delete_unit(request: HttpRequest) -> HttpResponse:
     """Delete a unit if its usage count is 0."""
-    return _delete_ingredient_property(
-        request,
-        field_name="unit",
-        display_name="Unit",
-        param_name="unit",
-        list_url_name="manage_units",
-    )
+    if request.method != "POST":
+        return redirect("manage_units")
+
+    unit = request.POST.get("unit", "").strip()
+    if not unit:
+        messages.error(request, _("Unit is required."))
+        return redirect("manage_units")
+
+    # Check usage count using service
+    usage_count = get_usage_count("unit", unit)
+    if usage_count > 0:
+        logger.warning(f"Cannot delete unit '{unit}': usage count is {usage_count}")
+        plural = "s" if usage_count > 1 else ""
+        messages.error(
+            request,
+            _("Cannot delete '%(value)s' because it is used in %(count)s recipe%(plural)s.")
+            % {"value": unit, "count": usage_count, "plural": plural},
+        )
+        return redirect("manage_units")
+
+    logger.info(f"Unit deleted (no usage): '{unit}'")
+    messages.success(request, _("Unit '%(value)s' deleted (no usage found).") % {"value": unit})
+    return redirect("manage_units")
 
 
 def get_ingredient_names(request: HttpRequest) -> JsonResponse:
