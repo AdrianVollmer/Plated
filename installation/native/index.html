@@ -1365,11 +1365,18 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nv">SECRET_KEY</span><span class="o">=</span>your-secret-key-here
 <a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="nv">DEBUG</span><span class="o">=</span>True
 <a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="nv">ALLOWED_HOSTS</span><span class="o">=</span>localhost,127.0.0.1
-<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="nv">DATABASE_PATH</span><span class="o">=</span>/path/to/db.sqlite3
-<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="nv">STATIC_ROOT</span><span class="o">=</span>/path/to/staticfiles
-<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="nv">MEDIA_ROOT</span><span class="o">=</span>/path/to/media
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="c1"># Database configuration (SQLite by default)</span>
+<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="nv">DATABASE_URL</span><span class="o">=</span>sqlite:///path/to/db.sqlite3
+<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a>
+<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="c1"># Or for PostgreSQL:</span>
+<a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="c1"># DATABASE_URL=postgresql://user:password@localhost:5432/plated</span>
+<a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a>
+<a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="nv">STATIC_ROOT</span><span class="o">=</span>/path/to/staticfiles
+<a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a><span class="nv">MEDIA_ROOT</span><span class="o">=</span>/path/to/media
 </code></pre></div>
 <p>See <a href="../src/config/settings.py">settings.py</a> for all available options.</p>
+<p><strong>Note:</strong> The old <code>DATABASE_PATH</code> variable is still supported for backward compatibility, but <code>DATABASE_URL</code> is preferred.</p>
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
 <h3 id="port-already-in-use">Port Already in Use<a class="headerlink" href="#port-already-in-use" title="Permanent link">&para;</a></h3>
 <p>Run on a different port:</p>
