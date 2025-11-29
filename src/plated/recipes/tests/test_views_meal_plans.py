@@ -332,6 +332,11 @@ class MealPlanDeleteViewTest(TestCase):
             end_date=date(2024, 1, 7),
         )
 
+    def test_meal_plan_delete_view_get(self) -> None:
+        """Test GET request to meal plan delete view."""
+        response = self.client.get(reverse("meal_plan_delete", args=[self.meal_plan.pk]))
+        self.assertEqual(response.status_code, 200)
+
     def test_meal_plan_delete_post(self) -> None:
         """Test deleting a meal plan."""
         meal_plan_pk = self.meal_plan.pk
