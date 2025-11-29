@@ -60,6 +60,7 @@ ignore = []
 "*/views/collections.py" = ["S101"]  # assert for type narrowing
 "*/views/meal_plans.py" = ["S101"]  # assert for type narrowing
 "*/services/typst_service.py" = ["S603", "S607"]  # subprocess for typst compilation
+"*/tests/*.py" = ["S101"]  # assert allowed in tests for type narrowing
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "config.settings"
