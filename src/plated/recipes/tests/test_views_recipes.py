@@ -94,16 +94,20 @@ class RecipeCreateViewTest(TestCase):
         self.assertContains(response, "title")
 
     def test_recipe_create_basic(self) -> None:
-        """Test creating a basic recipe with one step (required by validation)."""
+        """Test creating a basic recipe with required ingredient and step."""
         response = self.client.post(
             reverse("recipe_create"),
             {
                 "title": "New Recipe",
                 "servings": 4,
                 "description": "Test description",
-                # Formsets require management form data
-                "ingredients-TOTAL_FORMS": "0",
+                # At least one ingredient is required by validation
+                "ingredients-TOTAL_FORMS": "1",
                 "ingredients-INITIAL_FORMS": "0",
+                "ingredients-0-name": "test ingredient",
+                "ingredients-0-amount": "1",
+                "ingredients-0-unit": "cup",
+                "ingredients-0-order": "0",
                 # At least one step is required by validation
                 "steps-TOTAL_FORMS": "1",
                 "steps-INITIAL_FORMS": "0",
@@ -184,16 +188,19 @@ class RecipeUpdateViewTest(TestCase):
 
     def test_recipe_update_title(self) -> None:
         """Test updating a recipe's title."""
+        # Get the existing ingredient to preserve it
+        existing_ingredient = self.recipe.ingredients.first()
+
         response = self.client.post(
             reverse("recipe_update", args=[self.recipe.pk]),
             {
                 "title": "Updated Title",
                 "servings": 4,
                 "description": "Original description",
-                # Existing ingredient
+                # Existing ingredient - must include to satisfy validation
                 "ingredients-TOTAL_FORMS": "1",
                 "ingredients-INITIAL_FORMS": "1",
-                "ingredients-0-id": (str(ing.pk) if (ing := self.recipe.ingredients.first()) is not None else "0"),
+                "ingredients-0-id": str(existing_ingredient.pk) if existing_ingredient else "",
                 "ingredients-0-name": "sugar",
                 "ingredients-0-amount": "1",
                 "ingredients-0-unit": "cup",
