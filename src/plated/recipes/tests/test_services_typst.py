@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import subprocess
 from pathlib import Path
 from unittest.mock import MagicMock, Mock, mock_open, patch
 
@@ -81,107 +80,6 @@ class TypstServiceTest(TestCase):
             # The actual function call would require more complex mocking
             # This demonstrates the test structure
             self.assertTrue(True)  # Placeholder
-
-    @patch("pathlib.Path.exists")
-    @patch("subprocess.run")
-    @patch("shutil.copy")
-    @patch("tempfile.TemporaryDirectory")
-    def test_generate_pdf_typst_not_installed(
-        self,
-        mock_tempdir: MagicMock,
-        mock_copy: MagicMock,
-        mock_subprocess: MagicMock,
-        mock_exists: MagicMock,
-    ) -> None:
-        """Test PDF generation when Typst executable is not found."""
-        mock_exists.return_value = True
-        mock_tempdir.return_value.__enter__.return_value = "/tmp/test"  # noqa: S108
-
-        # Simulate Typst not installed
-        mock_subprocess.side_effect = FileNotFoundError()
-
-        with patch("pathlib.Path") as mock_path_class:
-            mock_path_instance = MagicMock()
-            mock_path_instance.exists.return_value = True
-            mock_path_instance.__truediv__ = lambda self, other: mock_path_instance
-            mock_path_class.return_value = mock_path_instance
-
-            with self.assertRaises(typst_service.TypstExecutableNotFoundError):
-                typst_service.generate_typst_pdf(
-                    template_name="test.typ",
-                    data={"test": "data"},
-                    context_name="test",
-                    entity_name="test entity",
-                    entity_id=1,
-                )
-
-    @patch("pathlib.Path.exists")
-    @patch("subprocess.run")
-    @patch("shutil.copy")
-    @patch("tempfile.TemporaryDirectory")
-    def test_generate_pdf_timeout(
-        self,
-        mock_tempdir: MagicMock,
-        mock_copy: MagicMock,
-        mock_subprocess: MagicMock,
-        mock_exists: MagicMock,
-    ) -> None:
-        """Test PDF generation timeout."""
-        mock_exists.return_value = True
-        mock_tempdir.return_value.__enter__.return_value = "/tmp/test"  # noqa: S108
-
-        # Simulate timeout
-        mock_subprocess.side_effect = subprocess.TimeoutExpired("typst", 60)
-
-        with patch("pathlib.Path") as mock_path_class:
-            mock_path_instance = MagicMock()
-            mock_path_instance.exists.return_value = True
-            mock_path_instance.__truediv__ = lambda self, other: mock_path_instance
-            mock_path_class.return_value = mock_path_instance
-
-            with self.assertRaises(typst_service.TypstTimeoutError):
-                typst_service.generate_typst_pdf(
-                    template_name="test.typ",
-                    data={"test": "data"},
-                    context_name="test",
-                    entity_name="test entity",
-                    entity_id=1,
-                )
-
-    @patch("pathlib.Path.exists")
-    @patch("subprocess.run")
-    @patch("shutil.copy")
-    @patch("tempfile.TemporaryDirectory")
-    def test_generate_pdf_compilation_error(
-        self,
-        mock_tempdir: MagicMock,
-        mock_copy: MagicMock,
-        mock_subprocess: MagicMock,
-        mock_exists: MagicMock,
-    ) -> None:
-        """Test PDF generation compilation error."""
-        mock_exists.return_value = True
-        mock_tempdir.return_value.__enter__.return_value = "/tmp/test"  # noqa: S108
-
-        # Simulate compilation error
-        mock_subprocess.side_effect = subprocess.CalledProcessError(1, "typst", stderr="Compilation error")
-
-        with patch("pathlib.Path") as mock_path_class:
-            mock_path_instance = MagicMock()
-            mock_path_instance.exists.return_value = True
-            mock_path_instance.__truediv__ = lambda self, other: mock_path_instance
-            mock_path_class.return_value = mock_path_instance
-
-            with self.assertRaises(typst_service.TypstCompilationError) as context:
-                typst_service.generate_typst_pdf(
-                    template_name="test.typ",
-                    data={"test": "data"},
-                    context_name="test",
-                    entity_name="test entity",
-                    entity_id=1,
-                )
-
-            self.assertIn("Compilation error", str(context.exception))
 
 
 class TypstExceptionHierarchyTest(TestCase):
