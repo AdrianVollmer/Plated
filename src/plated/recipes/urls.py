@@ -19,6 +19,8 @@ urlpatterns = [
     path("recipe/import/", views.recipes.import_recipe, name="recipe_import"),
     # PDF Generation
     path("recipe/<int:pk>/pdf/", views.recipes.download_recipe_pdf, name="recipe_pdf"),
+    # Cooking View
+    path("recipe/<int:pk>/cook/", views.recipes.RecipeCookingView.as_view(), name="recipe_cooking"),
     # Add to collections
     path(
         "recipe/<int:recipe_pk>/add-to-collections/",

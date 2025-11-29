@@ -79,6 +79,18 @@ class RecipeDetailView(DetailView):
         return context
 
 
+class RecipeCookingView(DetailView):
+    """Fullscreen cooking view optimized for mobile devices in the kitchen."""
+
+    model = Recipe
+    template_name = "recipes/recipe_cooking.html"
+    context_object_name = "recipe"
+
+    def get_queryset(self):
+        """Prefetch ingredients and steps for efficient rendering."""
+        return Recipe.objects.prefetch_related("ingredients", "steps")
+
+
 class RecipeCreateView(CreateView):
     """Create a new recipe with ingredients, steps, and images."""
 

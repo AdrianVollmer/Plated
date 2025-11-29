@@ -1,0 +1,312 @@
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% trans "Cooking" %}: {{ recipe.title }} - Plated</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+
+    <style>
+        /* Cooking view specific styles */
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        .cooking-view {
+            min-height: 100vh;
+            padding: 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .cooking-header {
+            position: sticky;
+            top: 0;
+            background: var(--bg-primary);
+            z-index: 10;
+            padding: 1rem 0;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .cooking-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .cooking-meta {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        .cooking-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .cooking-controls {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .cooking-section {
+            margin-bottom: 2rem;
+        }
+
+        .cooking-section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .cooking-ingredient-list,
+        .cooking-step-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .cooking-ingredient-item,
+        .cooking-step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .cooking-ingredient-item:hover,
+        .cooking-step-item:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .cooking-checkbox {
+            width: 1.5rem;
+            height: 1.5rem;
+            margin-top: 0.1rem;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .cooking-ingredient-content,
+        .cooking-step-content {
+            flex: 1;
+        }
+
+        .cooking-ingredient-amount {
+            font-weight: 600;
+            color: var(--primary);
+            margin-right: 0.5rem;
+        }
+
+        .cooking-ingredient-name {
+            font-weight: 500;
+        }
+
+        .cooking-ingredient-note {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-style: italic;
+            display: block;
+            margin-top: 0.25rem;
+        }
+
+        .cooking-step-number {
+            display: inline-block;
+            width: 2rem;
+            height: 2rem;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 2rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        .cooking-step-text {
+            flex: 1;
+        }
+
+        .item-checked {
+            opacity: 0.5;
+            text-decoration: line-through;
+        }
+
+        .btn-cooking {
+            padding: 0.5rem 1rem;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 576px) {
+            .cooking-view {
+                padding: 0.75rem;
+            }
+
+            .cooking-title {
+                font-size: 1.5rem;
+            }
+
+            .cooking-section-title {
+                font-size: 1.25rem;
+            }
+
+            .cooking-ingredient-item,
+            .cooking-step-item {
+                font-size: 1rem;
+            }
+        }
+
+        /* Fullscreen styles */
+        .cooking-view:fullscreen {
+            padding: 1.5rem;
+        }
+
+        .cooking-view:-webkit-full-screen {
+            padding: 1.5rem;
+        }
+
+        .cooking-view:-moz-full-screen {
+            padding: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="cooking-view" id="cookingView">
+        <!-- Header -->
+        <div class="cooking-header">
+            <h1 class="cooking-title">{{ recipe.title }}</h1>
+
+            <div class="cooking-meta">
+                <div class="cooking-meta-item">
+                    <i class="bi bi-people-fill"></i>
+                    <span>{{ recipe.servings }} {% trans "servings" %}</span>
+                </div>
+                {% if recipe.prep_time %}
+                <div class="cooking-meta-item">
+                    <i class="bi bi-clock-fill"></i>
+                    <span>{% trans "Prep" %}: {{ recipe.prep_time }}</span>
+                </div>
+                {% endif %}
+                {% if recipe.wait_time %}
+                <div class="cooking-meta-item">
+                    <i class="bi bi-hourglass-split"></i>
+                    <span>{% trans "Cook" %}: {{ recipe.wait_time }}</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="cooking-controls">
+                <a href="{% url 'recipe_detail' recipe.pk %}" class="btn btn-sm btn-outline-secondary btn-cooking">
+                    <i class="bi bi-arrow-left"></i> {% trans "Exit Cooking View" %}
+                </a>
+                <button id="fullscreenBtn" class="btn btn-sm btn-outline-primary btn-cooking">
+                    <i class="bi bi-arrows-fullscreen"></i> <span id="fullscreenText">{% trans "Fullscreen" %}</span>
+                </button>
+                <button id="clearCheckboxesBtn" class="btn btn-sm btn-outline-warning btn-cooking">
+                    <i class="bi bi-arrow-counterclockwise"></i> {% trans "Reset Checkboxes" %}
+                </button>
+            </div>
+        </div>
+
+        <!-- Ingredients Section -->
+        <div class="cooking-section">
+            <h2 class="cooking-section-title">
+                <i class="bi bi-basket-fill"></i>
+                {% trans "Ingredients" %}
+            </h2>
+
+            <ul class="cooking-ingredient-list">
+                {% for ingredient in recipe.ingredients.all %}
+                <li class="cooking-ingredient-item" data-type="ingredient" data-id="{{ forloop.counter }}">
+                    <input type="checkbox" class="cooking-checkbox ingredient-checkbox" data-id="{{ forloop.counter }}">
+                    <div class="cooking-ingredient-content">
+                        <span class="cooking-ingredient-amount">
+                            {% if ingredient.amount %}{{ ingredient.amount }}{% endif %}
+                            {% if ingredient.unit %}{{ ingredient.unit }}{% endif %}
+                        </span>
+                        <span class="cooking-ingredient-name">{{ ingredient.name }}</span>
+                        {% if ingredient.note %}
+                        <span class="cooking-ingredient-note">({{ ingredient.note }})</span>
+                        {% endif %}
+                    </div>
+                </li>
+                {% empty %}
+                <li class="text-muted">{% trans "No ingredients listed" %}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Steps Section -->
+        <div class="cooking-section">
+            <h2 class="cooking-section-title">
+                <i class="bi bi-list-ol"></i>
+                {% trans "Instructions" %}
+            </h2>
+
+            <ul class="cooking-step-list">
+                {% for step in recipe.steps.all %}
+                <li class="cooking-step-item" data-type="step" data-id="{{ forloop.counter }}">
+                    <input type="checkbox" class="cooking-checkbox step-checkbox" data-id="{{ forloop.counter }}">
+                    <div class="cooking-step-content">
+                        <span class="cooking-step-number">{{ forloop.counter }}</span>
+                        <span class="cooking-step-text">{{ step.content|linebreaks }}</span>
+                    </div>
+                </li>
+                {% empty %}
+                <li class="text-muted">{% trans "No steps listed" %}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        {% if recipe.special_equipment %}
+        <!-- Special Equipment Section -->
+        <div class="cooking-section">
+            <h2 class="cooking-section-title">
+                <i class="bi bi-tools"></i>
+                {% trans "Special Equipment" %}
+            </h2>
+            <div class="cooking-ingredient-item">
+                <div class="cooking-ingredient-content">
+                    {{ recipe.special_equipment|linebreaks }}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Theme Switcher (existing functionality) -->
+    <script src="{% static 'theme-switcher.js' %}"></script>
+
+    <!-- Cooking View Script -->
+    <script src="{% static 'cooking-view.js' %}"></script>
+</body>
+</html>

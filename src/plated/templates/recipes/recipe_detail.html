@@ -30,6 +30,11 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="recipeActionsMenu">
                         <li>
+                            <a class="dropdown-item" href="{% url 'recipe_cooking' recipe.pk %}">
+                                <i class="bi bi-easel"></i> {% trans "Cooking View" %}
+                            </a>
+                        </li>
+                        <li>
                             <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#scaleRecipeModal">
                                 <i class="bi bi-sliders"></i> {% trans "Scale Recipe" %}
                             </button>

@@ -247,3 +247,102 @@ class RecipeDeleteViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertFalse(Recipe.objects.filter(pk=recipe_pk).exists())
+
+
+class RecipeCookingViewTest(TestCase):
+    """Test cases for the cooking view."""
+
+    def setUp(self) -> None:
+        """Create a test recipe with ingredients and steps."""
+        self.recipe = Recipe.objects.create(
+            title="Scrambled Eggs",
+            description="Simple breakfast",
+            servings=2,
+            special_equipment="Non-stick pan",
+        )
+        Ingredient.objects.create(
+            recipe=self.recipe,
+            name="eggs",
+            amount="4",
+            unit="",
+            order=0,
+        )
+        Ingredient.objects.create(
+            recipe=self.recipe,
+            name="butter",
+            amount="1",
+            unit="tbsp",
+            order=1,
+        )
+        Step.objects.create(
+            recipe=self.recipe,
+            content="Beat eggs in a bowl",
+            order=0,
+        )
+        Step.objects.create(
+            recipe=self.recipe,
+            content="Melt butter in pan and cook eggs",
+            order=1,
+        )
+
+    def test_cooking_view_renders(self) -> None:
+        """Test that cooking view renders correctly."""
+        response = self.client.get(reverse("recipe_cooking", args=[self.recipe.pk]))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "recipes/recipe_cooking.html")
+
+    def test_cooking_view_shows_recipe_data(self) -> None:
+        """Test that cooking view displays recipe information."""
+        response = self.client.get(reverse("recipe_cooking", args=[self.recipe.pk]))
+        self.assertEqual(response.status_code, 200)
+
+        # Check recipe title
+        self.assertContains(response, "Scrambled Eggs")
+
+        # Check ingredients
+        self.assertContains(response, "eggs")
+        self.assertContains(response, "butter")
+        self.assertContains(response, "4")
+        self.assertContains(response, "1")
+        self.assertContains(response, "tbsp")
+
+        # Check steps
+        self.assertContains(response, "Beat eggs in a bowl")
+        self.assertContains(response, "Melt butter in pan and cook eggs")
+
+        # Check special equipment
+        self.assertContains(response, "Non-stick pan")
+
+    def test_cooking_view_has_checkboxes(self) -> None:
+        """Test that cooking view includes checkboxes for ingredients and steps."""
+        response = self.client.get(reverse("recipe_cooking", args=[self.recipe.pk]))
+        self.assertEqual(response.status_code, 200)
+
+        # Check for checkbox inputs
+        self.assertContains(response, 'type="checkbox"')
+        self.assertContains(response, "ingredient-checkbox")
+        self.assertContains(response, "step-checkbox")
+
+    def test_cooking_view_has_fullscreen_button(self) -> None:
+        """Test that cooking view includes fullscreen button."""
+        response = self.client.get(reverse("recipe_cooking", args=[self.recipe.pk]))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "fullscreenBtn")
+        self.assertContains(response, "Fullscreen")
+
+    def test_cooking_view_has_exit_button(self) -> None:
+        """Test that cooking view includes exit button."""
+        response = self.client.get(reverse("recipe_cooking", args=[self.recipe.pk]))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Exit Cooking View")
+
+    def test_cooking_view_loads_javascript(self) -> None:
+        """Test that cooking view loads necessary JavaScript."""
+        response = self.client.get(reverse("recipe_cooking", args=[self.recipe.pk]))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "cooking-view.js")
+
+    def test_cooking_view_404_for_nonexistent_recipe(self) -> None:
+        """Test that cooking view returns 404 for non-existent recipe."""
+        response = self.client.get(reverse("recipe_cooking", args=[9999]))
+        self.assertEqual(response.status_code, 404)
