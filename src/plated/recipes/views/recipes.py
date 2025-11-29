@@ -382,10 +382,14 @@ def import_recipe(request: HttpRequest) -> HttpResponse:
 
 def download_recipe_pdf(request: HttpRequest, pk: int) -> HttpResponse:
     """Generate and download a recipe as a PDF using Typst."""
+    from django.utils import translation
+
     recipe = get_object_or_404(Recipe, pk=pk)
 
     try:
-        pdf_content = generate_recipe_pdf(recipe)
+        # Get the current active language for the user
+        language = translation.get_language() or "en"
+        pdf_content = generate_recipe_pdf(recipe, language=language)
 
         # Create response with PDF
         response = HttpResponse(pdf_content, content_type="application/pdf")

@@ -100,16 +100,16 @@
   emph(display_ingredients_list(ingredients))
 }
 
-#let display_steps(steps) = {
-  [== Preparation]
+#let display_steps(steps, translations) = {
+  [== #translations.at("preparation", default: "Preparation")]
   set par(justify: true)
   set enum(spacing: 1em)
   display_steps_list(steps)
 }
 
 
-#let display_pairings(pairings) = {
-  [== Pairing Suggestions]
+#let display_pairings(pairings, translations) = {
+  [== #translations.at("pairing_suggestions", default: "Pairing Suggestions")]
   emph(pairings)
 }
 
@@ -127,6 +127,7 @@
   steps: [],
   remarks: "",
   pairings: [],
+  translations: (:),
 ) = {
   show heading.where(level: 2): it => text(
     fill: primary_colour,
@@ -158,10 +159,10 @@
         #v(2pt)
         #set align(right)
         #if (working_time != "") {
-          [_Preparation: #working_time _]
+          [_#translations.at("prep_time_label", default: "Preparation:") #working_time _]
         }
         #if (waiting_time != "") {
-          [\ _Waiting: #waiting_time _]
+          [\ _#translations.at("wait_time_label", default: "Waiting:") #waiting_time _]
         }
       ],
     )
@@ -178,20 +179,20 @@
       [
         #set list(marker: [], body-indent: 0pt)
         #set align(right)
-        #text(fill: primary_colour, font: heading_font, weight: 300, size: 11pt, upper([Ingredients\ ]))
-        #[#servings servings]
+        #text(fill: primary_colour, font: heading_font, weight: 300, size: 11pt, upper([#translations.at("ingredients", default: "Ingredients")\ ]))
+        #[#servings #translations.at("servings", default: "servings")]
         #servings_text
 
         #display_ingredients(ingredients)
       ],
       [
-        #display_steps(steps)
+        #display_steps(steps, translations)
         #if remarks != "" {
-          [== Chef's Tips]
+          [== #translations.at("chefs_tips", default: "Chef's Tips")]
           emph(remarks)
         }
         #if pairings != [] {
-          display_pairings(pairings)
+          display_pairings(pairings, translations)
         }
       ],
     )
@@ -199,7 +200,7 @@
   }
 }
 
-#let recipe_from_json(data) = {
+#let recipe_from_json(data, translations) = {
   let recipe_data = json(data.recipe)
 
   let all_ingredients = recipe_data.ingredients
@@ -228,7 +229,10 @@
     steps: recipe_data.steps,
     remarks: remarks,
     image_path: image_path,
+    translations: translations,
   )
 }
 
-#recipe_from_json(json(bytes(sys.inputs.data)))
+#let input_data = json(bytes(sys.inputs.data))
+#let translations = json(input_data.translations)
+#recipe_from_json(input_data, translations)

@@ -1985,6 +1985,32 @@ msgstr "Zurück zum Speiseplan"
 msgid "No ingredients found. Add some meals to your meal plan first!"
 msgstr "Keine Zutaten gefunden. Füge zuerst einige Mahlzeiten zu deinem Speiseplan hinzu!"
 
+#: src/plated/recipes/services/recipe_service.py
+msgid "Preparation"
+msgstr "Zubereitung"
+
+#: src/plated/recipes/services/recipe_service.py
+msgid "Chef's Tips"
+msgstr "Tipps vom Koch"
+
+#: src/plated/recipes/services/recipe_service.py
+msgid "Pairing Suggestions"
+msgstr "Kombinationsvorschläge"
+
+#: src/plated/recipes/services/recipe_service.py
+msgid "serving"
+msgid_plural "servings"
+msgstr[0] "Portion"
+msgstr[1] "Portionen"
+
+#: src/plated/recipes/services/recipe_service.py
+msgid "Preparation:"
+msgstr "Zubereitung:"
+
+#: src/plated/recipes/services/recipe_service.py
+msgid "Waiting:"
+msgstr "Wartezeit:"
+
 #, python-format
 #~ msgid "Recipes (%(counter)s)"
 #~ msgstr "Rezepte (%(counter)s)"
