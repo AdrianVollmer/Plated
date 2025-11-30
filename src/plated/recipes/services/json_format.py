@@ -66,7 +66,7 @@ class JSONFormatHandler(RecipeFormatHandler):
         """
         from django.db import transaction
 
-        from ..models import Ingredient, Step
+        from ..models import Ingredient, Recipe, Step
 
         try:
             data = json.loads(content)

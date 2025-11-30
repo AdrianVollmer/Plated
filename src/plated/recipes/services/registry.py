@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 
 from .json_format import JSONFormatHandler
 from .mock_formats import CSVLikeFormatHandler, SimpleTextFormatHandler
+from .tandoor_format import TandoorFormatHandler
 
 if TYPE_CHECKING:
     from .base import RecipeFormatHandler
@@ -22,6 +23,7 @@ class FormatRegistry:
     def _register_default_handlers(self) -> None:
         """Register the default format handlers."""
         self.register(JSONFormatHandler())
+        self.register(TandoorFormatHandler())
         # Register mock formats for demonstration
         self.register(SimpleTextFormatHandler())
         self.register(CSVLikeFormatHandler())

@@ -112,6 +112,9 @@ urlpatterns = [
     # Settings
     path("settings/", views.settings.settings_view, name="settings"),
     path("settings/export/<str:format_type>/", views.settings.export_database, name="export_database"),
+    path("settings/import/", views.settings.import_database_upload, name="import_database_upload"),
+    path("settings/import/preview/", views.settings.import_database_preview, name="import_database_preview"),
+    path("settings/import/confirm/", views.settings.import_database_confirm, name="import_database_confirm"),
     # AI Integration
     path("ai/extract/", views.ai.ai_extract_recipe, name="ai_extract_recipe"),
     # Jobs

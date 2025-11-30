@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any
+
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
@@ -140,3 +142,39 @@ class UserSettingsForm(forms.ModelForm):
         labels = {
             "language": _("Interface Language"),
         }
+
+
+class DatabaseImportForm(forms.Form):
+    """Form for importing database from a file."""
+
+    IMPORT_FORMAT_CHOICES = [
+        ("plated", _("Plated (JSON)")),
+        ("tandoor", _("Tandoor")),
+    ]
+
+    format = forms.ChoiceField(
+        choices=IMPORT_FORMAT_CHOICES,
+        widget=forms.Select(attrs={"class": "form-select"}),
+        label=_("Import Format"),
+        help_text=_("Select the format of the file you're importing"),
+    )
+
+    import_file = forms.FileField(
+        widget=forms.FileInput(attrs={"class": "form-control", "accept": ".zip,.json"}),
+        label=_("Import File"),
+        help_text=_("Upload a zip file containing recipes"),
+    )
+
+    def clean_import_file(self) -> Any:
+        """Validate the uploaded file."""
+        file = self.cleaned_data.get("import_file")
+
+        if not file:
+            raise forms.ValidationError(_("No file was uploaded"))
+
+        # Check file size (limit to 100MB)
+        max_size = 100 * 1024 * 1024  # 100MB in bytes
+        if file.size > max_size:
+            raise forms.ValidationError(_("File size must be less than 100MB"))
+
+        return file
