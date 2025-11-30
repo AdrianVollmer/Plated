@@ -4,10 +4,6 @@ FROM python:3.12-slim
 ARG PLATED_GIT_URL=${PLATED_GIT_URL:-https://github.com/AdrianVollmer/Plated.git}
 ARG PLATED_GIT_REF=${PLATED_GIT_REF:-latest}
 
-# Set environment variables
-ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1
-
 # Install system dependencies, nginx, and Typst
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
@@ -16,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     nginx \
     && curl -fsSL https://github.com/typst/typst/releases/download/v0.14.0/typst-x86_64-unknown-linux-musl.tar.xz \
     | tar -xJ -C /usr/local/bin --strip-components=1 typst-x86_64-unknown-linux-musl/typst \
-    && apt-get purge -y curl \
+    && apt-get purge -y curl xz-utils \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
