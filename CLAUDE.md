@@ -12,6 +12,7 @@ This is a Python app for managing recipes.
 - We prefer server-side render pages.
 - We focus on exporting and importing data to several formats.
 - Aesthetics is important, but even more important is usability.
+- Use casual language, i.e. German translations prefer "Du" over "Sie".
 
 ## Tech Stack
 
@@ -19,6 +20,7 @@ This is a Python app for managing recipes.
 - Bootstrap 5
 - Sqlite
 - Vanilla JS
+- gettext
 
 ## Python conventions
 
@@ -43,7 +45,7 @@ This is a Python app for managing recipes.
 - When commiting, supply author information on the command line. Try to
   explain the "why" behind the changes. The "what" can be read from the
   diff, even though a short itemized summary to reflect intent can't
-  hurt.
+  hurt. Think of a git commit message as an email to all maintainers.
 - Run `uv run python src/plated/manage.py test recipes` before
   comitting.
 - When adding new features, document them in `docs/`. Add Django test
