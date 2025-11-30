@@ -1089,7 +1089,8 @@
 
 
 <h1 id="internationalization-i18n">Internationalization (i18n)<a class="headerlink" href="#internationalization-i18n" title="Permanent link">&para;</a></h1>
-<p>Plated supports multiple languages through Django's internationalization framework based on gettext.</p>
+<p>Plated supports multiple languages through Django's internationalization
+framework based on gettext.</p>
 <h2 id="user-guide">User Guide<a class="headerlink" href="#user-guide" title="Permanent link">&para;</a></h2>
 <h3 id="changing-language">Changing Language<a class="headerlink" href="#changing-language" title="Permanent link">&para;</a></h3>
 <p>Users can select their preferred language from the settings:</p>
@@ -1108,21 +1109,22 @@
 <h2 id="developer-guide">Developer Guide<a class="headerlink" href="#developer-guide" title="Permanent link">&para;</a></h2>
 <h3 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h3>
 <p>Translation management requires GNU gettext tools:</p>
-<p><strong>Ubuntu/Debian:</strong>
+<p><strong>Ubuntu/Debian:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>gettext
-</code></pre></div></p>
-<p><strong>macOS:</strong>
+</code></pre></div>
+<p><strong>macOS:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>brew<span class="w"> </span>install<span class="w"> </span>gettext
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>brew<span class="w"> </span>link<span class="w"> </span>gettext<span class="w"> </span>--force
-</code></pre></div></p>
-<p><strong>Windows:</strong>
-Download from <a href="https://www.gnu.org/software/gettext/">GNU gettext website</a> or use WSL.</p>
+</code></pre></div>
+<p><strong>Windows:</strong> Download from <a href="https://www.gnu.org/software/gettext/">GNU gettext
+website</a> or use WSL.</p>
 <h3 id="adding-a-new-language">Adding a New Language<a class="headerlink" href="#adding-a-new-language" title="Permanent link">&para;</a></h3>
 <p>To add support for a new language:</p>
 <ol>
-<li><strong>Add to settings</strong></li>
-</ol>
-<p>Edit <code>src/config/settings.py</code> and add the language to the <code>LANGUAGES</code> list:</p>
+<li>
+<p><strong>Add to settings</strong></p>
+<p>Edit <code>src/config/settings.py</code> and add the language to the
+<code>LANGUAGES</code> list:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">LANGUAGES</span> <span class="o">=</span> <span class="p">[</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="p">(</span><span class="s2">&quot;en&quot;</span><span class="p">,</span> <span class="s2">&quot;English&quot;</span><span class="p">),</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="p">(</span><span class="s2">&quot;es&quot;</span><span class="p">,</span> <span class="s2">&quot;Español&quot;</span><span class="p">),</span>
@@ -1133,16 +1135,16 @@ Download from <a href="https://www.gnu.org/software/gettext/">GNU gettext websit
 <a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="p">(</span><span class="s2">&quot;ja&quot;</span><span class="p">,</span> <span class="s2">&quot;日本語&quot;</span><span class="p">),</span>  <span class="c1"># Adding Japanese</span>
 <a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="p">]</span>
 </code></pre></div>
-<ol>
-<li><strong>Generate message files</strong></li>
-</ol>
+</li>
+<li>
+<p><strong>Generate message files</strong></p>
 <p>From the <code>src/</code> directory, run:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>manage.py<span class="w"> </span>makemessages<span class="w"> </span>-l<span class="w"> </span>ja
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>src/plated/manage.py<span class="w"> </span>makemessages<span class="w"> </span>-l<span class="w"> </span>ja
 </code></pre></div>
 <p>This creates <code>src/locale/ja/LC_MESSAGES/django.po</code></p>
-<ol>
-<li><strong>Translate strings</strong></li>
-</ol>
+</li>
+<li>
+<p><strong>Translate strings</strong></p>
 <p>Edit the generated <code>.po</code> file and translate the strings:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nv">msgid</span> <span class="s">&quot;Recipes&quot;</span>
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nv">msgstr</span> <span class="s">&quot;レシピ&quot;</span>
@@ -1150,28 +1152,31 @@ Download from <a href="https://www.gnu.org/software/gettext/">GNU gettext websit
 <a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="nv">msgid</span> <span class="s">&quot;Settings&quot;</span>
 <a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="nv">msgstr</span> <span class="s">&quot;設定&quot;</span>
 </code></pre></div>
-<ol>
-<li><strong>Compile translations</strong></li>
-</ol>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>manage.py<span class="w"> </span>compilemessages
+</li>
+<li>
+<p><strong>Compile translations</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>src/plated/manage.py<span class="w"> </span>compilemessages
 </code></pre></div>
 <p>This creates <code>django.mo</code> binary files that Django uses.</p>
-<ol>
-<li><strong>Test</strong></li>
+</li>
+<li>
+<p><strong>Test</strong></p>
+<p>Restart the development server and select the new language in
+settings.</p>
+</li>
 </ol>
-<p>Restart the development server and select the new language in settings.</p>
 <h3 id="modifying-existing-translations">Modifying Existing Translations<a class="headerlink" href="#modifying-existing-translations" title="Permanent link">&para;</a></h3>
 <p>To update translations for an existing language:</p>
 <ol>
-<li><strong>Update message files</strong></li>
-</ol>
+<li>
+<p><strong>Update message files</strong></p>
 <p>If you've added new translatable strings to the code, extract them:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>manage.py<span class="w"> </span>makemessages<span class="w"> </span>-l<span class="w"> </span>es
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>src/plated/manage.py<span class="w"> </span>makemessages<span class="w"> </span>-l<span class="w"> </span>es
 </code></pre></div>
 <p>This updates <code>src/locale/es/LC_MESSAGES/django.po</code> with new strings.</p>
-<ol>
-<li><strong>Edit translations</strong></li>
-</ol>
+</li>
+<li>
+<p><strong>Edit translations</strong></p>
 <p>Open the <code>.po</code> file and add/modify translations:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kd">#: templates/base.html:40</span>
 <a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nv">msgid</span> <span class="s">&quot;Recipes&quot;</span>
@@ -1181,21 +1186,24 @@ Download from <a href="https://www.gnu.org/software/gettext/">GNU gettext websit
 <a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="nv">msgid</span> <span class="s">&quot;Language settings saved successfully!&quot;</span>
 <a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="nv">msgstr</span> <span class="s">&quot;¡Configuración de idioma guardada exitosamente!&quot;</span>
 </code></pre></div>
-<ol>
-<li><strong>Compile</strong></li>
-</ol>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>manage.py<span class="w"> </span>compilemessages
+</li>
+<li>
+<p><strong>Compile</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>src/plated/manage.py<span class="w"> </span>compilemessages
 </code></pre></div>
-<ol>
-<li><strong>Test</strong></li>
+</li>
+<li>
+<p><strong>Test</strong></p>
+<p>Refresh the browser to see changes (in production, restart may be
+needed).</p>
+</li>
 </ol>
-<p>Refresh the browser to see changes (in production, restart may be needed).</p>
 <h3 id="updating-all-languages">Updating All Languages<a class="headerlink" href="#updating-all-languages" title="Permanent link">&para;</a></h3>
 <p>To update all language files at once:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>manage.py<span class="w"> </span>makemessages<span class="w"> </span>-a
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>src/plated/manage.py<span class="w"> </span>makemessages<span class="w"> </span>-a
 </code></pre></div>
 <p>Then edit each <code>.po</code> file and compile:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>manage.py<span class="w"> </span>compilemessages
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>src/plated/manage.py<span class="w"> </span>compilemessages
 </code></pre></div>
 <h3 id="marking-new-strings-for-translation">Marking New Strings for Translation<a class="headerlink" href="#marking-new-strings-for-translation" title="Permanent link">&para;</a></h3>
 <h4 id="in-templates">In Templates<a class="headerlink" href="#in-templates" title="Permanent link">&para;</a></h4>
@@ -1224,58 +1232,63 @@ Download from <a href="https://www.gnu.org/software/gettext/">GNU gettext websit
 </code></pre></div>
 <h3 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h3>
 <ol>
-<li><strong>Context matters</strong>: Add context for ambiguous strings</li>
-</ol>
+<li>
+<p><strong>Context matters</strong>: Add context for ambiguous strings</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">django.utils.translation</span><span class="w"> </span><span class="kn">import</span> <span class="n">pgettext</span>
 <a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>
 <a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="c1"># &quot;May&quot; as month vs &quot;may&quot; as auxiliary verb</span>
 <a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="n">month</span> <span class="o">=</span> <span class="n">pgettext</span><span class="p">(</span><span class="s2">&quot;month name&quot;</span><span class="p">,</span> <span class="s2">&quot;May&quot;</span><span class="p">)</span>
 </code></pre></div>
-<ol>
-<li><strong>Avoid concatenation</strong>: Don't split sentences</li>
-</ol>
-<p>❌ Bad:
-   <div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Welcome&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">username</span>
-</code></pre></div></p>
-<p>✅ Good:
-   <div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Welcome </span><span class="si">%(username)s</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">%</span> <span class="p">{</span><span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="n">username</span><span class="p">}</span>
-</code></pre></div></p>
-<ol>
-<li><strong>Comments for translators</strong>: Add context when needed</li>
-</ol>
+</li>
+<li>
+<p><strong>Avoid concatenation</strong>: Don't split sentences</p>
+<p>❌ Bad:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Welcome&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">username</span>
+</code></pre></div>
+<p>✅ Good:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Welcome </span><span class="si">%(username)s</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">%</span> <span class="p">{</span><span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="n">username</span><span class="p">}</span>
+</code></pre></div>
+</li>
+<li>
+<p><strong>Comments for translators</strong>: Add context when needed</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1"># Translators: This is shown when a recipe is successfully deleted</span>
 <a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Recipe deleted&quot;</span><span class="p">))</span>
 </code></pre></div>
-<ol>
+</li>
 <li>
 <p><strong>Test all languages</strong>: Verify translations display correctly</p>
 </li>
 <li>
-<p><strong>Keep .po files in git</strong>: Track translation files in version control</p>
+<p><strong>Keep .po files in git</strong>: Track translation files in version
+    control</p>
 </li>
 </ol>
 <h3 id="translation-workflow">Translation Workflow<a class="headerlink" href="#translation-workflow" title="Permanent link">&para;</a></h3>
 <p>Recommended workflow for contributors:</p>
 <ol>
-<li><strong>Developer adds translatable strings</strong></li>
+<li>
+<p><strong>Developer adds translatable strings</strong></p>
+<ul>
 <li>Mark strings with <code>{% trans %}</code> or <code>_()</code></li>
 <li>Run <code>makemessages</code> to update <code>.po</code> files</li>
-<li>
-<p>Commit code and updated <code>.po</code> files</p>
+<li>Commit code and updated <code>.po</code> files</li>
+</ul>
 </li>
 <li>
 <p><strong>Translator adds translations</strong></p>
-</li>
+<ul>
 <li>Edit <code>.po</code> files</li>
 <li>Run <code>compilemessages</code> to test locally</li>
-<li>
-<p>Commit translated <code>.po</code> files</p>
+<li>Commit translated <code>.po</code> files</li>
+</ul>
 </li>
 <li>
 <p><strong>Deployment</strong></p>
-</li>
+<ul>
 <li>Run <code>compilemessages</code> as part of deployment</li>
 <li><code>.mo</code> files should NOT be in git (generated files)</li>
+</ul>
+</li>
 </ol>
 <h3 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h3>
 <p><strong>Translations not showing:</strong></p>
@@ -1301,8 +1314,8 @@ Download from <a href="https://www.gnu.org/software/gettext/">GNU gettext websit
 <h3 id="advanced-javascript-translations">Advanced: JavaScript Translations<a class="headerlink" href="#advanced-javascript-translations" title="Permanent link">&para;</a></h3>
 <p>For translating strings in JavaScript files:</p>
 <ol>
-<li><strong>Mark strings in JS</strong></li>
-</ol>
+<li>
+<p><strong>Mark strings in JS</strong></p>
 <p>Create a JavaScript catalog view in <code>urls.py</code>:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">django.views.i18n</span><span class="w"> </span><span class="kn">import</span> <span class="n">JavaScriptCatalog</span>
 <a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>
@@ -1310,33 +1323,35 @@ Download from <a href="https://www.gnu.org/software/gettext/">GNU gettext websit
 <a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>    <span class="n">path</span><span class="p">(</span><span class="s1">&#39;jsi18n/&#39;</span><span class="p">,</span> <span class="n">JavaScriptCatalog</span><span class="o">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;javascript-catalog&#39;</span><span class="p">),</span>
 <a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="p">]</span>
 </code></pre></div>
-<ol>
-<li><strong>Include in template</strong></li>
-</ol>
+</li>
+<li>
+<p><strong>Include in template</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="x">&lt;script src=&quot;</span><span class="cp">{%</span> <span class="k">url</span> <span class="s1">&#39;javascript-catalog&#39;</span> <span class="cp">%}</span><span class="x">&quot;&gt;&lt;/script&gt;</span>
 </code></pre></div>
-<ol>
-<li><strong>Use in JavaScript</strong></li>
-</ol>
+</li>
+<li>
+<p><strong>Use in JavaScript</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">gettext</span><span class="p">(</span><span class="s2">&quot;Recipe saved!&quot;</span><span class="p">);</span>
 </code></pre></div>
-<ol>
-<li><strong>Extract and compile</strong></li>
-</ol>
+</li>
+<li>
+<p><strong>Extract and compile</strong></p>
 <p>JavaScript strings are extracted with <code>makemessages -d djangojs</code></p>
+</li>
+</ol>
 <h3 id="file-structure">File Structure<a class="headerlink" href="#file-structure" title="Permanent link">&para;</a></h3>
 <p>Translation files are organized as:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>src/
-<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>├── locale/
-<a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>│   ├── es/
-<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>│   │   └── LC_MESSAGES/
-<a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a>│   │       ├── django.po      # Editable translation file
-<a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a>│   │       └── django.mo      # Compiled (generated)
-<a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a>│   ├── fr/
-<a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a>│   │   └── LC_MESSAGES/
-<a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a>│   │       ├── django.po
-<a id="__codelineno-23-10" name="__codelineno-23-10" href="#__codelineno-23-10"></a>│   │       └── django.mo
-<a id="__codelineno-23-11" name="__codelineno-23-11" href="#__codelineno-23-11"></a>│   └── ...
+<div class="highlight"><pre><span></span><code>src/
+├── locale/
+│   ├── es/
+│   │   └── LC_MESSAGES/
+│   │       ├── django.po      # Editable translation file
+│   │       └── django.mo      # Compiled (generated)
+│   ├── fr/
+│   │   └── LC_MESSAGES/
+│   │       ├── django.po
+│   │       └── django.mo
+│   └── ...
 </code></pre></div>
 <h2 id="contributing-translations">Contributing Translations<a class="headerlink" href="#contributing-translations" title="Permanent link">&para;</a></h2>
 <p>Contributions of new translations are welcome!</p>
@@ -1344,10 +1359,12 @@ Download from <a href="https://www.gnu.org/software/gettext/">GNU gettext websit
 <li>Fork the repository</li>
 <li>Add or update translations following the guide above</li>
 <li>Test locally</li>
-<li>Submit a pull request with:</li>
+<li>Submit a pull request with:<ul>
 <li>Updated <code>.po</code> files</li>
 <li>Updated <code>LANGUAGES</code> in <code>settings.py</code> (if new language)</li>
 <li>DO NOT include <code>.mo</code> files (these are generated)</li>
+</ul>
+</li>
 </ol>
 <p>Native speakers are especially encouraged to contribute!</p>
 
