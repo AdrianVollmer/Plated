@@ -11,7 +11,7 @@ src/plated/_version.py
 .venv
 
 # Binaries
-db.sqlite3
+*.sqlite3
 src/plated/staticfiles
 src/plated/media
 
@@ -22,3 +22,7 @@ src/logs/
 # Documentation build
 site/
 issues/
+
+# Dev files
+_data
+.claude/
