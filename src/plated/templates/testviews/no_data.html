@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}No Test Data - Plated{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="alert alert-warning">
+                <h4 class="alert-heading">
+                    <i class="bi bi-exclamation-triangle"></i> No Test Data Found
+                </h4>
+                <p>{{ message }}</p>
+                <hr>
+                <p class="mb-0">
+                    Run the following command to create test data:
+                    <br>
+                    <code>uv run python src/plated/manage.py testviews</code>
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

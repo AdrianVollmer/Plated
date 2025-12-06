@@ -34,3 +34,5 @@ urlpatterns: list[URLPattern | URLResolver] = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    # Test view server for UI/UX development
+    urlpatterns.append(path("testviews/", include("recipes.testviews_urls")))
