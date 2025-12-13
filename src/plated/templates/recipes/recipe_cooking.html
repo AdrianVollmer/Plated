@@ -27,6 +27,7 @@
             padding: 1rem;
             max-width: 800px;
             margin: 0 auto;
+            overflow-y: auto;
         }
 
         .cooking-header {
@@ -188,14 +189,20 @@
         /* Fullscreen styles */
         .cooking-view:fullscreen {
             padding: 1.5rem;
+            overflow-y: auto;
+            height: 100vh;
         }
 
         .cooking-view:-webkit-full-screen {
             padding: 1.5rem;
+            overflow-y: auto;
+            height: 100vh;
         }
 
         .cooking-view:-moz-full-screen {
             padding: 1.5rem;
+            overflow-y: auto;
+            height: 100vh;
         }
     </style>
 </head>
@@ -204,25 +211,6 @@
         <!-- Header -->
         <div class="cooking-header">
             <h1 class="cooking-title">{{ recipe.title }}</h1>
-
-            <div class="cooking-meta">
-                <div class="cooking-meta-item">
-                    <i class="bi bi-people-fill"></i>
-                    <span>{{ recipe.servings }} {% trans "servings" %}</span>
-                </div>
-                {% if recipe.prep_time %}
-                <div class="cooking-meta-item">
-                    <i class="bi bi-clock-fill"></i>
-                    <span>{% trans "Prep" %}: {{ recipe.prep_time }}</span>
-                </div>
-                {% endif %}
-                {% if recipe.wait_time %}
-                <div class="cooking-meta-item">
-                    <i class="bi bi-hourglass-split"></i>
-                    <span>{% trans "Cook" %}: {{ recipe.wait_time }}</span>
-                </div>
-                {% endif %}
-            </div>
 
             <div class="cooking-controls">
                 <a href="{% url 'recipe_detail' recipe.pk %}" class="btn btn-sm btn-outline-secondary btn-cooking">
