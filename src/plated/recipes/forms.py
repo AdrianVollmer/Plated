@@ -135,12 +135,14 @@ class UserSettingsForm(forms.ModelForm):
 
     class Meta:
         model = UserSettings
-        fields = ["language"]
+        fields = ["language", "locale"]
         widgets = {
             "language": forms.Select(attrs={"class": "form-select"}),
+            "locale": forms.Select(attrs={"class": "form-select"}),
         }
         labels = {
             "language": _("Interface Language"),
+            "locale": _("Date, Time & Number Format"),
         }
 
 

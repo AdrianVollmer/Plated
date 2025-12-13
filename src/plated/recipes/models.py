@@ -214,6 +214,15 @@ class AIJob(models.Model):
 class UserSettings(models.Model):
     """User-specific settings including language preference."""
 
+    LOCALE_CHOICES = [
+        ("en-us", "English (United States) - MM/DD/YYYY, 1,234.56"),
+        ("en-gb", "English (United Kingdom) - DD/MM/YYYY, 1,234.56"),
+        ("de-de", "Deutsch (Deutschland) - DD.MM.YYYY, 1.234,56"),
+        ("fr-fr", "Français (France) - DD/MM/YYYY, 1 234,56"),
+        ("es-es", "Español (España) - DD/MM/YYYY, 1.234,56"),
+        ("it-it", "Italiano (Italia) - DD/MM/YYYY, 1.234,56"),
+    ]
+
     # Use session_key as a unique identifier for users (works without authentication)
     session_key = models.CharField(max_length=40, unique=True, db_index=True)
     language = models.CharField(
@@ -221,6 +230,12 @@ class UserSettings(models.Model):
         choices=[(lang[0], lang[1]) for lang in django_settings.LANGUAGES],
         default=django_settings.LANGUAGE_CODE,
         help_text=_("Preferred language for the interface"),
+    )
+    locale = models.CharField(
+        max_length=10,
+        choices=LOCALE_CHOICES,
+        default="en-us",
+        help_text=_("Preferred format for dates, times, and numbers"),
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

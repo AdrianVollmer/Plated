@@ -223,6 +223,7 @@ class UserSettingsFormTest(TestCase):
         form = UserSettingsForm(
             data={
                 "language": "en",
+                "locale": "en-us",
             }
         )
         self.assertTrue(form.is_valid())
@@ -232,6 +233,7 @@ class UserSettingsFormTest(TestCase):
         form = UserSettingsForm(
             data={
                 "language": "de",
+                "locale": "de-de",
             }
         )
         self.assertTrue(form.is_valid())
