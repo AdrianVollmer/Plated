@@ -1,5 +1,6 @@
 {% load static %}
 {% load i18n %}
+{% load recipe_filters %}
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
@@ -238,8 +239,8 @@
                     <input type="checkbox" class="cooking-checkbox ingredient-checkbox" data-id="{{ forloop.counter }}">
                     <div class="cooking-ingredient-content">
                         <span class="cooking-ingredient-amount">
-                            {% if ingredient.amount %}{{ ingredient.amount }}{% endif %}
-                            {% if ingredient.unit %}{{ ingredient.unit }}{% endif %}
+                            {% if ingredient.amount %}{{ ingredient.amount|format_amount }}{% endif %}
+                            {% if ingredient.unit %} {{ ingredient.unit }}{% endif %}
                         </span>
                         <span class="cooking-ingredient-name">{{ ingredient.name }}</span>
                         {% if ingredient.note %}

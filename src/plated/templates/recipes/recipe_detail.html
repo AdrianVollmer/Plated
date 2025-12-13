@@ -207,8 +207,8 @@
                 {% for ingredient in recipe.ingredients.all %}
                 <li class="ingredient-item" data-amount="{{ ingredient.amount }}" data-unit="{{ ingredient.unit }}" data-name="{{ ingredient.name }}">
                     <span class="ingredient-amount">
-                        {% if ingredient.amount %}{{ ingredient.amount }}{% endif %}
-                        {% if ingredient.unit %}{{ ingredient.unit }}{% endif %}
+                        {% if ingredient.amount %}{{ ingredient.amount|format_amount }}{% endif %}
+                        {% if ingredient.unit %} {{ ingredient.unit }}{% endif %}
                     </span>
                     <span class="ingredient-name">{{ ingredient.name }}</span>
                     {% if ingredient.note %}<span class="ingredient-note">({{ ingredient.note }})</span>{% endif %}
