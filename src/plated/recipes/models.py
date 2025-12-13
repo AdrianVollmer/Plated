@@ -15,7 +15,7 @@ class Recipe(models.Model):
     keywords = models.CharField(max_length=500, blank=True, help_text=_("Comma-separated keywords"))
     prep_time = models.DurationField(null=True, blank=True, help_text=_("Time to prepare ingredients"))
     wait_time = models.DurationField(null=True, blank=True, help_text=_("Time for cooking/baking/waiting"))
-    url = models.URLField(blank=True, help_text=_("Source URL if recipe is from the web"))
+    url = models.TextField(blank=True, help_text=_("Source URL if recipe is from the web"))
     notes = models.TextField(blank=True)
     special_equipment = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

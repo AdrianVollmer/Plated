@@ -157,7 +157,7 @@ class TandoorFormatHandler(RecipeFormatHandler):
         title = data.get("name", "Untitled Recipe")
         description = data.get("description", "")
         servings = data.get("servings", 1)
-        source_url = data.get("source_url", "")
+        source_url = data.get("source_url") or ""
 
         # Convert times from minutes to timedelta
         prep_time = None
