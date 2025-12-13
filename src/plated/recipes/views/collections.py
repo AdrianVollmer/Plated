@@ -109,12 +109,31 @@ class CollectionDeleteView(DeleteView):
         return context
 
     def delete(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        """Delete the collection and show a success message."""
+        """Delete the collection and optionally its recipes, then show a success message."""
         collection = self.get_object()
         collection_name = collection.name
         collection_id = collection.pk
-        logger.info(f"Collection deleted: '{collection_name}' (ID: {collection_id})")
-        messages.success(request, _("Collection '%(name)s' deleted successfully!") % {"name": collection_name})
+
+        # Check if user wants to delete recipes too
+        delete_recipes = request.POST.get("delete_recipes") == "on"
+
+        if delete_recipes:
+            recipe_count = collection.recipes.count()
+            # Delete all recipes in this collection
+            collection.recipes.all().delete()
+            logger.info(
+                f"Collection deleted with recipes: '{collection_name}' "
+                f"(ID: {collection_id}, {recipe_count} recipes deleted)"
+            )
+            messages.success(
+                request,
+                _("Collection '%(name)s' and %(count)d recipe(s) deleted successfully!")
+                % {"name": collection_name, "count": recipe_count},
+            )
+        else:
+            logger.info(f"Collection deleted: '{collection_name}' (ID: {collection_id})")
+            messages.success(request, _("Collection '%(name)s' deleted successfully!") % {"name": collection_name})
+
         return super().delete(request, *args, **kwargs)
 
 
