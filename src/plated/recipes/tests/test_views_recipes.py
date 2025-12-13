@@ -340,7 +340,9 @@ class RecipeCookingViewTest(TestCase):
         """Test that cooking view loads necessary JavaScript."""
         response = self.client.get(reverse("recipe_cooking", args=[self.recipe.pk]))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "cooking-view.js")
+        # Check for base filename (may have hash suffix for cache-busting)
+        self.assertContains(response, "cooking-view")
+        self.assertContains(response, "theme-switcher")
 
     def test_cooking_view_404_for_nonexistent_recipe(self) -> None:
         """Test that cooking view returns 404 for non-existent recipe."""
