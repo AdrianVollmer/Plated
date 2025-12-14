@@ -3,7 +3,12 @@
 from __future__ import annotations
 
 import logging
+import os
+import subprocess
+import sys
+import tempfile
 from datetime import date, timedelta
+from pathlib import Path
 from typing import Any
 
 from django.core.management.base import BaseCommand
@@ -111,32 +116,81 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args: Any, **kwargs: Any) -> None:
-        """Set up test data and instructions."""
+        """Set up temporary database, create test data, and launch server."""
         port = kwargs["port"]
 
         self.stdout.write(self.style.WARNING("\n" + "=" * 70))
         self.stdout.write(self.style.WARNING("  TEST VIEW SERVER"))
         self.stdout.write(self.style.WARNING("=" * 70))
-        self.stdout.write("\nThis command will create test data in your database.")
-        self.stdout.write("Make sure you're using a development database!\n")
+        self.stdout.write("\nThis will create a temporary SQLite database with test data")
+        self.stdout.write("and launch the development server automatically.\n")
 
-        response = input("Continue? (yes/no): ")
-        if response.lower() not in ["yes", "y"]:
-            self.stdout.write(self.style.ERROR("Aborted."))
-            return
+        # Create temporary directory and database
+        temp_dir = tempfile.mkdtemp(prefix="plated_testviews_")
+        temp_db = Path(temp_dir) / "test.db"
 
-        # Create test data
-        self.stdout.write("\nCreating test data...")
-        self._create_test_data()
+        self.stdout.write(f"\nCreating temporary database at: {temp_db}")
 
-        self.stdout.write(self.style.SUCCESS("\n✓ Test data created successfully!\n"))
-        self.stdout.write(self.style.WARNING("=" * 70))
-        self.stdout.write("To view the test views:")
-        self.stdout.write(f"1. Run: uv run python src/plated/manage.py runserver {port}")
-        self.stdout.write(f"2. Visit: http://127.0.0.1:{port}/testviews/")
-        self.stdout.write(self.style.WARNING("=" * 70))
-        self.stdout.write("\nThe test view index will show all available test scenarios.")
-        self.stdout.write("Use the sidebar to navigate between different views and data states.\n")
+        # Get the manage.py path
+        manage_py = Path(__file__).parents[3] / "manage.py"
+
+        # Set up environment with temporary database
+        env = os.environ.copy()
+        env["DATABASE_URL"] = f"sqlite:///{temp_db}"
+
+        try:
+            # Run migrations
+            self.stdout.write("\nRunning migrations...")
+            result = subprocess.run(  # noqa: S603
+                [sys.executable, str(manage_py), "migrate", "--verbosity", "0"],
+                env=env,
+                capture_output=True,
+                text=True,
+            )
+            if result.returncode != 0:
+                self.stdout.write(self.style.ERROR(f"Migration failed: {result.stderr}"))
+                return
+
+            self.stdout.write(self.style.SUCCESS("✓ Migrations completed"))
+
+            # Create test data using the seed script
+            self.stdout.write("\nCreating test data...")
+
+            # Run the seed script with the temp database
+            seed_script = Path(__file__).parent / "seed_testdata.py"
+            result = subprocess.run(  # noqa: S603
+                [sys.executable, str(seed_script)],
+                env=env,
+                capture_output=True,
+                text=True,
+            )
+            if result.returncode != 0:
+                self.stdout.write(self.style.ERROR(f"Seeding failed: {result.stderr}"))
+                return
+
+            self.stdout.write(self.style.SUCCESS("✓ Test data created"))
+
+            # Launch the server
+            self.stdout.write(self.style.SUCCESS("\n" + "=" * 70))
+            self.stdout.write(self.style.SUCCESS(f"  Starting server on http://127.0.0.1:{port}"))
+            self.stdout.write(self.style.SUCCESS("=" * 70))
+            self.stdout.write("\nPress Ctrl+C to stop the server")
+            self.stdout.write(f"Temporary database: {temp_db}\n")
+
+            subprocess.run(  # noqa: S603
+                [sys.executable, str(manage_py), "runserver", str(port)],
+                env=env,
+            )
+
+        except KeyboardInterrupt:
+            self.stdout.write(self.style.WARNING("\n\nServer stopped."))
+        finally:
+            # Clean up temporary database
+            import shutil
+
+            if Path(temp_dir).exists():
+                shutil.rmtree(temp_dir)
+                self.stdout.write(f"\nCleaned up temporary database at {temp_db}")
 
     def _create_test_data(self) -> None:
         """Create test data with lorem ipsum content."""

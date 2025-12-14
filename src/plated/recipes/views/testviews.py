@@ -8,7 +8,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.views.generic import TemplateView
 
-from ..models import MealPlan, Recipe, RecipeCollection
+from ..models import AIJob, MealPlan, MealPlanEntry, Recipe, RecipeCollection
 
 
 class TestViewIndexView(TemplateView):
@@ -73,7 +73,15 @@ class TestViewIndexView(TemplateView):
                 "name": "AI & Jobs Views",
                 "views": [
                     {"name": "AI Extract Recipe", "url": "ai_extract_recipe"},
-                    {"name": "Jobs List", "url": "jobs_list"},
+                    {"name": "Jobs List - Empty", "url": "testviews_job_list_empty"},
+                    {"name": "Jobs List - 1 Item", "url": "testviews_job_list_one"},
+                    {"name": "Jobs List - 3 Items", "url": "testviews_job_list_three"},
+                    {"name": "Jobs List - Many Items", "url": "testviews_job_list_many"},
+                    {"name": "Job Detail - Pending", "url": "testviews_job_detail_pending"},
+                    {"name": "Job Detail - Running", "url": "testviews_job_detail_running"},
+                    {"name": "Job Detail - Completed", "url": "testviews_job_detail_completed"},
+                    {"name": "Job Detail - Failed", "url": "testviews_job_detail_failed"},
+                    {"name": "Job Detail - Cancelled", "url": "testviews_job_detail_cancelled"},
                 ],
             },
             {
@@ -146,43 +154,67 @@ def collection_list_test_view(request: HttpRequest, count: int) -> HttpResponse:
         if count > 0
         else RecipeCollection.objects.none()
     )
-    return render(request, "recipes/collection_list.html", {"recipecollection_list": collections, "page_obj": None})
+    return render(request, "recipes/collection_list.html", {"collections": collections, "page_obj": None})
 
 
 def collection_detail_test_view(request: HttpRequest, empty: bool = False) -> HttpResponse:
     """Display collection detail view."""
+    from django.db.models import Count
+
+    collection: RecipeCollection | None
     if empty:
-        # Find a collection with no recipes
-        collection = RecipeCollection.objects.filter(name__startswith="[TEST]", recipes__isnull=True).first()
+        # Find a collection with no recipes or create one
+        collection = (
+            RecipeCollection.objects.filter(name__startswith="[TEST]")
+            .annotate(recipe_count=Count("recipes"))
+            .filter(recipe_count=0)
+            .first()
+        )
         if not collection:
             # Create one temporarily
             collection = RecipeCollection.objects.create(
                 name="[TEST] Empty Collection", description="A collection with no recipes for testing"
             )
     else:
-        collection = RecipeCollection.objects.filter(name__startswith="[TEST]").exclude(recipes__isnull=True).first()
+        # Find a collection with recipes
+        collection = (
+            RecipeCollection.objects.filter(name__startswith="[TEST]")
+            .annotate(recipe_count=Count("recipes"))
+            .filter(recipe_count__gt=0)
+            .first()
+        )
 
     if not collection:
         return render(
             request, "testviews/no_data.html", {"message": "No test collections found. Run testviews command first."}
         )
 
-    return render(request, "recipes/collection_detail.html", {"recipecollection": collection})
+    return render(request, "recipes/collection_detail.html", {"collection": collection})
 
 
 def meal_plan_list_test_view(request: HttpRequest, count: int) -> HttpResponse:
     """Display meal plan list with specific number of items."""
     meal_plans = MealPlan.objects.filter(name__startswith="[TEST]")[:count] if count > 0 else MealPlan.objects.none()
-    return render(request, "recipes/meal_plan_list.html", {"mealplan_list": meal_plans, "page_obj": None})
+    return render(request, "recipes/meal_plan_list.html", {"meal_plans": meal_plans, "page_obj": None})
 
 
 def meal_plan_detail_test_view(request: HttpRequest, empty: bool = False) -> HttpResponse:
     """Display meal plan detail view."""
+    from datetime import timedelta
+
+    from django.db.models import Count, Prefetch
+
+    meal_plan: MealPlan | None
     if empty:
         # Find a meal plan with no entries or create one
-        meal_plan = MealPlan.objects.filter(name__startswith="[TEST]", entries__isnull=True).first()
+        meal_plan = (
+            MealPlan.objects.filter(name__startswith="[TEST]")
+            .annotate(entry_count=Count("entries"))
+            .filter(entry_count=0)
+            .first()
+        )
         if not meal_plan:
-            from datetime import date, timedelta
+            from datetime import date
 
             meal_plan = MealPlan.objects.create(
                 name="[TEST] Empty Meal Plan",
@@ -191,14 +223,37 @@ def meal_plan_detail_test_view(request: HttpRequest, empty: bool = False) -> Htt
                 end_date=date.today() + timedelta(days=6),
             )
     else:
-        meal_plan = MealPlan.objects.filter(name__startswith="[TEST]").exclude(entries__isnull=True).first()
+        # Find a meal plan with entries
+        meal_plan = (
+            MealPlan.objects.filter(name__startswith="[TEST]")
+            .prefetch_related(Prefetch("entries", queryset=MealPlanEntry.objects.select_related("recipe")))
+            .annotate(entry_count=Count("entries"))
+            .filter(entry_count__gt=0)
+            .first()
+        )
 
     if not meal_plan:
         return render(
             request, "testviews/no_data.html", {"message": "No test meal plans found. Run testviews command first."}
         )
 
-    return render(request, "recipes/meal_plan_detail.html", {"mealplan": meal_plan, "recipes": Recipe.objects.all()})
+    # Generate list of dates in range
+    current_date = meal_plan.start_date
+    dates = []
+    while current_date <= meal_plan.end_date:
+        dates.append(current_date)
+        current_date += timedelta(days=1)
+
+    return render(
+        request,
+        "recipes/meal_plan_detail.html",
+        {
+            "meal_plan": meal_plan,
+            "recipes": Recipe.objects.all(),
+            "dates": dates,
+            "meal_types": ["breakfast", "lunch", "dinner", "snack"],
+        },
+    )
 
 
 def shopping_list_test_view(request: HttpRequest) -> HttpResponse:
@@ -241,5 +296,27 @@ def shopping_list_test_view(request: HttpRequest) -> HttpResponse:
     return render(
         request,
         "recipes/shopping_list.html",
-        {"mealplan": meal_plan, "shopping_items": shopping_items, "total_items": len(shopping_items)},
+        {"meal_plan": meal_plan, "shopping_items": shopping_items, "total_items": len(shopping_items)},
     )
+
+
+def job_list_test_view(request: HttpRequest, count: int) -> HttpResponse:
+    """Display job list with specific number of items."""
+    jobs = AIJob.objects.filter(input_content__startswith="[TEST]")[:count] if count > 0 else AIJob.objects.none()
+    return render(request, "recipes/jobs_list.html", {"jobs": jobs})
+
+
+def job_detail_test_view(request: HttpRequest, status: str | None = None) -> HttpResponse:
+    """Display job detail view for a specific status."""
+    if status:
+        # Find a job with the specified status
+        job = AIJob.objects.filter(input_content__startswith="[TEST]", status=status).first()
+    else:
+        # Default to completed status
+        job = AIJob.objects.filter(input_content__startswith="[TEST]", status="completed").first()
+
+    if not job:
+        message = f"No test jobs found with status '{status}'. Run testviews command first."
+        return render(request, "testviews/no_data.html", {"message": message})
+
+    return render(request, "recipes/job_detail.html", {"job": job})

@@ -46,4 +46,36 @@ urlpatterns = [
     ),
     path("meal-plans/detail/", testviews.meal_plan_detail_test_view, name="testviews_meal_plan_detail"),
     path("meal-plans/shopping-list/", testviews.shopping_list_test_view, name="testviews_shopping_list"),
+    # Job views
+    path("jobs/empty/", testviews.job_list_test_view, {"count": 0}, name="testviews_job_list_empty"),
+    path("jobs/one/", testviews.job_list_test_view, {"count": 1}, name="testviews_job_list_one"),
+    path("jobs/three/", testviews.job_list_test_view, {"count": 3}, name="testviews_job_list_three"),
+    path("jobs/many/", testviews.job_list_test_view, {"count": 10}, name="testviews_job_list_many"),
+    path(
+        "jobs/detail/pending/",
+        testviews.job_detail_test_view,
+        {"status": "pending"},
+        name="testviews_job_detail_pending",
+    ),
+    path(
+        "jobs/detail/running/",
+        testviews.job_detail_test_view,
+        {"status": "running"},
+        name="testviews_job_detail_running",
+    ),
+    path(
+        "jobs/detail/completed/",
+        testviews.job_detail_test_view,
+        {"status": "completed"},
+        name="testviews_job_detail_completed",
+    ),
+    path(
+        "jobs/detail/failed/", testviews.job_detail_test_view, {"status": "failed"}, name="testviews_job_detail_failed"
+    ),
+    path(
+        "jobs/detail/cancelled/",
+        testviews.job_detail_test_view,
+        {"status": "cancelled"},
+        name="testviews_job_detail_cancelled",
+    ),
 ]
