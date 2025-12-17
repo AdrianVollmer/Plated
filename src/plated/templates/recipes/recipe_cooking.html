@@ -63,12 +63,6 @@
             gap: 0.25rem;
         }
 
-        .cooking-controls {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
         .cooking-section {
             margin-bottom: 2rem;
         }
@@ -163,11 +157,6 @@
             text-decoration: line-through;
         }
 
-        .btn-cooking {
-            padding: 0.5rem 1rem;
-            font-size: 0.95rem;
-        }
-
         @media (max-width: 576px) {
             .cooking-view {
                 padding: 0.75rem;
@@ -212,18 +201,6 @@
         <!-- Header -->
         <div class="cooking-header">
             <h1 class="cooking-title">{{ recipe.title }}</h1>
-
-            <div class="cooking-controls">
-                <a href="{% url 'recipe_detail' recipe.pk %}" class="btn btn-sm btn-outline-secondary btn-cooking">
-                    <i class="bi bi-arrow-left"></i> {% trans "Exit Cooking View" %}
-                </a>
-                <button id="fullscreenBtn" class="btn btn-sm btn-outline-primary btn-cooking">
-                    <i class="bi bi-arrows-fullscreen"></i> <span id="fullscreenText">{% trans "Fullscreen" %}</span>
-                </button>
-                <button id="clearCheckboxesBtn" class="btn btn-sm btn-outline-warning btn-cooking">
-                    <i class="bi bi-arrow-counterclockwise"></i> {% trans "Reset Checkboxes" %}
-                </button>
-            </div>
         </div>
 
         <!-- Ingredients Section -->

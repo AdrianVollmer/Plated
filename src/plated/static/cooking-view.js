@@ -1,5 +1,5 @@
 /**
- * Cooking View - Wake lock, fullscreen, and checkbox management
+ * Cooking View - Wake lock and checkbox management
  */
 
 (function () {
@@ -57,54 +57,6 @@
     window.addEventListener('beforeunload', () => {
         releaseWakeLock();
     });
-
-    // Fullscreen functionality
-    const fullscreenBtn = document.getElementById('fullscreenBtn');
-    const fullscreenText = document.getElementById('fullscreenText');
-    const cookingView = document.getElementById('cookingView');
-
-    if (fullscreenBtn && cookingView) {
-        fullscreenBtn.addEventListener('click', () => {
-            if (!document.fullscreenElement &&
-                !document.webkitFullscreenElement &&
-                !document.mozFullScreenElement) {
-                // Enter fullscreen
-                if (cookingView.requestFullscreen) {
-                    cookingView.requestFullscreen();
-                } else if (cookingView.webkitRequestFullscreen) {
-                    cookingView.webkitRequestFullscreen();
-                } else if (cookingView.mozRequestFullScreen) {
-                    cookingView.mozRequestFullScreen();
-                }
-            } else {
-                // Exit fullscreen
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.webkitExitFullscreen) {
-                    document.webkitExitFullscreen();
-                } else if (document.mozCancelFullScreen) {
-                    document.mozCancelFullScreen();
-                }
-            }
-        });
-
-        // Update button text based on fullscreen state
-        document.addEventListener('fullscreenchange', updateFullscreenButton);
-        document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
-        document.addEventListener('mozfullscreenchange', updateFullscreenButton);
-
-        function updateFullscreenButton() {
-            if (document.fullscreenElement ||
-                document.webkitFullscreenElement ||
-                document.mozFullScreenElement) {
-                fullscreenText.textContent = 'Exit Fullscreen';
-                fullscreenBtn.querySelector('i').className = 'bi bi-fullscreen-exit';
-            } else {
-                fullscreenText.textContent = 'Fullscreen';
-                fullscreenBtn.querySelector('i').className = 'bi bi-arrows-fullscreen';
-            }
-        }
-    }
 
     // Checkbox state management
     const recipeId = window.location.pathname.split('/')[2]; // Extract recipe ID from URL
@@ -212,16 +164,6 @@
             saveCheckboxStates();
         });
     });
-
-    // Clear checkboxes button
-    const clearBtn = document.getElementById('clearCheckboxesBtn');
-    if (clearBtn) {
-        clearBtn.addEventListener('click', () => {
-            if (confirm('Clear all checkboxes?')) {
-                clearCheckboxStates();
-            }
-        });
-    }
 
     // Load saved checkbox states on page load
     loadCheckboxStates();
