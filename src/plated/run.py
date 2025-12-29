@@ -46,6 +46,8 @@ def main() -> None:
     os.environ["DEBUG"] = "True"
     os.environ["SECRET_KEY"] = generate_secret_key()
     os.environ["DATABASE_URL"] = f"sqlite:///{db_path}"
+    os.environ["PLATED_BANNER_TEXT"] = "Demo mode. Do not use in production."
+    os.environ["PLATED_BANNER_COLOR"] = "danger"
 
     # Log database URL
     print(f"Database URL: sqlite:///{db_path}")
