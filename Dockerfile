@@ -21,7 +21,7 @@ WORKDIR /app
 
 # Install app and dependencies
 RUN cd /app && \
-    git clone "$PLATED_GIT_URL" --branch "$PLATED_GIT_REF" --depth 1 . && \
+    git clone "$PLATED_GIT_URL" --branch "$PLATED_GIT_REF" . && \
     python -m venv .venv && \
     . /app/.venv/bin/activate && \
     pip install gunicorn .

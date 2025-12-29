@@ -1,6 +1,6 @@
 [project]
 name = "plated"
-version = "0.0.5"
+dynamic = ["version"]
 description = "Add your description here"
 readme = "README.md"
 authors = [
@@ -22,6 +22,12 @@ plated = "plated.run:main"
 [build-system]
 requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/plated/_version.py"
 
 [dependency-groups]
 dev = [

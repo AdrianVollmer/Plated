@@ -34,7 +34,13 @@ def version_context(request: HttpRequest) -> dict[str, Any]:
     try:
         from plated._version import __version__  # type: ignore[import-untyped]
     except ImportError:
-        __version__ = "unknown"
+        # Fallback to package metadata if _version.py is not available
+        try:
+            from importlib.metadata import version
+
+            __version__ = version("plated")
+        except Exception:
+            __version__ = "unknown"
 
     return {
         "app_version": __version__,
