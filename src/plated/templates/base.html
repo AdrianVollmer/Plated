@@ -92,6 +92,11 @@
                 </div>
             </div>
         </nav>
+        {% if banner_text %}
+            <div class="alert alert-{{ banner_color }} mb-0 rounded-0 text-center" role="alert">
+                {{ banner_text }}
+            </div>
+        {% endif %}
         <main class="container my-4">
             {% if messages %}
                 <div class="row">

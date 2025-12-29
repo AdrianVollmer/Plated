@@ -69,6 +69,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "recipes.context_processors.jobs_context",
                 "recipes.context_processors.version_context",
+                "recipes.context_processors.banner_context",
             ],
         },
     },
@@ -236,3 +237,7 @@ LOGGING = {
         "level": "DEBUG" if DEBUG else "INFO",
     },
 }
+
+# Banner settings
+PLATED_BANNER_TEXT = os.environ.get("PLATED_BANNER_TEXT", "")
+PLATED_BANNER_COLOR = os.environ.get("PLATED_BANNER_COLOR", "red")

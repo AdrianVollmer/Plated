@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from django.conf import settings
 from django.http import HttpRequest
 
 from .models import AIJob
@@ -37,4 +38,19 @@ def version_context(request: HttpRequest) -> dict[str, Any]:
 
     return {
         "app_version": __version__,
+    }
+
+
+def banner_context(request: HttpRequest) -> dict[str, Any]:
+    """
+    Add banner settings to all templates.
+
+    Returns:
+        Dictionary with:
+        - banner_text: Text to display in the banner
+        - banner_color: Color of the banner (default: red)
+    """
+    return {
+        "banner_text": settings.PLATED_BANNER_TEXT,
+        "banner_color": settings.PLATED_BANNER_COLOR,
     }
