@@ -210,8 +210,10 @@
                         {% if ingredient.amount %}{{ ingredient.amount|format_amount }}{% endif %}
                         {% if ingredient.unit %} {{ ingredient.unit }}{% endif %}
                     </span>
-                    <span class="ingredient-name">{{ ingredient.name }}</span>
-                    {% if ingredient.note %}<span class="ingredient-note">({{ ingredient.note }})</span>{% endif %}
+                    <div class="ingredient-content">
+                        <span class="ingredient-name">{{ ingredient.name }}</span>
+                        {% if ingredient.note %}<span class="ingredient-note">{{ ingredient.note }}</span>{% endif %}
+                    </div>
                 </li>
                 {% endfor %}
             </ul>
