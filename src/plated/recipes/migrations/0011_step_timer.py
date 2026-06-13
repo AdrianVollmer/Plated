@@ -12,6 +12,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="step",
             name="timer",
-            field=models.PositiveSmallIntegerField(blank=True, help_text="Timer duration in minutes", null=True),
+            field=models.PositiveSmallIntegerField(
+                blank=True, help_text="Optional timer duration in minutes", null=True
+            ),
         ),
     ]

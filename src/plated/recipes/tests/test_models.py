@@ -189,6 +189,7 @@ class StepModelTest(TestCase):
             content="Simmer",
             order=0,
         )
+        step.refresh_from_db()
         self.assertIsNone(step.timer)
 
     def test_step_timer_saves_minutes(self) -> None:
