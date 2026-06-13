@@ -62,7 +62,7 @@ class Step(models.Model):
     timer = models.PositiveSmallIntegerField(
         null=True,
         blank=True,
-        help_text=_("Timer duration in minutes"),
+        help_text=_("Optional timer duration in minutes"),
     )
 
     class Meta:
