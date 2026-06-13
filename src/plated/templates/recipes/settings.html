@@ -27,14 +27,14 @@
             <!-- PWA Installation Section -->
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0">{% trans "Progressive Web App" %}</h5>
+                    <h5 class="mb-0">{% trans "Install as App" %}</h5>
                 </div>
                 <div class="card-body">
-                    <p class="text-muted mb-3">{% trans "Install Plated as an app on your device for offline access and a native app experience" %}</p>
+                    <p class="text-muted mb-3">{% trans "Install Plated on your device for a native app experience" %}</p>
                     <div id="pwa-installed-message"
                          class="alert alert-success d-none"
                          role="alert">
-                        <i class="bi bi-check-circle-fill"></i> {% trans "Plated is installed as a PWA and can work offline!" %}
+                        <i class="bi bi-check-circle-fill"></i> {% trans "Plated is installed as an app!" %}
                     </div>
                     <div id="pwa-info-message" class="alert alert-info d-none" role="alert">
                         <i class="bi bi-info-circle"></i> <span id="pwa-info-text"></span>
@@ -48,9 +48,7 @@
                         <small class="text-muted">
                             <strong>{% trans "Benefits:" %}</strong>
                             <ul class="mb-0 mt-2">
-                                <li>{% trans "Access recipes offline" %}</li>
                                 <li>{% trans "Install on home screen like a native app" %}</li>
-                                <li>{% trans "Faster loading times" %}</li>
                                 <li>{% trans "Works across all your devices" %}</li>
                             </ul>
                         </small>
