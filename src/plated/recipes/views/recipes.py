@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import logging
+from fractions import Fraction
 from typing import Any, cast
 
 from django.contrib import messages
@@ -35,6 +36,62 @@ from ..services import (
 )
 
 logger = logging.getLogger(__name__)
+
+_FRACTION_CHARS = {
+    0.125: "⅛",
+    0.25: "¼",
+    0.333: "⅓",
+    0.375: "⅜",
+    0.5: "½",
+    0.625: "⅝",
+    0.666: "⅔",
+    0.75: "¾",
+    0.875: "⅞",
+}
+
+
+def _parse_amount(amount_str: str) -> float | None:
+    """Parse an ingredient amount string to a float, mirroring the JS parseAmount logic."""
+    if not amount_str or not amount_str.strip():
+        return None
+    s = amount_str.strip()
+    if "-" in s:
+        s = s.split("-")[0].strip()
+    parts = s.split()
+    if len(parts) == 2:
+        try:
+            return float(parts[0]) + float(Fraction(parts[1]))
+        except (ValueError, ZeroDivisionError):
+            pass
+    try:
+        return float(Fraction(s))
+    except (ValueError, ZeroDivisionError):
+        pass
+    try:
+        return float(s)
+    except ValueError:
+        return None
+
+
+def _format_scaled_amount(amount: float) -> str:
+    """Format a scaled float amount back to a display string, mirroring the JS formatAmount logic."""
+    amount = round(amount * 100) / 100
+    whole = int(amount)
+    decimal = amount - whole
+    for dec_val, frac_str in _FRACTION_CHARS.items():
+        if abs(decimal - dec_val) < 0.01:
+            return f"{whole} {frac_str}" if whole > 0 else frac_str
+    if amount == int(amount):
+        return str(int(amount))
+    return str(amount)
+
+
+def _scale_amount(amount_str: str, scale: float) -> str:
+    """Scale an ingredient amount string by the given factor."""
+    parsed = _parse_amount(amount_str)
+    if parsed is None:
+        return amount_str
+    return _format_scaled_amount(parsed * scale)
 
 
 class RecipeListView(ListView):
@@ -89,6 +146,23 @@ class RecipeCookingView(DetailView):
     def get_queryset(self):
         """Prefetch ingredients and steps for efficient rendering."""
         return Recipe.objects.prefetch_related("ingredients", "steps")
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        """Apply optional scale factor from query param to ingredient amounts."""
+        context = super().get_context_data(**kwargs)
+        try:
+            scale = float(self.request.GET.get("scale", 1))
+        except (ValueError, TypeError):
+            scale = 1.0
+
+        if abs(scale - 1.0) > 0.001:
+            recipe = context["recipe"]
+            for ingredient in recipe.ingredients.all():
+                if ingredient.amount:
+                    ingredient.amount = _scale_amount(ingredient.amount, scale)
+
+        context["scale_factor"] = scale
+        return context
 
 
 class RecipeCreateView(CreateView):

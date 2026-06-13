@@ -381,6 +381,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         });
+
+        // Keep cook button URL in sync with current scale factor
+        const cookBtn = document.getElementById('cook-btn');
+        if (cookBtn) {
+            const url = new URL(cookBtn.href);
+            if (result.isScaled && result.scaleFactor !== 1) {
+                url.searchParams.set('scale', result.scaleFactor);
+            } else {
+                url.searchParams.delete('scale');
+            }
+            cookBtn.href = url.toString();
+        }
     }
 
     /**

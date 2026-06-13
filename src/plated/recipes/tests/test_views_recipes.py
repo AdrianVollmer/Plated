@@ -335,3 +335,29 @@ class RecipeCookingViewTest(TestCase):
         """Test that cooking view returns 404 for non-existent recipe."""
         response = self.client.get(reverse("recipe_cooking", args=[9999]))
         self.assertEqual(response.status_code, 404)
+
+    def test_cooking_view_scaled_amounts(self) -> None:
+        """Scaled amounts from ?scale= param appear in cooking view."""
+        url = reverse("recipe_cooking", args=[self.recipe.pk]) + "?scale=2"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        # 4 eggs * 2 = 8, 1 tbsp butter * 2 = 2
+        self.assertContains(response, "8")  # scaled egg count
+        # "4" (original egg count) must not appear as a standalone token in amounts
+        # The response should contain "2" from butter and step numbers, but not "4"
+        self.assertNotContains(response, ">4<")
+
+    def test_cooking_view_scale_one_is_identity(self) -> None:
+        """?scale=1 (or omitted) shows original amounts."""
+        url = reverse("recipe_cooking", args=[self.recipe.pk]) + "?scale=1"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "4")
+        self.assertContains(response, "1")
+
+    def test_cooking_view_invalid_scale_ignored(self) -> None:
+        """Invalid ?scale= falls back to original amounts."""
+        url = reverse("recipe_cooking", args=[self.recipe.pk]) + "?scale=abc"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "4")
