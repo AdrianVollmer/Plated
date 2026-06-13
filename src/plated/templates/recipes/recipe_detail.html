@@ -1,389 +1,417 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load recipe_filters %}
-
-{% block title %}{{ recipe.title }} - Plated{% endblock %}
-
+{% block title %}{{ recipe.title }} - Plated{% endblock title %}
 {% block content %}
-<div id="recipe-scaler-container" data-original-servings="{{ recipe.servings }}">
-<div class="row mb-3">
-    <div class="col">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'recipe_list' %}">{% trans "Recipes" %}</a></li>
-                <li class="breadcrumb-item active">{{ recipe.title }}</li>
-            </ol>
-        </nav>
-    </div>
-</div>
-
-<div class="recipe-header">
-    <div class="row align-items-center mb-4">
-        <div class="col-12 col-md-6">
-            <h1 class="recipe-title">{{ recipe.title }}</h1>
-        </div>
-        <div class="col-12 col-md-6">
-            <div class="recipe-actions">
-                <a href="{% url 'recipe_cooking' recipe.pk %}" class="btn btn-primary">
-                    <i class="bi bi-easel"></i> {% trans "Cook" %}
-                </a>
-                <a href="{% url 'recipe_update' recipe.pk %}" class="btn btn-outline-secondary">
-                    <i class="bi bi-pencil"></i> {% trans "Edit" %}
-                </a>
-                <div class="dropdown">
-                    <button class="btn btn-outline-secondary" type="button" id="recipeActionsMenu" data-bs-toggle="dropdown" aria-expanded="false" aria-label="{% trans 'More actions' %}">
-                        <i class="bi bi-three-dots-vertical"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="recipeActionsMenu">
-                        <li>
-                            <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#scaleRecipeModal">
-                                <i class="bi bi-sliders"></i> {% trans "Scale Recipe" %}
-                            </button>
-                        </li>
-                        <li>
-                            <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addToCollectionModal">
-                                <i class="bi bi-collection"></i> {% trans "Add to Collection" %}
-                            </button>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li>
-                            <h6 class="dropdown-header">{% trans "Download" %}</h6>
-                        </li>
-                        <li>
-                            <a class="dropdown-item pdf-download-link" href="{% url 'recipe_pdf' recipe.pk %}">
-                                <i class="bi bi-file-pdf"></i> {% trans "PDF" %}
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="{% url 'recipe_export' recipe.pk %}">
-                                <i class="bi bi-file-earmark-code"></i> {% trans "JSON" %}
-                            </a>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li>
-                            <a class="dropdown-item text-danger" href="{% url 'recipe_delete' recipe.pk %}">
-                                <i class="bi bi-trash"></i> {% trans "Delete" %}
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+    <div id="recipe-scaler-container"
+         data-original-servings="{{ recipe.servings }}">
+        <div class="row mb-3">
+            <div class="col">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'recipe_list' %}">{% trans "Recipes" %}</a></li>
+                        <li class="breadcrumb-item active">{{ recipe.title }}</li>
+                    </ol>
+                </nav>
             </div>
         </div>
-    </div>
-</div>
-
-{% if recipe.images.all %}
-<div class="card mb-4">
-    <div class="row g-0">
-        <div class="col-md-8">
-            <div id="recipeCarousel" class="carousel slide h-100" data-bs-ride="carousel">
-                <div class="carousel-inner h-100">
-                    {% for image in recipe.images.all %}
-                    <div class="carousel-item h-100 {% if forloop.first %}active{% endif %}">
-                        <img src="{{ image.image.url }}" class="d-block w-100 h-100" alt="{{ image.caption|default:recipe.title }}" style="object-fit: cover;">
-                        {% if image.caption %}
-                        <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
-                            <p>{{ image.caption }}</p>
+        <div class="recipe-header">
+            <div class="row align-items-center mb-4">
+                <div class="col-12 col-md-6">
+                    <h1 class="recipe-title">{{ recipe.title }}</h1>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="recipe-actions">
+                        <a href="{% url 'recipe_cooking' recipe.pk %}" class="btn btn-primary">
+                            <i class="bi bi-easel"></i> {% trans "Cook" %}
+                        </a>
+                        <a href="{% url 'recipe_update' recipe.pk %}"
+                           class="btn btn-outline-secondary">
+                            <i class="bi bi-pencil"></i> {% trans "Edit" %}
+                        </a>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary"
+                                    type="button"
+                                    id="recipeActionsMenu"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                    aria-label='{% trans "More actions" %}'>
+                                <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end"
+                                aria-labelledby="recipeActionsMenu">
+                                <li>
+                                    <button type="button"
+                                            class="dropdown-item"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#scaleRecipeModal">
+                                        <i class="bi bi-sliders"></i> {% trans "Scale Recipe" %}
+                                    </button>
+                                </li>
+                                <li>
+                                    <button type="button"
+                                            class="dropdown-item"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#addToCollectionModal">
+                                        <i class="bi bi-collection"></i> {% trans "Add to Collection" %}
+                                    </button>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <h6 class="dropdown-header">{% trans "Download" %}</h6>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item pdf-download-link"
+                                       href="{% url 'recipe_pdf' recipe.pk %}">
+                                        <i class="bi bi-file-pdf"></i> {% trans "PDF" %}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'recipe_export' recipe.pk %}">
+                                        <i class="bi bi-file-earmark-code"></i> {% trans "JSON" %}
+                                    </a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <a class="dropdown-item text-danger"
+                                       href="{% url 'recipe_delete' recipe.pk %}">
+                                        <i class="bi bi-trash"></i> {% trans "Delete" %}
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
-                        {% endif %}
                     </div>
-                    {% endfor %}
                 </div>
-                {% if recipe.images.count > 1 %}
-                <button class="carousel-control-prev" type="button" data-bs-target="#recipeCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon"></span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#recipeCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon"></span>
-                </button>
-                {% endif %}
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card-body h-100">
-                <h5 class="card-title">{% trans "Quick Info" %}</h5>
-                <div class="recipe-info-grid">
+        <div class="row mb-4">
+            <div class="col-md-8 offset-md-2">
+                <div class="recipe-info-row mb-3">
                     <div class="recipe-info-item">
-                        <div class="recipe-info-label"><i class="bi bi-people"></i> {% trans "Servings" %}</div>
-                        <div class="recipe-info-value">
-                            <span id="servings-display">{{ recipe.servings }}</span>
-                        </div>
+                        <i class="bi bi-people"></i>
+                        <span class="recipe-info-label">{% trans "Servings" %}</span>
+                        <span class="recipe-info-value"><span id="servings-display">{{ recipe.servings }}</span></span>
                     </div>
                     {% if recipe.prep_time %}
-                    <div class="recipe-info-item">
-                        <div class="recipe-info-label"><i class="bi bi-clock"></i> {% trans "Prep" %}</div>
-                        <div class="recipe-info-value">{{ recipe.prep_time }}</div>
-                    </div>
+                        <div class="recipe-info-item">
+                            <i class="bi bi-clock"></i>
+                            <span class="recipe-info-label">{% trans "Prep" %}</span>
+                            <span class="recipe-info-value">{{ recipe.prep_time }}</span>
+                        </div>
                     {% endif %}
                     {% if recipe.wait_time %}
-                    <div class="recipe-info-item">
-                        <div class="recipe-info-label"><i class="bi bi-hourglass"></i> {% trans "Cook" %}</div>
-                        <div class="recipe-info-value">{{ recipe.wait_time }}</div>
-                    </div>
+                        <div class="recipe-info-item">
+                            <i class="bi bi-hourglass"></i>
+                            <span class="recipe-info-label">{% trans "Cook" %}</span>
+                            <span class="recipe-info-value">{{ recipe.wait_time }}</span>
+                        </div>
+                    {% endif %}
+                    {% if recipe.url %}
+                        <div class="recipe-info-item">
+                            <i class="bi bi-link-45deg"></i>
+                            <a href="{{ recipe.url }}"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="recipe-info-value recipe-source-link">{% trans "Source" %}</a>
+                        </div>
                     {% endif %}
                 </div>
                 {% if recipe.keywords %}
-                <div class="mt-3">
-                    {% for keyword in recipe.keywords|split:"," %}
-                    <a href="{% url 'recipes_with_keyword' keyword %}" class="keyword-tag text-decoration-none">{{ keyword }}</a>
-                    {% endfor %}
-                </div>
-                {% endif %}
-                {% if recipe.url %}
-                <div class="mt-3 pt-3" style="border-top: 1px solid var(--border-subtle);">
-                    <div class="recipe-info-label mb-2"><i class="bi bi-link-45deg"></i> {% trans "Source" %}</div>
-                    <a href="{{ recipe.url }}" target="_blank" rel="noopener noreferrer" style="color: var(--primary); text-decoration: none; word-break: break-all; font-size: 0.9rem;">{{ recipe.url }}</a>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-</div>
-{% else %}
-<div class="row mb-4">
-    <div class="col-md-8 offset-md-2">
-        <div class="recipe-section">
-            <h5 class="recipe-section-title">{% trans "Quick Info" %}</h5>
-            <div class="recipe-info-grid">
-                <div class="recipe-info-item">
-                    <div class="recipe-info-label"><i class="bi bi-people"></i> {% trans "Servings" %}</div>
-                    <div class="recipe-info-value">
-                        <span id="servings-display">{{ recipe.servings }}</span>
+                    <div class="mb-3">
+                        {% for keyword in recipe.keywords|split:"," %}
+                            <a href="{% url 'recipes_with_keyword' keyword %}"
+                               class="keyword-tag text-decoration-none">{{ keyword }}</a>
+                        {% endfor %}
                     </div>
-                </div>
-                {% if recipe.prep_time %}
-                <div class="recipe-info-item">
-                    <div class="recipe-info-label"><i class="bi bi-clock"></i> {% trans "Prep" %}</div>
-                    <div class="recipe-info-value">{{ recipe.prep_time }}</div>
-                </div>
                 {% endif %}
-                {% if recipe.wait_time %}
-                <div class="recipe-info-item">
-                    <div class="recipe-info-label"><i class="bi bi-hourglass"></i> {% trans "Cook" %}</div>
-                    <div class="recipe-info-value">{{ recipe.wait_time }}</div>
-                </div>
+                {% if recipe.description %}
+                    <p class="recipe-description">{{ recipe.description }}</p>
                 {% endif %}
             </div>
-            {% if recipe.keywords %}
-            <div class="mt-3">
-                {% for keyword in recipe.keywords|split:"," %}
-                <a href="{% url 'recipes_with_keyword' keyword %}" class="keyword-tag text-decoration-none">{{ keyword }}</a>
-                {% endfor %}
-            </div>
-            {% endif %}
-            {% if recipe.url %}
-            <div class="mt-3 pt-3" style="border-top: 1px solid var(--border-subtle);">
-                <div class="recipe-info-label mb-2"><i class="bi bi-link-45deg"></i> {% trans "Source" %}</div>
-                <a href="{{ recipe.url }}" target="_blank" rel="noopener noreferrer" style="color: var(--primary); text-decoration: none; word-break: break-all; font-size: 0.9rem;">{{ recipe.url }}</a>
-            </div>
-            {% endif %}
         </div>
-    </div>
-</div>
-{% endif %}
-
-{% if recipe.description %}
-<div class="row mb-4">
-    <div class="col-md-8 offset-md-2">
-        <div class="recipe-section">
-            <h5 class="recipe-section-title">{% trans "Description" %}</h5>
-            <p>{{ recipe.description }}</p>
-        </div>
-    </div>
-</div>
-{% endif %}
-
-<div class="row mb-4">
-    <div class="col-md-8 offset-md-2">
-        <div class="recipe-section">
-            <h5 class="recipe-section-title">{% trans "Ingredients" %}</h5>
-            {% if recipe.ingredients.all %}
-            <ul class="ingredient-list">
-                {% for ingredient in recipe.ingredients.all %}
-                <li class="ingredient-item" data-amount="{{ ingredient.amount }}" data-unit="{{ ingredient.unit }}" data-name="{{ ingredient.name }}">
-                    <span class="ingredient-amount">
-                        {% if ingredient.amount %}{{ ingredient.amount|format_amount }}{% endif %}
-                        {% if ingredient.unit %} {{ ingredient.unit }}{% endif %}
-                    </span>
-                    <div class="ingredient-content">
-                        <span class="ingredient-name">{{ ingredient.name }}</span>
-                        {% if ingredient.note %}<span class="ingredient-note">{{ ingredient.note }}</span>{% endif %}
-                    </div>
-                </li>
-                {% endfor %}
-            </ul>
-            {% else %}
-            <p class="text-muted">{% trans "No ingredients listed." %}</p>
-            {% endif %}
-        </div>
-    </div>
-</div>
-
-<div class="row mb-4">
-    <div class="col-md-8 offset-md-2">
-        <div class="recipe-section">
-            <h5 class="recipe-section-title">{% trans "Instructions" %}</h5>
-            {% if recipe.steps.all %}
-            <div class="instruction-list-wrapper">
-                <ol class="instruction-list">
-                    {% for step in recipe.steps.all %}
-                    <li class="instruction-item">{{ step.content|linebreaks }}</li>
-                    {% endfor %}
-                </ol>
-            </div>
-            {% else %}
-            <p class="text-muted">{% trans "No instructions provided." %}</p>
-            {% endif %}
-        </div>
-    </div>
-</div>
-
-{% if recipe.special_equipment %}
-<div class="row mb-4">
-    <div class="col-md-8 offset-md-2">
-        <div class="recipe-section">
-            <h5 class="recipe-section-title">{% trans "Special Equipment" %}</h5>
-            <p>{{ recipe.special_equipment|linebreaks }}</p>
-        </div>
-    </div>
-</div>
-{% endif %}
-
-{% if recipe.notes %}
-<div class="row mb-4">
-    <div class="col-md-8 offset-md-2">
-        <div class="recipe-section">
-            <h5 class="recipe-section-title">{% trans "Notes" %}</h5>
-            <p>{{ recipe.notes|linebreaks }}</p>
-        </div>
-    </div>
-</div>
-{% endif %}
-
-<div class="row mb-4">
-    <div class="col-md-8 offset-md-2 text-muted small">
-        <p class="mb-0">{% trans "Created:" %} {{ recipe.created_at|date:"F j, Y, g:i a" }}</p>
-        <p>{% trans "Last updated:" %} {{ recipe.updated_at|date:"F j, Y, g:i a" }}</p>
-    </div>
-</div>
-
-<!-- Add to Collection Modal -->
-<div class="modal fade" id="addToCollectionModal" tabindex="-1" aria-labelledby="addToCollectionModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addToCollectionModalLabel"><i class="bi bi-collection"></i> {% trans "Add to Collection" %}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
-            </div>
-            <form method="post" action="{% url 'add_recipe_to_collections' recipe.pk %}">
-                {% csrf_token %}
-                <div class="modal-body">
-                    {% if all_collections %}
-                        <p class="text-muted mb-3">{% trans "Select the collections you want to add this recipe to:" %}</p>
-                        <div class="list-group">
-                            {% for collection in all_collections %}
-                                <label class="list-group-item d-flex align-items-center">
-                                    <input class="form-check-input me-3" type="checkbox" name="collections" value="{{ collection.id }}" {% if collection.id in recipe_collection_ids %}checked{% endif %}>
-                                    <div>
-                                        <div class="fw-bold">{{ collection.name }}</div>
-                                        {% if collection.description %}
-                                            <small class="text-muted">{{ collection.description|truncatewords:15 }}</small>
+        {% if recipe.images.all %}
+            <div class="row mb-4">
+                <div class="col-md-8 offset-md-2">
+                    <div class="card overflow-hidden">
+                        <div id="recipeCarousel" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                {% for image in recipe.images.all %}
+                                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                        <img src="{{ image.image.url }}"
+                                             class="d-block w-100 recipe-carousel-img"
+                                             width="800"
+                                             height="400"
+                                             alt="{{ image.caption|default:recipe.title }}">
+                                        {% if image.caption %}
+                                            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
+                                                <p>{{ image.caption }}</p>
+                                            </div>
                                         {% endif %}
                                     </div>
-                                </label>
+                                {% endfor %}
+                            </div>
+                            {% if recipe.images.count > 1 %}
+                                <button class="carousel-control-prev"
+                                        type="button"
+                                        data-bs-target="#recipeCarousel"
+                                        data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon"></span>
+                                </button>
+                                <button class="carousel-control-next"
+                                        type="button"
+                                        data-bs-target="#recipeCarousel"
+                                        data-bs-slide="next">
+                                    <span class="carousel-control-next-icon"></span>
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        <div class="row mb-4">
+            <div class="col-md-8 offset-md-2">
+                <div class="recipe-section">
+                    <h5 class="recipe-section-title">{% trans "Ingredients" %}</h5>
+                    {% if recipe.ingredients.all %}
+                        <ul class="ingredient-list">
+                            {% for ingredient in recipe.ingredients.all %}
+                                <li class="ingredient-item"
+                                    data-amount="{{ ingredient.amount }}"
+                                    data-unit="{{ ingredient.unit }}"
+                                    data-name="{{ ingredient.name }}">
+                                    <span class="ingredient-amount">
+                                        {% if ingredient.amount %}{{ ingredient.amount|format_amount }}{% endif %}
+                                        {% if ingredient.unit %} {{ ingredient.unit }}{% endif %}
+                                    </span>
+                                    <div class="ingredient-content">
+                                        <span class="ingredient-name">{{ ingredient.name }}</span>
+                                        {% if ingredient.note %}<span class="ingredient-note">{{ ingredient.note }}</span>{% endif %}
+                                    </div>
+                                </li>
                             {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted">{% trans "No ingredients listed." %}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col-md-8 offset-md-2">
+                <div class="recipe-section">
+                    <h5 class="recipe-section-title">{% trans "Instructions" %}</h5>
+                    {% if recipe.steps.all %}
+                        <div class="instruction-list-wrapper">
+                            <ol class="instruction-list">
+                                {% for step in recipe.steps.all %}<li class="instruction-item">{{ step.content|linebreaks }}</li>{% endfor %}
+                            </ol>
                         </div>
                     {% else %}
-                        <p class="text-muted">{% trans "No collections yet. Create a collection first to organize your recipes." %}</p>
-                        <a href="{% url 'collection_create' %}" class="btn btn-primary">
-                            <i class="bi bi-plus-circle"></i> {% trans "Create Collection" %}
-                        </a>
+                        <p class="text-muted">{% trans "No instructions provided." %}</p>
                     {% endif %}
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
-                    {% if all_collections %}
-                        <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
-                    {% endif %}
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Scale Recipe Modal -->
-<div class="modal fade" id="scaleRecipeModal" tabindex="-1" aria-labelledby="scaleRecipeModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="scaleRecipeModalLabel"><i class="bi bi-sliders"></i> {% trans "Scale Recipe" %}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
-            </div>
-            <div class="modal-body">
-                <ul class="nav nav-tabs mb-3" id="scaleModeTabs" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="servings-tab" data-bs-toggle="tab" data-bs-target="#servings-pane" type="button" role="tab" aria-controls="servings-pane" aria-selected="true">
-                            <i class="bi bi-people"></i> {% trans "By Servings" %}
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="ingredient-tab" data-bs-toggle="tab" data-bs-target="#ingredient-pane" type="button" role="tab" aria-controls="ingredient-pane" aria-selected="false">
-                            <i class="bi bi-egg"></i> {% trans "By Ingredient" %}
-                        </button>
-                    </li>
-                </ul>
-                <div class="tab-content" id="scaleModeTabContent">
-                    <!-- By Servings Tab -->
-                    <div class="tab-pane fade show active" id="servings-pane" role="tabpanel" aria-labelledby="servings-tab">
-                        <div class="mb-3">
-                            <label for="modal-servings-input" class="form-label">{% trans "New servings count:" %}</label>
-                            <input type="number" class="form-control" id="modal-servings-input" min="0.25" step="0.25" value="{{ recipe.servings }}" placeholder="{% trans 'Enter servings' %}">
-                            <small class="text-muted">{% blocktrans with servings=recipe.servings %}Original: {{ servings }} serving{{ servings|pluralize }}{% endblocktrans %}</small>
-                        </div>
-                    </div>
-                    <!-- By Ingredient Tab -->
-                    <div class="tab-pane fade" id="ingredient-pane" role="tabpanel" aria-labelledby="ingredient-tab">
-                        <div class="mb-3">
-                            <label for="modal-ingredient-select" class="form-label">{% trans "Select ingredient:" %}</label>
-                            <select class="form-select" id="modal-ingredient-select">
-                                <option value="-1" selected>{% trans "Choose ingredient..." %}</option>
-                                {% for ingredient in recipe.ingredients.all %}
-                                {% if ingredient.amount %}
-                                <option value="{{ forloop.counter0 }}">{% blocktrans with name=ingredient.name amount=ingredient.amount unit=ingredient.unit %}{{ name }} (original: {{ amount }} {{ unit }}){% endblocktrans %}</option>
-                                {% endif %}
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="modal-ingredient-amount" class="form-label">{% trans "New amount:" %}</label>
-                            <input type="text" class="form-control" id="modal-ingredient-amount" placeholder="{% trans 'e.g., 500 or 2 1/2' %}">
-                            <small class="text-muted">{% trans "Enter the amount you have (e.g., \"500\" for 500g, \"2 1/2\" for 2½ cups)" %}</small>
-                        </div>
-                    </div>
-                </div>
-                <!-- Live Preview -->
-                <div class="alert alert-info mt-3" id="scale-preview" style="display: none;">
-                    <i class="bi bi-info-circle"></i> <span id="scale-preview-text"></span>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" id="modal-reset-button">
-                    <i class="bi bi-arrow-counterclockwise"></i> {% trans "Reset to Original" %}
-                </button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
-                <button type="button" class="btn btn-primary" id="modal-apply-button">{% trans "Apply" %}</button>
             </div>
         </div>
+        {% if recipe.special_equipment %}
+            <div class="row mb-4">
+                <div class="col-md-8 offset-md-2">
+                    <div class="recipe-section">
+                        <h5 class="recipe-section-title">{% trans "Special Equipment" %}</h5>
+                        <p>{{ recipe.special_equipment|linebreaks }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        {% if recipe.notes %}
+            <div class="row mb-4">
+                <div class="col-md-8 offset-md-2">
+                    <div class="recipe-section">
+                        <h5 class="recipe-section-title">{% trans "Notes" %}</h5>
+                        <p>{{ recipe.notes|linebreaks }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        <div class="row mb-4">
+            <div class="col-md-8 offset-md-2 text-muted small">
+                <p class="mb-0">{% trans "Created:" %} {{ recipe.created_at|date:"F j, Y, g:i a" }}</p>
+                <p>{% trans "Last updated:" %} {{ recipe.updated_at|date:"F j, Y, g:i a" }}</p>
+            </div>
+        </div>
+        <!-- Add to Collection Modal -->
+        <div class="modal fade"
+             id="addToCollectionModal"
+             tabindex="-1"
+             aria-labelledby="addToCollectionModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addToCollectionModalLabel">
+                            <i class="bi bi-collection"></i> {% trans "Add to Collection" %}
+                        </h5>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label='{% trans "Close" %}'></button>
+                    </div>
+                    <form method="post"
+                          action="{% url 'add_recipe_to_collections' recipe.pk %}">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            {% if all_collections %}
+                                <p class="text-muted mb-3">{% trans "Select the collections you want to add this recipe to:" %}</p>
+                                <div class="list-group">
+                                    {% for collection in all_collections %}
+                                        <label class="list-group-item d-flex align-items-center">
+                                            <input class="form-check-input me-3"
+                                                   type="checkbox"
+                                                   name="collections"
+                                                   value="{{ collection.id }}"
+                                                   {% if collection.id in recipe_collection_ids %}checked{% endif %}>
+                                            <div>
+                                                <div class="fw-bold">{{ collection.name }}</div>
+                                                {% if collection.description %}
+                                                    <small class="text-muted">{{ collection.description|truncatewords:15 }}</small>
+                                                {% endif %}
+                                            </div>
+                                        </label>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <p class="text-muted">{% trans "No collections yet. Create a collection first to organize your recipes." %}</p>
+                                <a href="{% url 'collection_create' %}" class="btn btn-primary">
+                                    <i class="bi bi-plus-circle"></i> {% trans "Create Collection" %}
+                                </a>
+                            {% endif %}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+                            {% if all_collections %}
+                                <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+                            {% endif %}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Scale Recipe Modal -->
+        <div class="modal fade"
+             id="scaleRecipeModal"
+             tabindex="-1"
+             aria-labelledby="scaleRecipeModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="scaleRecipeModalLabel">
+                            <i class="bi bi-sliders"></i> {% trans "Scale Recipe" %}
+                        </h5>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label='{% trans "Close" %}'></button>
+                    </div>
+                    <div class="modal-body">
+                        <ul class="nav nav-tabs mb-3" id="scaleModeTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active"
+                                        id="servings-tab"
+                                        data-bs-toggle="tab"
+                                        data-bs-target="#servings-pane"
+                                        type="button"
+                                        role="tab"
+                                        aria-controls="servings-pane"
+                                        aria-selected="true">
+                                    <i class="bi bi-people"></i> {% trans "By Servings" %}
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link"
+                                        id="ingredient-tab"
+                                        data-bs-toggle="tab"
+                                        data-bs-target="#ingredient-pane"
+                                        type="button"
+                                        role="tab"
+                                        aria-controls="ingredient-pane"
+                                        aria-selected="false">
+                                    <i class="bi bi-egg"></i> {% trans "By Ingredient" %}
+                                </button>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="scaleModeTabContent">
+                            <!-- By Servings Tab -->
+                            <div class="tab-pane fade show active"
+                                 id="servings-pane"
+                                 role="tabpanel"
+                                 aria-labelledby="servings-tab">
+                                <div class="mb-3">
+                                    <label for="modal-servings-input" class="form-label">{% trans "New servings count:" %}</label>
+                                    <input type="number"
+                                           class="form-control"
+                                           id="modal-servings-input"
+                                           min="0.25"
+                                           step="0.25"
+                                           value="{{ recipe.servings }}"
+                                           placeholder='{% trans "Enter servings" %}'>
+                                    <small class="text-muted">{% blocktrans with servings=recipe.servings %}Original: {{ servings }} serving{{ servings|pluralize }}{% endblocktrans %}</small>
+                                </div>
+                            </div>
+                            <!-- By Ingredient Tab -->
+                            <div class="tab-pane fade"
+                                 id="ingredient-pane"
+                                 role="tabpanel"
+                                 aria-labelledby="ingredient-tab">
+                                <div class="mb-3">
+                                    <label for="modal-ingredient-select" class="form-label">{% trans "Select ingredient:" %}</label>
+                                    <select class="form-select" id="modal-ingredient-select">
+                                        <option value="-1" selected>{% trans "Choose ingredient..." %}</option>
+                                        {% for ingredient in recipe.ingredients.all %}
+                                            {% if ingredient.amount %}
+                                                <option value="{{ forloop.counter0 }}">{% blocktrans with name=ingredient.name amount=ingredient.amount unit=ingredient.unit %}{{ name }} (original: {{ amount }} {{ unit }}){% endblocktrans %}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="modal-ingredient-amount" class="form-label">{% trans "New amount:" %}</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           id="modal-ingredient-amount"
+                                           placeholder='{% trans "e.g., 500 or 2 1/2" %}'>
+                                    <small class="text-muted">{% trans "Enter the amount you have (e.g., \"500\" for 500g, \"2 1/2\" for 2½ cups)" %}</small>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Live Preview -->
+                        <div class="alert alert-info mt-3 scale-preview-hidden" id="scale-preview">
+                            <i class="bi bi-info-circle"></i> <span id="scale-preview-text"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-outline-secondary"
+                                id="modal-reset-button">
+                            <i class="bi bi-arrow-counterclockwise"></i> {% trans "Reset to Original" %}
+                        </button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+                        <button type="button" class="btn btn-primary" id="modal-apply-button">{% trans "Apply" %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
-
-</div><!-- End recipe-scaler-container -->
-{% endblock %}
-
+    <!-- End recipe-scaler-container -->
+{% endblock content %}
 {% block extra_js %}
-{% load static %}
-<script src="{% static 'recipe-scaler.js' %}"></script>
-<script>
+    {% load static %}
+    <script src="{% static 'recipe-scaler.js' %}"></script>
+    <script>
 // Handle PDF downloads in PWA mode to prevent "about:blank" issue
 document.addEventListener('DOMContentLoaded', function() {
     const pdfLinks = document.querySelectorAll('.pdf-download-link');
@@ -436,8 +464,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
-</script>
-<style>
+    </script>
+    <style>
 /* Recipe Scaling Styles - Theme-aware */
 .ingredient-amount.scaled {
     color: var(--primary);
@@ -508,5 +536,5 @@ document.addEventListener('DOMContentLoaded', function() {
     border-color: var(--border-color);
     color: var(--text-primary);
 }
-</style>
-{% endblock %}
+    </style>
+{% endblock extra_js %}
