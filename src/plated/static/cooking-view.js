@@ -180,6 +180,7 @@
         const beepOff = 0.1;
         const period = beepOn + beepOff;
         const numBeeps = Math.floor(duration / period);
+        const oscs = [];
 
         for (let i = 0; i < numBeeps; i++) {
             const osc = ctx.createOscillator();
@@ -192,9 +193,13 @@
             const start = ctx.currentTime + i * period;
             osc.start(start);
             osc.stop(start + beepOn);
+            oscs.push(osc);
         }
 
         return function cancel() {
+            oscs.forEach(function (osc) {
+                try { osc.stop(ctx.currentTime); } catch (_) {}
+            });
             ctx.close();
         };
     }
@@ -304,6 +309,7 @@
         }
 
         startBtn.addEventListener('click', function () {
+            stopCountdown();
             remaining = totalSeconds;
             showRunning();
             intervalId = setInterval(function () {
