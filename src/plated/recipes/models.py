@@ -63,6 +63,7 @@ class Step(models.Model):
         null=True,
         blank=True,
         help_text=_("Optional timer duration in minutes"),
+        validators=[MinValueValidator(1)],
     )
 
     class Meta:

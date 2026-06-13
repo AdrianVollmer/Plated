@@ -278,7 +278,12 @@
                             <div class="cooking-step-content">
                                 <span class="cooking-step-number">{{ forloop.counter }}</span>
                                 <span class="cooking-step-text">{{ step.content|linebreaks }}</span>
-                                {% if step.timer %}<div class="step-timer-widget"></div>{% endif %}
+                                {% if step.timer %}
+                                    <div class="step-timer-widget"
+                                         data-label-cancel="{% trans 'Cancel' %}"
+                                         data-label-dismiss="{% trans 'Dismiss' %}"
+                                         data-label-restart="{% trans 'Restart' %}"></div>
+                                {% endif %}
                             </div>
                         </li>
                     {% empty %}

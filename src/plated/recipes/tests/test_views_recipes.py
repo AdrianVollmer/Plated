@@ -361,3 +361,18 @@ class RecipeCookingViewTest(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "4")
+
+    def test_cooking_view_step_with_timer_renders_widget(self) -> None:
+        """Steps with a timer produce a data-timer-minutes attribute and widget placeholder."""
+        Step.objects.create(recipe=self.recipe, content="Simmer", order=2, timer=15)
+        response = self.client.get(reverse("recipe_cooking", args=[self.recipe.pk]))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'data-timer-minutes="15"')
+        self.assertContains(response, "step-timer-widget")
+
+    def test_cooking_view_step_without_timer_has_no_widget(self) -> None:
+        """Steps without a timer do not render a timer widget or data attribute."""
+        response = self.client.get(reverse("recipe_cooking", args=[self.recipe.pk]))
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, "data-timer-minutes")
+        self.assertNotContains(response, 'class="step-timer-widget"')

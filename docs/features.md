@@ -34,6 +34,10 @@ Click the **Edit** button on any recipe card or detail page.
 As you type ingredient names and units, autocomplete suggestions appear
 based on existing data. This helps maintain consistency across recipes.
 
+### Step Timers
+
+Each step can have an optional countdown timer (in minutes). Set a timer value when editing a step. In the cooking view, steps with timers show a Start button displaying the duration. Click Start to begin the countdown. When it reaches zero, an alarm plays for up to 10 seconds. Click Dismiss to stop it early. Multiple timers run independently.
+
 ### Markdown in Steps
 
 Steps support Markdown formatting:

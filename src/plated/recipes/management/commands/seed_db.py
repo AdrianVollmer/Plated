@@ -83,8 +83,9 @@ class Command(BaseCommand):
             "Bake for 10-12 minutes, or until edges are golden brown but centers still look slightly underdone.",
             "Cool on baking sheet for 5 minutes, then transfer to a wire rack to cool completely.",
         ]
+        timers1 = {7: 12, 8: 5}  # step index → timer minutes
         for i, content in enumerate(steps1, 1):
-            Step.objects.create(recipe=recipe1, order=i, content=content)
+            Step.objects.create(recipe=recipe1, order=i, content=content, timer=timers1.get(i))
 
         # Recipe 2: Creamy Tomato Basil Soup
         recipe2 = Recipe.objects.create(

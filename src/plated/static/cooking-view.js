@@ -175,7 +175,9 @@
      * Returns a cancel function that silences it immediately.
      */
     function createAlarm(duration) {
-        const ctx = new AudioContext();
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) { return function () {}; }
+        const ctx = new AudioCtx();
         const beepOn = 0.2;
         const beepOff = 0.1;
         const period = beepOn + beepOff;
@@ -217,7 +219,7 @@
      * Build and return the timer widget element for a given step.
      * The widget manages its own state machine: idle → running → alarming → done.
      */
-    function buildTimerWidget(minutes) {
+    function buildTimerWidget(minutes, labels) {
         const totalSeconds = minutes * 60;
         let remaining = totalSeconds;
         let intervalId = null;
@@ -240,17 +242,17 @@
         const cancelBtn = document.createElement('button');
         cancelBtn.type = 'button';
         cancelBtn.className = 'btn btn-sm btn-outline-danger d-none';
-        cancelBtn.textContent = 'Cancel';
+        cancelBtn.textContent = labels.cancel;
 
         const dismissBtn = document.createElement('button');
         dismissBtn.type = 'button';
         dismissBtn.className = 'btn btn-sm btn-danger d-none';
-        dismissBtn.textContent = 'Dismiss';
+        dismissBtn.textContent = labels.dismiss;
 
         const restartBtn = document.createElement('button');
         restartBtn.type = 'button';
         restartBtn.className = 'btn btn-sm btn-outline-secondary d-none';
-        restartBtn.innerHTML = '<i class="bi bi-arrow-counterclockwise"></i> Restart';
+        restartBtn.innerHTML = '<i class="bi bi-arrow-counterclockwise"></i> ' + labels.restart;
 
         widget.append(startBtn, display, cancelBtn, dismissBtn, restartBtn);
 
@@ -354,6 +356,11 @@
         if (!minutes || minutes <= 0) { return; }
         const placeholder = stepEl.querySelector('.step-timer-widget');
         if (!placeholder) { return; }
-        placeholder.replaceWith(buildTimerWidget(minutes));
+        const labels = {
+            cancel: placeholder.dataset.labelCancel || 'Cancel',
+            dismiss: placeholder.dataset.labelDismiss || 'Dismiss',
+            restart: placeholder.dataset.labelRestart || 'Restart',
+        };
+        placeholder.replaceWith(buildTimerWidget(minutes, labels));
     });
 })();

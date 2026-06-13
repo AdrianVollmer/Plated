@@ -54,7 +54,9 @@ def serialize_recipe(recipe: Any) -> RecipeSchema:
         data["ingredients"] = ingredients
 
         # Serialize steps
-        steps: list[StepSchema] = [{"content": step.content, "order": step.order} for step in recipe.steps.all()]
+        steps: list[StepSchema] = [
+            {"content": step.content, "order": step.order, "timer": step.timer} for step in recipe.steps.all()
+        ]
         data["steps"] = steps
 
         # Serialize image metadata (not the actual files)

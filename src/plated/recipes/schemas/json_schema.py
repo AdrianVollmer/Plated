@@ -107,6 +107,11 @@ def get_recipe_json_schema() -> dict[str, Any]:
                             "description": "Display order (0-indexed)",
                             "minimum": 0,
                         },
+                        "timer": {
+                            "type": ["integer", "null"],
+                            "description": "Optional countdown timer in minutes",
+                            "minimum": 1,
+                        },
                     },
                     "required": ["content"],
                 },

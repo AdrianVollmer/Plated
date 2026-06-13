@@ -15,11 +15,12 @@ class IngredientSchema(TypedDict, total=False):
     order: int
 
 
-class StepSchema(TypedDict):
+class StepSchema(TypedDict, total=False):
     """Schema for a recipe step."""
 
     content: str
     order: int
+    timer: int | None
 
 
 class ImageSchema(TypedDict, total=False):
