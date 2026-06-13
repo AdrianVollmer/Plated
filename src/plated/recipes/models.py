@@ -59,6 +59,11 @@ class Step(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="steps")
     order = models.PositiveIntegerField(default=0)
     content = models.TextField(help_text=_("Step instructions"))
+    timer = models.PositiveSmallIntegerField(
+        null=True,
+        blank=True,
+        help_text=_("Timer duration in minutes"),
+    )
 
     class Meta:
         ordering = ["order"]

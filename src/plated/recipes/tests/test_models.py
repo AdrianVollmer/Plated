@@ -182,6 +182,26 @@ class StepModelTest(TestCase):
         self.assertEqual(steps[1].content, "Second")
         self.assertEqual(steps[2].content, "Third")
 
+    def test_step_timer_defaults_to_none(self) -> None:
+        """Timer field is optional and defaults to None."""
+        step = Step.objects.create(
+            recipe=self.recipe,
+            content="Simmer",
+            order=0,
+        )
+        self.assertIsNone(step.timer)
+
+    def test_step_timer_saves_minutes(self) -> None:
+        """Timer field persists a positive integer (minutes)."""
+        step = Step.objects.create(
+            recipe=self.recipe,
+            content="Bake",
+            order=0,
+            timer=30,
+        )
+        step.refresh_from_db()
+        self.assertEqual(step.timer, 30)
+
 
 class RecipeCollectionModelTest(TestCase):
     """Test cases for the RecipeCollection model."""
