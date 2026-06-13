@@ -167,4 +167,187 @@
 
     // Load saved checkbox states on page load
     loadCheckboxStates();
+
+    // ── Step Timers ──────────────────────────────────────────────────────────
+
+    /**
+     * Play a beeping alarm using Web Audio API for up to `duration` seconds.
+     * Returns a cancel function that silences it immediately.
+     */
+    function createAlarm(duration) {
+        const ctx = new AudioContext();
+        const beepOn = 0.2;
+        const beepOff = 0.1;
+        const period = beepOn + beepOff;
+        const numBeeps = Math.floor(duration / period);
+
+        for (let i = 0; i < numBeeps; i++) {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.type = 'square';
+            osc.frequency.value = 880;
+            gain.gain.value = 0.3;
+            const start = ctx.currentTime + i * period;
+            osc.start(start);
+            osc.stop(start + beepOn);
+        }
+
+        return function cancel() {
+            ctx.close();
+        };
+    }
+
+    /**
+     * Format seconds as MM:SS.
+     */
+    function formatCountdown(totalSeconds) {
+        const m = Math.floor(totalSeconds / 60);
+        const s = totalSeconds % 60;
+        return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+    }
+
+    /**
+     * Build and return the timer widget element for a given step.
+     * The widget manages its own state machine: idle → running → alarming → done.
+     */
+    function buildTimerWidget(minutes) {
+        const totalSeconds = minutes * 60;
+        let remaining = totalSeconds;
+        let intervalId = null;
+        let cancelAlarm = null;
+        let alarmTimeout = null;
+
+        // Elements
+        const widget = document.createElement('div');
+        widget.className = 'step-timer-widget';
+
+        const display = document.createElement('span');
+        display.className = 'timer-display';
+        display.setAttribute('aria-live', 'polite');
+
+        const startBtn = document.createElement('button');
+        startBtn.type = 'button';
+        startBtn.className = 'btn btn-sm btn-outline-secondary';
+        startBtn.innerHTML = '<i class="bi bi-stopwatch"></i> ' + minutes + ' min';
+
+        const cancelBtn = document.createElement('button');
+        cancelBtn.type = 'button';
+        cancelBtn.className = 'btn btn-sm btn-outline-danger d-none';
+        cancelBtn.textContent = 'Cancel';
+
+        const dismissBtn = document.createElement('button');
+        dismissBtn.type = 'button';
+        dismissBtn.className = 'btn btn-sm btn-danger d-none';
+        dismissBtn.textContent = 'Dismiss';
+
+        const restartBtn = document.createElement('button');
+        restartBtn.type = 'button';
+        restartBtn.className = 'btn btn-sm btn-outline-secondary d-none';
+        restartBtn.innerHTML = '<i class="bi bi-arrow-counterclockwise"></i> Restart';
+
+        widget.append(startBtn, display, cancelBtn, dismissBtn, restartBtn);
+
+        function showIdle() {
+            widget.classList.remove('timer-alarm');
+            display.textContent = '';
+            startBtn.classList.remove('d-none');
+            cancelBtn.classList.add('d-none');
+            dismissBtn.classList.add('d-none');
+            restartBtn.classList.add('d-none');
+        }
+
+        function showRunning() {
+            widget.classList.remove('timer-alarm');
+            display.textContent = formatCountdown(remaining);
+            startBtn.classList.add('d-none');
+            cancelBtn.classList.remove('d-none');
+            dismissBtn.classList.add('d-none');
+            restartBtn.classList.add('d-none');
+        }
+
+        function showAlarming() {
+            widget.classList.add('timer-alarm');
+            display.textContent = '00:00';
+            startBtn.classList.add('d-none');
+            cancelBtn.classList.add('d-none');
+            dismissBtn.classList.remove('d-none');
+            restartBtn.classList.add('d-none');
+        }
+
+        function showDone() {
+            widget.classList.remove('timer-alarm');
+            display.textContent = '';
+            startBtn.classList.add('d-none');
+            cancelBtn.classList.add('d-none');
+            dismissBtn.classList.add('d-none');
+            restartBtn.classList.remove('d-none');
+        }
+
+        function stopCountdown() {
+            if (intervalId !== null) {
+                clearInterval(intervalId);
+                intervalId = null;
+            }
+        }
+
+        function stopAlarm() {
+            if (cancelAlarm !== null) {
+                cancelAlarm();
+                cancelAlarm = null;
+            }
+            if (alarmTimeout !== null) {
+                clearTimeout(alarmTimeout);
+                alarmTimeout = null;
+            }
+        }
+
+        startBtn.addEventListener('click', function () {
+            remaining = totalSeconds;
+            showRunning();
+            intervalId = setInterval(function () {
+                remaining -= 1;
+                if (remaining <= 0) {
+                    stopCountdown();
+                    showAlarming();
+                    cancelAlarm = createAlarm(10);
+                    alarmTimeout = setTimeout(function () {
+                        stopAlarm();
+                        showDone();
+                    }, 10000);
+                } else {
+                    display.textContent = formatCountdown(remaining);
+                }
+            }, 1000);
+        });
+
+        cancelBtn.addEventListener('click', function () {
+            stopCountdown();
+            remaining = totalSeconds;
+            showIdle();
+        });
+
+        dismissBtn.addEventListener('click', function () {
+            stopAlarm();
+            showDone();
+        });
+
+        restartBtn.addEventListener('click', function () {
+            remaining = totalSeconds;
+            showIdle();
+        });
+
+        showIdle();
+        return widget;
+    }
+
+    // Initialise all step timers on page load
+    document.querySelectorAll('[data-timer-minutes]').forEach(function (stepEl) {
+        const minutes = parseInt(stepEl.getAttribute('data-timer-minutes'), 10);
+        if (!minutes || minutes <= 0) { return; }
+        const placeholder = stepEl.querySelector('.step-timer-widget');
+        if (!placeholder) { return; }
+        placeholder.replaceWith(buildTimerWidget(minutes));
+    });
 })();
