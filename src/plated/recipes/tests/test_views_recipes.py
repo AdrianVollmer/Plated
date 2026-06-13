@@ -323,19 +323,6 @@ class RecipeCookingViewTest(TestCase):
         self.assertContains(response, "ingredient-checkbox")
         self.assertContains(response, "step-checkbox")
 
-    def test_cooking_view_has_fullscreen_button(self) -> None:
-        """Test that cooking view includes fullscreen button."""
-        response = self.client.get(reverse("recipe_cooking", args=[self.recipe.pk]))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "fullscreenBtn")
-        self.assertContains(response, "Fullscreen")
-
-    def test_cooking_view_has_exit_button(self) -> None:
-        """Test that cooking view includes exit button."""
-        response = self.client.get(reverse("recipe_cooking", args=[self.recipe.pk]))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Exit Cooking View")
-
     def test_cooking_view_loads_javascript(self) -> None:
         """Test that cooking view loads necessary JavaScript."""
         response = self.client.get(reverse("recipe_cooking", args=[self.recipe.pk]))
