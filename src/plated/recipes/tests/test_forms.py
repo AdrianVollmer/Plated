@@ -237,3 +237,63 @@ class UserSettingsFormTest(TestCase):
             }
         )
         self.assertTrue(form.is_valid())
+
+
+class StepFormsetTest(TestCase):
+    """Test cases for the step formset."""
+
+    def setUp(self) -> None:
+        self.recipe = Recipe.objects.create(title="Test Recipe", servings=2)
+
+    def test_step_formset_includes_timer_field(self) -> None:
+        """Timer field must be present in the step formset."""
+        from ..services import create_step_formset
+
+        StepFormSet = create_step_formset()  # noqa: N806
+        formset = StepFormSet(instance=self.recipe, prefix="steps")
+        form = formset.forms[0]
+        self.assertIn("timer", form.fields)
+
+    def test_step_formset_saves_timer(self) -> None:
+        """Formset saves a timer value to the database."""
+        from ..models import Step
+        from ..services import create_step_formset
+
+        StepFormSet = create_step_formset(extra=1)  # noqa: N806
+        data = {
+            "steps-TOTAL_FORMS": "1",
+            "steps-INITIAL_FORMS": "0",
+            "steps-MIN_NUM_FORMS": "0",
+            "steps-MAX_NUM_FORMS": "1000",
+            "steps-0-content": "Bake",
+            "steps-0-order": "0",
+            "steps-0-timer": "20",
+            "steps-0-DELETE": "",
+        }
+        formset = StepFormSet(data, instance=self.recipe, prefix="steps")
+        self.assertTrue(formset.is_valid(), formset.errors)
+        formset.save()
+        step = Step.objects.get(recipe=self.recipe)
+        self.assertEqual(step.timer, 20)
+
+    def test_step_formset_accepts_blank_timer(self) -> None:
+        """Formset is valid when timer is left blank (optional field)."""
+        from ..models import Step
+        from ..services import create_step_formset
+
+        StepFormSet = create_step_formset(extra=1)  # noqa: N806
+        data = {
+            "steps-TOTAL_FORMS": "1",
+            "steps-INITIAL_FORMS": "0",
+            "steps-MIN_NUM_FORMS": "0",
+            "steps-MAX_NUM_FORMS": "1000",
+            "steps-0-content": "Mix",
+            "steps-0-order": "0",
+            "steps-0-timer": "",
+            "steps-0-DELETE": "",
+        }
+        formset = StepFormSet(data, instance=self.recipe, prefix="steps")
+        self.assertTrue(formset.is_valid(), formset.errors)
+        formset.save()
+        step = Step.objects.get(recipe=self.recipe)
+        self.assertIsNone(step.timer)

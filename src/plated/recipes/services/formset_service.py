@@ -121,8 +121,17 @@ def create_step_formset(extra: int = 3) -> Any:
     return _create_inline_formset(
         Recipe,
         Step,
-        fields=("content", "order"),
+        fields=("content", "order", "timer"),
         extra=extra,
+        custom_widgets={
+            "timer": forms.NumberInput(
+                attrs={
+                    "class": "form-control form-control-sm",
+                    "min": 1,
+                    "placeholder": _("min"),
+                }
+            )
+        },
     )
 
 
