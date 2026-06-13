@@ -258,10 +258,14 @@
                                         </button>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="row g-2">
                                     <div class="col-12">
                                         <label class="form-label small">{% trans "Content" %}</label>
                                         {{ form.content }}
+                                    </div>
+                                    <div class="col-auto">
+                                        <label class="form-label small">{% trans "Timer (min)" %}</label>
+                                        {{ form.timer }}
                                     </div>
                                 </div>
                                 {{ form.order }}
@@ -287,10 +291,14 @@
                                     </button>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row g-2">
                                 <div class="col-12">
                                     <label class="form-label small">{% trans "Content" %}</label>
                                     {{ step_formset.empty_form.content }}
+                                </div>
+                                <div class="col-auto">
+                                    <label class="form-label small">{% trans "Timer (min)" %}</label>
+                                    {{ step_formset.empty_form.timer }}
                                 </div>
                             </div>
                             {{ step_formset.empty_form.order }}
