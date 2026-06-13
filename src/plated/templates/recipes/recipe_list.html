@@ -1,44 +1,46 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load recipe_filters %}
 {% block title %}
     {% trans "Recipes" %} - Plated
 {% endblock %}
 {% block content %}
-    <div class="row mb-4">
-        <div class="col-12 col-md-8 mb-3 mb-md-0">
-            <h1>{% trans "Recipes" %}</h1>
-        </div>
-        <div class="col-12 col-md-4 text-md-end">
-            <div class="d-flex flex-column flex-md-row gap-2 justify-content-md-end">
-                <a href="{% url 'recipe_import' %}"
-                   class="btn btn-outline-success text-nowrap">
-                    <i class="bi bi-upload"></i> {% trans "Import JSON" %}
+    <div class="recipe-list-header mb-3">
+        <h1 class="recipe-list-title">{% trans "Recipes" %}</h1>
+        <div class="recipe-list-actions">
+            <a href="{% url 'recipe_import' %}"
+               class="btn btn-outline-secondary btn-sm text-nowrap">
+                <i class="bi bi-upload"></i> {% trans "Import" %}
+            </a>
+            {% if ai_settings_available %}
+                <a href="{% url 'ai_extract_recipe' %}"
+                   class="btn btn-outline-primary btn-sm text-nowrap">
+                    <i class="bi bi-stars"></i> {% trans "AI Extract" %}
                 </a>
-                {% if ai_settings_available %}
-                    <a href="{% url 'ai_extract_recipe' %}"
-                       class="btn btn-outline-primary text-nowrap">
-                        <i class="bi bi-stars"></i> {% trans "AI Extract" %}
-                    </a>
-                {% endif %}
-                <a href="{% url 'recipe_create' %}" class="btn btn-primary text-nowrap">
-                    <i class="bi bi-plus-circle"></i> {% trans "New Recipe" %}
-                </a>
-            </div>
+            {% endif %}
+            <a href="{% url 'recipe_create' %}"
+               class="btn btn-primary btn-sm text-nowrap">
+                <i class="bi bi-plus-circle"></i> {% trans "New Recipe" %}
+            </a>
         </div>
     </div>
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="search-container">
-                <form method="get" class="input-group">
-                    <input type="text"
-                           name="q"
-                           class="form-control search-input"
-                           placeholder="{% trans 'Search recipes by title, description, or keywords...' %}"
-                           value="{{ request.GET.q }}">
-                    <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i> {% trans "Search" %}</button>
-                </form>
-            </div>
-        </div>
+    <div class="mb-4">
+        <form method="get" class="input-group recipe-search-form">
+            <span class="input-group-text recipe-search-icon"><i class="bi bi-search"></i></span>
+            <input type="text"
+                   name="q"
+                   class="form-control search-input"
+                   placeholder="{% trans 'Search by title, description, or keywords...' %}"
+                   value="{{ request.GET.q }}">
+            {% if request.GET.q %}
+                <a href="{% url 'recipe_list' %}"
+                   class="btn btn-outline-secondary"
+                   title="{% trans 'Clear search' %}">
+                    <i class="bi bi-x-lg"></i>
+                </a>
+            {% endif %}
+            <button class="btn btn-primary" type="submit">{% trans "Search" %}</button>
+        </form>
     </div>
     {% if recipes %}
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
@@ -60,24 +62,26 @@
                             {% endif %}
                             <div class="recipe-card-body">
                                 <h5 class="recipe-card-title">{{ recipe.title }}</h5>
-                                <p class="recipe-card-text">
-                                    {% if recipe.description %}
-                                        {{ recipe.description|truncatewords:20 }}
-                                    {% else %}
-                                        {% trans "No description available." %}
-                                    {% endif %}
-                                </p>
-                                <div class="recipe-card-meta">
-                                    <div>
-                                        <i class="bi bi-clock"></i>
-                                        {% if recipe.prep_time %}
-                                            {{ recipe.prep_time }}
-                                        {% else %}
-                                            --
-                                        {% endif %}
+                                {% if recipe.description %}
+                                    <p class="recipe-card-text">{{ recipe.description|truncatewords:20 }}</p>
+                                {% endif %}
+                                {% if recipe.keywords %}
+                                    <div class="recipe-card-keywords">
+                                        {% for kw in recipe.keywords|split:","|slice:":3" %}
+                                            <span class="recipe-card-keyword">{{ kw }}</span>
+                                        {% endfor %}
                                     </div>
-                                    <div>
-                                        <i class="bi bi-people"></i> {{ recipe.servings }}
+                                {% endif %}
+                                <div class="recipe-card-meta">
+                                    {% if recipe.prep_time %}
+                                        <div class="recipe-card-meta-item">
+                                            <i class="bi bi-clock"></i>
+                                            <span>{{ recipe.prep_time|format_duration }}</span>
+                                        </div>
+                                    {% endif %}
+                                    <div class="recipe-card-meta-item">
+                                        <i class="bi bi-people"></i>
+                                        <span>{% blocktrans with n=recipe.servings %}{{ n }} servings{% endblocktrans %}</span>
                                     </div>
                                 </div>
                             </div>

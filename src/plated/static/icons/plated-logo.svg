@@ -1,5 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <rect width="100" height="100" fill="#f36bb1"/>
-  <text x="50" y="70" font-family="Arial, sans-serif" font-size="60" font-weight="bold" fill="#FFF" text-anchor="middle">P</text>
-  <circle cx="50" cy="50" r="38" fill="none" stroke="#FFF" stroke-width="4"/>
+  <!-- Warm cream background -->
+  <rect width="100" height="100" rx="18" fill="#fffefb"/>
+  <!-- Plate outer rim -->
+  <circle cx="50" cy="50" r="44" fill="#c45c3a"/>
+  <!-- Plate inner surface -->
+  <circle cx="50" cy="50" r="36" fill="#fffefb"/>
+  <!-- Fork tines (left) -->
+  <line x1="34" y1="26" x2="34" y2="42" stroke="#c45c3a" stroke-width="3" stroke-linecap="round"/>
+  <line x1="38" y1="26" x2="38" y2="42" stroke="#c45c3a" stroke-width="3" stroke-linecap="round"/>
+  <line x1="42" y1="26" x2="42" y2="42" stroke="#c45c3a" stroke-width="3" stroke-linecap="round"/>
+  <!-- Fork handle -->
+  <line x1="38" y1="42" x2="38" y2="74" stroke="#c45c3a" stroke-width="3" stroke-linecap="round"/>
+  <!-- Knife (right) -->
+  <path d="M62 26 C68 26 70 32 70 38 L66 44 L62 44 Z" fill="#c45c3a"/>
+  <line x1="62" y1="44" x2="62" y2="74" stroke="#c45c3a" stroke-width="3" stroke-linecap="round"/>
 </svg>
