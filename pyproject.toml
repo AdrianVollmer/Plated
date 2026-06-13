@@ -92,4 +92,4 @@ django_settings_module = "config.settings"
 
 
 [tool.djlint]
-ignore="T002,T003"
+ignore="T002,T003,H031"

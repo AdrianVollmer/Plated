@@ -307,3 +307,33 @@ class MealPlanEntryModelTest(TestCase):
         )
         self.assertIn("Test Recipe", str(entry))
         self.assertIn("Breakfast", str(entry))  # Meal type is capitalized in __str__
+
+
+class FormatDurationFilterTest(TestCase):
+    """Tests for the format_duration template filter."""
+
+    def _fmt(self, td: timedelta | None) -> str:
+        from ..templatetags.recipe_filters import format_duration
+
+        return format_duration(td)
+
+    def test_none_returns_empty(self) -> None:
+        self.assertEqual(self._fmt(None), "")
+
+    def test_zero_returns_empty(self) -> None:
+        self.assertEqual(self._fmt(timedelta(0)), "")
+
+    def test_seconds(self) -> None:
+        self.assertEqual(self._fmt(timedelta(seconds=45)), "45 sec")
+
+    def test_minutes(self) -> None:
+        self.assertEqual(self._fmt(timedelta(minutes=13)), "13 min")
+
+    def test_hours_and_minutes(self) -> None:
+        self.assertEqual(self._fmt(timedelta(minutes=90)), "1 hr 30 min")
+
+    def test_exact_hours(self) -> None:
+        self.assertEqual(self._fmt(timedelta(hours=2)), "2 hr")
+
+    def test_one_hour_five_minutes(self) -> None:
+        self.assertEqual(self._fmt(timedelta(hours=1, minutes=5)), "1 hr 5 min")

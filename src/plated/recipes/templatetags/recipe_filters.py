@@ -1,8 +1,39 @@
 from __future__ import annotations
 
+import datetime
+
 from django import template
 
 register = template.Library()
+
+
+@register.filter
+def format_duration(value: datetime.timedelta | None) -> str:
+    """Format a timedelta into a human-readable string.
+
+    Examples:
+        None or zero  -> ""
+        45 seconds    -> "45 sec"
+        13 minutes    -> "13 min"
+        90 minutes    -> "1 hr 30 min"
+        120 minutes   -> "2 hr"
+    """
+    if not value:
+        return ""
+    total_seconds = int(value.total_seconds())
+    if total_seconds <= 0:
+        return ""
+    if total_seconds < 60:
+        unit = "sec" if total_seconds == 1 else "sec"
+        return f"{total_seconds} {unit}"
+    total_minutes = total_seconds // 60
+    if total_minutes < 60:
+        return f"{total_minutes} min"
+    hours, minutes = divmod(total_minutes, 60)
+    hr_label = "hr"
+    if minutes == 0:
+        return f"{hours} {hr_label}"
+    return f"{hours} {hr_label} {minutes} min"
 
 
 @register.filter

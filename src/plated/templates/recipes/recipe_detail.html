@@ -84,6 +84,14 @@
                                         <i class="bi bi-trash"></i> {% trans "Delete" %}
                                     </a>
                                 </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <span class="dropdown-item disabled text-muted small">
+                                        <i class="bi bi-clock-history"></i> {% trans "Updated" %}: {{ recipe.updated_at|date:"F j, Y" }}
+                                    </span>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -102,14 +110,14 @@
                         <div class="recipe-info-item">
                             <i class="bi bi-clock"></i>
                             <span class="recipe-info-label">{% trans "Prep" %}</span>
-                            <span class="recipe-info-value">{{ recipe.prep_time }}</span>
+                            <span class="recipe-info-value">{{ recipe.prep_time|format_duration }}</span>
                         </div>
                     {% endif %}
                     {% if recipe.wait_time %}
                         <div class="recipe-info-item">
                             <i class="bi bi-hourglass"></i>
                             <span class="recipe-info-label">{% trans "Cook" %}</span>
-                            <span class="recipe-info-value">{{ recipe.wait_time }}</span>
+                            <span class="recipe-info-value">{{ recipe.wait_time|format_duration }}</span>
                         </div>
                     {% endif %}
                     {% if recipe.url %}
@@ -239,12 +247,6 @@
                 </div>
             </div>
         {% endif %}
-        <div class="row mb-4">
-            <div class="col-md-8 offset-md-2 text-muted small">
-                <p class="mb-0">{% trans "Created:" %} {{ recipe.created_at|date:"F j, Y, g:i a" }}</p>
-                <p>{% trans "Last updated:" %} {{ recipe.updated_at|date:"F j, Y, g:i a" }}</p>
-            </div>
-        </div>
         <!-- Add to Collection Modal -->
         <div class="modal fade"
              id="addToCollectionModal"
