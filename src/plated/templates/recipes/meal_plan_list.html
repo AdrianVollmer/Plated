@@ -1,107 +1,113 @@
 {% extends "base.html" %}
 {% load i18n %}
-
-{% block title %}{% trans "Meal Plans" %} - Plated{% endblock %}
-
+{% block title %}
+    {% trans "Meal Plans" %} - Plated
+{% endblock %}
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>{% trans "Meal Plans" %}</h1>
-            <a href="{% url 'meal_plan_create' %}" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> {% trans "New Meal Plan" %}
-            </a>
-        </div>
-
-        {% if meal_plans %}
-        <div class="row">
-            {% for meal_plan in meal_plans %}
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h5 class="card-title mb-0">
-                                <a href="{% url 'meal_plan_detail' meal_plan.pk %}" class="text-decoration-none">
-                                    {{ meal_plan.name }}
-                                </a>
-                            </h5>
-                            <div class="dropdown">
-                                <button class="btn btn-sm btn-link text-secondary p-0" type="button" id="mealPlanActionsMenu{{ meal_plan.pk }}" data-bs-toggle="dropdown" aria-expanded="false" aria-label="{% trans 'Meal plan actions' %}">
-                                    <i class="bi bi-three-dots-vertical"></i>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="mealPlanActionsMenu{{ meal_plan.pk }}">
-                                    <li>
-                                        <a class="dropdown-item" href="{% url 'shopping_list' meal_plan.pk %}">
-                                            <i class="bi bi-cart"></i> {% trans "Shopping List" %}
-                                        </a>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <a class="dropdown-item" href="{% url 'meal_plan_update' meal_plan.pk %}">
-                                            <i class="bi bi-pencil"></i> {% trans "Edit" %}
-                                        </a>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <a class="dropdown-item text-danger" href="{% url 'meal_plan_delete' meal_plan.pk %}">
-                                            <i class="bi bi-trash"></i> {% trans "Delete" %}
-                                        </a>
-                                    </li>
-                                </ul>
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>{% trans "Meal Plans" %}</h1>
+                <a href="{% url 'meal_plan_create' %}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> {% trans "New Meal Plan" %}
+                </a>
+            </div>
+            {% if meal_plans %}
+                <div class="row">
+                    {% for meal_plan in meal_plans %}
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h5 class="card-title mb-0">
+                                            <a href="{% url 'meal_plan_detail' meal_plan.pk %}"
+                                               class="text-decoration-none">{{ meal_plan.name }}</a>
+                                        </h5>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-link text-secondary p-0"
+                                                    type="button"
+                                                    id="mealPlanActionsMenu{{ meal_plan.pk }}"
+                                                    data-bs-toggle="dropdown"
+                                                    aria-expanded="false"
+                                                    aria-label="{% trans 'Meal plan actions' %}">
+                                                <i class="bi bi-three-dots-vertical"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end"
+                                                aria-labelledby="mealPlanActionsMenu{{ meal_plan.pk }}">
+                                                <li>
+                                                    <a class="dropdown-item" href="{% url 'shopping_list' meal_plan.pk %}">
+                                                        <i class="bi bi-cart"></i> {% trans "Shopping List" %}
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <hr class="dropdown-divider">
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item"
+                                                       href="{% url 'meal_plan_update' meal_plan.pk %}">
+                                                        <i class="bi bi-pencil"></i> {% trans "Edit" %}
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <hr class="dropdown-divider">
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item text-danger"
+                                                       href="{% url 'meal_plan_delete' meal_plan.pk %}">
+                                                        <i class="bi bi-trash"></i> {% trans "Delete" %}
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    {% if meal_plan.description %}
+                                        <p class="card-text text-muted">{{ meal_plan.description|truncatewords:20 }}</p>
+                                    {% endif %}
+                                    <p class="card-text">
+                                        <small class="text-muted">
+                                            <i class="bi bi-calendar"></i> {{ meal_plan.start_date|date:"M d, Y" }} - {{ meal_plan.end_date|date:"M d, Y" }}
+                                        </small>
+                                    </p>
+                                    <p class="card-text">
+                                        <small class="text-muted">
+                                            <i class="bi bi-list-ul"></i> {% blocktrans count counter=meal_plan.entries.count %}{{ counter }} meal{% plural %}{{ counter }} meals{% endblocktrans %}
+                                        </small>
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                        {% if meal_plan.description %}
-                        <p class="card-text text-muted">{{ meal_plan.description|truncatewords:20 }}</p>
-                        {% endif %}
-                        <p class="card-text">
-                            <small class="text-muted">
-                                <i class="bi bi-calendar"></i> {{ meal_plan.start_date|date:"M d, Y" }} - {{ meal_plan.end_date|date:"M d, Y" }}
-                            </small>
-                        </p>
-                        <p class="card-text">
-                            <small class="text-muted">
-                                <i class="bi bi-list-ul"></i> {% blocktrans count counter=meal_plan.entries.count %}{{ counter }} meal{% plural %}{{ counter }} meals{% endblocktrans %}
-                            </small>
-                        </p>
-                    </div>
+                    {% endfor %}
                 </div>
-            </div>
-            {% endfor %}
-        </div>
-
-        {% if is_paginated %}
-        <nav aria-label="{% trans 'Page navigation' %}">
-            <ul class="pagination justify-content-center">
-                {% if page_obj.has_previous %}
-                <li class="page-item">
-                    <a class="page-link" href="?page=1">{% trans "First" %}</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">{% trans "Previous" %}</a>
-                </li>
+                {% if is_paginated %}
+                    <nav aria-label="{% trans 'Page navigation' %}">
+                        <ul class="pagination justify-content-center">
+                            {% if page_obj.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=1">{% trans "First" %}</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">{% trans "Previous" %}</a>
+                                </li>
+                            {% endif %}
+                            <li class="page-item disabled">
+                                <span class="page-link">{% blocktrans with current=page_obj.number total=page_obj.paginator.num_pages %}Page {{ current }} of {{ total }}{% endblocktrans %}</span>
+                            </li>
+                            {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">{% trans "Next" %}</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{% trans "Last" %}</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
                 {% endif %}
-
-                <li class="page-item disabled">
-                    <span class="page-link">{% blocktrans with current=page_obj.number total=page_obj.paginator.num_pages %}Page {{ current }} of {{ total }}{% endblocktrans %}</span>
-                </li>
-
-                {% if page_obj.has_next %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">{% trans "Next" %}</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{% trans "Last" %}</a>
-                </li>
-                {% endif %}
-            </ul>
-        </nav>
-        {% endif %}
-
-        {% else %}
-        <div class="alert alert-info">
-            <p class="mb-0">{% trans "No meal plans yet." %} <a href="{% url 'meal_plan_create' %}">{% trans "Create your first meal plan" %}</a> {% trans "to organize your weekly meals!" %}</p>
+            {% else %}
+                <div class="alert alert-info">
+                    <p class="mb-0">{% trans "No meal plans yet." %} <a href="{% url 'meal_plan_create' %}">{% trans "Create your first meal plan" %}</a> {% trans "to organize your weekly meals!" %}</p>
+                </div>
+            {% endif %}
         </div>
-        {% endif %}
     </div>
-</div>
 {% endblock %}

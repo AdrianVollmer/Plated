@@ -7,6 +7,8 @@
         <meta name="theme-color" content="#0d6efd">
         <meta name="description"
               content="{% trans 'Your personal recipe manager for organizing, creating, and sharing recipes' %}">
+        <meta name="keywords"
+              content="recipes, cooking, meal planning, ingredients">
         <title>
             {% block title %}
                 {% trans "Plated - Recipe Manager" %}
@@ -93,9 +95,8 @@
             </div>
         </nav>
         {% if banner_text %}
-            <div class="alert alert-{{ banner_color }} mb-0 rounded-0 text-center" role="alert">
-                {{ banner_text }}
-            </div>
+            <div class="alert alert-{{ banner_color }} mb-0 rounded-0 text-center"
+                 role="alert">{{ banner_text }}</div>
         {% endif %}
         <main class="container my-4">
             {% if messages %}
@@ -111,7 +112,8 @@
                     </div>
                 </div>
             {% endif %}
-            {% block content %}{% endblock %}
+            {% block content %}
+            {% endblock %}
         </main>
         <footer class="text-center py-3 mt-5">
             <div class="container">
@@ -124,6 +126,7 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
         <script src="{% static 'theme-switcher.js' %}"></script>
         <script src="{% static 'pwa-install.js' %}"></script>
-        {% block extra_js %}{% endblock %}
+        {% block extra_js %}
+        {% endblock %}
     </body>
 </html>

@@ -1,97 +1,105 @@
 {% extends "base.html" %}
 {% load i18n %}
-
-{% block title %}{% trans "Manage Units" %} - Plated{% endblock %}
-
+{% block title %}
+    {% trans "Manage Units" %} - Plated
+{% endblock %}
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        <h1>{% trans "Manage Units" %}</h1>
-        <p class="lead text-muted">{% trans "View all distinct measurement units used across your recipes." %}</p>
-        <hr>
-
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <form method="get" class="input-group">
-                    <input type="text" name="q" class="form-control" placeholder="{% trans 'Search units...' %}" value="{{ query|default:'' }}">
-                    <button type="submit" class="btn btn-outline-primary">
-                        <i class="bi bi-search"></i> {% trans "Search" %}
-                    </button>
+    <div class="row">
+        <div class="col-12">
+            <h1>{% trans "Manage Units" %}</h1>
+            <p class="lead text-muted">{% trans "View all distinct measurement units used across your recipes." %}</p>
+            <hr>
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <form method="get" class="input-group">
+                        <input type="text"
+                               name="q"
+                               class="form-control"
+                               placeholder="{% trans 'Search units...' %}"
+                               value="{{ query|default:'' }}">
+                        <button type="submit" class="btn btn-outline-primary">
+                            <i class="bi bi-search"></i> {% trans "Search" %}
+                        </button>
+                        {% if query %}
+                            <a href="{% url 'manage_units' %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-x"></i> {% trans "Clear" %}
+                            </a>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+            {% if units %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> {% blocktrans count counter=units|length %}Found {{ counter }} distinct unit.{% plural %}Found {{ counter }} distinct units.{% endblocktrans %}
+                    {% trans "Use consistent units to help with autocomplete when creating recipes." %}
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>{% trans "Unit" %}</th>
+                                <th class="text-end">{% trans "Usage Count" %}</th>
+                                <th class="text-end">{% trans "Actions" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for unit in units %}
+                                <tr>
+                                    <td>{{ unit.unit }}</td>
+                                    <td class="text-end">
+                                        {% if unit.usage_count > 0 %}
+                                            <a href="{% url 'recipes_with_unit' unit.unit %}"
+                                               class="badge bg-secondary text-decoration-none">
+                                                {% blocktrans count counter=unit.usage_count %}{{ counter }} time{% plural %}{{ counter }} times{% endblocktrans %}
+                                            </a>
+                                        {% else %}
+                                            <span class="badge bg-secondary">{% trans "0 times" %}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        <a href="{% url 'rename_unit' %}?unit={{ unit.unit|urlencode }}"
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-pencil"></i> {% trans "Rename" %}
+                                        </a>
+                                        {% if unit.usage_count == 0 %}
+                                            <form method="post"
+                                                  action="{% url 'delete_unit' %}"
+                                                  class="d-inline"
+                                                  onsubmit="return confirm('{% trans "Are you sure you want to delete" %} \'{{ unit.unit }}\'?');">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="unit" value="{{ unit.unit }}">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                    <i class="bi bi-trash"></i> {% trans "Delete" %}
+                                                </button>
+                                            </form>
+                                        {% else %}
+                                            <button type="button"
+                                                    class="btn btn-sm btn-outline-secondary"
+                                                    disabled
+                                                    title="{% trans 'Cannot delete: in use' %}">
+                                                <i class="bi bi-trash"></i> {% trans "Delete" %}
+                                            </button>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-warning">
                     {% if query %}
-                    <a href="{% url 'manage_units' %}" class="btn btn-outline-secondary">
-                        <i class="bi bi-x"></i> {% trans "Clear" %}
-                    </a>
+                        <p class="mb-0">{% blocktrans %}No units found matching "{{ query }}".{% endblocktrans %}</p>
+                    {% else %}
+                        <p class="mb-0">{% trans "No units found in your recipes yet." %}</p>
                     {% endif %}
-                </form>
+                </div>
+            {% endif %}
+            <div class="mt-4">
+                <a href="{% url 'recipe_list' %}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> {% trans "Back to Recipes" %}
+                </a>
             </div>
         </div>
-
-        {% if units %}
-        <div class="alert alert-info">
-            <i class="bi bi-info-circle"></i> {% blocktrans count counter=units|length %}Found {{ counter }} distinct unit.{% plural %}Found {{ counter }} distinct units.{% endblocktrans %}
-            {% trans "Use consistent units to help with autocomplete when creating recipes." %}
-        </div>
-
-        <div class="table-responsive">
-            <table class="table table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>{% trans "Unit" %}</th>
-                        <th class="text-end">{% trans "Usage Count" %}</th>
-                        <th class="text-end">{% trans "Actions" %}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for unit in units %}
-                    <tr>
-                        <td>{{ unit.unit }}</td>
-                        <td class="text-end">
-                            {% if unit.usage_count > 0 %}
-                            <a href="{% url 'recipes_with_unit' unit.unit %}" class="badge bg-secondary text-decoration-none">
-                                {% blocktrans count counter=unit.usage_count %}{{ counter }} time{% plural %}{{ counter }} times{% endblocktrans %}
-                            </a>
-                            {% else %}
-                            <span class="badge bg-secondary">{% trans "0 times" %}</span>
-                            {% endif %}
-                        </td>
-                        <td class="text-end">
-                            <a href="{% url 'rename_unit' %}?unit={{ unit.unit|urlencode }}" class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-pencil"></i> {% trans "Rename" %}
-                            </a>
-                            {% if unit.usage_count == 0 %}
-                            <form method="post" action="{% url 'delete_unit' %}" class="d-inline" onsubmit="return confirm('{% trans "Are you sure you want to delete" %} \'{{ unit.unit }}\'?');">
-                                {% csrf_token %}
-                                <input type="hidden" name="unit" value="{{ unit.unit }}">
-                                <button type="submit" class="btn btn-sm btn-outline-danger">
-                                    <i class="bi bi-trash"></i> {% trans "Delete" %}
-                                </button>
-                            </form>
-                            {% else %}
-                            <button type="button" class="btn btn-sm btn-outline-secondary" disabled title="{% trans 'Cannot delete: in use' %}">
-                                <i class="bi bi-trash"></i> {% trans "Delete" %}
-                            </button>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        {% else %}
-        <div class="alert alert-warning">
-            {% if query %}
-            <p class="mb-0">{% blocktrans %}No units found matching "{{ query }}".{% endblocktrans %}</p>
-            {% else %}
-            <p class="mb-0">{% trans "No units found in your recipes yet." %}</p>
-            {% endif %}
-        </div>
-        {% endif %}
-
-        <div class="mt-4">
-            <a href="{% url 'recipe_list' %}" class="btn btn-secondary">
-                <i class="bi bi-arrow-left"></i> {% trans "Back to Recipes" %}
-            </a>
-        </div>
     </div>
-</div>
 {% endblock %}

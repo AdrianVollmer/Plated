@@ -1,68 +1,73 @@
 {% extends "base.html" %}
 {% load static %}
 {% load i18n %}
-
-{% block title %}{% if object %}{% trans "Edit" %} {{ object.title }}{% else %}{% trans "New Recipe" %}{% endif %} - Plated{% endblock %}
-
+{% block title %}
+    {% if object %}
+        {% trans "Edit" %} {{ object.title }}
+    {% else %}
+        {% trans "New Recipe" %}
+    {% endif %}
+    - Plated
+{% endblock %}
 {% block content %}
-<div class="row mb-3">
-    <div class="col">
-        <nav aria-label="{% trans 'breadcrumb' %}">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'recipe_list' %}">{% trans "Recipes" %}</a></li>
-                {% if object %}
-                <li class="breadcrumb-item"><a href="{% url 'recipe_detail' object.pk %}">{{ object.title }}</a></li>
-                <li class="breadcrumb-item active">{% trans "Edit" %}</li>
-                {% else %}
-                <li class="breadcrumb-item active">{% trans "New Recipe" %}</li>
-                {% endif %}
-            </ol>
-        </nav>
+    <div class="row mb-3">
+        <div class="col">
+            <nav aria-label="{% trans 'breadcrumb' %}">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'recipe_list' %}">{% trans "Recipes" %}</a></li>
+                    {% if object %}
+                        <li class="breadcrumb-item"><a href="{% url 'recipe_detail' object.pk %}">{{ object.title }}</a></li>
+                        <li class="breadcrumb-item active">{% trans "Edit" %}</li>
+                    {% else %}
+                        <li class="breadcrumb-item active">{% trans "New Recipe" %}</li>
+                    {% endif %}
+                </ol>
+            </nav>
+        </div>
     </div>
-</div>
-
-<div class="row mb-4">
-    <div class="col-md-8 offset-md-2">
-        <h1 class="recipe-title">{% if object %}{% trans "Edit Recipe" %}{% else %}{% trans "Create New Recipe" %}{% endif %}</h1>
-    </div>
-</div>
-
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-
     <div class="row mb-4">
         <div class="col-md-8 offset-md-2">
-            <div class="form-section">
-                <div class="form-section-header">{% trans "Recipe Details" %}</div>
+            <h1 class="recipe-title">
+                {% if object %}
+                    {% trans "Edit Recipe" %}
+                {% else %}
+                    {% trans "Create New Recipe" %}
+                {% endif %}
+            </h1>
+        </div>
+    </div>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row mb-4">
+            <div class="col-md-8 offset-md-2">
+                <div class="form-section">
+                    <div class="form-section-header">{% trans "Recipe Details" %}</div>
                     {% if form.errors %}
-                    <div class="alert alert-danger">
-                        <strong>{% trans "Please correct the errors below:" %}</strong>
-                        {{ form.errors }}
-                    </div>
+                        <div class="alert alert-danger">
+                            <strong>{% trans "Please correct the errors below:" %}</strong>
+                            {{ form.errors }}
+                        </div>
                     {% endif %}
-
                     <div class="mb-3">
                         <label for="{{ form.title.id_for_label }}" class="form-label">{% trans "Title" %} *</label>
                         {{ form.title }}
                         {% if form.title.errors %}
-                        <div class="invalid-feedback d-block">{{ form.title.errors }}</div>
+                            <div class="invalid-feedback d-block">{{ form.title.errors }}</div>
                         {% endif %}
                     </div>
-
                     <div class="mb-3">
                         <label for="{{ form.description.id_for_label }}" class="form-label">{% trans "Description" %}</label>
                         {{ form.description }}
                         {% if form.description.errors %}
-                        <div class="invalid-feedback d-block">{{ form.description.errors }}</div>
+                            <div class="invalid-feedback d-block">{{ form.description.errors }}</div>
                         {% endif %}
                     </div>
-
                     <div class="row">
                         <div class="col-md-4 mb-3">
                             <label for="{{ form.servings.id_for_label }}" class="form-label">{% trans "Servings" %} *</label>
                             {{ form.servings }}
                             {% if form.servings.errors %}
-                            <div class="invalid-feedback d-block">{{ form.servings.errors }}</div>
+                                <div class="invalid-feedback d-block">{{ form.servings.errors }}</div>
                             {% endif %}
                         </div>
                         <div class="col-md-4 mb-3">
@@ -70,7 +75,7 @@
                             {{ form.prep_time }}
                             <small class="form-text text-muted">{% trans "Format: HH:MM:SS" %}</small>
                             {% if form.prep_time.errors %}
-                            <div class="invalid-feedback d-block">{{ form.prep_time.errors }}</div>
+                                <div class="invalid-feedback d-block">{{ form.prep_time.errors }}</div>
                             {% endif %}
                         </div>
                         <div class="col-md-4 mb-3">
@@ -78,99 +83,98 @@
                             {{ form.wait_time }}
                             <small class="form-text text-muted">{% trans "Format: HH:MM:SS" %}</small>
                             {% if form.wait_time.errors %}
-                            <div class="invalid-feedback d-block">{{ form.wait_time.errors }}</div>
+                                <div class="invalid-feedback d-block">{{ form.wait_time.errors }}</div>
                             {% endif %}
                         </div>
                     </div>
-
                     <div class="mb-3">
                         <label for="{{ form.keywords.id_for_label }}" class="form-label">{% trans "Keywords" %}</label>
                         {{ form.keywords }}
                         <div id="keyword-suggestions" class="mt-1"></div>
                         <small class="form-text text-muted">{% trans "Comma-separated keywords (e.g., italian, pasta, vegetarian)" %}</small>
                         {% if form.keywords.errors %}
-                        <div class="invalid-feedback d-block">{{ form.keywords.errors }}</div>
+                            <div class="invalid-feedback d-block">{{ form.keywords.errors }}</div>
                         {% endif %}
                     </div>
-
                     <div class="mb-3">
                         <label for="{{ form.url.id_for_label }}" class="form-label">{% trans "Source URL" %}</label>
                         {{ form.url }}
                         {% if form.url.errors %}
-                        <div class="invalid-feedback d-block">{{ form.url.errors }}</div>
+                            <div class="invalid-feedback d-block">{{ form.url.errors }}</div>
                         {% endif %}
                     </div>
-
                     <div class="mb-3">
                         <label for="{{ form.special_equipment.id_for_label }}" class="form-label">{% trans "Special Equipment" %}</label>
                         {{ form.special_equipment }}
                         {% if form.special_equipment.errors %}
-                        <div class="invalid-feedback d-block">{{ form.special_equipment.errors }}</div>
+                            <div class="invalid-feedback d-block">{{ form.special_equipment.errors }}</div>
                         {% endif %}
                     </div>
-
                     <div class="mb-3">
                         <label for="{{ form.notes.id_for_label }}" class="form-label">{% trans "Notes" %}</label>
                         {{ form.notes }}
                         {% if form.notes.errors %}
-                        <div class="invalid-feedback d-block">{{ form.notes.errors }}</div>
+                            <div class="invalid-feedback d-block">{{ form.notes.errors }}</div>
                         {% endif %}
                     </div>
                 </div>
             </div>
         </div>
-
-    <div class="row mb-4">
-        <div class="col-md-8 offset-md-2">
-            <div class="form-section">
-                <div class="form-section-header">{% trans "Ingredients" %}</div>
+        <div class="row mb-4">
+            <div class="col-md-8 offset-md-2">
+                <div class="form-section">
+                    <div class="form-section-header">{% trans "Ingredients" %}</div>
                     {{ ingredient_formset.management_form }}
                     {% if ingredient_formset.errors %}
-                    <div class="alert alert-danger">{{ ingredient_formset.errors }}</div>
+                        <div class="alert alert-danger">{{ ingredient_formset.errors }}</div>
                     {% endif %}
-
                     <div id="ingredient-formset">
                         {% for form in ingredient_formset %}
-                        <div class="ingredients-form mb-3 p-3 border rounded">
-                            {{ form.id }}
-                            {{ form.DELETE }}
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <strong class="text-muted">{% trans "Ingredient" %}</strong>
-                                <div class="btn-group btn-group-sm" role="group">
-                                    <button type="button" class="btn btn-outline-secondary move-up-btn" title="{% trans 'Move up' %}">
-                                        <i class="bi bi-arrow-up"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-outline-secondary move-down-btn" title="{% trans 'Move down' %}">
-                                        <i class="bi bi-arrow-down"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-outline-danger delete-form-btn" title="{% trans 'Delete' %}">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
+                            <div class="ingredients-form mb-3 p-3 border rounded">
+                                {{ form.id }}
+                                {{ form.DELETE }}
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <strong class="text-muted">{% trans "Ingredient" %}</strong>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <button type="button"
+                                                class="btn btn-outline-secondary move-up-btn"
+                                                title="{% trans 'Move up' %}">
+                                            <i class="bi bi-arrow-up"></i>
+                                        </button>
+                                        <button type="button"
+                                                class="btn btn-outline-secondary move-down-btn"
+                                                title="{% trans 'Move down' %}">
+                                            <i class="bi bi-arrow-down"></i>
+                                        </button>
+                                        <button type="button"
+                                                class="btn btn-outline-danger delete-form-btn"
+                                                title="{% trans 'Delete' %}">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <label class="form-label small">{% trans "Amount" %}</label>
+                                        {{ form.amount }}
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label small">{% trans "Unit" %}</label>
+                                        {{ form.unit }}
+                                    </div>
+                                    <div class="col-md-5">
+                                        <label class="form-label small">{% trans "Name" %} *</label>
+                                        {{ form.name }}
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label small">{% trans "Note" %}</label>
+                                        {{ form.note }}
+                                    </div>
+                                </div>
+                                {{ form.order }}
                             </div>
-                            <div class="row">
-                                <div class="col-md-2">
-                                    <label class="form-label small">{% trans "Amount" %}</label>
-                                    {{ form.amount }}
-                                </div>
-                                <div class="col-md-2">
-                                    <label class="form-label small">{% trans "Unit" %}</label>
-                                    {{ form.unit }}
-                                </div>
-                                <div class="col-md-5">
-                                    <label class="form-label small">{% trans "Name" %} *</label>
-                                    {{ form.name }}
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label small">{% trans "Note" %}</label>
-                                    {{ form.note }}
-                                </div>
-                            </div>
-                            {{ form.order }}
-                        </div>
                         {% endfor %}
                     </div>
-
                     <!-- Empty form template for dynamic addition -->
                     <script type="text/template" id="ingredient-empty-form">
                         <div class="ingredients-form mb-3 p-3 border rounded">
@@ -211,55 +215,59 @@
                             {{ ingredient_formset.empty_form.order }}
                         </div>
                     </script>
-
                     <div class="text-center mt-3">
-                        <button type="button" class="btn btn-sm btn-outline-primary" id="add-ingredient-btn">
+                        <button type="button"
+                                class="btn btn-sm btn-outline-primary"
+                                id="add-ingredient-btn">
                             <i class="bi bi-plus-circle"></i> {% trans "Add Ingredient" %}
                         </button>
                     </div>
                 </div>
             </div>
         </div>
-
-    <div class="row mb-4">
-        <div class="col-md-8 offset-md-2">
-            <div class="form-section">
-                <div class="form-section-header">{% trans "Instructions" %}</div>
+        <div class="row mb-4">
+            <div class="col-md-8 offset-md-2">
+                <div class="form-section">
+                    <div class="form-section-header">{% trans "Instructions" %}</div>
                     {{ step_formset.management_form }}
                     {% if step_formset.errors %}
-                    <div class="alert alert-danger">{{ step_formset.errors }}</div>
+                        <div class="alert alert-danger">{{ step_formset.errors }}</div>
                     {% endif %}
-
                     <div id="step-formset">
                         {% for form in step_formset %}
-                        <div class="steps-form mb-3 p-3 border rounded">
-                            {{ form.id }}
-                            {{ form.DELETE }}
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <strong class="text-muted">{% trans "Step" %} <span class="step-number">{{ forloop.counter }}</span></strong>
-                                <div class="btn-group btn-group-sm" role="group">
-                                    <button type="button" class="btn btn-outline-secondary move-up-btn" title="{% trans 'Move up' %}">
-                                        <i class="bi bi-arrow-up"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-outline-secondary move-down-btn" title="{% trans 'Move down' %}">
-                                        <i class="bi bi-arrow-down"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-outline-danger delete-form-btn" title="{% trans 'Delete' %}">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
+                            <div class="steps-form mb-3 p-3 border rounded">
+                                {{ form.id }}
+                                {{ form.DELETE }}
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <strong class="text-muted">{% trans "Step" %} <span class="step-number">{{ forloop.counter }}</span></strong>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <button type="button"
+                                                class="btn btn-outline-secondary move-up-btn"
+                                                title="{% trans 'Move up' %}">
+                                            <i class="bi bi-arrow-up"></i>
+                                        </button>
+                                        <button type="button"
+                                                class="btn btn-outline-secondary move-down-btn"
+                                                title="{% trans 'Move down' %}">
+                                            <i class="bi bi-arrow-down"></i>
+                                        </button>
+                                        <button type="button"
+                                                class="btn btn-outline-danger delete-form-btn"
+                                                title="{% trans 'Delete' %}">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <label class="form-label small">{% trans "Content" %}</label>
-                                    {{ form.content }}
+                                <div class="row">
+                                    <div class="col-12">
+                                        <label class="form-label small">{% trans "Content" %}</label>
+                                        {{ form.content }}
+                                    </div>
                                 </div>
+                                {{ form.order }}
                             </div>
-                            {{ form.order }}
-                        </div>
                         {% endfor %}
                     </div>
-
                     <!-- Empty form template for dynamic addition -->
                     <script type="text/template" id="step-empty-form">
                         <div class="steps-form mb-3 p-3 border rounded">
@@ -288,59 +296,63 @@
                             {{ step_formset.empty_form.order }}
                         </div>
                     </script>
-
                     <div class="text-center mt-3">
-                        <button type="button" class="btn btn-sm btn-outline-primary" id="add-step-btn">
+                        <button type="button"
+                                class="btn btn-sm btn-outline-primary"
+                                id="add-step-btn">
                             <i class="bi bi-plus-circle"></i> {% trans "Add Step" %}
                         </button>
                     </div>
                 </div>
             </div>
         </div>
-
-    <div class="row mb-4">
-        <div class="col-md-8 offset-md-2">
-            <div class="form-section">
-                <div class="form-section-header">{% trans "Images" %}</div>
+        <div class="row mb-4">
+            <div class="col-md-8 offset-md-2">
+                <div class="form-section">
+                    <div class="form-section-header">{% trans "Images" %}</div>
                     {{ image_formset.management_form }}
                     {% if image_formset.errors %}
-                    <div class="alert alert-danger">{{ image_formset.errors }}</div>
+                        <div class="alert alert-danger">{{ image_formset.errors }}</div>
                     {% endif %}
-
                     <div id="image-formset">
                         {% for form in image_formset %}
-                        <div class="images-form mb-3 p-3 border rounded">
-                            {{ form.id }}
-                            {{ form.DELETE }}
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <strong class="text-muted">{% trans "Image" %}</strong>
-                                <div class="btn-group btn-group-sm" role="group">
-                                    <button type="button" class="btn btn-outline-secondary move-up-btn" title="{% trans 'Move up' %}">
-                                        <i class="bi bi-arrow-up"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-outline-secondary move-down-btn" title="{% trans 'Move down' %}">
-                                        <i class="bi bi-arrow-down"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-outline-danger delete-form-btn" title="{% trans 'Delete' %}">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
+                            <div class="images-form mb-3 p-3 border rounded">
+                                {{ form.id }}
+                                {{ form.DELETE }}
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <strong class="text-muted">{% trans "Image" %}</strong>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <button type="button"
+                                                class="btn btn-outline-secondary move-up-btn"
+                                                title="{% trans 'Move up' %}">
+                                            <i class="bi bi-arrow-up"></i>
+                                        </button>
+                                        <button type="button"
+                                                class="btn btn-outline-secondary move-down-btn"
+                                                title="{% trans 'Move down' %}">
+                                            <i class="bi bi-arrow-down"></i>
+                                        </button>
+                                        <button type="button"
+                                                class="btn btn-outline-danger delete-form-btn"
+                                                title="{% trans 'Delete' %}">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <label class="form-label small">{% trans "Image" %}</label>
+                                        {{ form.image }}
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label small">{% trans "Caption" %}</label>
+                                        {{ form.caption }}
+                                    </div>
+                                </div>
+                                {{ form.order }}
                             </div>
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <label class="form-label small">{% trans "Image" %}</label>
-                                    {{ form.image }}
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label small">{% trans "Caption" %}</label>
-                                    {{ form.caption }}
-                                </div>
-                            </div>
-                            {{ form.order }}
-                        </div>
                         {% endfor %}
                     </div>
-
                     <!-- Empty form template for dynamic addition -->
                     <script type="text/template" id="image-empty-form">
                         <div class="images-form mb-3 p-3 border rounded">
@@ -373,30 +385,35 @@
                             {{ image_formset.empty_form.order }}
                         </div>
                     </script>
-
                     <div class="text-center mt-3">
-                        <button type="button" class="btn btn-sm btn-outline-primary" id="add-image-btn">
+                        <button type="button"
+                                class="btn btn-sm btn-outline-primary"
+                                id="add-image-btn">
                             <i class="bi bi-plus-circle"></i> {% trans "Add Image" %}
                         </button>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="row mb-4">
-        <div class="col-md-8 offset-md-2">
-            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                <a href="{% if object %}{% url 'recipe_detail' object.pk %}{% else %}{% url 'recipe_list' %}{% endif %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
-                <button type="submit" class="btn btn-primary">{% if object %}{% trans "Update Recipe" %}{% else %}{% trans "Create Recipe" %}{% endif %}</button>
+        <div class="row mb-4">
+            <div class="col-md-8 offset-md-2">
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a href="{% if object %}{% url 'recipe_detail' object.pk %}{% else %}{% url 'recipe_list' %}{% endif %}"
+                       class="btn btn-secondary">{% trans "Cancel" %}</a>
+                    <button type="submit" class="btn btn-primary">
+                        {% if object %}
+                            {% trans "Update Recipe" %}
+                        {% else %}
+                            {% trans "Create Recipe" %}
+                        {% endif %}
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
-</form>
+    </form>
 {% endblock %}
-
 {% block extra_css %}
-<style>
+    <style>
     .ingredients-form input,
     .ingredients-form select,
     .steps-form textarea,
@@ -419,12 +436,11 @@
     .images-form input[name$="-id"] {
         display: none;
     }
-</style>
+    </style>
 {% endblock %}
-
 {% block extra_js %}
-<script src="{% static 'dynamic-formset.js' %}"></script>
-<script>
+    <script src="{% static 'dynamic-formset.js' %}"></script>
+    <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Translated strings for JavaScript
     const i18n = {
@@ -620,5 +636,5 @@ document.addEventListener('DOMContentLoaded', function() {
         formClass: 'images-form'
     });
 });
-</script>
+    </script>
 {% endblock %}

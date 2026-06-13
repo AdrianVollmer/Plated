@@ -1,214 +1,214 @@
 {% extends "base.html" %}
 {% load i18n %}
-
-{% block title %}{% trans "Settings" %} - Plated{% endblock %}
-
+{% block title %}
+    {% trans "Settings" %} - Plated
+{% endblock %}
 {% block content %}
-<div class="row">
-    <div class="col-md-8 offset-md-2">
-        <h1 class="mb-4">{% trans "Settings" %}</h1>
-
-        <!-- Language Settings Section -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="mb-0">{% trans "Language" %}</h5>
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h1 class="mb-4">{% trans "Settings" %}</h1>
+            <!-- Language Settings Section -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">{% trans "Language" %}</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">{% trans "Choose your preferred language for the interface" %}</p>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="user_settings" value="1">
+                        {{ user_form.as_p }}
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> {% trans "Save Language" %}
+                        </button>
+                    </form>
+                </div>
             </div>
-            <div class="card-body">
-                <p class="text-muted mb-3">{% trans "Choose your preferred language for the interface" %}</p>
-                <form method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="user_settings" value="1">
-                    {{ user_form.as_p }}
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-check-circle"></i> {% trans "Save Language" %}
+            <!-- PWA Installation Section -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">{% trans "Progressive Web App" %}</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">{% trans "Install Plated as an app on your device for offline access and a native app experience" %}</p>
+                    <div id="pwa-installed-message"
+                         class="alert alert-success d-none"
+                         role="alert">
+                        <i class="bi bi-check-circle-fill"></i> {% trans "Plated is installed as a PWA and can work offline!" %}
+                    </div>
+                    <div id="pwa-info-message" class="alert alert-info d-none" role="alert">
+                        <i class="bi bi-info-circle"></i> <span id="pwa-info-text"></span>
+                    </div>
+                    <button id="pwa-install-button"
+                            class="btn btn-primary d-none"
+                            onclick="installPWA()">
+                        <i class="bi bi-download"></i> {% trans "Install Plated App" %}
                     </button>
-                </form>
-            </div>
-        </div>
-
-        <!-- PWA Installation Section -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="mb-0">{% trans "Progressive Web App" %}</h5>
-            </div>
-            <div class="card-body">
-                <p class="text-muted mb-3">{% trans "Install Plated as an app on your device for offline access and a native app experience" %}</p>
-                <div id="pwa-installed-message" class="alert alert-success d-none" role="alert">
-                    <i class="bi bi-check-circle-fill"></i> {% trans "Plated is installed as a PWA and can work offline!" %}
+                    <div class="mt-3">
+                        <small class="text-muted">
+                            <strong>{% trans "Benefits:" %}</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>{% trans "Access recipes offline" %}</li>
+                                <li>{% trans "Install on home screen like a native app" %}</li>
+                                <li>{% trans "Faster loading times" %}</li>
+                                <li>{% trans "Works across all your devices" %}</li>
+                            </ul>
+                        </small>
+                    </div>
                 </div>
-                <div id="pwa-info-message" class="alert alert-info d-none" role="alert">
-                    <i class="bi bi-info-circle"></i> <span id="pwa-info-text"></span>
+            </div>
+            <!-- Theme Selection Section -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">{% trans "Theme" %}</h5>
                 </div>
-                <button id="pwa-install-button" class="btn btn-primary d-none" onclick="installPWA()">
-                    <i class="bi bi-download"></i> {% trans "Install Plated App" %}
-                </button>
-                <div class="mt-3">
-                    <small class="text-muted">
-                        <strong>{% trans "Benefits:" %}</strong>
+                <div class="card-body">
+                    <p class="text-muted mb-3">{% trans "Choose your preferred color theme" %}</p>
+                    <div class="theme-switcher-settings">
+                        <button class="theme-btn"
+                                data-theme="light"
+                                title="{% trans 'Light Theme' %}"
+                                aria-label="{% trans 'Light Theme' %}">
+                            <span class="theme-label">{% trans "Light" %}</span>
+                        </button>
+                        <button class="theme-btn"
+                                data-theme="dark"
+                                title="{% trans 'Dark Theme' %}"
+                                aria-label="{% trans 'Dark Theme' %}">
+                            <span class="theme-label">{% trans "Dark" %}</span>
+                        </button>
+                        <button class="theme-btn"
+                                data-theme="auto"
+                                title="{% trans 'Auto (System)' %}"
+                                aria-label="{% trans 'Auto (System)' %}">
+                            <span class="theme-label">{% trans "Auto" %}</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- AI Settings Section -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">{% trans "AI Integration" %}</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">{% trans "Configure AI/LLM settings for recipe extraction" %}</p>
+                    {% if ai_settings %}
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="ai_settings" value="1">
+                            {{ ai_form.as_p }}
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> {% trans "Update AI Settings" %}
+                            </button>
+                        </form>
+                    {% else %}
+                        <p class="text-muted mb-3">{% trans "No AI settings configured yet." %}</p>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="ai_settings" value="1">
+                            {{ ai_form.as_p }}
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-plus-circle"></i> {% trans "Create AI Settings" %}
+                            </button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+            <!-- Database Import Section -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">{% trans "Database Import" %}</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">{% trans "Import recipes from a backup or from other recipe management apps" %}</p>
+                    <form method="post"
+                          action="{% url 'import_database_upload' %}"
+                          enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="{{ import_form.format.id_for_label }}" class="form-label">{{ import_form.format.label }}</label>
+                            {{ import_form.format }}
+                            {% if import_form.format.help_text %}
+                                <div class="form-text">{{ import_form.format.help_text }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ import_form.import_file.id_for_label }}" class="form-label">{{ import_form.import_file.label }}</label>
+                            {{ import_form.import_file }}
+                            {% if import_form.import_file.help_text %}
+                                <div class="form-text">{{ import_form.import_file.help_text }}</div>
+                            {% endif %}
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-upload"></i> {% trans "Upload and Preview" %}
+                        </button>
+                    </form>
+                    <div class="alert alert-info mt-3 mb-0" role="alert">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>{% trans "Supported Formats:" %}</strong>
                         <ul class="mb-0 mt-2">
-                            <li>{% trans "Access recipes offline" %}</li>
-                            <li>{% trans "Install on home screen like a native app" %}</li>
-                            <li>{% trans "Faster loading times" %}</li>
-                            <li>{% trans "Works across all your devices" %}</li>
+                            <li><strong>Plated:</strong> {% trans "Native format (JSON or ZIP with multiple recipes)" %}</li>
+                            <li><strong>Tandoor:</strong> {% trans "ZIP export from Tandoor Recipe Manager" %}</li>
                         </ul>
-                    </small>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Theme Selection Section -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="mb-0">{% trans "Theme" %}</h5>
-            </div>
-            <div class="card-body">
-                <p class="text-muted mb-3">{% trans "Choose your preferred color theme" %}</p>
-                <div class="theme-switcher-settings">
-                    <button class="theme-btn" data-theme="light" title="{% trans 'Light Theme' %}" aria-label="{% trans 'Light Theme' %}">
-                        <span class="theme-label">{% trans "Light" %}</span>
-                    </button>
-                    <button class="theme-btn" data-theme="dark" title="{% trans 'Dark Theme' %}" aria-label="{% trans 'Dark Theme' %}">
-                        <span class="theme-label">{% trans "Dark" %}</span>
-                    </button>
-                    <button class="theme-btn" data-theme="auto" title="{% trans 'Auto (System)' %}" aria-label="{% trans 'Auto (System)' %}">
-                        <span class="theme-label">{% trans "Auto" %}</span>
-                    </button>
+            <!-- Database Export Section -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">{% trans "Database Export" %}</h5>
                 </div>
-            </div>
-        </div>
-
-        <!-- AI Settings Section -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="mb-0">{% trans "AI Integration" %}</h5>
-            </div>
-            <div class="card-body">
-                <p class="text-muted mb-3">{% trans "Configure AI/LLM settings for recipe extraction" %}</p>
-                {% if ai_settings %}
-                    <form method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="ai_settings" value="1">
-                        {{ ai_form.as_p }}
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-check-circle"></i> {% trans "Update AI Settings" %}
-                        </button>
-                    </form>
-                {% else %}
-                    <p class="text-muted mb-3">{% trans "No AI settings configured yet." %}</p>
-                    <form method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="ai_settings" value="1">
-                        {{ ai_form.as_p }}
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-plus-circle"></i> {% trans "Create AI Settings" %}
-                        </button>
-                    </form>
-                {% endif %}
-            </div>
-        </div>
-
-        <!-- Database Import Section -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="mb-0">{% trans "Database Import" %}</h5>
-            </div>
-            <div class="card-body">
-                <p class="text-muted mb-3">{% trans "Import recipes from a backup or from other recipe management apps" %}</p>
-
-                <form method="post" action="{% url 'import_database_upload' %}" enctype="multipart/form-data">
-                    {% csrf_token %}
-
+                <div class="card-body">
+                    <p class="text-muted mb-3">{% trans "Export your entire recipe database in various formats for backup or migration" %}</p>
                     <div class="mb-3">
-                        <label for="{{ import_form.format.id_for_label }}" class="form-label">
-                            {{ import_form.format.label }}
-                        </label>
-                        {{ import_form.format }}
-                        {% if import_form.format.help_text %}
-                        <div class="form-text">{{ import_form.format.help_text }}</div>
-                        {% endif %}
+                        {% for format in export_formats %}
+                            <div class="form-check mb-2">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       name="exportFormat"
+                                       id="format{{ format.id }}"
+                                       value="{{ format.id }}"
+                                       {% if forloop.first %}checked{% endif %}>
+                                <label class="form-check-label" for="format{{ format.id }}">
+                                    <strong>{{ format.name }}</strong>
+                                    <span class="text-muted small d-block">{{ format.description }}</span>
+                                </label>
+                            </div>
+                        {% endfor %}
                     </div>
-
-                    <div class="mb-3">
-                        <label for="{{ import_form.import_file.id_for_label }}" class="form-label">
-                            {{ import_form.import_file.label }}
-                        </label>
-                        {{ import_form.import_file }}
-                        {% if import_form.import_file.help_text %}
-                        <div class="form-text">{{ import_form.import_file.help_text }}</div>
-                        {% endif %}
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-upload"></i> {% trans "Upload and Preview" %}
+                    <button type="button" class="btn btn-primary" onclick="exportDatabase()">
+                        <i class="bi bi-download"></i> {% trans "Download Export" %}
                     </button>
-                </form>
-
-                <div class="alert alert-info mt-3 mb-0" role="alert">
-                    <i class="bi bi-info-circle"></i>
-                    <strong>{% trans "Supported Formats:" %}</strong>
-                    <ul class="mb-0 mt-2">
-                        <li><strong>Plated:</strong> {% trans "Native format (JSON or ZIP with multiple recipes)" %}</li>
-                        <li><strong>Tandoor:</strong> {% trans "ZIP export from Tandoor Recipe Manager" %}</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- Database Export Section -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="mb-0">{% trans "Database Export" %}</h5>
-            </div>
-            <div class="card-body">
-                <p class="text-muted mb-3">{% trans "Export your entire recipe database in various formats for backup or migration" %}</p>
-
-                <div class="mb-3">
-                    {% for format in export_formats %}
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="radio" name="exportFormat" id="format{{ format.id }}" value="{{ format.id }}" {% if forloop.first %}checked{% endif %}>
-                        <label class="form-check-label" for="format{{ format.id }}">
-                            <strong>{{ format.name }}</strong>
-                            <span class="text-muted small d-block">{{ format.description }}</span>
-                        </label>
+                    <div class="alert alert-info mt-3 mb-0" role="alert">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>{% trans "Note:" %}</strong>
+                        {% trans "Exports include all recipes, ingredients, meal plans, and collections. Store backups securely." %}
                     </div>
-                    {% endfor %}
-                </div>
-
-                <button type="button" class="btn btn-primary" onclick="exportDatabase()">
-                    <i class="bi bi-download"></i> {% trans "Download Export" %}
-                </button>
-
-                <div class="alert alert-info mt-3 mb-0" role="alert">
-                    <i class="bi bi-info-circle"></i>
-                    <strong>{% trans "Note:" %}</strong>
-                    {% trans "Exports include all recipes, ingredients, meal plans, and collections. Store backups securely." %}
                 </div>
             </div>
-        </div>
-
-        <!-- Admin Section -->
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">{% trans "Administration" %}</h5>
-            </div>
-            <div class="card-body">
-                <p class="text-muted mb-3">{% trans "Access the Django admin interface for advanced management" %}</p>
-                <a href="{% url 'admin:index' %}" class="btn btn-primary">
-                    <i class="bi bi-gear-fill"></i> {% trans "Open Admin Panel" %}
-                </a>
+            <!-- Admin Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">{% trans "Administration" %}</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">{% trans "Access the Django admin interface for advanced management" %}</p>
+                    <a href="{% url 'admin:index' %}" class="btn btn-primary">
+                        <i class="bi bi-gear-fill"></i> {% trans "Open Admin Panel" %}
+                    </a>
+                </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock %}
-
 {% block extra_js %}
-<script>
+    <script>
 function exportDatabase() {
     const selectedFormat = document.querySelector('input[name="exportFormat"]:checked');
     if (selectedFormat) {
         window.location.href = "{% url 'export_database' 'FORMAT' %}".replace('FORMAT', selectedFormat.value);
     }
 }
-</script>
+    </script>
 {% endblock %}

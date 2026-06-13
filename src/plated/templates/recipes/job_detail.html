@@ -1,140 +1,144 @@
 {% extends "base.html" %}
 {% load i18n %}
-
-{% block title %}{% trans "AI Job" %} #{{ job.pk }} - Plated{% endblock %}
-
+{% block title %}
+    {% trans "AI Job" %} #{{ job.pk }} - Plated
+{% endblock %}
 {% block content %}
-<div class="row mb-3">
-    <div class="col-md-8 offset-md-2">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'jobs_list' %}">{% trans "AI Jobs" %}</a></li>
-                <li class="breadcrumb-item active">{% trans "Job" %} #{{ job.pk }}</li>
-            </ol>
-        </nav>
+    <div class="row mb-3">
+        <div class="col-md-8 offset-md-2">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'jobs_list' %}">{% trans "AI Jobs" %}</a></li>
+                    <li class="breadcrumb-item active">{% trans "Job" %} #{{ job.pk }}</li>
+                </ol>
+            </nav>
+        </div>
     </div>
-</div>
-
-<div class="row">
-    <div class="col-md-8 offset-md-2">
-        <h1>{% trans "AI Job" %} #{{ job.pk }}</h1>
-        <hr>
-
-        <div class="card mb-3">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">{% trans "Job Status" %}</h5>
-                {% if job.status == "pending" %}
-                <span class="badge bg-secondary">{{ job.get_status_display }}</span>
-                {% elif job.status == "running" %}
-                <span class="badge bg-warning">{{ job.get_status_display }}</span>
-                {% elif job.status == "completed" %}
-                <span class="badge bg-success">{{ job.get_status_display }}</span>
-                {% elif job.status == "failed" %}
-                <span class="badge bg-danger">{{ job.get_status_display }}</span>
-                {% elif job.status == "cancelled" %}
-                <span class="badge bg-secondary">{{ job.get_status_display }}</span>
-                {% endif %}
-            </div>
-            <div class="card-body">
-                <dl class="row mb-0">
-                    <dt class="col-sm-3">{% trans "Created:" %}</dt>
-                    <dd class="col-sm-9">{{ job.created_at|date:"Y-m-d H:i:s" }}</dd>
-
-                    <dt class="col-sm-3">{% trans "Input Type:" %}</dt>
-                    <dd class="col-sm-9">{{ job.get_input_type_display }}</dd>
-
-                    <dt class="col-sm-3">{% trans "Timeout:" %}</dt>
-                    <dd class="col-sm-9">{% blocktrans with seconds=job.timeout %}{{ seconds }} seconds{% endblocktrans %}</dd>
-
-                    {% if job.started_at %}
-                    <dt class="col-sm-3">{% trans "Started:" %}</dt>
-                    <dd class="col-sm-9">{{ job.started_at|date:"Y-m-d H:i:s" }}</dd>
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h1>{% trans "AI Job" %} #{{ job.pk }}</h1>
+            <hr>
+            <div class="card mb-3">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">{% trans "Job Status" %}</h5>
+                    {% if job.status == "pending" %}
+                        <span class="badge bg-secondary">{{ job.get_status_display }}</span>
+                    {% elif job.status == "running" %}
+                        <span class="badge bg-warning">{{ job.get_status_display }}</span>
+                    {% elif job.status == "completed" %}
+                        <span class="badge bg-success">{{ job.get_status_display }}</span>
+                    {% elif job.status == "failed" %}
+                        <span class="badge bg-danger">{{ job.get_status_display }}</span>
+                    {% elif job.status == "cancelled" %}
+                        <span class="badge bg-secondary">{{ job.get_status_display }}</span>
                     {% endif %}
-
-                    {% if job.completed_at %}
-                    <dt class="col-sm-3">{% trans "Completed:" %}</dt>
-                    <dd class="col-sm-9">{{ job.completed_at|date:"Y-m-d H:i:s" }}</dd>
-                    {% endif %}
-                </dl>
-            </div>
-        </div>
-
-        {% if job.status == "running" or job.status == "pending" %}
-        <div class="alert alert-info">
-            <div class="d-flex align-items-center">
-                <div class="spinner-border spinner-border-sm me-2" role="status">
-                    <span class="visually-hidden">{% trans "Processing..." %}</span>
                 </div>
-                <div>
-                    {% blocktrans with status=job.get_status_display|lower %}Job is {{ status }}. This page will automatically refresh...{% endblocktrans %}
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-3">{% trans "Created:" %}</dt>
+                        <dd class="col-sm-9">
+                            {{ job.created_at|date:"Y-m-d H:i:s" }}
+                        </dd>
+                        <dt class="col-sm-3">{% trans "Input Type:" %}</dt>
+                        <dd class="col-sm-9">
+                            {{ job.get_input_type_display }}
+                        </dd>
+                        <dt class="col-sm-3">{% trans "Timeout:" %}</dt>
+                        <dd class="col-sm-9">
+                            {% blocktrans with seconds=job.timeout %}{{ seconds }} seconds{% endblocktrans %}
+                        </dd>
+                        {% if job.started_at %}
+                            <dt class="col-sm-3">{% trans "Started:" %}</dt>
+                            <dd class="col-sm-9">
+                                {{ job.started_at|date:"Y-m-d H:i:s" }}
+                            </dd>
+                        {% endif %}
+                        {% if job.completed_at %}
+                            <dt class="col-sm-3">{% trans "Completed:" %}</dt>
+                            <dd class="col-sm-9">
+                                {{ job.completed_at|date:"Y-m-d H:i:s" }}
+                            </dd>
+                        {% endif %}
+                    </dl>
                 </div>
             </div>
-        </div>
-        {% endif %}
-
-        {% if job.status == "completed" %}
-        <div class="alert alert-success">
-            <i class="bi bi-check-circle-fill"></i> {% trans "Recipe extracted successfully!" %}
-        </div>
-        <div class="d-grid gap-2">
-            <a href="{% url 'job_use_result' job.pk %}" class="btn btn-primary btn-lg">
-                <i class="bi bi-file-earmark-plus"></i> {% trans "Use This Recipe" %}
-            </a>
-        </div>
-        {% endif %}
-
-        {% if job.status == "failed" %}
-        <div class="alert alert-danger">
-            <h5 class="alert-heading"><i class="bi bi-exclamation-triangle-fill"></i> {% trans "Job Failed" %}</h5>
-            <p class="mb-0">{{ job.error_message }}</p>
-        </div>
-        <form method="post" action="{% url 'job_retry' job.pk %}" class="d-grid">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-warning btn-lg">
-                <i class="bi bi-arrow-clockwise"></i> {% trans "Retry Job" %}
-            </button>
-        </form>
-        {% endif %}
-
-        <div class="card mt-3">
-            <div class="card-header">
-                <h5 class="mb-0">{% trans "Input Content" %}</h5>
-            </div>
-            <div class="card-body">
-                {% if job.instructions %}
-                <p><strong>{% trans "Instructions:" %}</strong> {{ job.instructions }}</p>
-                <hr>
-                {% endif %}
-                <pre class="bg-light p-3 rounded" style="max-height: 300px; overflow-y: auto;">{{ job.input_content }}</pre>
-            </div>
-        </div>
-
-        {% if job.status in "pending,running" %}
-        <div class="mt-4 d-flex gap-2">
-            <form method="post" action="{% url 'job_cancel' job.pk %}" class="d-inline">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-outline-secondary">
-                    <i class="bi bi-x-circle"></i> {% trans "Cancel Job" %}
-                </button>
-            </form>
-            {% elif job.status in "completed,failed,cancelled" %}
-            <form method="post" action="{% url 'job_delete' job.pk %}" class="d-inline" onsubmit="return confirm('{% trans 'Are you sure you want to delete this job?' %}');">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-outline-danger">
-                    <i class="bi bi-trash"></i> {% trans "Delete Job" %}
-                </button>
-            </form>
+            {% if job.status == "running" or job.status == "pending" %}
+                <div class="alert alert-info">
+                    <div class="d-flex align-items-center">
+                        <div class="spinner-border spinner-border-sm me-2" role="status">
+                            <span class="visually-hidden">{% trans "Processing..." %}</span>
+                        </div>
+                        <div>
+                            {% blocktrans with status=job.get_status_display|lower %}Job is {{ status }}. This page will automatically refresh...{% endblocktrans %}
+                        </div>
+                    </div>
+                </div>
             {% endif %}
+            {% if job.status == "completed" %}
+                <div class="alert alert-success">
+                    <i class="bi bi-check-circle-fill"></i> {% trans "Recipe extracted successfully!" %}
+                </div>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'job_use_result' job.pk %}"
+                       class="btn btn-primary btn-lg">
+                        <i class="bi bi-file-earmark-plus"></i> {% trans "Use This Recipe" %}
+                    </a>
+                </div>
+            {% endif %}
+            {% if job.status == "failed" %}
+                <div class="alert alert-danger">
+                    <h5 class="alert-heading"><i class="bi bi-exclamation-triangle-fill"></i> {% trans "Job Failed" %}</h5>
+                    <p class="mb-0">{{ job.error_message }}</p>
+                </div>
+                <form method="post" action="{% url 'job_retry' job.pk %}" class="d-grid">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-warning btn-lg">
+                        <i class="bi bi-arrow-clockwise"></i> {% trans "Retry Job" %}
+                    </button>
+                </form>
+            {% endif %}
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5 class="mb-0">{% trans "Input Content" %}</h5>
+                </div>
+                <div class="card-body">
+                    {% if job.instructions %}
+                        <p><strong>{% trans "Instructions:" %}</strong> {{ job.instructions }}</p>
+                        <hr>
+                    {% endif %}
+                    <pre class="bg-light p-3 rounded"
+                         style="max-height: 300px;
+                                overflow-y: auto">{{ job.input_content }}</pre>
+                </div>
+            </div>
+            {% if job.status in "pending,running" %}
+                <div class="mt-4 d-flex gap-2">
+                    <form method="post" action="{% url 'job_cancel' job.pk %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle"></i> {% trans "Cancel Job" %}
+                        </button>
+                    </form>
+                {% elif job.status in "completed,failed,cancelled" %}
+                    <form method="post"
+                          action="{% url 'job_delete' job.pk %}"
+                          class="d-inline"
+                          onsubmit="return confirm('{% trans 'Are you sure you want to delete this job?' %}');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-danger">
+                            <i class="bi bi-trash"></i> {% trans "Delete Job" %}
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
         </div>
     </div>
-</div>
-
-<script>
+    <script>
     // Auto-refresh if job is pending or running
     {% if job.status in "pending,running" %}
     setTimeout(() => {
         location.reload();
     }, 3000);  // Refresh every 3 seconds
     {% endif %}
-</script>
+    </script>
 {% endblock %}

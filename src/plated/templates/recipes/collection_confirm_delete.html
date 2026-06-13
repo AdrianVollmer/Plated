@@ -1,66 +1,66 @@
 {% extends "base.html" %}
 {% load i18n %}
-
-{% block title %}{% trans "Delete Collection" %} - Plated{% endblock %}
-
+{% block title %}
+    {% trans "Delete Collection" %} - Plated
+{% endblock %}
 {% block content %}
-<div class="row mb-3">
-    <div class="col-md-8 offset-md-2">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'collection_list' %}">{% trans "Collections" %}</a></li>
-                <li class="breadcrumb-item"><a href="{% url 'collection_detail' collection.pk %}">{{ collection.name }}</a></li>
-                <li class="breadcrumb-item active">{% trans "Delete" %}</li>
-            </ol>
-        </nav>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-8 offset-md-2">
-        <h1>{% trans "Delete Collection" %}</h1>
-        <hr>
-
-        <div class="alert alert-warning">
-            <h4 class="alert-heading">
-                <i class="bi bi-exclamation-triangle"></i> {% trans "Confirm Deletion" %}
-            </h4>
-            <p>{% blocktrans with name=collection.name %}Are you sure you want to delete the collection <strong>"{{ name }}"</strong>?{% endblocktrans %}</p>
-            <p class="mb-0">{% trans "This action cannot be undone." %}</p>
+    <div class="row mb-3">
+        <div class="col-md-8 offset-md-2">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'collection_list' %}">{% trans "Collections" %}</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'collection_detail' collection.pk %}">{{ collection.name }}</a></li>
+                    <li class="breadcrumb-item active">{% trans "Delete" %}</li>
+                </ol>
+            </nav>
         </div>
-
-        {% if collection.recipes.exists %}
-        <div class="alert alert-info">
-            <p class="mb-2">
-                {% blocktrans count counter=collection.recipes.count %}
+    </div>
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h1>{% trans "Delete Collection" %}</h1>
+            <hr>
+            <div class="alert alert-warning">
+                <h4 class="alert-heading">
+                    <i class="bi bi-exclamation-triangle"></i> {% trans "Confirm Deletion" %}
+                </h4>
+                <p>{% blocktrans with name=collection.name %}Are you sure you want to delete the collection <strong>"{{ name }}"</strong>?{% endblocktrans %}</p>
+                <p class="mb-0">{% trans "This action cannot be undone." %}</p>
+            </div>
+            {% if collection.recipes.exists %}
+                <div class="alert alert-info">
+                    <p class="mb-2">
+                        {% blocktrans count counter=collection.recipes.count %}
                 This collection contains {{ counter }} recipe.
                 {% plural %}
                 This collection contains {{ counter }} recipes.
                 {% endblocktrans %}
-            </p>
-        </div>
-        {% endif %}
-
-        <form method="post">
-            {% csrf_token %}
-            {% if collection.recipes.exists %}
-            <div class="form-check mb-3">
-                <input class="form-check-input" type="checkbox" name="delete_recipes" id="delete_recipes">
-                <label class="form-check-label text-danger" for="delete_recipes">
-                    <strong>{% trans "Also delete all recipes in this collection" %}</strong>
-                </label>
-                <div class="form-text">{% trans "Warning: This will permanently delete all recipes contained in this collection!" %}</div>
-            </div>
+                    </p>
+                </div>
             {% endif %}
-            <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-danger">
-                    <i class="bi bi-trash"></i> {% trans "Yes, Delete Collection" %}
-                </button>
-                <a href="{% url 'collection_detail' collection.pk %}" class="btn btn-secondary">
-                    <i class="bi bi-x-circle"></i> {% trans "Cancel" %}
-                </a>
-            </div>
-        </form>
+            <form method="post">
+                {% csrf_token %}
+                {% if collection.recipes.exists %}
+                    <div class="form-check mb-3">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               name="delete_recipes"
+                               id="delete_recipes">
+                        <label class="form-check-label text-danger" for="delete_recipes">
+                            <strong>{% trans "Also delete all recipes in this collection" %}</strong>
+                        </label>
+                        <div class="form-text">{% trans "Warning: This will permanently delete all recipes contained in this collection!" %}</div>
+                    </div>
+                {% endif %}
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> {% trans "Yes, Delete Collection" %}
+                    </button>
+                    <a href="{% url 'collection_detail' collection.pk %}"
+                       class="btn btn-secondary">
+                        <i class="bi bi-x-circle"></i> {% trans "Cancel" %}
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 {% endblock %}

@@ -1,97 +1,96 @@
 {% extends "base.html" %}
 {% load i18n %}
-
 {% block title %}{{ collection.name }} - Plated{% endblock %}
-
 {% block content %}
-<div class="row mb-3">
-    <div class="col">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'collection_list' %}">{% trans "Collections" %}</a></li>
-                <li class="breadcrumb-item active">{{ collection.name }}</li>
-            </ol>
-        </nav>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-start mb-4">
-            <div>
-                <h1>{{ collection.name }}</h1>
-                {% if collection.description %}
-                <p class="lead text-muted">{{ collection.description }}</p>
-                {% endif %}
-                <p class="text-muted">
-                    <small>
-                        <i class="bi bi-calendar"></i> {% blocktrans with date=collection.created_at|date:"F j, Y" %}Created {{ date }}{% endblocktrans %}
-                        {% if collection.updated_at != collection.created_at %}
-                        | {% blocktrans with date=collection.updated_at|date:"F j, Y" %}Updated {{ date }}{% endblocktrans %}
-                        {% endif %}
-                    </small>
-                </p>
-            </div>
-            <div class="btn-group" role="group">
-                <a href="{% url 'collection_pdf' collection.pk %}" class="btn btn-outline-success">
-                    <i class="bi bi-file-pdf"></i> {% trans "PDF" %}
-                </a>
-                <a href="{% url 'collection_update' collection.pk %}" class="btn btn-outline-primary">
-                    <i class="bi bi-pencil"></i> {% trans "Edit" %}
-                </a>
-                <a href="{% url 'collection_delete' collection.pk %}" class="btn btn-outline-danger">
-                    <i class="bi bi-trash"></i> {% trans "Delete" %}
-                </a>
-            </div>
+    <div class="row mb-3">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'collection_list' %}">{% trans "Collections" %}</a></li>
+                    <li class="breadcrumb-item active">{{ collection.name }}</li>
+                </ol>
+            </nav>
         </div>
-
-        <hr>
-
-        <h2 class="mb-3">{% blocktrans count counter=collection.recipes.count %}{{ counter }} Recipe{% plural %}{{ counter }} Recipes{% endblocktrans %}</h2>
-
-        {% if collection.recipes.all %}
-        <div class="row">
-            {% for recipe in collection.recipes.all %}
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card h-100 shadow-sm">
-                    {% with recipe.images.first as first_image %}
-                    {% if first_image %}
-                    <img src="{{ first_image.image.url }}" class="card-img-top" alt="{{ recipe.title }}" style="height: 200px; object-fit: cover;">
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-start mb-4">
+                <div>
+                    <h1>{{ collection.name }}</h1>
+                    {% if collection.description %}
+                        <p class="lead text-muted">{{ collection.description }}</p>
                     {% endif %}
-                    {% endwith %}
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <a href="{% url 'recipe_detail' recipe.pk %}" class="text-decoration-none">
-                                {{ recipe.title }}
-                            </a>
-                        </h5>
-                        {% if recipe.description %}
-                        <p class="card-text text-muted">{{ recipe.description|truncatewords:15 }}</p>
-                        {% endif %}
-                        <div class="d-flex gap-2 text-muted small">
-                            {% if recipe.prep_time %}
-                            <span><i class="bi bi-clock"></i> {{ recipe.prep_time }}</span>
+                    <p class="text-muted">
+                        <small>
+                            <i class="bi bi-calendar"></i> {% blocktrans with date=collection.created_at|date:"F j, Y" %}Created {{ date }}{% endblocktrans %}
+                            {% if collection.updated_at != collection.created_at %}
+                                | {% blocktrans with date=collection.updated_at|date:"F j, Y" %}Updated {{ date }}{% endblocktrans %}
                             {% endif %}
-                            {% if recipe.servings %}
-                            <span><i class="bi bi-people"></i> {{ recipe.servings }}</span>
-                            {% endif %}
-                        </div>
-                    </div>
+                        </small>
+                    </p>
+                </div>
+                <div class="btn-group" role="group">
+                    <a href="{% url 'collection_pdf' collection.pk %}"
+                       class="btn btn-outline-success">
+                        <i class="bi bi-file-pdf"></i> {% trans "PDF" %}
+                    </a>
+                    <a href="{% url 'collection_update' collection.pk %}"
+                       class="btn btn-outline-primary">
+                        <i class="bi bi-pencil"></i> {% trans "Edit" %}
+                    </a>
+                    <a href="{% url 'collection_delete' collection.pk %}"
+                       class="btn btn-outline-danger">
+                        <i class="bi bi-trash"></i> {% trans "Delete" %}
+                    </a>
                 </div>
             </div>
-            {% endfor %}
-        </div>
-        {% else %}
-        <div class="alert alert-info">
-            <p class="mb-0">{% trans "No recipes in this collection yet." %} <a href="{% url 'collection_update' collection.pk %}">{% trans "Edit the collection" %}</a> {% trans "to add recipes." %}</p>
-        </div>
-        {% endif %}
-
-        <div class="mt-4">
-            <a href="{% url 'collection_list' %}" class="btn btn-secondary">
-                <i class="bi bi-arrow-left"></i> {% trans "Back to Collections" %}
-            </a>
+            <hr>
+            <h2 class="mb-3">{% blocktrans count counter=collection.recipes.count %}{{ counter }} Recipe{% plural %}{{ counter }} Recipes{% endblocktrans %}</h2>
+            {% if collection.recipes.all %}
+                <div class="row">
+                    {% for recipe in collection.recipes.all %}
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                {% with recipe.images.first as first_image %}
+                                    {% if first_image %}
+                                        <img src="{{ first_image.image.url }}"
+                                             class="card-img-top collection-card-img"
+                                             width="800"
+                                             height="200"
+                                             alt="{{ recipe.title }}">
+                                    {% endif %}
+                                {% endwith %}
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <a href="{% url 'recipe_detail' recipe.pk %}"
+                                           class="text-decoration-none">{{ recipe.title }}</a>
+                                    </h5>
+                                    {% if recipe.description %}
+                                        <p class="card-text text-muted">{{ recipe.description|truncatewords:15 }}</p>
+                                    {% endif %}
+                                    <div class="d-flex gap-2 text-muted small">
+                                        {% if recipe.prep_time %}
+                                            <span><i class="bi bi-clock"></i> {{ recipe.prep_time }}</span>
+                                        {% endif %}
+                                        {% if recipe.servings %}
+                                            <span><i class="bi bi-people"></i> {{ recipe.servings }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <p class="mb-0">{% trans "No recipes in this collection yet." %} <a href="{% url 'collection_update' collection.pk %}">{% trans "Edit the collection" %}</a> {% trans "to add recipes." %}</p>
+                </div>
+            {% endif %}
+            <div class="mt-4">
+                <a href="{% url 'collection_list' %}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> {% trans "Back to Collections" %}
+                </a>
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}

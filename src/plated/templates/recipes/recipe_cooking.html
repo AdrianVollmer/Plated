@@ -3,19 +3,21 @@
 {% load recipe_filters %}
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% trans "Cooking" %}: {{ recipe.title }} - Plated</title>
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-
-    <!-- Custom styles -->
-    <link rel="stylesheet" href="{% static 'styles.css' %}">
-
-    <style>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description"
+              content="{{ recipe.title }} - {% trans 'Cooking view' %}">
+        <meta name="keywords" content="{{ recipe.keywords }}, cooking, recipe">
+        <title>{% trans "Cooking" %}: {{ recipe.title }} - Plated</title>
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+              rel="stylesheet">
+        <link rel="stylesheet"
+              href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+        <!-- Custom styles -->
+        <link rel="stylesheet" href="{% static 'styles.css' %}">
+        <style>
         /* Cooking view specific styles */
         body {
             background: var(--bg-primary);
@@ -194,85 +196,84 @@
             overflow-y: auto;
             height: 100vh;
         }
-    </style>
-</head>
-<body>
-    <div class="cooking-view" id="cookingView">
-        <!-- Header -->
-        <div class="cooking-header">
-            <h1 class="cooking-title">{{ recipe.title }}</h1>
-        </div>
-
-        <!-- Ingredients Section -->
-        <div class="cooking-section">
-            <h2 class="cooking-section-title">
-                <i class="bi bi-basket-fill"></i>
-                {% trans "Ingredients" %}
-            </h2>
-
-            <ul class="cooking-ingredient-list">
-                {% for ingredient in recipe.ingredients.all %}
-                <li class="cooking-ingredient-item" data-type="ingredient" data-id="{{ forloop.counter }}">
-                    <input type="checkbox" class="cooking-checkbox ingredient-checkbox" data-id="{{ forloop.counter }}">
-                    <div class="cooking-ingredient-content">
-                        <span class="cooking-ingredient-amount">
-                            {% if ingredient.amount %}{{ ingredient.amount|format_amount }}{% endif %}
-                            {% if ingredient.unit %} {{ ingredient.unit }}{% endif %}
-                        </span>
-                        <span class="cooking-ingredient-name">{{ ingredient.name }}</span>
-                        {% if ingredient.note %}
-                        <span class="cooking-ingredient-note">({{ ingredient.note }})</span>
-                        {% endif %}
-                    </div>
-                </li>
-                {% empty %}
-                <li class="text-muted">{% trans "No ingredients listed" %}</li>
-                {% endfor %}
-            </ul>
-        </div>
-
-        <!-- Steps Section -->
-        <div class="cooking-section">
-            <h2 class="cooking-section-title">
-                <i class="bi bi-list-ol"></i>
-                {% trans "Instructions" %}
-            </h2>
-
-            <ul class="cooking-step-list">
-                {% for step in recipe.steps.all %}
-                <li class="cooking-step-item" data-type="step" data-id="{{ forloop.counter }}">
-                    <input type="checkbox" class="cooking-checkbox step-checkbox" data-id="{{ forloop.counter }}">
-                    <div class="cooking-step-content">
-                        <span class="cooking-step-number">{{ forloop.counter }}</span>
-                        <span class="cooking-step-text">{{ step.content|linebreaks }}</span>
-                    </div>
-                </li>
-                {% empty %}
-                <li class="text-muted">{% trans "No steps listed" %}</li>
-                {% endfor %}
-            </ul>
-        </div>
-
-        {% if recipe.special_equipment %}
-        <!-- Special Equipment Section -->
-        <div class="cooking-section">
-            <h2 class="cooking-section-title">
-                <i class="bi bi-tools"></i>
-                {% trans "Special Equipment" %}
-            </h2>
-            <div class="cooking-ingredient-item">
-                <div class="cooking-ingredient-content">
-                    {{ recipe.special_equipment|linebreaks }}
-                </div>
+        </style>
+    </head>
+    <body>
+        <div class="cooking-view" id="cookingView">
+            <!-- Header -->
+            <div class="cooking-header">
+                <h1 class="cooking-title">{{ recipe.title }}</h1>
             </div>
+            <!-- Ingredients Section -->
+            <div class="cooking-section">
+                <h2 class="cooking-section-title">
+                    <i class="bi bi-basket-fill"></i>
+                    {% trans "Ingredients" %}
+                </h2>
+                <ul class="cooking-ingredient-list">
+                    {% for ingredient in recipe.ingredients.all %}
+                        <li class="cooking-ingredient-item"
+                            data-type="ingredient"
+                            data-id="{{ forloop.counter }}">
+                            <input type="checkbox"
+                                   class="cooking-checkbox ingredient-checkbox"
+                                   data-id="{{ forloop.counter }}">
+                            <div class="cooking-ingredient-content">
+                                <span class="cooking-ingredient-amount">
+                                    {% if ingredient.amount %}{{ ingredient.amount|format_amount }}{% endif %}
+                                    {% if ingredient.unit %}{{ ingredient.unit }}{% endif %}
+                                </span>
+                                <span class="cooking-ingredient-name">{{ ingredient.name }}</span>
+                                {% if ingredient.note %}
+                                    <span class="cooking-ingredient-note">({{ ingredient.note }})</span>
+                                {% endif %}
+                            </div>
+                        </li>
+                    {% empty %}
+                        <li class="text-muted">{% trans "No ingredients listed" %}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <!-- Steps Section -->
+            <div class="cooking-section">
+                <h2 class="cooking-section-title">
+                    <i class="bi bi-list-ol"></i>
+                    {% trans "Instructions" %}
+                </h2>
+                <ul class="cooking-step-list">
+                    {% for step in recipe.steps.all %}
+                        <li class="cooking-step-item"
+                            data-type="step"
+                            data-id="{{ forloop.counter }}">
+                            <input type="checkbox"
+                                   class="cooking-checkbox step-checkbox"
+                                   data-id="{{ forloop.counter }}">
+                            <div class="cooking-step-content">
+                                <span class="cooking-step-number">{{ forloop.counter }}</span>
+                                <span class="cooking-step-text">{{ step.content|linebreaks }}</span>
+                            </div>
+                        </li>
+                    {% empty %}
+                        <li class="text-muted">{% trans "No steps listed" %}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% if recipe.special_equipment %}
+                <!-- Special Equipment Section -->
+                <div class="cooking-section">
+                    <h2 class="cooking-section-title">
+                        <i class="bi bi-tools"></i>
+                        {% trans "Special Equipment" %}
+                    </h2>
+                    <div class="cooking-ingredient-item">
+                        <div class="cooking-ingredient-content">{{ recipe.special_equipment|linebreaks }}</div>
+                    </div>
+                </div>
+            {% endif %}
         </div>
-        {% endif %}
-    </div>
-
-    <!-- Theme Switcher (existing functionality) -->
-    <script src="{% static 'theme-switcher.js' %}"></script>
-
-    <!-- Cooking View Script -->
-    <script src="{% static 'cooking-view.js' %}"></script>
-</body>
+        <!-- Theme Switcher (existing functionality) -->
+        <script src="{% static 'theme-switcher.js' %}"></script>
+        <!-- Cooking View Script -->
+        <script src="{% static 'cooking-view.js' %}"></script>
+    </body>
 </html>

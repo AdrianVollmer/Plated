@@ -1,46 +1,43 @@
 {% extends "base.html" %}
 {% load i18n %}
-
-{% block title %}{% trans "Delete" %} {{ meal_plan.name }} - Plated{% endblock %}
-
+{% block title %}
+    {% trans "Delete" %} {{ meal_plan.name }} - Plated
+{% endblock %}
 {% block content %}
-<div class="row mb-3">
-    <div class="col-md-6 offset-md-3">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'meal_plan_list' %}">{% trans "Meal Plans" %}</a></li>
-                <li class="breadcrumb-item"><a href="{% url 'meal_plan_detail' meal_plan.pk %}">{{ meal_plan.name }}</a></li>
-                <li class="breadcrumb-item active">{% trans "Delete" %}</li>
-            </ol>
-        </nav>
+    <div class="row mb-3">
+        <div class="col-md-6 offset-md-3">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'meal_plan_list' %}">{% trans "Meal Plans" %}</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'meal_plan_detail' meal_plan.pk %}">{{ meal_plan.name }}</a></li>
+                    <li class="breadcrumb-item active">{% trans "Delete" %}</li>
+                </ol>
+            </nav>
+        </div>
     </div>
-</div>
-
-<div class="row">
-    <div class="col-md-6 offset-md-3">
-        <div class="card border-danger">
-            <div class="card-header bg-danger text-white">
-                <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> {% trans "Confirm Deletion" %}</h5>
-            </div>
-            <div class="card-body">
-                <p>{% blocktrans with name=meal_plan.name %}Are you sure you want to delete the meal plan <strong>{{ name }}</strong>?{% endblocktrans %}</p>
-                <p class="text-muted">
-                    {% trans "This will remove all meal entries associated with this plan. This action cannot be undone." %}
-                </p>
-
-                <form method="post" class="mt-4">
-                    {% csrf_token %}
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-danger">
-                            <i class="bi bi-trash"></i> {% trans "Yes, Delete Meal Plan" %}
-                        </button>
-                        <a href="{% url 'meal_plan_detail' meal_plan.pk %}" class="btn btn-outline-secondary">
-                            {% trans "Cancel" %}
-                        </a>
-                    </div>
-                </form>
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> {% trans "Confirm Deletion" %}</h5>
+                </div>
+                <div class="card-body">
+                    <p>{% blocktrans with name=meal_plan.name %}Are you sure you want to delete the meal plan <strong>{{ name }}</strong>?{% endblocktrans %}</p>
+                    <p class="text-muted">
+                        {% trans "This will remove all meal entries associated with this plan. This action cannot be undone." %}
+                    </p>
+                    <form method="post" class="mt-4">
+                        {% csrf_token %}
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash"></i> {% trans "Yes, Delete Meal Plan" %}
+                            </button>
+                            <a href="{% url 'meal_plan_detail' meal_plan.pk %}"
+                               class="btn btn-outline-secondary">{% trans "Cancel" %}</a>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock %}

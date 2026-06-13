@@ -265,6 +265,20 @@ a:has(.recipe-card) {
     background: var(--bg-secondary);
 }
 
+.recipe-card-placeholder-icon {
+    font-size: 3rem;
+    color: var(--text-tertiary);
+}
+
+.collection-card-img {
+    height: 200px;
+    object-fit: cover;
+}
+
+.meal-plan-date-col {
+    width: 120px;
+}
+
 .recipe-card-body {
     padding: 1.5rem;
     flex: 1;
@@ -856,6 +870,10 @@ footer {
 .empty-state-icon {
     color: var(--text-tertiary);
     margin-bottom: 1.5rem;
+}
+
+.empty-state-icon-lg {
+    font-size: 4rem;
 }
 
 .empty-state-title {

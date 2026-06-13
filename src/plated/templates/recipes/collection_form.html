@@ -1,80 +1,91 @@
 {% extends "base.html" %}
 {% load i18n %}
-
-{% block title %}{% if object %}{% trans "Edit Collection" %}{% else %}{% trans "New Collection" %}{% endif %} - Plated{% endblock %}
-
+{% block title %}
+    {% if object %}
+        {% trans "Edit Collection" %}
+    {% else %}
+        {% trans "New Collection" %}
+    {% endif %}
+    - Plated
+{% endblock %}
 {% block content %}
-<div class="row mb-3">
-    <div class="col-md-8 offset-md-2">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'collection_list' %}">{% trans "Collections" %}</a></li>
+    <div class="row mb-3">
+        <div class="col-md-8 offset-md-2">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'collection_list' %}">{% trans "Collections" %}</a></li>
+                    {% if object %}
+                        <li class="breadcrumb-item"><a href="{% url 'collection_detail' object.pk %}">{{ object.name }}</a></li>
+                        <li class="breadcrumb-item active">{% trans "Edit" %}</li>
+                    {% else %}
+                        <li class="breadcrumb-item active">{% trans "New Collection" %}</li>
+                    {% endif %}
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h1>
                 {% if object %}
-                <li class="breadcrumb-item"><a href="{% url 'collection_detail' object.pk %}">{{ object.name }}</a></li>
-                <li class="breadcrumb-item active">{% trans "Edit" %}</li>
+                    {% trans "Edit Collection" %}
                 {% else %}
-                <li class="breadcrumb-item active">{% trans "New Collection" %}</li>
+                    {% trans "New Collection" %}
                 {% endif %}
-            </ol>
-        </nav>
+            </h1>
+            <hr>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="{{ form.name.id_for_label }}" class="form-label">{% trans "Collection Name" %} *</label>
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                        <div class="text-danger">
+                            {% for error in form.name.errors %}
+                                <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    <label for="{{ form.description.id_for_label }}" class="form-label">{% trans "Description" %}</label>
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                        <div class="text-danger">
+                            {% for error in form.description.errors %}
+                                <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <small class="form-text text-muted">{% trans "Optional description of this collection" %}</small>
+                </div>
+                <div class="mb-3">
+                    <label for="{{ form.recipes.id_for_label }}" class="form-label">{% trans "Recipes" %}</label>
+                    {{ form.recipes }}
+                    {% if form.recipes.errors %}
+                        <div class="text-danger">
+                            {% for error in form.recipes.errors %}
+                                <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <small class="form-text text-muted">{{ form.recipes.help_text }}</small>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle"></i>
+                        {% if object %}
+                            {% trans "Update Collection" %}
+                        {% else %}
+                            {% trans "Create Collection" %}
+                        {% endif %}
+                    </button>
+                    <a href="{% if object %}{% url 'collection_detail' object.pk %}{% else %}{% url 'collection_list' %}{% endif %}"
+                       class="btn btn-secondary">
+                        <i class="bi bi-x-circle"></i> {% trans "Cancel" %}
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
-
-<div class="row">
-    <div class="col-md-8 offset-md-2">
-        <h1>{% if object %}{% trans "Edit Collection" %}{% else %}{% trans "New Collection" %}{% endif %}</h1>
-        <hr>
-
-        <form method="post">
-            {% csrf_token %}
-
-            <div class="mb-3">
-                <label for="{{ form.name.id_for_label }}" class="form-label">{% trans "Collection Name" %} *</label>
-                {{ form.name }}
-                {% if form.name.errors %}
-                <div class="text-danger">
-                    {% for error in form.name.errors %}
-                    <small>{{ error }}</small>
-                    {% endfor %}
-                </div>
-                {% endif %}
-            </div>
-
-            <div class="mb-3">
-                <label for="{{ form.description.id_for_label }}" class="form-label">{% trans "Description" %}</label>
-                {{ form.description }}
-                {% if form.description.errors %}
-                <div class="text-danger">
-                    {% for error in form.description.errors %}
-                    <small>{{ error }}</small>
-                    {% endfor %}
-                </div>
-                {% endif %}
-                <small class="form-text text-muted">{% trans "Optional description of this collection" %}</small>
-            </div>
-
-            <div class="mb-3">
-                <label for="{{ form.recipes.id_for_label }}" class="form-label">{% trans "Recipes" %}</label>
-                {{ form.recipes }}
-                {% if form.recipes.errors %}
-                <div class="text-danger">
-                    {% for error in form.recipes.errors %}
-                    <small>{{ error }}</small>
-                    {% endfor %}
-                </div>
-                {% endif %}
-                <small class="form-text text-muted">{{ form.recipes.help_text }}</small>
-            </div>
-
-            <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-check-circle"></i> {% if object %}{% trans "Update Collection" %}{% else %}{% trans "Create Collection" %}{% endif %}
-                </button>
-                <a href="{% if object %}{% url 'collection_detail' object.pk %}{% else %}{% url 'collection_list' %}{% endif %}" class="btn btn-secondary">
-                    <i class="bi bi-x-circle"></i> {% trans "Cancel" %}
-                </a>
-            </div>
-        </form>
-    </div>
-</div>
 {% endblock %}

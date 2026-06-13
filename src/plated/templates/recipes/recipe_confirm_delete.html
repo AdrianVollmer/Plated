@@ -1,40 +1,38 @@
 {% extends "base.html" %}
 {% load i18n %}
-
-{% block title %}{% trans "Delete" %} {{ recipe.title }} - Plated{% endblock %}
-
+{% block title %}
+    {% trans "Delete" %} {{ recipe.title }} - Plated
+{% endblock %}
 {% block content %}
-<div class="row mb-3">
-    <div class="col">
-        <nav aria-label="{% trans 'breadcrumb' %}">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'recipe_list' %}">{% trans "Recipes" %}</a></li>
-                <li class="breadcrumb-item"><a href="{% url 'recipe_detail' recipe.pk %}">{{ recipe.title }}</a></li>
-                <li class="breadcrumb-item active">{% trans "Delete" %}</li>
-            </ol>
-        </nav>
+    <div class="row mb-3">
+        <div class="col">
+            <nav aria-label="{% trans 'breadcrumb' %}">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'recipe_list' %}">{% trans "Recipes" %}</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'recipe_detail' recipe.pk %}">{{ recipe.title }}</a></li>
+                    <li class="breadcrumb-item active">{% trans "Delete" %}</li>
+                </ol>
+            </nav>
+        </div>
     </div>
-</div>
-
-<div class="row">
-    <div class="col-md-6 offset-md-3">
-        <div class="card border-danger">
-            <div class="card-header bg-danger text-white">
-                <h5 class="mb-0">{% trans "Confirm Deletion" %}</h5>
-            </div>
-            <div class="card-body">
-                <p class="card-text">{% blocktrans with title=recipe.title %}Are you sure you want to delete the recipe <strong>{{ title }}</strong>?{% endblocktrans %}</p>
-                <p class="text-muted">{% trans "This action cannot be undone. All ingredients, steps, and images associated with this recipe will also be deleted." %}</p>
-
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                        <a href="{% url 'recipe_detail' recipe.pk %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
-                        <button type="submit" class="btn btn-danger">{% trans "Delete Recipe" %}</button>
-                    </div>
-                </form>
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">{% trans "Confirm Deletion" %}</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{% blocktrans with title=recipe.title %}Are you sure you want to delete the recipe <strong>{{ title }}</strong>?{% endblocktrans %}</p>
+                    <p class="text-muted">{% trans "This action cannot be undone. All ingredients, steps, and images associated with this recipe will also be deleted." %}</p>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a href="{% url 'recipe_detail' recipe.pk %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+                            <button type="submit" class="btn btn-danger">{% trans "Delete Recipe" %}</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock %}

@@ -1,97 +1,106 @@
 {% extends "base.html" %}
 {% load i18n %}
-
-{% block title %}{% trans "Manage Ingredient Names" %} - Plated{% endblock %}
-
+{% block title %}
+    {% trans "Manage Ingredient Names" %} - Plated
+{% endblock %}
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        <h1>{% trans "Manage Ingredient Names" %}</h1>
-        <p class="lead text-muted">{% trans "View all distinct ingredient names used across your recipes." %}</p>
-        <hr>
-
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <form method="get" class="input-group">
-                    <input type="text" name="q" class="form-control" placeholder="{% trans 'Search ingredient names...' %}" value="{{ query|default:'' }}">
-                    <button type="submit" class="btn btn-outline-primary">
-                        <i class="bi bi-search"></i> {% trans "Search" %}
-                    </button>
+    <div class="row">
+        <div class="col-12">
+            <h1>{% trans "Manage Ingredient Names" %}</h1>
+            <p class="lead text-muted">{% trans "View all distinct ingredient names used across your recipes." %}</p>
+            <hr>
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <form method="get" class="input-group">
+                        <input type="text"
+                               name="q"
+                               class="form-control"
+                               placeholder="{% trans 'Search ingredient names...' %}"
+                               value="{{ query|default:'' }}">
+                        <button type="submit" class="btn btn-outline-primary">
+                            <i class="bi bi-search"></i> {% trans "Search" %}
+                        </button>
+                        {% if query %}
+                            <a href="{% url 'manage_ingredient_names' %}"
+                               class="btn btn-outline-secondary">
+                                <i class="bi bi-x"></i> {% trans "Clear" %}
+                            </a>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+            {% if ingredients %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> {% blocktrans count counter=ingredients|length %}Found {{ counter }} distinct ingredient name.{% plural %}Found {{ counter }} distinct ingredient names.{% endblocktrans %}
+                    {% trans "Use consistent naming to help with autocomplete when creating recipes." %}
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>{% trans "Ingredient Name" %}</th>
+                                <th class="text-end">{% trans "Usage Count" %}</th>
+                                <th class="text-end">{% trans "Actions" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ingredient in ingredients %}
+                                <tr>
+                                    <td>{{ ingredient.name }}</td>
+                                    <td class="text-end">
+                                        {% if ingredient.usage_count > 0 %}
+                                            <a href="{% url 'recipes_with_ingredient_name' ingredient.name %}"
+                                               class="badge bg-secondary text-decoration-none">
+                                                {% blocktrans count counter=ingredient.usage_count %}{{ counter }} time{% plural %}{{ counter }} times{% endblocktrans %}
+                                            </a>
+                                        {% else %}
+                                            <span class="badge bg-secondary">{% trans "0 times" %}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        <a href="{% url 'rename_ingredient_name' %}?name={{ ingredient.name|urlencode }}"
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-pencil"></i> {% trans "Rename" %}
+                                        </a>
+                                        {% if ingredient.usage_count == 0 %}
+                                            <form method="post"
+                                                  action="{% url 'delete_ingredient_name' %}"
+                                                  class="d-inline"
+                                                  onsubmit="return confirm('{% trans "Are you sure you want to delete" %} \'{{ ingredient.name }}\'?');">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="name" value="{{ ingredient.name }}">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                    <i class="bi bi-trash"></i> {% trans "Delete" %}
+                                                </button>
+                                            </form>
+                                        {% else %}
+                                            <button type="button"
+                                                    class="btn btn-sm btn-outline-secondary"
+                                                    disabled
+                                                    title="{% trans 'Cannot delete: in use' %}">
+                                                <i class="bi bi-trash"></i> {% trans "Delete" %}
+                                            </button>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-warning">
                     {% if query %}
-                    <a href="{% url 'manage_ingredient_names' %}" class="btn btn-outline-secondary">
-                        <i class="bi bi-x"></i> {% trans "Clear" %}
-                    </a>
+                        <p class="mb-0">{% blocktrans %}No ingredient names found matching "{{ query }}".{% endblocktrans %}</p>
+                    {% else %}
+                        <p class="mb-0">{% trans "No ingredients found in your recipes yet." %}</p>
                     {% endif %}
-                </form>
+                </div>
+            {% endif %}
+            <div class="mt-4">
+                <a href="{% url 'recipe_list' %}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> {% trans "Back to Recipes" %}
+                </a>
             </div>
         </div>
-
-        {% if ingredients %}
-        <div class="alert alert-info">
-            <i class="bi bi-info-circle"></i> {% blocktrans count counter=ingredients|length %}Found {{ counter }} distinct ingredient name.{% plural %}Found {{ counter }} distinct ingredient names.{% endblocktrans %}
-            {% trans "Use consistent naming to help with autocomplete when creating recipes." %}
-        </div>
-
-        <div class="table-responsive">
-            <table class="table table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>{% trans "Ingredient Name" %}</th>
-                        <th class="text-end">{% trans "Usage Count" %}</th>
-                        <th class="text-end">{% trans "Actions" %}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for ingredient in ingredients %}
-                    <tr>
-                        <td>{{ ingredient.name }}</td>
-                        <td class="text-end">
-                            {% if ingredient.usage_count > 0 %}
-                            <a href="{% url 'recipes_with_ingredient_name' ingredient.name %}" class="badge bg-secondary text-decoration-none">
-                                {% blocktrans count counter=ingredient.usage_count %}{{ counter }} time{% plural %}{{ counter }} times{% endblocktrans %}
-                            </a>
-                            {% else %}
-                            <span class="badge bg-secondary">{% trans "0 times" %}</span>
-                            {% endif %}
-                        </td>
-                        <td class="text-end">
-                            <a href="{% url 'rename_ingredient_name' %}?name={{ ingredient.name|urlencode }}" class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-pencil"></i> {% trans "Rename" %}
-                            </a>
-                            {% if ingredient.usage_count == 0 %}
-                            <form method="post" action="{% url 'delete_ingredient_name' %}" class="d-inline" onsubmit="return confirm('{% trans "Are you sure you want to delete" %} \'{{ ingredient.name }}\'?');">
-                                {% csrf_token %}
-                                <input type="hidden" name="name" value="{{ ingredient.name }}">
-                                <button type="submit" class="btn btn-sm btn-outline-danger">
-                                    <i class="bi bi-trash"></i> {% trans "Delete" %}
-                                </button>
-                            </form>
-                            {% else %}
-                            <button type="button" class="btn btn-sm btn-outline-secondary" disabled title="{% trans 'Cannot delete: in use' %}">
-                                <i class="bi bi-trash"></i> {% trans "Delete" %}
-                            </button>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        {% else %}
-        <div class="alert alert-warning">
-            {% if query %}
-            <p class="mb-0">{% blocktrans %}No ingredient names found matching "{{ query }}".{% endblocktrans %}</p>
-            {% else %}
-            <p class="mb-0">{% trans "No ingredients found in your recipes yet." %}</p>
-            {% endif %}
-        </div>
-        {% endif %}
-
-        <div class="mt-4">
-            <a href="{% url 'recipe_list' %}" class="btn btn-secondary">
-                <i class="bi bi-arrow-left"></i> {% trans "Back to Recipes" %}
-            </a>
-        </div>
     </div>
-</div>
 {% endblock %}
