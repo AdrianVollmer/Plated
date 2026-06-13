@@ -196,6 +196,32 @@
             overflow-y: auto;
             height: 100vh;
         }
+
+        .step-timer-widget {
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .timer-display {
+            font-size: 1.25rem;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            color: var(--primary);
+            min-width: 4rem;
+        }
+
+        .timer-alarm .timer-display {
+            color: var(--bs-danger);
+            animation: timer-pulse 0.5s infinite alternate;
+        }
+
+        @keyframes timer-pulse {
+            from { opacity: 1; }
+            to   { opacity: 0.4; }
+        }
         </style>
     </head>
     <body>
@@ -242,15 +268,17 @@
                 </h2>
                 <ul class="cooking-step-list">
                     {% for step in recipe.steps.all %}
-                        <li class="cooking-step-item"
+                        <li class="cooking-step-item{% if step.timer %} has-timer{% endif %}"
                             data-type="step"
-                            data-id="{{ forloop.counter }}">
+                            data-id="{{ forloop.counter }}"
+                            {% if step.timer %}data-timer-minutes="{{ step.timer }}"{% endif %}>
                             <input type="checkbox"
                                    class="cooking-checkbox step-checkbox"
                                    data-id="{{ forloop.counter }}">
                             <div class="cooking-step-content">
                                 <span class="cooking-step-number">{{ forloop.counter }}</span>
                                 <span class="cooking-step-text">{{ step.content|linebreaks }}</span>
+                                {% if step.timer %}<div class="step-timer-widget" aria-live="polite"></div>{% endif %}
                             </div>
                         </li>
                     {% empty %}
