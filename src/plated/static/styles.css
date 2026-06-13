@@ -419,6 +419,14 @@ a:has(.recipe-card) {
     margin-bottom: 2rem;
 }
 
+.recipe-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    align-items: center;
+}
+
 .recipe-title {
     font-size: 2.5rem;
     font-weight: 700;
@@ -857,7 +865,11 @@ footer {
     }
 
     .recipe-header .row {
-        row-gap: 0;
+        row-gap: 0.75rem;
+    }
+
+    .recipe-actions {
+        justify-content: flex-start;
     }
 
     .recipe-section {
