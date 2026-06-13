@@ -100,6 +100,17 @@
         </div>
         <div class="row mb-4">
             <div class="col-md-8 offset-md-2">
+                {% if recipe.description %}
+                    <p class="recipe-description">{{ recipe.description }}</p>
+                {% endif %}
+                {% if recipe.keywords %}
+                    <div class="mb-3">
+                        {% for keyword in recipe.keywords|split:"," %}
+                            <a href="{% url 'recipes_with_keyword' keyword %}"
+                               class="keyword-tag text-decoration-none">{{ keyword }}</a>
+                        {% endfor %}
+                    </div>
+                {% endif %}
                 <div class="recipe-info-row mb-3">
                     <div class="recipe-info-item">
                         <i class="bi bi-people"></i>
@@ -130,17 +141,6 @@
                         </div>
                     {% endif %}
                 </div>
-                {% if recipe.keywords %}
-                    <div class="mb-3">
-                        {% for keyword in recipe.keywords|split:"," %}
-                            <a href="{% url 'recipes_with_keyword' keyword %}"
-                               class="keyword-tag text-decoration-none">{{ keyword }}</a>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-                {% if recipe.description %}
-                    <p class="recipe-description">{{ recipe.description }}</p>
-                {% endif %}
             </div>
         </div>
         {% if recipe.images.all %}
