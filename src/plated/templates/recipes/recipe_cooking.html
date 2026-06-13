@@ -214,7 +214,7 @@
         }
 
         .timer-alarm .timer-display {
-            color: var(--bs-danger);
+            color: var(--danger);
             animation: timer-pulse 0.5s infinite alternate;
         }
 
@@ -268,7 +268,7 @@
                 </h2>
                 <ul class="cooking-step-list">
                     {% for step in recipe.steps.all %}
-                        <li class="cooking-step-item{% if step.timer %} has-timer{% endif %}"
+                        <li class="cooking-step-item"
                             data-type="step"
                             data-id="{{ forloop.counter }}"
                             {% if step.timer %}data-timer-minutes="{{ step.timer }}"{% endif %}>
@@ -278,7 +278,7 @@
                             <div class="cooking-step-content">
                                 <span class="cooking-step-number">{{ forloop.counter }}</span>
                                 <span class="cooking-step-text">{{ step.content|linebreaks }}</span>
-                                {% if step.timer %}<div class="step-timer-widget" aria-live="polite"></div>{% endif %}
+                                {% if step.timer %}<div class="step-timer-widget"></div>{% endif %}
                             </div>
                         </li>
                     {% empty %}
