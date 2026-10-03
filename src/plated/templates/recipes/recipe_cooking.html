@@ -113,6 +113,14 @@
             flex-shrink: 0;
         }
 
+        .cooking-step-marker {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.4rem;
+            flex-shrink: 0;
+        }
+
         .cooking-ingredient-content,
         .cooking-step-content {
             flex: 1;
@@ -146,7 +154,6 @@
             text-align: center;
             line-height: 2rem;
             font-weight: 600;
-            margin-right: 0.5rem;
             flex-shrink: 0;
         }
 
@@ -272,11 +279,13 @@
                             data-type="step"
                             data-id="{{ forloop.counter }}"
                             {% if step.timer %}data-timer-minutes="{{ step.timer }}"{% endif %}>
-                            <input type="checkbox"
-                                   class="cooking-checkbox step-checkbox"
-                                   data-id="{{ forloop.counter }}">
-                            <div class="cooking-step-content">
+                            <div class="cooking-step-marker">
+                                <input type="checkbox"
+                                       class="cooking-checkbox step-checkbox"
+                                       data-id="{{ forloop.counter }}">
                                 <span class="cooking-step-number">{{ forloop.counter }}</span>
+                            </div>
+                            <div class="cooking-step-content">
                                 <span class="cooking-step-text">{{ step.content|linebreaks }}</span>
                                 {% if step.timer %}
                                     <div class="step-timer-widget"
