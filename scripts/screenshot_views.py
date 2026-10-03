@@ -171,7 +171,7 @@ def capture_screenshots(base_url: str, urls: list[tuple[str, str]]) -> tuple[int
                         page.goto(url, wait_until="networkidle", timeout=10_000)
                         page.screenshot(path=str(out_dir / f"{name}.png"), full_page=True)
                         captured += 1
-                    except Exception as exc:  # noqa: BLE001 - one bad view shouldn't abort the run
+                    except Exception as exc:  # one bad view shouldn't abort the run
                         logger.warning("Failed to screenshot %s (%s): %s", name, url, exc)
                         failed += 1
                 context.close()
