@@ -34,10 +34,13 @@ Access at `http://localhost:8000`
 ``` bash
 git clone https://github.com/AdrianVollmer/Plated.git
 cd Plated
-uv sync
+just sync
 uv run python src/plated/manage.py migrate
 uv run python src/plated/manage.py runserver
 ```
+
+This project uses [`just`](https://github.com/casey/just) as a task runner for common
+development tasks. Run `just --list` to see all available recipes.
 
 ## Documentation
 
@@ -46,7 +49,7 @@ Comprehensive documentation is available in the `docs/` directory.
 ### View Documentation Locally
 
 ``` bash
-uv run mkdocs serve
+just docs
 ```
 
 Then open `http://localhost:8001` in your browser.
@@ -54,7 +57,7 @@ Then open `http://localhost:8001` in your browser.
 ### Build Documentation
 
 ``` bash
-uv run mkdocs build
+just docs-build
 ```
 
 ## Technology Stack
@@ -67,24 +70,29 @@ uv run mkdocs build
 
 ## Development
 
-### Run Tests
+Common development tasks are wrapped in the [`justfile`](justfile). Run `just --list` to see
+every recipe; the most useful ones:
 
-``` bash
-uv run pytest
-```
+| Command | Description |
+| --- | --- |
+| `just sync` | Install/sync dependencies |
+| `just test` | Run the test suite |
+| `just check` | Lint, type-check, and verify formatting (no modifications) |
+| `just lint` | Lint with ruff (`just lint --fix` to auto-fix) |
+| `just fmt` | Format code with ruff |
+| `just fmt-check` | Check formatting without modifying files |
+| `just typecheck` | Type-check with mypy |
+| `just hooks-install` | Install git hooks so checks run automatically on commit |
+| `just screenshots` | Seed dev data and screenshot every view at mobile/desktop viewports |
+| `just docs` | Serve documentation locally with live reload |
+| `just docs-build` | Build the static docs site |
+| `just build` | Build the sdist and wheel |
+| `just bump [major\|minor\|patch]` | Tag the next release and move the `latest` branch to it |
+| `just run <args>` | Run the `plated` CLI |
+| `just ci` | Full check: everything CI runs |
 
-### Code Quality
-
-``` bash
-# Format code
-uv run ruff format src/
-
-# Lint code
-uv run ruff check src/
-
-# Type checking
-uv run mypy src/
-```
+After cloning, run `just hooks-install` once so lint/format/type checks run automatically on
+commit.
 
 ## License
 
