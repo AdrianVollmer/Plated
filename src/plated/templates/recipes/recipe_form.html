@@ -160,11 +160,27 @@
                                     </div>
                                     <div class="col-md-2">
                                         <label class="form-label small">{% trans "Unit" %}</label>
-                                        {{ form.unit }}
+                                        <div class="input-group input-group-sm">
+                                            {{ form.unit }}
+                                            <button type="button"
+                                                    class="btn btn-outline-secondary autocomplete-hint-btn"
+                                                    tabindex="-1"
+                                                    aria-label="{% trans 'Show existing units' %}">
+                                                <i class="bi bi-caret-down-fill"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                     <div class="col-md-5">
                                         <label class="form-label small">{% trans "Name" %} *</label>
-                                        {{ form.name }}
+                                        <div class="input-group input-group-sm">
+                                            {{ form.name }}
+                                            <button type="button"
+                                                    class="btn btn-outline-secondary autocomplete-hint-btn"
+                                                    tabindex="-1"
+                                                    aria-label="{% trans 'Show existing ingredient names' %}">
+                                                <i class="bi bi-caret-down-fill"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                     <div class="col-md-3">
                                         <label class="form-label small">{% trans "Note" %}</label>
@@ -201,11 +217,21 @@
                                 </div>
                                 <div class="col-md-2">
                                     <label class="form-label small">{% trans "Unit" %}</label>
-                                    {{ ingredient_formset.empty_form.unit }}
+                                    <div class="input-group input-group-sm">
+                                        {{ ingredient_formset.empty_form.unit }}
+                                        <button type="button" class="btn btn-outline-secondary autocomplete-hint-btn" tabindex="-1" aria-label="{% trans 'Show existing units' %}">
+                                            <i class="bi bi-caret-down-fill"></i>
+                                        </button>
+                                    </div>
                                 </div>
                                 <div class="col-md-5">
                                     <label class="form-label small">{% trans "Name" %} *</label>
-                                    {{ ingredient_formset.empty_form.name }}
+                                    <div class="input-group input-group-sm">
+                                        {{ ingredient_formset.empty_form.name }}
+                                        <button type="button" class="btn btn-outline-secondary autocomplete-hint-btn" tabindex="-1" aria-label="{% trans 'Show existing ingredient names' %}">
+                                            <i class="bi bi-caret-down-fill"></i>
+                                        </button>
+                                    </div>
                                 </div>
                                 <div class="col-md-3">
                                     <label class="form-label small">{% trans "Note" %}</label>
@@ -598,18 +624,39 @@ document.addEventListener('DOMContentLoaded', function() {
         updateSuggestions();
     }
 
+    // Tapping the caret next to an autocomplete field focuses it and opens the
+    // suggestion list -- on mobile, a bare <input list> gives no visual hint
+    // that suggestions exist, unlike desktop browsers' native dropdown arrow.
+    function wireAutocompleteHintButton(input) {
+        const button = input.closest('.input-group')?.querySelector('.autocomplete-hint-btn');
+        if (!button || button.dataset.hintWired) return;
+        button.dataset.hintWired = 'true';
+        button.addEventListener('click', () => {
+            input.focus();
+            if (input.showPicker) {
+                try {
+                    input.showPicker();
+                } catch {
+                    // Some browsers only allow showPicker() for certain input states; ignore.
+                }
+            }
+        });
+    }
+
     // Function to attach datalist to input fields
     function attachDatalistsToIngredients() {
         // Find all ingredient name inputs and attach the datalist
         document.querySelectorAll('input[name*="ingredients"][name$="-name"]').forEach(input => {
             input.setAttribute('list', 'ingredient-names-list');
             input.setAttribute('autocomplete', 'off');
+            wireAutocompleteHintButton(input);
         });
 
         // Find all ingredient unit inputs and attach the datalist
         document.querySelectorAll('input[name*="ingredients"][name$="-unit"]').forEach(input => {
             input.setAttribute('list', 'ingredient-units-list');
             input.setAttribute('autocomplete', 'off');
+            wireAutocompleteHintButton(input);
         });
     }
 
