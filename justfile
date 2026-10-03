@@ -64,7 +64,7 @@ docs:
 
 # Build static docs site
 docs-build:
-    uv run zensical build
+    uv run mkdocs build
 
 # Build the sdist and wheel
 build:
