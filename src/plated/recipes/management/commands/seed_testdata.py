@@ -5,6 +5,7 @@ from __future__ import annotations
 import os
 import sys
 from datetime import date, timedelta
+from io import BytesIO
 from pathlib import Path
 
 # Add the project to the path
@@ -17,6 +18,9 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 import django  # noqa: E402
 
 django.setup()
+
+from django.core.files.base import ContentFile  # noqa: E402
+from PIL import Image, ImageDraw  # noqa: E402
 
 # Import Django models after setup
 from recipes.management.commands.testviews import (  # noqa: E402
@@ -32,8 +36,36 @@ from recipes.models import (  # noqa: E402
     MealPlanEntry,
     Recipe,
     RecipeCollection,
+    RecipeImage,
     Step,
 )
+
+# (width, height) pairs covering the aspect ratios views need to handle.
+PLACEHOLDER_IMAGE_SIZES = [
+    (800, 600),  # landscape 4:3
+    (600, 800),  # portrait 3:4
+    (700, 700),  # square 1:1
+    (960, 540),  # wide 16:9
+]
+
+
+def _placeholder_color(label: str) -> tuple[int, int, int]:
+    """Derive a stable, visually distinct color from a label string."""
+    digest = sum(ord(c) for c in label)
+    return (80 + (digest * 37) % 150, 80 + (digest * 59) % 150, 80 + (digest * 83) % 150)
+
+
+def _generate_placeholder_image(label: str, size: tuple[int, int]) -> ContentFile:
+    """Create an in-memory JPEG with a solid color and centered label text."""
+    image = Image.new("RGB", size, color=_placeholder_color(label))
+    draw = ImageDraw.Draw(image)
+    text_width, text_height = draw.textbbox((0, 0), label)[2:]
+    position = ((size[0] - text_width) / 2, (size[1] - text_height) / 2)
+    draw.text(position, label, fill=(255, 255, 255))
+
+    buffer = BytesIO()
+    image.save(buffer, format="JPEG")
+    return ContentFile(buffer.getvalue(), name=f"{label.replace(' ', '_')}.jpg")
 
 
 def seed_test_data() -> None:
@@ -78,6 +110,18 @@ def seed_test_data() -> None:
             )
 
         recipes.append(recipe)
+
+        # Assign a varied image set: no images, one, two, or four, cycling aspect ratios.
+        image_count = {0: 0, 1: 1, 2: 2, 3: 4}[i % 4]
+        for j in range(image_count):
+            size = PLACEHOLDER_IMAGE_SIZES[j % len(PLACEHOLDER_IMAGE_SIZES)]
+            label = f"Recipe {i + 1} - Image {j + 1}"
+            RecipeImage.objects.create(
+                recipe=recipe,
+                image=_generate_placeholder_image(label, size),
+                order=j,
+                caption=label,
+            )
 
     # Create collections
     collection_names = [
