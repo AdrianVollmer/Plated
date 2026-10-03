@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -29,7 +29,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1126,13 +1126,13 @@ website</a> or use WSL.</p>
 <p>Edit <code>src/config/settings.py</code> and add the language to the
 <code>LANGUAGES</code> list:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">LANGUAGES</span> <span class="o">=</span> <span class="p">[</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="p">(</span><span class="s2">&quot;en&quot;</span><span class="p">,</span> <span class="s2">&quot;English&quot;</span><span class="p">),</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="p">(</span><span class="s2">&quot;es&quot;</span><span class="p">,</span> <span class="s2">&quot;Español&quot;</span><span class="p">),</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="p">(</span><span class="s2">&quot;fr&quot;</span><span class="p">,</span> <span class="s2">&quot;Français&quot;</span><span class="p">),</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="p">(</span><span class="s2">&quot;de&quot;</span><span class="p">,</span> <span class="s2">&quot;Deutsch&quot;</span><span class="p">),</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="p">(</span><span class="s2">&quot;it&quot;</span><span class="p">,</span> <span class="s2">&quot;Italiano&quot;</span><span class="p">),</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="p">(</span><span class="s2">&quot;pt&quot;</span><span class="p">,</span> <span class="s2">&quot;Português&quot;</span><span class="p">),</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="p">(</span><span class="s2">&quot;ja&quot;</span><span class="p">,</span> <span class="s2">&quot;日本語&quot;</span><span class="p">),</span>  <span class="c1"># Adding Japanese</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="p">(</span><span class="s2">"en"</span><span class="p">,</span> <span class="s2">"English"</span><span class="p">),</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="p">(</span><span class="s2">"es"</span><span class="p">,</span> <span class="s2">"Español"</span><span class="p">),</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="p">(</span><span class="s2">"fr"</span><span class="p">,</span> <span class="s2">"Français"</span><span class="p">),</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="p">(</span><span class="s2">"de"</span><span class="p">,</span> <span class="s2">"Deutsch"</span><span class="p">),</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="p">(</span><span class="s2">"it"</span><span class="p">,</span> <span class="s2">"Italiano"</span><span class="p">),</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="p">(</span><span class="s2">"pt"</span><span class="p">,</span> <span class="s2">"Português"</span><span class="p">),</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="p">(</span><span class="s2">"ja"</span><span class="p">,</span> <span class="s2">"日本語"</span><span class="p">),</span>  <span class="c1"># Adding Japanese</span>
 <a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="p">]</span>
 </code></pre></div>
 </li>
@@ -1146,11 +1146,11 @@ website</a> or use WSL.</p>
 <li>
 <p><strong>Translate strings</strong></p>
 <p>Edit the generated <code>.po</code> file and translate the strings:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nv">msgid</span> <span class="s">&quot;Recipes&quot;</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nv">msgstr</span> <span class="s">&quot;レシピ&quot;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nv">msgid</span> <span class="s">"Recipes"</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nv">msgstr</span> <span class="s">"レシピ"</span>
 <a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="nv">msgid</span> <span class="s">&quot;Settings&quot;</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="nv">msgstr</span> <span class="s">&quot;設定&quot;</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="nv">msgid</span> <span class="s">"Settings"</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="nv">msgstr</span> <span class="s">"設定"</span>
 </code></pre></div>
 </li>
 <li>
@@ -1179,12 +1179,12 @@ settings.</p>
 <p><strong>Edit translations</strong></p>
 <p>Open the <code>.po</code> file and add/modify translations:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kd">#: templates/base.html:40</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nv">msgid</span> <span class="s">&quot;Recipes&quot;</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="nv">msgstr</span> <span class="s">&quot;Recetas&quot;</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nv">msgid</span> <span class="s">"Recipes"</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="nv">msgstr</span> <span class="s">"Recetas"</span>
 <a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
 <a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="kd">#: recipes/views/settings.py:41</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="nv">msgid</span> <span class="s">&quot;Language settings saved successfully!&quot;</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="nv">msgstr</span> <span class="s">&quot;¡Configuración de idioma guardada exitosamente!&quot;</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="nv">msgid</span> <span class="s">"Language settings saved successfully!"</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="nv">msgstr</span> <span class="s">"¡Configuración de idioma guardada exitosamente!"</span>
 </code></pre></div>
 </li>
 <li>
@@ -1209,7 +1209,7 @@ needed).</p>
 <h4 id="in-templates">In Templates<a class="headerlink" href="#in-templates" title="Permanent link">&para;</a></h4>
 <p>Use the <code>{% trans %}</code> tag for simple strings:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="cp">{%</span> <span class="k">load</span> <span class="nv">i18n</span> <span class="cp">%}</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="x">&lt;h1&gt;</span><span class="cp">{%</span> <span class="k">trans</span> <span class="s2">&quot;Welcome to Plated&quot;</span> <span class="cp">%}</span><span class="x">&lt;/h1&gt;</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="x">&lt;h1&gt;</span><span class="cp">{%</span> <span class="k">trans</span> <span class="s2">"Welcome to Plated"</span> <span class="cp">%}</span><span class="x">&lt;/h1&gt;</span>
 </code></pre></div>
 <p>For strings with variables, use <code>{% blocktrans %}</code>:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="cp">{%</span> <span class="k">blocktrans</span> <span class="nv">count</span> <span class="nv">counter</span><span class="o">=</span><span class="nv">list</span><span class="o">|</span><span class="nf">length</span> <span class="cp">%}</span>
@@ -1222,13 +1222,13 @@ needed).</p>
 <p>Use <code>gettext()</code> or its shortcuts:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">django.utils.translation</span><span class="w"> </span><span class="kn">import</span> <span class="n">gettext</span> <span class="k">as</span> <span class="n">_</span>
 <a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Recipe saved successfully!&quot;</span><span class="p">))</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">_</span><span class="p">(</span><span class="s2">"Recipe saved successfully!"</span><span class="p">))</span>
 </code></pre></div>
 <p>For lazy evaluation (in models, forms):</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">django.utils.translation</span><span class="w"> </span><span class="kn">import</span> <span class="n">gettext_lazy</span> <span class="k">as</span> <span class="n">_</span>
 <a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>
 <a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">Recipe</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>    <span class="n">title</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Title&quot;</span><span class="p">),</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>    <span class="n">title</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">"Title"</span><span class="p">),</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h3>
 <ol>
@@ -1236,23 +1236,23 @@ needed).</p>
 <p><strong>Context matters</strong>: Add context for ambiguous strings</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">django.utils.translation</span><span class="w"> </span><span class="kn">import</span> <span class="n">pgettext</span>
 <a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="c1"># &quot;May&quot; as month vs &quot;may&quot; as auxiliary verb</span>
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="n">month</span> <span class="o">=</span> <span class="n">pgettext</span><span class="p">(</span><span class="s2">&quot;month name&quot;</span><span class="p">,</span> <span class="s2">&quot;May&quot;</span><span class="p">)</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="c1"># "May" as month vs "may" as auxiliary verb</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="n">month</span> <span class="o">=</span> <span class="n">pgettext</span><span class="p">(</span><span class="s2">"month name"</span><span class="p">,</span> <span class="s2">"May"</span><span class="p">)</span>
 </code></pre></div>
 </li>
 <li>
 <p><strong>Avoid concatenation</strong>: Don't split sentences</p>
 <p>❌ Bad:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Welcome&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">username</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">_</span><span class="p">(</span><span class="s2">"Welcome"</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">username</span>
 </code></pre></div>
 <p>✅ Good:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Welcome </span><span class="si">%(username)s</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">%</span> <span class="p">{</span><span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="n">username</span><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">_</span><span class="p">(</span><span class="s2">"Welcome </span><span class="si">%(username)s</span><span class="s2">"</span><span class="p">)</span> <span class="o">%</span> <span class="p">{</span><span class="s2">"username"</span><span class="p">:</span> <span class="n">username</span><span class="p">}</span>
 </code></pre></div>
 </li>
 <li>
 <p><strong>Comments for translators</strong>: Add context when needed</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1"># Translators: This is shown when a recipe is successfully deleted</span>
-<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Recipe deleted&quot;</span><span class="p">))</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">_</span><span class="p">(</span><span class="s2">"Recipe deleted"</span><span class="p">))</span>
 </code></pre></div>
 </li>
 <li>
@@ -1320,18 +1320,18 @@ needed).</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">django.views.i18n</span><span class="w"> </span><span class="kn">import</span> <span class="n">JavaScriptCatalog</span>
 <a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>
 <a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
-<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>    <span class="n">path</span><span class="p">(</span><span class="s1">&#39;jsi18n/&#39;</span><span class="p">,</span> <span class="n">JavaScriptCatalog</span><span class="o">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;javascript-catalog&#39;</span><span class="p">),</span>
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>    <span class="n">path</span><span class="p">(</span><span class="s1">'jsi18n/'</span><span class="p">,</span> <span class="n">JavaScriptCatalog</span><span class="o">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s1">'javascript-catalog'</span><span class="p">),</span>
 <a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="p">]</span>
 </code></pre></div>
 </li>
 <li>
 <p><strong>Include in template</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="x">&lt;script src=&quot;</span><span class="cp">{%</span> <span class="k">url</span> <span class="s1">&#39;javascript-catalog&#39;</span> <span class="cp">%}</span><span class="x">&quot;&gt;&lt;/script&gt;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="x">&lt;script src="</span><span class="cp">{%</span> <span class="k">url</span> <span class="s1">'javascript-catalog'</span> <span class="cp">%}</span><span class="x">"&gt;&lt;/script&gt;</span>
 </code></pre></div>
 </li>
 <li>
 <p><strong>Use in JavaScript</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">gettext</span><span class="p">(</span><span class="s2">&quot;Recipe saved!&quot;</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">gettext</span><span class="p">(</span><span class="s2">"Recipe saved!"</span><span class="p">);</span>
 </code></pre></div>
 </li>
 <li>
@@ -1441,7 +1441,7 @@ needed).</p>
       <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>
