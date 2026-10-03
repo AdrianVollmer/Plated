@@ -72,5 +72,10 @@ build:
 run *args:
     uv run plated {{args}}
 
+# Seed dev data and screenshot every view at mobile/desktop viewports (screenshots/)
+screenshots:
+    uv run python src/plated/recipes/management/commands/seed_testdata.py
+    uv run scripts/screenshot_views.py
+
 # Full check: what CI runs
 ci: sync check test docs-build build
