@@ -20,7 +20,7 @@ import django  # noqa: E402
 django.setup()
 
 from django.core.files.base import ContentFile  # noqa: E402
-from PIL import Image, ImageDraw  # noqa: E402
+from PIL import Image, ImageDraw, ImageFont  # noqa: E402
 
 # Import Django models after setup
 from recipes.management.commands.testviews import (  # noqa: E402
@@ -59,9 +59,11 @@ def _generate_placeholder_image(label: str, size: tuple[int, int]) -> ContentFil
     """Create an in-memory JPEG with a solid color and centered label text."""
     image = Image.new("RGB", size, color=_placeholder_color(label))
     draw = ImageDraw.Draw(image)
-    text_width, text_height = draw.textbbox((0, 0), label)[2:]
-    position = ((size[0] - text_width) / 2, (size[1] - text_height) / 2)
-    draw.text(position, label, fill=(255, 255, 255))
+    font = ImageFont.load_default(size=40)
+    left, top, right, bottom = draw.textbbox((0, 0), label, font=font)
+    text_width, text_height = right - left, bottom - top
+    position = ((size[0] - text_width) / 2 - left, (size[1] - text_height) / 2 - top)
+    draw.text(position, label, fill=(255, 255, 255), font=font)
 
     buffer = BytesIO()
     image.save(buffer, format="JPEG")
