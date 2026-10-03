@@ -162,7 +162,7 @@ the `recipes.append(recipe)` line (still inside the `for i in range(30):` loop b
 
 - [ ] **Step 4: Run the seed command and verify images were created**
 
-Run: `uv run python src/plated/manage.py seed_testdata`
+Run: `uv run python src/plated/recipes/management/commands/seed_testdata.py`
 Expected: prints `Test data created successfully` with no traceback.
 
 Run:
@@ -215,7 +215,9 @@ Create `scripts/screenshot_views.py`:
 ```python
 """Screenshot every view in the app at mobile and desktop viewports.
 
-Run against an already-seeded dev database (see `manage.py seed_testdata`).
+Run against an already-seeded dev database (see
+`recipes/management/commands/seed_testdata.py` — it's a standalone script, not a Django
+management command, so run it directly rather than via `manage.py`).
 Requires the Chromium browser installed once via:
 
     uv run playwright install chromium
@@ -424,7 +426,7 @@ if __name__ == "__main__":
 
 - [ ] **Step 3: Make sure the DB is seeded, then run the script**
 
-Run: `uv run python src/plated/manage.py seed_testdata`
+Run: `uv run python src/plated/recipes/management/commands/seed_testdata.py`
 Expected: `Test data created successfully`
 
 Run: `uv run scripts/screenshot_views.py`
@@ -462,7 +464,7 @@ instead of by clicking through the app manually."
 Run:
 ```bash
 rm -rf screenshots
-uv run python src/plated/manage.py seed_testdata
+uv run python src/plated/recipes/management/commands/seed_testdata.py
 uv run scripts/screenshot_views.py
 ```
 Expected: completes with `0 failed, 0 views skipped`, `screenshots/` repopulated.

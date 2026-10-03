@@ -1,6 +1,9 @@
 """Screenshot every view in the app at mobile and desktop viewports.
 
-Run against an already-seeded dev database (see `manage.py seed_testdata`).
+Run against an already-seeded dev database:
+
+    uv run python src/plated/recipes/management/commands/seed_testdata.py
+
 Requires the Chromium browser installed once via:
 
     uv run playwright install chromium
@@ -29,8 +32,18 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 SRC_DIR = REPO_ROOT / "src" / "plated"
 OUTPUT_DIR = REPO_ROOT / "screenshots"
 
+MOBILE_USER_AGENT = (
+    "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 "
+    "(KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1"
+)
+
 VIEWPORTS: dict[str, dict[str, Any]] = {
-    "mobile": {"viewport": {"width": 390, "height": 844}, "device_scale_factor": 2, "is_mobile": True},
+    "mobile": {
+        "viewport": {"width": 390, "height": 844},
+        "device_scale_factor": 2,
+        "is_mobile": True,
+        "user_agent": MOBILE_USER_AGENT,
+    },
     "desktop": {"viewport": {"width": 1440, "height": 900}},
 }
 
