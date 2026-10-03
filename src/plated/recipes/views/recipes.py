@@ -486,9 +486,11 @@ def download_recipe_pdf(request: HttpRequest, pk: int) -> HttpResponse:
         # Create response with PDF
         response = HttpResponse(pdf_content, content_type="application/pdf")
 
-        # Sanitize filename
+        # Sanitize filename. Use "inline" so mobile/PWA browsers render the PDF directly
+        # instead of forcing a download, which has no visible UI feedback in standalone
+        # (installed PWA) mode on Android.
         safe_title = sanitize_filename(recipe.title)
-        response["Content-Disposition"] = f'attachment; filename="{safe_title}.pdf"'
+        response["Content-Disposition"] = f'inline; filename="{safe_title}.pdf"'
 
         return response
     except PDFGenerationError as e:

@@ -198,9 +198,10 @@ def download_collection_pdf(request: HttpRequest, pk: int) -> HttpResponse:
         # Create response with PDF
         response = HttpResponse(pdf_content, content_type="application/pdf")
 
-        # Sanitize filename
+        # Sanitize filename. "inline" so mobile/PWA browsers render the PDF directly
+        # instead of forcing a download (invisible in standalone PWA mode on Android).
         safe_name = typst_service.sanitize_filename(collection.name)
-        response["Content-Disposition"] = f'attachment; filename="{safe_name}.pdf"'
+        response["Content-Disposition"] = f'inline; filename="{safe_name}.pdf"'
 
         return response
 

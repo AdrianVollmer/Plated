@@ -65,8 +65,7 @@
                                     <h6 class="dropdown-header">{% trans "Download" %}</h6>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item pdf-download-link"
-                                       href="{% url 'recipe_pdf' recipe.pk %}">
+                                    <a class="dropdown-item" href="{% url 'recipe_pdf' recipe.pk %}">
                                         <i class="bi bi-file-pdf"></i> {% trans "PDF" %}
                                     </a>
                                 </li>
@@ -413,60 +412,6 @@
 {% block extra_js %}
     {% load static %}
     <script src="{% static 'recipe-scaler.js' %}"></script>
-    <script>
-// Handle PDF downloads in PWA mode to prevent "about:blank" issue
-document.addEventListener('DOMContentLoaded', function() {
-    const pdfLinks = document.querySelectorAll('.pdf-download-link');
-
-    pdfLinks.forEach(function(link) {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-
-            const url = this.href;
-            const fileName = url.split('/').pop() + '.pdf';
-
-            // Fetch the PDF as a blob
-            fetch(url)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-
-                    // Extract filename from Content-Disposition header if available
-                    const contentDisposition = response.headers.get('Content-Disposition');
-                    let filename = fileName;
-                    if (contentDisposition) {
-                        const filenameMatch = contentDisposition.match(/filename="?(.+)"?/);
-                        if (filenameMatch) {
-                            filename = filenameMatch[1];
-                        }
-                    }
-
-                    // Return both blob and filename
-                    return response.blob().then(blob => ({ blob, filename }));
-                })
-                .then(({ blob, filename }) => {
-                    // Create a download link
-                    const blobUrl = window.URL.createObjectURL(blob);
-                    const downloadLink = document.createElement('a');
-                    downloadLink.href = blobUrl;
-                    downloadLink.download = filename;
-                    document.body.appendChild(downloadLink);
-                    downloadLink.click();
-                    document.body.removeChild(downloadLink);
-
-                    // Clean up the blob URL
-                    window.URL.revokeObjectURL(blobUrl);
-                })
-                .catch(error => {
-                    console.error('Error downloading PDF:', error);
-                    // Fallback: try opening in new window
-                    window.open(url, '_blank');
-                });
-        });
-    });
-});
-    </script>
     <style>
 /* Recipe Scaling Styles - Theme-aware */
 .ingredient-amount.scaled {

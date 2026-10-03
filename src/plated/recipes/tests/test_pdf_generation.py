@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
+from datetime import date
 from unittest.mock import MagicMock, Mock, patch
 
 from django.test import TestCase
 from django.urls import reverse
 
-from ..models import Ingredient, Recipe, Step
+from ..models import Ingredient, MealPlan, MealPlanEntry, Recipe, RecipeCollection, Step
 
 
 class PDFGenerationTestCase(TestCase):
@@ -103,3 +104,72 @@ class PDFGenerationTestCase(TestCase):
         """Test PDF generation for a recipe that doesn't exist."""
         response = self.client.get(reverse("recipe_pdf", args=[9999]))
         self.assertEqual(response.status_code, 404)
+
+    @patch("recipes.views.recipes.generate_recipe_pdf")
+    def test_pdf_is_served_inline(self, mock_generate: MagicMock) -> None:
+        """PDFs must be served as 'inline', not 'attachment'.
+
+        A forced download (Content-Disposition: attachment) is invisible in
+        standalone PWA mode on Android -- there's no browser chrome to show
+        download progress/completion, so it looks like nothing happened.
+        """
+        mock_generate.return_value = b"PDF content"
+
+        response = self.client.get(reverse("recipe_pdf", args=[self.recipe.pk]))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("inline", response["Content-Disposition"])
+        self.assertNotIn("attachment", response["Content-Disposition"])
+
+
+class CollectionAndMealPlanPDFInlineTestCase(TestCase):
+    """PDF downloads for collections and meal plans must also be inline (see PDFGenerationTestCase)."""
+
+    def setUp(self) -> None:
+        self.recipe = Recipe.objects.create(title="Pasta", servings=4)
+        Ingredient.objects.create(recipe=self.recipe, name="pasta", amount="1", unit="lb", order=0)
+
+        self.collection = RecipeCollection.objects.create(name="Test Collection")
+        self.collection.recipes.add(self.recipe)
+
+        self.meal_plan = MealPlan.objects.create(
+            name="Test Meal Plan",
+            start_date=date(2024, 1, 1),
+            end_date=date(2024, 1, 7),
+        )
+        MealPlanEntry.objects.create(
+            meal_plan=self.meal_plan,
+            recipe=self.recipe,
+            date=date(2024, 1, 1),
+            meal_type="dinner",
+        )
+
+    @patch("recipes.services.typst_service.generate_typst_pdf")
+    def test_collection_pdf_is_served_inline(self, mock_generate: MagicMock) -> None:
+        mock_generate.return_value = b"PDF content"
+
+        response = self.client.get(reverse("collection_pdf", args=[self.collection.pk]))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("inline", response["Content-Disposition"])
+        self.assertNotIn("attachment", response["Content-Disposition"])
+
+    @patch("recipes.services.typst_service.generate_typst_pdf")
+    def test_meal_plan_pdf_is_served_inline(self, mock_generate: MagicMock) -> None:
+        mock_generate.return_value = b"PDF content"
+
+        response = self.client.get(reverse("meal_plan_pdf", args=[self.meal_plan.pk]))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("inline", response["Content-Disposition"])
+        self.assertNotIn("attachment", response["Content-Disposition"])
+
+    @patch("recipes.services.typst_service.generate_typst_pdf")
+    def test_shopping_list_pdf_is_served_inline(self, mock_generate: MagicMock) -> None:
+        mock_generate.return_value = b"PDF content"
+
+        response = self.client.get(reverse("shopping_list_pdf", args=[self.meal_plan.pk]))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("inline", response["Content-Disposition"])
+        self.assertNotIn("attachment", response["Content-Disposition"])
