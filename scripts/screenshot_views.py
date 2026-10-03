@@ -39,7 +39,7 @@ VIEWPORTS: dict[str, dict[str, Any]] = {
 class ViewSpec:
     name: str
     path_template: str
-    required_model: str | None = None  # key into SamplePks, or None if no object needed
+    required_model: str | None = None  # key into fetch_sample_pks()'s result, or None if no object needed
 
 
 VIEW_SPECS = [
@@ -90,6 +90,15 @@ def wait_for_server(base_url: str, timeout: float = 15.0) -> None:
     raise RuntimeError(f"Server at {base_url} did not respond within {timeout}s")
 
 
+def _terminate(process: subprocess.Popen[bytes]) -> None:
+    process.terminate()
+    try:
+        process.wait(timeout=5)
+    except subprocess.TimeoutExpired:
+        process.kill()
+        process.wait(timeout=5)
+
+
 def start_dev_server(port: int) -> subprocess.Popen[bytes]:
     env = {**os.environ, "DJANGO_SETTINGS_MODULE": "config.settings"}
     process = subprocess.Popen(  # noqa: S603 - fixed, hardcoded argv; no untrusted input
@@ -108,8 +117,7 @@ def start_dev_server(port: int) -> subprocess.Popen[bytes]:
     try:
         wait_for_server(f"http://127.0.0.1:{port}/")
     except Exception:
-        process.terminate()
-        process.wait(timeout=5)
+        _terminate(process)
         raise
     return process
 
@@ -192,8 +200,7 @@ def main() -> None:
     try:
         captured, failed = capture_screenshots(base_url, urls)
     finally:
-        server.terminate()
-        server.wait(timeout=5)
+        _terminate(server)
 
     logger.info(
         "Done. %d screenshots captured, %d failed, %d views skipped (missing data). Output: %s",
