@@ -35,8 +35,8 @@ hooks-install:
 bump level="patch":
     #!/usr/bin/env bash
     set -euo pipefail
-    latest="$(git tag --list 'v*' --sort=-v:refname | head -n1)"
-    IFS=. read -r major minor patch <<< "${latest#v}"
+    latest_tag="$(git tag --list 'v*' --sort=-v:refname | head -n1)"
+    IFS=. read -r major minor patch <<< "${latest_tag#v}"
     case "{{level}}" in
         major) major=$((major + 1)); minor=0; patch=0 ;;
         minor) minor=$((minor + 1)); patch=0 ;;
@@ -46,6 +46,8 @@ bump level="patch":
     new="v${major}.${minor}.${patch}"
     git tag -a "$new" -m "$new"
     echo "Tagged $new"
+    git branch -f latest "$new"
+    echo "Moved latest branch to $new"
     # uv's build cache is keyed by source mtimes, not by git tag, so a bump on an
     # otherwise-unchanged tree needs a touch to be picked up; drop stale dist artifacts too
     touch pyproject.toml
