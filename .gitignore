@@ -26,3 +26,6 @@ issues/
 # Dev files
 _data
 .claude/
+
+# Worktrees
+.worktrees/
