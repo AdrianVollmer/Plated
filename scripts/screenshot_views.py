@@ -179,7 +179,15 @@ def capture_screenshots(base_url: str, urls: list[tuple[str, str]]) -> tuple[int
     failed = 0
 
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch()
+        try:
+            browser = playwright.chromium.launch()
+        except Exception as exc:
+            if "Executable doesn't exist" in str(exc):
+                raise RuntimeError(
+                    "Chromium isn't installed for Playwright. Run `uv run playwright install "
+                    "chromium` once, then try again."
+                ) from exc
+            raise
         try:
             for viewport_name, context_kwargs in VIEWPORTS.items():
                 out_dir = OUTPUT_DIR / viewport_name
