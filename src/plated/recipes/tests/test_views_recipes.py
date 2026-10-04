@@ -409,3 +409,59 @@ class RecipeCookingViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertNotContains(response, "data-timer-minutes")
         self.assertNotContains(response, 'class="step-timer-widget"')
+
+
+class IngredientQuickEditViewTest(TestCase):
+    """Test cases for the ingredient quick-edit view."""
+
+    def setUp(self) -> None:
+        """Create a recipe with one ingredient."""
+        self.recipe = Recipe.objects.create(title="Soup", servings=4)
+        self.ingredient = Ingredient.objects.create(recipe=self.recipe, name="salt", amount="1", unit="tsp", order=0)
+
+    def test_get_redirects_without_saving(self) -> None:
+        """GET requests redirect back to the detail page without changing anything."""
+        response = self.client.get(reverse("ingredient_quick_edit", args=[self.recipe.pk, self.ingredient.pk]))
+        self.assertRedirects(
+            response,
+            f"{reverse('recipe_detail', args=[self.recipe.pk])}#ingredient-{self.ingredient.pk}",
+        )
+        self.ingredient.refresh_from_db()
+        self.assertEqual(self.ingredient.amount, "1")
+
+    def test_valid_post_updates_ingredient(self) -> None:
+        """A valid POST updates the ingredient and redirects to the anchored detail page."""
+        response = self.client.post(
+            reverse("ingredient_quick_edit", args=[self.recipe.pk, self.ingredient.pk]),
+            {"amount": "2", "unit": "tbsp", "name": "salt", "note": "to taste"},
+        )
+        self.assertRedirects(
+            response,
+            f"{reverse('recipe_detail', args=[self.recipe.pk])}#ingredient-{self.ingredient.pk}",
+        )
+        self.ingredient.refresh_from_db()
+        self.assertEqual(self.ingredient.amount, "2")
+        self.assertEqual(self.ingredient.unit, "tbsp")
+        self.assertEqual(self.ingredient.note, "to taste")
+
+    def test_invalid_post_does_not_save_and_shows_message(self) -> None:
+        """An invalid POST (blank name) leaves the ingredient unchanged and flashes a message."""
+        response = self.client.post(
+            reverse("ingredient_quick_edit", args=[self.recipe.pk, self.ingredient.pk]),
+            {"amount": "2", "unit": "tbsp", "name": "", "note": ""},
+            follow=True,
+        )
+        self.ingredient.refresh_from_db()
+        self.assertEqual(self.ingredient.amount, "1")
+        messages = list(response.context["messages"])
+        self.assertEqual(len(messages), 1)
+        self.assertIn("Couldn't save ingredient", str(messages[0]))
+
+    def test_post_for_ingredient_of_different_recipe_404s(self) -> None:
+        """An ingredient that doesn't belong to the given recipe 404s."""
+        other_recipe = Recipe.objects.create(title="Other", servings=2)
+        response = self.client.post(
+            reverse("ingredient_quick_edit", args=[other_recipe.pk, self.ingredient.pk]),
+            {"amount": "2", "unit": "tbsp", "name": "salt", "note": ""},
+        )
+        self.assertEqual(response.status_code, 404)

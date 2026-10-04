@@ -10,7 +10,7 @@ from django.core.files.uploadedfile import UploadedFile
 from django.db import transaction
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext as _
 from django.views.generic import (
     CreateView,
@@ -20,8 +20,8 @@ from django.views.generic import (
     UpdateView,
 )
 
-from ..forms import RecipeForm
-from ..models import AISettings, Recipe
+from ..forms import IngredientQuickEditForm, RecipeForm
+from ..models import AISettings, Ingredient, Recipe
 from ..schemas import deserialize_recipe
 from ..services import (
     PDFGenerationError,
@@ -379,6 +379,25 @@ class RecipeDeleteView(DeleteView):
         logger.info(f"Recipe deleted: '{recipe_title}' (ID: {recipe_id})")
         messages.success(request, _("Recipe '%(title)s' deleted successfully!") % {"title": recipe_title})
         return super().delete(request, *args, **kwargs)
+
+
+def ingredient_quick_edit(request: HttpRequest, recipe_pk: int, pk: int) -> HttpResponse:
+    """Quick-edit a single ingredient's amount/unit/name/note from the recipe detail page."""
+    ingredient = get_object_or_404(Ingredient, pk=pk, recipe_id=recipe_pk)
+
+    if request.method == "POST":
+        form = IngredientQuickEditForm(request.POST, instance=ingredient)
+        if form.is_valid():
+            form.save()
+            logger.info(f"Ingredient quick-edited: '{ingredient.name}' (ID: {ingredient.pk}, Recipe ID: {recipe_pk})")
+        else:
+            logger.warning(f"Ingredient quick-edit failed (ID: {ingredient.pk}): {form.errors.as_text()}")
+            messages.error(
+                request,
+                _("Couldn't save ingredient: %(errors)s") % {"errors": form.errors.as_text()},
+            )
+
+    return redirect(f"{reverse('recipe_detail', args=[recipe_pk])}#ingredient-{pk}")
 
 
 def export_recipe(request: HttpRequest, pk: int) -> HttpResponse:

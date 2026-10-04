@@ -14,6 +14,11 @@ urlpatterns = [
         views.recipes.RecipeDeleteView.as_view(),
         name="recipe_delete",
     ),
+    path(
+        "recipe/<int:recipe_pk>/ingredient/<int:pk>/quick-edit/",
+        views.recipes.ingredient_quick_edit,
+        name="ingredient_quick_edit",
+    ),
     # Import/Export
     path("recipe/<int:pk>/export/", views.recipes.export_recipe, name="recipe_export"),
     path("recipe/import/", views.recipes.import_recipe, name="recipe_import"),
