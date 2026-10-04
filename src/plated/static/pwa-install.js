@@ -4,20 +4,23 @@ let deferredPrompt;
 let installButton;
 
 // Register service worker
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js')
+if ("serviceWorker" in navigator) {
+  globalThis.addEventListener("load", () => {
+    navigator.serviceWorker.register("/service-worker.js")
       .then((registration) => {
-        console.log('ServiceWorker registration successful:', registration.scope);
+        console.log(
+          "ServiceWorker registration successful:",
+          registration.scope,
+        );
       })
       .catch((error) => {
-        console.log('ServiceWorker registration failed:', error);
+        console.log("ServiceWorker registration failed:", error);
       });
   });
 }
 
 // Listen for the beforeinstallprompt event
-window.addEventListener('beforeinstallprompt', (e) => {
+globalThis.addEventListener("beforeinstallprompt", (e) => {
   // Prevent the mini-infobar from appearing on mobile
   e.preventDefault();
   // Stash the event so it can be triggered later
@@ -28,14 +31,15 @@ window.addEventListener('beforeinstallprompt', (e) => {
 
 // Show install promotion
 function showInstallPromotion() {
-  installButton = document.getElementById('pwa-install-button');
+  installButton = document.getElementById("pwa-install-button");
   if (installButton) {
-    installButton.style.display = 'block';
-    installButton.classList.remove('d-none');
+    installButton.style.display = "block";
+    installButton.classList.remove("d-none");
   }
 }
 
-// Handle install button click
+// Handle install button click (called via onclick= in settings.html)
+// deno-lint-ignore no-unused-vars
 function installPWA() {
   if (!deferredPrompt) {
     return;
@@ -46,44 +50,46 @@ function installPWA() {
 
   // Wait for the user to respond to the prompt
   deferredPrompt.userChoice.then((choiceResult) => {
-    if (choiceResult.outcome === 'accepted') {
-      console.log('User accepted the install prompt');
+    if (choiceResult.outcome === "accepted") {
+      console.log("User accepted the install prompt");
     } else {
-      console.log('User dismissed the install prompt');
+      console.log("User dismissed the install prompt");
     }
     deferredPrompt = null;
   });
 }
 
 // Listen for the app installed event
-window.addEventListener('appinstalled', () => {
-  console.log('PWA was installed');
+globalThis.addEventListener("appinstalled", () => {
+  console.log("PWA was installed");
   // Hide the install button
-  installButton = document.getElementById('pwa-install-button');
+  installButton = document.getElementById("pwa-install-button");
   if (installButton) {
-    installButton.style.display = 'none';
-    installButton.classList.add('d-none');
+    installButton.style.display = "none";
+    installButton.classList.add("d-none");
   }
   // Show success message
-  const installedMessage = document.getElementById('pwa-installed-message');
+  const installedMessage = document.getElementById("pwa-installed-message");
   if (installedMessage) {
-    installedMessage.classList.remove('d-none');
+    installedMessage.classList.remove("d-none");
   }
 });
 
 // Check if app is already installed
 function checkIfInstalled() {
-  if (window.matchMedia('(display-mode: standalone)').matches ||
-      window.navigator.standalone === true) {
+  if (
+    globalThis.matchMedia("(display-mode: standalone)").matches ||
+    globalThis.navigator.standalone === true
+  ) {
     // App is installed
-    const installedMessage = document.getElementById('pwa-installed-message');
+    const installedMessage = document.getElementById("pwa-installed-message");
     if (installedMessage) {
-      installedMessage.classList.remove('d-none');
+      installedMessage.classList.remove("d-none");
     }
-    const installButton = document.getElementById('pwa-install-button');
+    const installButton = document.getElementById("pwa-install-button");
     if (installButton) {
-      installButton.style.display = 'none';
-      installButton.classList.add('d-none');
+      installButton.style.display = "none";
+      installButton.classList.add("d-none");
     }
     return true;
   }
@@ -92,7 +98,7 @@ function checkIfInstalled() {
 
 // Show info message explaining why install isn't available
 function showPWAInfo() {
-  const infoMessage = document.getElementById('pwa-info-message');
+  const infoMessage = document.getElementById("pwa-info-message");
   if (!infoMessage) return;
 
   // Check if already installed
@@ -101,36 +107,41 @@ function showPWAInfo() {
   }
 
   // Determine the reason why install isn't available
-  let message = '';
+  let message = "";
 
-  if (!('serviceWorker' in navigator)) {
-    message = 'Your browser does not support Progressive Web Apps.';
-  } else if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
-    message = 'PWA installation requires HTTPS. The app must be served over a secure connection.';
+  if (!("serviceWorker" in navigator)) {
+    message = "Your browser does not support Progressive Web Apps.";
+  } else if (
+    globalThis.location.protocol !== "https:" &&
+    globalThis.location.hostname !== "localhost"
+  ) {
+    message =
+      "PWA installation requires HTTPS. The app must be served over a secure connection.";
   } else if (!deferredPrompt) {
-    message = 'Your browser does not currently offer PWA installation, or the app may already be installed. ' +
-              'Try visiting this page in Chrome, Edge, or Safari on mobile for installation options.';
+    message =
+      "Your browser does not currently offer PWA installation, or the app may already be installed. " +
+      "Try visiting this page in Chrome, Edge, or Safari on mobile for installation options.";
   }
 
   if (message) {
-    const infoText = document.getElementById('pwa-info-text');
+    const infoText = document.getElementById("pwa-info-text");
     if (infoText) {
       infoText.textContent = message;
     }
-    infoMessage.classList.remove('d-none');
+    infoMessage.classList.remove("d-none");
   }
 }
 
 // Wait for beforeinstallprompt or show info message after timeout
 let installPromptReceived = false;
 
-window.addEventListener('beforeinstallprompt', (e) => {
+globalThis.addEventListener("beforeinstallprompt", (_e) => {
   installPromptReceived = true;
 });
 
 // Check installation status when DOM is loaded
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => {
     checkIfInstalled();
     // Wait 2 seconds for the beforeinstallprompt event
     setTimeout(() => {
