@@ -123,6 +123,101 @@
         <div class="row mb-4">
             <div class="col-md-8 offset-md-2">
                 <div class="form-section">
+                    <div class="form-section-header">{% trans "Images" %}</div>
+                    {{ image_formset.management_form }}
+                    {% if image_formset.non_form_errors %}
+                        <div class="alert alert-danger">{{ image_formset.non_form_errors }}</div>
+                    {% endif %}
+                    <div id="image-formset">
+                        {% for form in image_formset %}
+                            <div class="images-form mb-3 p-3 border rounded">
+                                {{ form.id }}
+                                {{ form.DELETE }}
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <strong class="text-muted">{% trans "Image" %}</strong>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <button type="button"
+                                                class="btn btn-outline-secondary move-up-btn"
+                                                title="{% trans 'Move up' %}">
+                                            <i class="bi bi-arrow-up"></i>
+                                        </button>
+                                        <button type="button"
+                                                class="btn btn-outline-secondary move-down-btn"
+                                                title="{% trans 'Move down' %}">
+                                            <i class="bi bi-arrow-down"></i>
+                                        </button>
+                                        <button type="button"
+                                                class="btn btn-outline-danger delete-form-btn"
+                                                title="{% trans 'Delete' %}">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <label class="form-label small">{% trans "Image" %}</label>
+                                        {{ form.image }}
+                                        {% if form.image.errors %}
+                                            <div class="invalid-feedback d-block">{{ form.image.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label small">{% trans "Caption" %}</label>
+                                        {{ form.caption }}
+                                        {% if form.caption.errors %}
+                                            <div class="invalid-feedback d-block">{{ form.caption.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {{ form.order }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <!-- Empty form template for dynamic addition -->
+                    <script type="text/template" id="image-empty-form">
+                        <div class="images-form mb-3 p-3 border rounded">
+                            {{ image_formset.empty_form.id }}
+                            {{ image_formset.empty_form.DELETE }}
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <strong class="text-muted">{% trans "Image" %}</strong>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button type="button" class="btn btn-outline-secondary move-up-btn" title="{% trans 'Move up' %}">
+                                        <i class="bi bi-arrow-up"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary move-down-btn" title="{% trans 'Move down' %}">
+                                        <i class="bi bi-arrow-down"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-danger delete-form-btn" title="{% trans 'Delete' %}">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <label class="form-label small">{% trans "Image" %}</label>
+                                    {{ image_formset.empty_form.image }}
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small">{% trans "Caption" %}</label>
+                                    {{ image_formset.empty_form.caption }}
+                                </div>
+                            </div>
+                            {{ image_formset.empty_form.order }}
+                        </div>
+                    </script>
+                    <div class="text-center mt-3">
+                        <button type="button"
+                                class="btn btn-sm btn-outline-primary"
+                                id="add-image-btn">
+                            <i class="bi bi-plus-circle"></i> {% trans "Add Image" %}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col-md-8 offset-md-2">
+                <div class="form-section">
                     <div class="form-section-header">{% trans "Ingredients" %}</div>
                     {{ ingredient_formset.management_form }}
                     {% if ingredient_formset.non_form_errors %}
@@ -353,101 +448,6 @@
                                 class="btn btn-sm btn-outline-primary"
                                 id="add-step-btn">
                             <i class="bi bi-plus-circle"></i> {% trans "Add Step" %}
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row mb-4">
-            <div class="col-md-8 offset-md-2">
-                <div class="form-section">
-                    <div class="form-section-header">{% trans "Images" %}</div>
-                    {{ image_formset.management_form }}
-                    {% if image_formset.non_form_errors %}
-                        <div class="alert alert-danger">{{ image_formset.non_form_errors }}</div>
-                    {% endif %}
-                    <div id="image-formset">
-                        {% for form in image_formset %}
-                            <div class="images-form mb-3 p-3 border rounded">
-                                {{ form.id }}
-                                {{ form.DELETE }}
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <strong class="text-muted">{% trans "Image" %}</strong>
-                                    <div class="btn-group btn-group-sm" role="group">
-                                        <button type="button"
-                                                class="btn btn-outline-secondary move-up-btn"
-                                                title="{% trans 'Move up' %}">
-                                            <i class="bi bi-arrow-up"></i>
-                                        </button>
-                                        <button type="button"
-                                                class="btn btn-outline-secondary move-down-btn"
-                                                title="{% trans 'Move down' %}">
-                                            <i class="bi bi-arrow-down"></i>
-                                        </button>
-                                        <button type="button"
-                                                class="btn btn-outline-danger delete-form-btn"
-                                                title="{% trans 'Delete' %}">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-8">
-                                        <label class="form-label small">{% trans "Image" %}</label>
-                                        {{ form.image }}
-                                        {% if form.image.errors %}
-                                            <div class="invalid-feedback d-block">{{ form.image.errors }}</div>
-                                        {% endif %}
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label small">{% trans "Caption" %}</label>
-                                        {{ form.caption }}
-                                        {% if form.caption.errors %}
-                                            <div class="invalid-feedback d-block">{{ form.caption.errors }}</div>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                {{ form.order }}
-                            </div>
-                        {% endfor %}
-                    </div>
-                    <!-- Empty form template for dynamic addition -->
-                    <script type="text/template" id="image-empty-form">
-                        <div class="images-form mb-3 p-3 border rounded">
-                            {{ image_formset.empty_form.id }}
-                            {{ image_formset.empty_form.DELETE }}
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <strong class="text-muted">{% trans "Image" %}</strong>
-                                <div class="btn-group btn-group-sm" role="group">
-                                    <button type="button" class="btn btn-outline-secondary move-up-btn" title="{% trans 'Move up' %}">
-                                        <i class="bi bi-arrow-up"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-outline-secondary move-down-btn" title="{% trans 'Move down' %}">
-                                        <i class="bi bi-arrow-down"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-outline-danger delete-form-btn" title="{% trans 'Delete' %}">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <label class="form-label small">{% trans "Image" %}</label>
-                                    {{ image_formset.empty_form.image }}
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label small">{% trans "Caption" %}</label>
-                                    {{ image_formset.empty_form.caption }}
-                                </div>
-                            </div>
-                            {{ image_formset.empty_form.order }}
-                        </div>
-                    </script>
-                    <div class="text-center mt-3">
-                        <button type="button"
-                                class="btn btn-sm btn-outline-primary"
-                                id="add-image-btn">
-                            <i class="bi bi-plus-circle"></i> {% trans "Add Image" %}
                         </button>
                     </div>
                 </div>
