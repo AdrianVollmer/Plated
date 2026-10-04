@@ -1,0 +1,1695 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Modern recipe management application">
+      
+      
+      
+        <link rel="canonical" href="https://adrianvollmer.github.io/Plated/superpowers/plans/2026-10-04-quick-edit/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Quick-Edit Implementation Plan - Plated</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="pink" data-md-color-accent="pink">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#quick-edit-implementation-plan" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Plated" class="md-header__button md-logo" aria-label="Plated" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Plated
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Quick-Edit Implementation Plan
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="pink" data-md-color-accent="pink"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="pink" data-md-color-accent="pink"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AdrianVollmer/Plated" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    AdrianVollmer/Plated
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../installation/native/" class="md-tabs__link">
+          
+  
+  
+  Installation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../deployment/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Deployment
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../features/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Features
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../internationalization/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Internationalization
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Plated" class="md-nav__button md-logo" aria-label="Plated" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Plated
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AdrianVollmer/Plated" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    AdrianVollmer/Plated
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Installation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../installation/native/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Native Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../installation/docker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Docker Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Features
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../internationalization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Internationalization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#file-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File Structure
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="File Structure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#task-1-ingredientquickeditform" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 1: IngredientQuickEditForm
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-2-stepquickeditform" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 2: StepQuickEditForm
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-3-ingredient_quick_edit-view-url" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 3: ingredient_quick_edit view + URL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-4-step_quick_edit-view-url" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 4: step_quick_edit view + URL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-5-attach-quick-edit-forms-to-recipedetailview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 5: Attach quick-edit forms to RecipeDetailView
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-6-ingredient-quick-edit-modal-partial-template-wiring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 6: Ingredient quick-edit modal partial + template wiring
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-7-step-quick-edit-modal-partial-template-wiring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 7: Step quick-edit modal partial + template wiring
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-8-layout-css-for-the-edit-button" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 8: Layout CSS for the edit button
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-9-document-the-feature" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 9: Document the feature
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-10-full-verification-pass" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 10: Full verification pass
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="quick-edit-implementation-plan">Quick-Edit Implementation Plan<a class="headerlink" href="#quick-edit-implementation-plan" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>For agentic workers:</strong> REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (<code>- [ ]</code>) syntax for tracking.</p>
+</blockquote>
+<p><strong>Goal:</strong> Let users fix a single ingredient's amount/unit/name/note, or a single step's
+content/timer, from a small modal on the recipe detail page, without opening the full
+<code>recipe_update</code> edit form.</p>
+<p><strong>Architecture:</strong> Two small <code>ModelForm</code>s (<code>IngredientQuickEditForm</code>, <code>StepQuickEditForm</code>) and two
+plain function-based views (mirroring the existing <code>add_recipe_to_collections</code> view), each scoped
+to one <code>Ingredient</code>/<code>Step</code> row and reached via its own URL
+(<code>/recipe/&lt;recipe_pk&gt;/ingredient/&lt;pk&gt;/quick-edit/</code>, <code>/recipe/&lt;recipe_pk&gt;/step/&lt;pk&gt;/quick-edit/</code>).
+<code>RecipeDetailView</code> prefetches ingredients/steps and attaches a pre-filled form instance to each
+object so the template can render one Bootstrap modal per item with no JS needed to populate
+fields. A pencil-icon button on each row opens its modal via Bootstrap's own
+<code>data-bs-toggle</code>/<code>data-bs-target</code> attributes.</p>
+<p><strong>Tech Stack:</strong> Django 5 (forms, class-based + function-based views), Bootstrap 5 modals,
+vanilla JS only for the existing theme/scaling scripts (none added by this feature).</p>
+<p><strong>Spec:</strong> <code>docs/superpowers/specs/2026-10-04-quick-edit-design.md</code></p>
+<hr />
+<h2 id="file-structure">File Structure<a class="headerlink" href="#file-structure" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Modify <code>src/plated/recipes/forms.py</code> — add <code>IngredientQuickEditForm</code>, <code>StepQuickEditForm</code>.</li>
+<li>Modify <code>src/plated/recipes/views/recipes.py</code> — add <code>get_queryset</code> to <code>RecipeDetailView</code> (prefetch</li>
+<li>attach forms), add <code>ingredient_quick_edit</code> and <code>step_quick_edit</code> view functions.</li>
+<li>Modify <code>src/plated/recipes/urls.py</code> — add the two quick-edit URL patterns.</li>
+<li>Create <code>src/plated/templates/recipes/_ingredient_quick_edit_modal.html</code> — one ingredient's modal.</li>
+<li>Create <code>src/plated/templates/recipes/_step_quick_edit_modal.html</code> — one step's modal.</li>
+<li>Modify <code>src/plated/templates/recipes/recipe_detail.html</code> — add edit buttons + <code>id</code> attributes to
+  ingredient/step rows, include the two new modal partials.</li>
+<li>Modify <code>src/plated/static/styles.css</code> — minor layout rules for the new edit button and the step
+  content wrapper.</li>
+<li>Modify <code>src/plated/recipes/tests/test_forms.py</code> — form validation tests.</li>
+<li>Modify <code>src/plated/recipes/tests/test_views_recipes.py</code> — view tests.</li>
+<li>Modify <code>docs/features.md</code> — document the feature.</li>
+</ul>
+<hr />
+<h3 id="task-1-ingredientquickeditform">Task 1: <code>IngredientQuickEditForm</code><a class="headerlink" href="#task-1-ingredientquickeditform" title="Permanent link">&para;</a></h3>
+<p><strong>Files:</strong>
+- Modify: <code>src/plated/recipes/forms.py</code>
+- Test: <code>src/plated/recipes/tests/test_forms.py</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Write the failing tests</strong></li>
+</ul>
+<p>Add to <code>src/plated/recipes/tests/test_forms.py</code>. First update the imports at the top of the file:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">..forms</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">AIRecipeExtractionForm</span><span class="p">,</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">AISettingsForm</span><span class="p">,</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">IngredientQuickEditForm</span><span class="p">,</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">RecipeForm</span><span class="p">,</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">StepQuickEditForm</span><span class="p">,</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n">UserSettingsForm</span><span class="p">,</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="p">)</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="kn">from</span><span class="w"> </span><span class="nn">..models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ingredient</span><span class="p">,</span> <span class="n">Recipe</span><span class="p">,</span> <span class="n">Step</span>
+</code></pre></div>
+<p>Then append this class at the end of the file:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">IngredientQuickEditFormTest</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="sd">"""Test cases for IngredientQuickEditForm validation."""</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">        </span><span class="sd">"""Create a recipe with one ingredient."""</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">recipe</span> <span class="o">=</span> <span class="n">Recipe</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"Soup"</span><span class="p">,</span> <span class="n">servings</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ingredient</span> <span class="o">=</span> <span class="n">Ingredient</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>            <span class="n">recipe</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">recipe</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"salt"</span><span class="p">,</span> <span class="n">amount</span><span class="o">=</span><span class="s2">"1"</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">"tsp"</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">0</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>        <span class="p">)</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">test_valid_data_updates_ingredient</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">        </span><span class="sd">"""Valid data saves onto the existing ingredient instance."""</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>        <span class="n">form</span> <span class="o">=</span> <span class="n">IngredientQuickEditForm</span><span class="p">(</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>            <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">"amount"</span><span class="p">:</span> <span class="s2">"2"</span><span class="p">,</span> <span class="s2">"unit"</span><span class="p">:</span> <span class="s2">"tbsp"</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"salt"</span><span class="p">,</span> <span class="s2">"note"</span><span class="p">:</span> <span class="s2">"to taste"</span><span class="p">},</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>            <span class="n">instance</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ingredient</span><span class="p">,</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>        <span class="p">)</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">())</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>        <span class="n">ingredient</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">ingredient</span><span class="o">.</span><span class="n">pk</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ingredient</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">ingredient</span><span class="o">.</span><span class="n">amount</span><span class="p">,</span> <span class="s2">"2"</span><span class="p">)</span>
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">ingredient</span><span class="o">.</span><span class="n">unit</span><span class="p">,</span> <span class="s2">"tbsp"</span><span class="p">)</span>
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">ingredient</span><span class="o">.</span><span class="n">note</span><span class="p">,</span> <span class="s2">"to taste"</span><span class="p">)</span>
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">test_blank_name_is_invalid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="w">        </span><span class="sd">"""Name is required, so a blank value fails validation."""</span>
+<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>        <span class="n">form</span> <span class="o">=</span> <span class="n">IngredientQuickEditForm</span><span class="p">(</span>
+<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>            <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">"amount"</span><span class="p">:</span> <span class="s2">"2"</span><span class="p">,</span> <span class="s2">"unit"</span><span class="p">:</span> <span class="s2">"tbsp"</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">"note"</span><span class="p">:</span> <span class="s2">""</span><span class="p">},</span>
+<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a>            <span class="n">instance</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ingredient</span><span class="p">,</span>
+<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a>        <span class="p">)</span>
+<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">())</span>
+<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="s2">"name"</span><span class="p">,</span> <span class="n">form</span><span class="o">.</span><span class="n">errors</span><span class="p">)</span>
+<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a>
+<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">test_blank_amount_unit_note_are_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="w">        </span><span class="sd">"""Amount, unit, and note are optional."""</span>
+<a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a>        <span class="n">form</span> <span class="o">=</span> <span class="n">IngredientQuickEditForm</span><span class="p">(</span>
+<a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a>            <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">"amount"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">"unit"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"salt"</span><span class="p">,</span> <span class="s2">"note"</span><span class="p">:</span> <span class="s2">""</span><span class="p">},</span>
+<a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a>            <span class="n">instance</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ingredient</span><span class="p">,</span>
+<a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a>        <span class="p">)</span>
+<a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">())</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 2: Run tests to verify they fail</strong></li>
+</ul>
+<p>Run: <code>uv run python src/plated/manage.py test recipes.tests.test_forms.IngredientQuickEditFormTest -v 2</code>
+Expected: FAIL/ERROR — <code>ImportError: cannot import name 'IngredientQuickEditForm'</code></p>
+<ul>
+<li>[ ] <strong>Step 3: Implement the form</strong></li>
+</ul>
+<p>In <code>src/plated/recipes/forms.py</code>, change the models import at the top from:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">AISettings</span><span class="p">,</span> <span class="n">Recipe</span><span class="p">,</span> <span class="n">UserSettings</span>
+</code></pre></div>
+<p>to:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">AISettings</span><span class="p">,</span> <span class="n">Ingredient</span><span class="p">,</span> <span class="n">Recipe</span><span class="p">,</span> <span class="n">Step</span><span class="p">,</span> <span class="n">UserSettings</span>
+</code></pre></div>
+<p>Then add this class directly after <code>RecipeForm</code> (i.e. right before <code>class AISettingsForm</code>):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">IngredientQuickEditForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">ModelForm</span><span class="p">):</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="sd">"""Quick-edit form for a single ingredient's amount/unit/name/note."""</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">:</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>        <span class="n">model</span> <span class="o">=</span> <span class="n">Ingredient</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>        <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"amount"</span><span class="p">,</span> <span class="s2">"unit"</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">,</span> <span class="s2">"note"</span><span class="p">]</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>        <span class="n">widgets</span> <span class="o">=</span> <span class="p">{</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>            <span class="s2">"amount"</span><span class="p">:</span> <span class="n">forms</span><span class="o">.</span><span class="n">TextInput</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">"class"</span><span class="p">:</span> <span class="s2">"form-control"</span><span class="p">}),</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>            <span class="s2">"unit"</span><span class="p">:</span> <span class="n">forms</span><span class="o">.</span><span class="n">TextInput</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">"class"</span><span class="p">:</span> <span class="s2">"form-control"</span><span class="p">}),</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>            <span class="s2">"name"</span><span class="p">:</span> <span class="n">forms</span><span class="o">.</span><span class="n">TextInput</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">"class"</span><span class="p">:</span> <span class="s2">"form-control"</span><span class="p">}),</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>            <span class="s2">"note"</span><span class="p">:</span> <span class="n">forms</span><span class="o">.</span><span class="n">TextInput</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">"class"</span><span class="p">:</span> <span class="s2">"form-control"</span><span class="p">}),</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>        <span class="p">}</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 4: Run tests to verify they pass</strong></li>
+</ul>
+<p>Run: <code>uv run python src/plated/manage.py test recipes.tests.test_forms.IngredientQuickEditFormTest -v 2</code>
+Expected: <code>OK</code> (3 tests)</p>
+<ul>
+<li>[ ] <strong>Step 5: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>git<span class="w"> </span>add<span class="w"> </span>src/plated/recipes/forms.py<span class="w"> </span>src/plated/recipes/tests/test_forms.py
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"feat(recipes): add IngredientQuickEditForm"</span>
+</code></pre></div>
+<hr />
+<h3 id="task-2-stepquickeditform">Task 2: <code>StepQuickEditForm</code><a class="headerlink" href="#task-2-stepquickeditform" title="Permanent link">&para;</a></h3>
+<p><strong>Files:</strong>
+- Modify: <code>src/plated/recipes/forms.py</code>
+- Test: <code>src/plated/recipes/tests/test_forms.py</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Write the failing tests</strong></li>
+</ul>
+<p>Append to <code>src/plated/recipes/tests/test_forms.py</code> (the <code>StepQuickEditForm</code> and <code>Step</code> imports were
+already added in Task 1):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">StepQuickEditFormTest</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">    </span><span class="sd">"""Test cases for StepQuickEditForm validation."""</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">        </span><span class="sd">"""Create a recipe with one step."""</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">recipe</span> <span class="o">=</span> <span class="n">Recipe</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"Soup"</span><span class="p">,</span> <span class="n">servings</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">Step</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">recipe</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">recipe</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="s2">"Boil water"</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">test_valid_data_updates_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">        </span><span class="sd">"""Valid data saves onto the existing step instance."""</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>        <span class="n">form</span> <span class="o">=</span> <span class="n">StepQuickEditForm</span><span class="p">(</span>
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>            <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">"content"</span><span class="p">:</span> <span class="s2">"Boil the water for 5 minutes"</span><span class="p">,</span> <span class="s2">"timer"</span><span class="p">:</span> <span class="s2">"5"</span><span class="p">},</span>
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>            <span class="n">instance</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">,</span>
+<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>        <span class="p">)</span>
+<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">())</span>
+<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>        <span class="n">step</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+<a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">step</span><span class="o">.</span><span class="n">pk</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span>
+<a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">step</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="s2">"Boil the water for 5 minutes"</span><span class="p">)</span>
+<a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">step</span><span class="o">.</span><span class="n">timer</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a>
+<a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">test_blank_content_is_invalid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a><span class="w">        </span><span class="sd">"""Content is required, so a blank value fails validation."""</span>
+<a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a>        <span class="n">form</span> <span class="o">=</span> <span class="n">StepQuickEditForm</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">"content"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">"timer"</span><span class="p">:</span> <span class="s2">""</span><span class="p">},</span> <span class="n">instance</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
+<a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">())</span>
+<a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="s2">"content"</span><span class="p">,</span> <span class="n">form</span><span class="o">.</span><span class="n">errors</span><span class="p">)</span>
+<a id="__codelineno-6-26" name="__codelineno-6-26" href="#__codelineno-6-26"></a>
+<a id="__codelineno-6-27" name="__codelineno-6-27" href="#__codelineno-6-27"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">test_blank_timer_is_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-6-28" name="__codelineno-6-28" href="#__codelineno-6-28"></a><span class="w">        </span><span class="sd">"""Timer is optional."""</span>
+<a id="__codelineno-6-29" name="__codelineno-6-29" href="#__codelineno-6-29"></a>        <span class="n">form</span> <span class="o">=</span> <span class="n">StepQuickEditForm</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">"content"</span><span class="p">:</span> <span class="s2">"Boil water"</span><span class="p">,</span> <span class="s2">"timer"</span><span class="p">:</span> <span class="s2">""</span><span class="p">},</span> <span class="n">instance</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
+<a id="__codelineno-6-30" name="__codelineno-6-30" href="#__codelineno-6-30"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">())</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 2: Run tests to verify they fail</strong></li>
+</ul>
+<p>Run: <code>uv run python src/plated/manage.py test recipes.tests.test_forms.StepQuickEditFormTest -v 2</code>
+Expected: FAIL/ERROR — <code>ImportError: cannot import name 'StepQuickEditForm'</code></p>
+<ul>
+<li>[ ] <strong>Step 3: Implement the form</strong></li>
+</ul>
+<p>Add this class in <code>src/plated/recipes/forms.py</code> directly after <code>IngredientQuickEditForm</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">StepQuickEditForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">ModelForm</span><span class="p">):</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">    </span><span class="sd">"""Quick-edit form for a single step's content/timer."""</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">:</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>        <span class="n">model</span> <span class="o">=</span> <span class="n">Step</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>        <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"content"</span><span class="p">,</span> <span class="s2">"timer"</span><span class="p">]</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>        <span class="n">widgets</span> <span class="o">=</span> <span class="p">{</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>            <span class="s2">"content"</span><span class="p">:</span> <span class="n">forms</span><span class="o">.</span><span class="n">Textarea</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">"class"</span><span class="p">:</span> <span class="s2">"form-control"</span><span class="p">,</span> <span class="s2">"rows"</span><span class="p">:</span> <span class="mi">3</span><span class="p">}),</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>            <span class="s2">"timer"</span><span class="p">:</span> <span class="n">forms</span><span class="o">.</span><span class="n">NumberInput</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">"class"</span><span class="p">:</span> <span class="s2">"form-control"</span><span class="p">,</span> <span class="s2">"min"</span><span class="p">:</span> <span class="mi">1</span><span class="p">}),</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>        <span class="p">}</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 4: Run tests to verify they pass</strong></li>
+</ul>
+<p>Run: <code>uv run python src/plated/manage.py test recipes.tests.test_forms.StepQuickEditFormTest -v 2</code>
+Expected: <code>OK</code> (3 tests)</p>
+<ul>
+<li>[ ] <strong>Step 5: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>git<span class="w"> </span>add<span class="w"> </span>src/plated/recipes/forms.py<span class="w"> </span>src/plated/recipes/tests/test_forms.py
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"feat(recipes): add StepQuickEditForm"</span>
+</code></pre></div>
+<hr />
+<h3 id="task-3-ingredient_quick_edit-view-url">Task 3: <code>ingredient_quick_edit</code> view + URL<a class="headerlink" href="#task-3-ingredient_quick_edit-view-url" title="Permanent link">&para;</a></h3>
+<p><strong>Files:</strong>
+- Modify: <code>src/plated/recipes/views/recipes.py</code>
+- Modify: <code>src/plated/recipes/urls.py</code>
+- Test: <code>src/plated/recipes/tests/test_views_recipes.py</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Write the failing tests</strong></li>
+</ul>
+<p>Append to <code>src/plated/recipes/tests/test_views_recipes.py</code> (at the end of the file). First check
+the top-of-file import includes <code>Ingredient</code> (it already does per the existing
+<code>from ..models import Ingredient, Recipe, Step</code> line):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">IngredientQuickEditViewTest</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">    </span><span class="sd">"""Test cases for the ingredient quick-edit view."""</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">        </span><span class="sd">"""Create a recipe with one ingredient."""</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">recipe</span> <span class="o">=</span> <span class="n">Recipe</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"Soup"</span><span class="p">,</span> <span class="n">servings</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ingredient</span> <span class="o">=</span> <span class="n">Ingredient</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>            <span class="n">recipe</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">recipe</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"salt"</span><span class="p">,</span> <span class="n">amount</span><span class="o">=</span><span class="s2">"1"</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">"tsp"</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">0</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>        <span class="p">)</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">test_get_redirects_without_saving</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="w">        </span><span class="sd">"""GET requests redirect back to the detail page without changing anything."""</span>
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>            <span class="n">reverse</span><span class="p">(</span><span class="s2">"ingredient_quick_edit"</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">recipe</span><span class="o">.</span><span class="n">pk</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ingredient</span><span class="o">.</span><span class="n">pk</span><span class="p">])</span>
+<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a>        <span class="p">)</span>
+<a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertRedirects</span><span class="p">(</span>
+<a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a>            <span class="n">response</span><span class="p">,</span>
+<a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a>            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">reverse</span><span class="p">(</span><span class="s1">'recipe_detail'</span><span class="p">,</span><span class="w"> </span><span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">recipe</span><span class="o">.</span><span class="n">pk</span><span class="p">])</span><span class="si">}</span><span class="s2">#ingredient-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ingredient</span><span class="o">.</span><span class="n">pk</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+<a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a>        <span class="p">)</span>
+<a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ingredient</span><span class="o">.</span><span class="n">refresh_from_db</span><span class="p">()</span>
+<a id="__codelineno-9-21" name="__codelineno-9-21" href="#__codelineno-9-21"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ingredient</span><span class="o">.</span><span class="n">amount</span><span class="p">,</span> <span class="s2">"1"</span><span class="p">)</span>
+<a id="__codelineno-9-22" name="__codelineno-9-22" href="#__codelineno-9-22"></a>
+<a id="__codelineno-9-23" name="__codelineno-9-23" href="#__codelineno-9-23"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">test_valid_post_updates_ingredient</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-9-24" name="__codelineno-9-24" href="#__codelineno-9-24"></a><span class="w">        </span><span class="sd">"""A valid POST updates the ingredient and redirects to the anchored detail page."""</span>
+<a id="__codelineno-9-25" name="__codelineno-9-25" href="#__codelineno-9-25"></a>        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+<a id="__codelineno-9-26" name="__codelineno-9-26" href="#__codelineno-9-26"></a>            <span class="n">reverse</span><span class="p">(</span><span class="s2">"ingredient_quick_edit"</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">recipe</span><span class="o">.</span><span class="n">pk</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ingredient</span><span class="o">.</span><span class="n">pk</span><span class="p">]),</span>
+<a id="__codelineno-9-27" name="__codelineno-9-27" href="#__codelineno-9-27"></a>            <span class="p">{</span><span class="s2">"amount"</span><span class="p">:</span> <span class="s2">"2"</span><span class="p">,</span> <span class="s2">"unit"</span><span class="p">:</span> <span class="s2">"tbsp"</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"salt"</span><span class="p">,</span> <span class="s2">"note"</span><span class="p">:</span> <span class="s2">"to taste"</span><span class="p">},</span>
+<a id="__codelineno-9-28" name="__codelineno-9-28" href="#__codelineno-9-28"></a>        <span class="p">)</span>
+<a id="__codelineno-9-29" name="__codelineno-9-29" href="#__codelineno-9-29"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertRedirects</span><span class="p">(</span>
+<a id="__codelineno-9-30" name="__codelineno-9-30" href="#__codelineno-9-30"></a>            <span class="n">response</span><span class="p">,</span>
+<a id="__codelineno-9-31" name="__codelineno-9-31" href="#__codelineno-9-31"></a>            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">reverse</span><span class="p">(</span><span class="s1">'recipe_detail'</span><span class="p">,</span><span class="w"> </span><span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">recipe</span><span class="o">.</span><span class="n">pk</span><span class="p">])</span><span class="si">}</span><span class="s2">#ingredient-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ingredient</span><span class="o">.</span><span class="n">pk</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+<a id="__codelineno-9-32" name="__codelineno-9-32" href="#__codelineno-9-32"></a>        <span class="p">)</span>
+<a id="__codelineno-9-33" name="__codelineno-9-33" href="#__codelineno-9-33"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ingredient</span><span class="o">.</span><span class="n">refresh_from_db</span><span class="p">()</span>
+<a id="__codelineno-9-34" name="__codelineno-9-34" href="#__codelineno-9-34"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ingredient</span><span class="o">.</span><span class="n">amount</span><span class="p">,</span> <span class="s2">"2"</span><span class="p">)</span>
+<a id="__codelineno-9-35" name="__codelineno-9-35" href="#__codelineno-9-35"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ingredient</span><span class="o">.</span><span class="n">unit</span><span class="p">,</span> <span class="s2">"tbsp"</span><span class="p">)</span>
+<a id="__codelineno-9-36" name="__codelineno-9-36" href="#__codelineno-9-36"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ingredient</span><span class="o">.</span><span class="n">note</span><span class="p">,</span> <span class="s2">"to taste"</span><span class="p">)</span>
+<a id="__codelineno-9-37" name="__codelineno-9-37" href="#__codelineno-9-37"></a>
+<a id="__codelineno-9-38" name="__codelineno-9-38" href="#__codelineno-9-38"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">test_invalid_post_does_not_save_and_shows_message</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-9-39" name="__codelineno-9-39" href="#__codelineno-9-39"></a><span class="w">        </span><span class="sd">"""An invalid POST (blank name) leaves the ingredient unchanged and flashes a message."""</span>
+<a id="__codelineno-9-40" name="__codelineno-9-40" href="#__codelineno-9-40"></a>        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+<a id="__codelineno-9-41" name="__codelineno-9-41" href="#__codelineno-9-41"></a>            <span class="n">reverse</span><span class="p">(</span><span class="s2">"ingredient_quick_edit"</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">recipe</span><span class="o">.</span><span class="n">pk</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ingredient</span><span class="o">.</span><span class="n">pk</span><span class="p">]),</span>
+<a id="__codelineno-9-42" name="__codelineno-9-42" href="#__codelineno-9-42"></a>            <span class="p">{</span><span class="s2">"amount"</span><span class="p">:</span> <span class="s2">"2"</span><span class="p">,</span> <span class="s2">"unit"</span><span class="p">:</span> <span class="s2">"tbsp"</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">"note"</span><span class="p">:</span> <span class="s2">""</span><span class="p">},</span>
+<a id="__codelineno-9-43" name="__codelineno-9-43" href="#__codelineno-9-43"></a>            <span class="n">follow</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a id="__codelineno-9-44" name="__codelineno-9-44" href="#__codelineno-9-44"></a>        <span class="p">)</span>
+<a id="__codelineno-9-45" name="__codelineno-9-45" href="#__codelineno-9-45"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ingredient</span><span class="o">.</span><span class="n">refresh_from_db</span><span class="p">()</span>
+<a id="__codelineno-9-46" name="__codelineno-9-46" href="#__codelineno-9-46"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ingredient</span><span class="o">.</span><span class="n">amount</span><span class="p">,</span> <span class="s2">"1"</span><span class="p">)</span>
+<a id="__codelineno-9-47" name="__codelineno-9-47" href="#__codelineno-9-47"></a>        <span class="n">messages</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">context</span><span class="p">[</span><span class="s2">"messages"</span><span class="p">])</span>
+<a id="__codelineno-9-48" name="__codelineno-9-48" href="#__codelineno-9-48"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">messages</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+<a id="__codelineno-9-49" name="__codelineno-9-49" href="#__codelineno-9-49"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="s2">"Couldn't save ingredient"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">messages</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+<a id="__codelineno-9-50" name="__codelineno-9-50" href="#__codelineno-9-50"></a>
+<a id="__codelineno-9-51" name="__codelineno-9-51" href="#__codelineno-9-51"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">test_post_for_ingredient_of_different_recipe_404s</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-9-52" name="__codelineno-9-52" href="#__codelineno-9-52"></a><span class="w">        </span><span class="sd">"""An ingredient that doesn't belong to the given recipe 404s."""</span>
+<a id="__codelineno-9-53" name="__codelineno-9-53" href="#__codelineno-9-53"></a>        <span class="n">other_recipe</span> <span class="o">=</span> <span class="n">Recipe</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"Other"</span><span class="p">,</span> <span class="n">servings</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<a id="__codelineno-9-54" name="__codelineno-9-54" href="#__codelineno-9-54"></a>        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+<a id="__codelineno-9-55" name="__codelineno-9-55" href="#__codelineno-9-55"></a>            <span class="n">reverse</span><span class="p">(</span><span class="s2">"ingredient_quick_edit"</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="n">other_recipe</span><span class="o">.</span><span class="n">pk</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ingredient</span><span class="o">.</span><span class="n">pk</span><span class="p">]),</span>
+<a id="__codelineno-9-56" name="__codelineno-9-56" href="#__codelineno-9-56"></a>            <span class="p">{</span><span class="s2">"amount"</span><span class="p">:</span> <span class="s2">"2"</span><span class="p">,</span> <span class="s2">"unit"</span><span class="p">:</span> <span class="s2">"tbsp"</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"salt"</span><span class="p">,</span> <span class="s2">"note"</span><span class="p">:</span> <span class="s2">""</span><span class="p">},</span>
+<a id="__codelineno-9-57" name="__codelineno-9-57" href="#__codelineno-9-57"></a>        <span class="p">)</span>
+<a id="__codelineno-9-58" name="__codelineno-9-58" href="#__codelineno-9-58"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="mi">404</span><span class="p">)</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 2: Run tests to verify they fail</strong></li>
+</ul>
+<p>Run: <code>uv run python src/plated/manage.py test recipes.tests.test_views_recipes.IngredientQuickEditViewTest -v 2</code>
+Expected: FAIL — <code>NoReverseMatch: Reverse for 'ingredient_quick_edit' not found</code></p>
+<ul>
+<li>[ ] <strong>Step 3: Implement the view</strong></li>
+</ul>
+<p>In <code>src/plated/recipes/views/recipes.py</code>, update the imports:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">django.urls</span><span class="w"> </span><span class="kn">import</span> <span class="n">reverse</span><span class="p">,</span> <span class="n">reverse_lazy</span>
+</code></pre></div>
+<p>(adds <code>reverse</code> alongside the existing <code>reverse_lazy</code>), and:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">..forms</span><span class="w"> </span><span class="kn">import</span> <span class="n">IngredientQuickEditForm</span><span class="p">,</span> <span class="n">RecipeForm</span><span class="p">,</span> <span class="n">StepQuickEditForm</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">..models</span><span class="w"> </span><span class="kn">import</span> <span class="n">AISettings</span><span class="p">,</span> <span class="n">Ingredient</span><span class="p">,</span> <span class="n">Recipe</span><span class="p">,</span> <span class="n">Step</span>
+</code></pre></div>
+<p>(adds the two form imports and <code>Ingredient</code>/<code>Step</code> to the models import).</p>
+<p>Then add this function. Place it directly after the <code>RecipeDeleteView</code> class (i.e. right before
+the <code># Import/Export</code> section that starts with <code>def export_recipe</code>):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">ingredient_quick_edit</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">HttpRequest</span><span class="p">,</span> <span class="n">recipe_pk</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">pk</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HttpResponse</span><span class="p">:</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">    </span><span class="sd">"""Quick-edit a single ingredient's amount/unit/name/note from the recipe detail page."""</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>    <span class="n">ingredient</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Ingredient</span><span class="p">,</span> <span class="n">pk</span><span class="o">=</span><span class="n">pk</span><span class="p">,</span> <span class="n">recipe_id</span><span class="o">=</span><span class="n">recipe_pk</span><span class="p">)</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">"POST"</span><span class="p">:</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>        <span class="n">form</span> <span class="o">=</span> <span class="n">IngredientQuickEditForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="n">instance</span><span class="o">=</span><span class="n">ingredient</span><span class="p">)</span>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>            <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Ingredient quick-edited: '</span><span class="si">{</span><span class="n">ingredient</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">' (ID: </span><span class="si">{</span><span class="n">ingredient</span><span class="o">.</span><span class="n">pk</span><span class="si">}</span><span class="s2">, Recipe ID: </span><span class="si">{</span><span class="n">recipe_pk</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>        <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Ingredient quick-edit failed (ID: </span><span class="si">{</span><span class="n">ingredient</span><span class="o">.</span><span class="n">pk</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">form</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">as_text</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>            <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+<a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a>                <span class="n">request</span><span class="p">,</span>
+<a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a>                <span class="n">_</span><span class="p">(</span><span class="s2">"Couldn't save ingredient: </span><span class="si">%(errors)s</span><span class="s2">"</span><span class="p">)</span> <span class="o">%</span> <span class="p">{</span><span class="s2">"errors"</span><span class="p">:</span> <span class="n">form</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">as_text</span><span class="p">()},</span>
+<a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a>            <span class="p">)</span>
+<a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a>
+<a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a>    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">reverse</span><span class="p">(</span><span class="s1">'recipe_detail'</span><span class="p">,</span><span class="w"> </span><span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="n">recipe_pk</span><span class="p">])</span><span class="si">}</span><span class="s2">#ingredient-</span><span class="si">{</span><span class="n">pk</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<p>In <code>src/plated/recipes/urls.py</code>, add this URL pattern directly after the <code>recipe_delete</code> pattern
+(i.e. right before the <code># Import/Export</code> comment):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>    <span class="n">path</span><span class="p">(</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>        <span class="s2">"recipe/&lt;int:recipe_pk&gt;/ingredient/&lt;int:pk&gt;/quick-edit/"</span><span class="p">,</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>        <span class="n">views</span><span class="o">.</span><span class="n">recipes</span><span class="o">.</span><span class="n">ingredient_quick_edit</span><span class="p">,</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>        <span class="n">name</span><span class="o">=</span><span class="s2">"ingredient_quick_edit"</span><span class="p">,</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>    <span class="p">),</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 4: Run tests to verify they pass</strong></li>
+</ul>
+<p>Run: <code>uv run python src/plated/manage.py test recipes.tests.test_views_recipes.IngredientQuickEditViewTest -v 2</code>
+Expected: <code>OK</code> (4 tests)</p>
+<ul>
+<li>[ ] <strong>Step 5: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>git<span class="w"> </span>add<span class="w"> </span>src/plated/recipes/views/recipes.py<span class="w"> </span>src/plated/recipes/urls.py<span class="w"> </span>src/plated/recipes/tests/test_views_recipes.py
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"feat(recipes): add ingredient_quick_edit view"</span>
+</code></pre></div>
+<hr />
+<h3 id="task-4-step_quick_edit-view-url">Task 4: <code>step_quick_edit</code> view + URL<a class="headerlink" href="#task-4-step_quick_edit-view-url" title="Permanent link">&para;</a></h3>
+<p><strong>Files:</strong>
+- Modify: <code>src/plated/recipes/views/recipes.py</code>
+- Modify: <code>src/plated/recipes/urls.py</code>
+- Test: <code>src/plated/recipes/tests/test_views_recipes.py</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Write the failing tests</strong></li>
+</ul>
+<p>Append to <code>src/plated/recipes/tests/test_views_recipes.py</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">StepQuickEditViewTest</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">    </span><span class="sd">"""Test cases for the step quick-edit view."""</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">        </span><span class="sd">"""Create a recipe with one step."""</span>
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">recipe</span> <span class="o">=</span> <span class="n">Recipe</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"Soup"</span><span class="p">,</span> <span class="n">servings</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">Step</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">recipe</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">recipe</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="s2">"Boil water"</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>
+<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">test_get_redirects_without_saving</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="w">        </span><span class="sd">"""GET requests redirect back to the detail page without changing anything."""</span>
+<a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a>        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="s2">"step_quick_edit"</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">recipe</span><span class="o">.</span><span class="n">pk</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="o">.</span><span class="n">pk</span><span class="p">]))</span>
+<a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertRedirects</span><span class="p">(</span>
+<a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a>            <span class="n">response</span><span class="p">,</span>
+<a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a>            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">reverse</span><span class="p">(</span><span class="s1">'recipe_detail'</span><span class="p">,</span><span class="w"> </span><span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">recipe</span><span class="o">.</span><span class="n">pk</span><span class="p">])</span><span class="si">}</span><span class="s2">#step-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="o">.</span><span class="n">pk</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+<a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a>        <span class="p">)</span>
+<a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="o">.</span><span class="n">refresh_from_db</span><span class="p">()</span>
+<a id="__codelineno-15-17" name="__codelineno-15-17" href="#__codelineno-15-17"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="s2">"Boil water"</span><span class="p">)</span>
+<a id="__codelineno-15-18" name="__codelineno-15-18" href="#__codelineno-15-18"></a>
+<a id="__codelineno-15-19" name="__codelineno-15-19" href="#__codelineno-15-19"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">test_valid_post_updates_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-15-20" name="__codelineno-15-20" href="#__codelineno-15-20"></a><span class="w">        </span><span class="sd">"""A valid POST updates the step and redirects to the anchored detail page."""</span>
+<a id="__codelineno-15-21" name="__codelineno-15-21" href="#__codelineno-15-21"></a>        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+<a id="__codelineno-15-22" name="__codelineno-15-22" href="#__codelineno-15-22"></a>            <span class="n">reverse</span><span class="p">(</span><span class="s2">"step_quick_edit"</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">recipe</span><span class="o">.</span><span class="n">pk</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="o">.</span><span class="n">pk</span><span class="p">]),</span>
+<a id="__codelineno-15-23" name="__codelineno-15-23" href="#__codelineno-15-23"></a>            <span class="p">{</span><span class="s2">"content"</span><span class="p">:</span> <span class="s2">"Boil the water for 5 minutes"</span><span class="p">,</span> <span class="s2">"timer"</span><span class="p">:</span> <span class="s2">"5"</span><span class="p">},</span>
+<a id="__codelineno-15-24" name="__codelineno-15-24" href="#__codelineno-15-24"></a>        <span class="p">)</span>
+<a id="__codelineno-15-25" name="__codelineno-15-25" href="#__codelineno-15-25"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertRedirects</span><span class="p">(</span>
+<a id="__codelineno-15-26" name="__codelineno-15-26" href="#__codelineno-15-26"></a>            <span class="n">response</span><span class="p">,</span>
+<a id="__codelineno-15-27" name="__codelineno-15-27" href="#__codelineno-15-27"></a>            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">reverse</span><span class="p">(</span><span class="s1">'recipe_detail'</span><span class="p">,</span><span class="w"> </span><span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">recipe</span><span class="o">.</span><span class="n">pk</span><span class="p">])</span><span class="si">}</span><span class="s2">#step-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="o">.</span><span class="n">pk</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+<a id="__codelineno-15-28" name="__codelineno-15-28" href="#__codelineno-15-28"></a>        <span class="p">)</span>
+<a id="__codelineno-15-29" name="__codelineno-15-29" href="#__codelineno-15-29"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="o">.</span><span class="n">refresh_from_db</span><span class="p">()</span>
+<a id="__codelineno-15-30" name="__codelineno-15-30" href="#__codelineno-15-30"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="s2">"Boil the water for 5 minutes"</span><span class="p">)</span>
+<a id="__codelineno-15-31" name="__codelineno-15-31" href="#__codelineno-15-31"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="o">.</span><span class="n">timer</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<a id="__codelineno-15-32" name="__codelineno-15-32" href="#__codelineno-15-32"></a>
+<a id="__codelineno-15-33" name="__codelineno-15-33" href="#__codelineno-15-33"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">test_invalid_post_does_not_save_and_shows_message</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-15-34" name="__codelineno-15-34" href="#__codelineno-15-34"></a><span class="w">        </span><span class="sd">"""An invalid POST (blank content) leaves the step unchanged and flashes a message."""</span>
+<a id="__codelineno-15-35" name="__codelineno-15-35" href="#__codelineno-15-35"></a>        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+<a id="__codelineno-15-36" name="__codelineno-15-36" href="#__codelineno-15-36"></a>            <span class="n">reverse</span><span class="p">(</span><span class="s2">"step_quick_edit"</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">recipe</span><span class="o">.</span><span class="n">pk</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="o">.</span><span class="n">pk</span><span class="p">]),</span>
+<a id="__codelineno-15-37" name="__codelineno-15-37" href="#__codelineno-15-37"></a>            <span class="p">{</span><span class="s2">"content"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">"timer"</span><span class="p">:</span> <span class="s2">""</span><span class="p">},</span>
+<a id="__codelineno-15-38" name="__codelineno-15-38" href="#__codelineno-15-38"></a>            <span class="n">follow</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a id="__codelineno-15-39" name="__codelineno-15-39" href="#__codelineno-15-39"></a>        <span class="p">)</span>
+<a id="__codelineno-15-40" name="__codelineno-15-40" href="#__codelineno-15-40"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="o">.</span><span class="n">refresh_from_db</span><span class="p">()</span>
+<a id="__codelineno-15-41" name="__codelineno-15-41" href="#__codelineno-15-41"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="s2">"Boil water"</span><span class="p">)</span>
+<a id="__codelineno-15-42" name="__codelineno-15-42" href="#__codelineno-15-42"></a>        <span class="n">messages</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">context</span><span class="p">[</span><span class="s2">"messages"</span><span class="p">])</span>
+<a id="__codelineno-15-43" name="__codelineno-15-43" href="#__codelineno-15-43"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">messages</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+<a id="__codelineno-15-44" name="__codelineno-15-44" href="#__codelineno-15-44"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="s2">"Couldn't save step"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">messages</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+<a id="__codelineno-15-45" name="__codelineno-15-45" href="#__codelineno-15-45"></a>
+<a id="__codelineno-15-46" name="__codelineno-15-46" href="#__codelineno-15-46"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">test_post_for_step_of_different_recipe_404s</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-15-47" name="__codelineno-15-47" href="#__codelineno-15-47"></a><span class="w">        </span><span class="sd">"""A step that doesn't belong to the given recipe 404s."""</span>
+<a id="__codelineno-15-48" name="__codelineno-15-48" href="#__codelineno-15-48"></a>        <span class="n">other_recipe</span> <span class="o">=</span> <span class="n">Recipe</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"Other"</span><span class="p">,</span> <span class="n">servings</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<a id="__codelineno-15-49" name="__codelineno-15-49" href="#__codelineno-15-49"></a>        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+<a id="__codelineno-15-50" name="__codelineno-15-50" href="#__codelineno-15-50"></a>            <span class="n">reverse</span><span class="p">(</span><span class="s2">"step_quick_edit"</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="n">other_recipe</span><span class="o">.</span><span class="n">pk</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="o">.</span><span class="n">pk</span><span class="p">]),</span>
+<a id="__codelineno-15-51" name="__codelineno-15-51" href="#__codelineno-15-51"></a>            <span class="p">{</span><span class="s2">"content"</span><span class="p">:</span> <span class="s2">"Boil water"</span><span class="p">,</span> <span class="s2">"timer"</span><span class="p">:</span> <span class="s2">""</span><span class="p">},</span>
+<a id="__codelineno-15-52" name="__codelineno-15-52" href="#__codelineno-15-52"></a>        <span class="p">)</span>
+<a id="__codelineno-15-53" name="__codelineno-15-53" href="#__codelineno-15-53"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="mi">404</span><span class="p">)</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 2: Run tests to verify they fail</strong></li>
+</ul>
+<p>Run: <code>uv run python src/plated/manage.py test recipes.tests.test_views_recipes.StepQuickEditViewTest -v 2</code>
+Expected: FAIL — <code>NoReverseMatch: Reverse for 'step_quick_edit' not found</code></p>
+<ul>
+<li>[ ] <strong>Step 3: Implement the view</strong></li>
+</ul>
+<p>Add this function in <code>src/plated/recipes/views/recipes.py</code> directly after <code>ingredient_quick_edit</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">step_quick_edit</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">HttpRequest</span><span class="p">,</span> <span class="n">recipe_pk</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">pk</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HttpResponse</span><span class="p">:</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">    </span><span class="sd">"""Quick-edit a single step's content/timer from the recipe detail page."""</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>    <span class="n">step</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Step</span><span class="p">,</span> <span class="n">pk</span><span class="o">=</span><span class="n">pk</span><span class="p">,</span> <span class="n">recipe_id</span><span class="o">=</span><span class="n">recipe_pk</span><span class="p">)</span>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">"POST"</span><span class="p">:</span>
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>        <span class="n">form</span> <span class="o">=</span> <span class="n">StepQuickEditForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="n">instance</span><span class="o">=</span><span class="n">step</span><span class="p">)</span>
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>            <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+<a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Step quick-edited: ID </span><span class="si">{</span><span class="n">step</span><span class="o">.</span><span class="n">pk</span><span class="si">}</span><span class="s2"> (Recipe ID: </span><span class="si">{</span><span class="n">recipe_pk</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+<a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>        <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Step quick-edit failed (ID: </span><span class="si">{</span><span class="n">step</span><span class="o">.</span><span class="n">pk</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">form</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">as_text</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a>            <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+<a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a>                <span class="n">request</span><span class="p">,</span>
+<a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a>                <span class="n">_</span><span class="p">(</span><span class="s2">"Couldn't save step: </span><span class="si">%(errors)s</span><span class="s2">"</span><span class="p">)</span> <span class="o">%</span> <span class="p">{</span><span class="s2">"errors"</span><span class="p">:</span> <span class="n">form</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">as_text</span><span class="p">()},</span>
+<a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a>            <span class="p">)</span>
+<a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a>
+<a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a>    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">reverse</span><span class="p">(</span><span class="s1">'recipe_detail'</span><span class="p">,</span><span class="w"> </span><span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="n">recipe_pk</span><span class="p">])</span><span class="si">}</span><span class="s2">#step-</span><span class="si">{</span><span class="n">pk</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<p>In <code>src/plated/recipes/urls.py</code>, add this URL pattern directly after <code>ingredient_quick_edit</code>'s:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>    <span class="n">path</span><span class="p">(</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>        <span class="s2">"recipe/&lt;int:recipe_pk&gt;/step/&lt;int:pk&gt;/quick-edit/"</span><span class="p">,</span>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>        <span class="n">views</span><span class="o">.</span><span class="n">recipes</span><span class="o">.</span><span class="n">step_quick_edit</span><span class="p">,</span>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>        <span class="n">name</span><span class="o">=</span><span class="s2">"step_quick_edit"</span><span class="p">,</span>
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>    <span class="p">),</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 4: Run tests to verify they pass</strong></li>
+</ul>
+<p>Run: <code>uv run python src/plated/manage.py test recipes.tests.test_views_recipes.StepQuickEditViewTest -v 2</code>
+Expected: <code>OK</code> (4 tests)</p>
+<ul>
+<li>[ ] <strong>Step 5: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>git<span class="w"> </span>add<span class="w"> </span>src/plated/recipes/views/recipes.py<span class="w"> </span>src/plated/recipes/urls.py<span class="w"> </span>src/plated/recipes/tests/test_views_recipes.py
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"feat(recipes): add step_quick_edit view"</span>
+</code></pre></div>
+<hr />
+<h3 id="task-5-attach-quick-edit-forms-to-recipedetailview">Task 5: Attach quick-edit forms to <code>RecipeDetailView</code><a class="headerlink" href="#task-5-attach-quick-edit-forms-to-recipedetailview" title="Permanent link">&para;</a></h3>
+<p><strong>Files:</strong>
+- Modify: <code>src/plated/recipes/views/recipes.py</code>
+- Test: <code>src/plated/recipes/tests/test_views_recipes.py</code></p>
+<p><strong>Why this task exists separately:</strong> the template partials in Tasks 6-7 need
+<code>ingredient.quick_edit_form</code> / <code>step.quick_edit_form</code> to already exist on each object. Rather than
+look them up by id in the template (which would need a custom template filter), each <code>Ingredient</code>/
+<code>Step</code> instance gets its form attached as a plain attribute in the view — a standard Django
+pattern for per-object template-only data. This requires <code>RecipeDetailView</code> to prefetch
+<code>ingredients</code>/<code>steps</code> (it doesn't currently) so that the <em>same</em> Python objects are reused when the
+template calls <code>recipe.ingredients.all()</code>/<code>recipe.steps.all()</code> more than once (once for the
+existing <code>{% if %}</code> check, once for the edit-button loop, once for the modal-include loop) —
+without prefetching, each <code>.all()</code> call would hit the DB again and return fresh objects without the
+attached form.</p>
+<ul>
+<li>[ ] <strong>Step 1: Write the failing test</strong></li>
+</ul>
+<p>Append to <code>src/plated/recipes/tests/test_views_recipes.py</code>, inside the existing
+<code>RecipeDetailViewTest</code> class (after its last test method):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">test_detail_view_has_quick_edit_forms_prefilled</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="w">        </span><span class="sd">"""Ingredients and steps carry a pre-filled quick-edit form for the template to render."""</span>
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>        <span class="n">Step</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">recipe</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">recipe</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="s2">"Mix everything"</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="s2">"recipe_detail"</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">recipe</span><span class="o">.</span><span class="n">pk</span><span class="p">]))</span>
+<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>        <span class="n">ingredient</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">context</span><span class="p">[</span><span class="s2">"recipe"</span><span class="p">]</span><span class="o">.</span><span class="n">ingredients</span><span class="o">.</span><span class="n">all</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+<a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a>        <span class="n">step</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">context</span><span class="p">[</span><span class="s2">"recipe"</span><span class="p">]</span><span class="o">.</span><span class="n">steps</span><span class="o">.</span><span class="n">all</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+<a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">ingredient</span><span class="o">.</span><span class="n">quick_edit_form</span><span class="o">.</span><span class="n">initial</span><span class="p">[</span><span class="s2">"name"</span><span class="p">],</span> <span class="n">ingredient</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+<a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">step</span><span class="o">.</span><span class="n">quick_edit_form</span><span class="o">.</span><span class="n">initial</span><span class="p">[</span><span class="s2">"content"</span><span class="p">],</span> <span class="n">step</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 2: Run the test to verify it fails</strong></li>
+</ul>
+<p>Run: <code>uv run python src/plated/manage.py test recipes.tests.test_views_recipes.RecipeDetailViewTest.test_detail_view_has_quick_edit_forms_prefilled -v 2</code>
+Expected: FAIL — <code>AttributeError: 'Ingredient' object has no attribute 'quick_edit_form'</code></p>
+<ul>
+<li>[ ] <strong>Step 3: Implement</strong></li>
+</ul>
+<p>Replace the <code>RecipeDetailView</code> class in <code>src/plated/recipes/views/recipes.py</code> with:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">RecipeDetailView</span><span class="p">(</span><span class="n">DetailView</span><span class="p">):</span>
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="w">    </span><span class="sd">"""Display a single recipe with all its details."""</span>
+<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>    <span class="n">model</span> <span class="o">=</span> <span class="n">Recipe</span>
+<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>    <span class="n">template_name</span> <span class="o">=</span> <span class="s2">"recipes/recipe_detail.html"</span>
+<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a>    <span class="n">context_object_name</span> <span class="o">=</span> <span class="s2">"recipe"</span>
+<a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a>
+<a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a><span class="w">        </span><span class="sd">"""Prefetch ingredients and steps so quick-edit forms stay attached across template lookups."""</span>
+<a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a>        <span class="k">return</span> <span class="n">Recipe</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">prefetch_related</span><span class="p">(</span><span class="s2">"ingredients"</span><span class="p">,</span> <span class="s2">"steps"</span><span class="p">)</span>
+<a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a>
+<a id="__codelineno-20-12" name="__codelineno-20-12" href="#__codelineno-20-12"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<a id="__codelineno-20-13" name="__codelineno-20-13" href="#__codelineno-20-13"></a><span class="w">        </span><span class="sd">"""Add all collections, recipe's current collections, and per-item quick-edit forms."""</span>
+<a id="__codelineno-20-14" name="__codelineno-20-14" href="#__codelineno-20-14"></a>        <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<a id="__codelineno-20-15" name="__codelineno-20-15" href="#__codelineno-20-15"></a>        <span class="kn">from</span><span class="w"> </span><span class="nn">..models</span><span class="w"> </span><span class="kn">import</span> <span class="n">RecipeCollection</span>
+<a id="__codelineno-20-16" name="__codelineno-20-16" href="#__codelineno-20-16"></a>
+<a id="__codelineno-20-17" name="__codelineno-20-17" href="#__codelineno-20-17"></a>        <span class="n">recipe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_object</span><span class="p">()</span>
+<a id="__codelineno-20-18" name="__codelineno-20-18" href="#__codelineno-20-18"></a>        <span class="n">all_collections</span> <span class="o">=</span> <span class="n">RecipeCollection</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<a id="__codelineno-20-19" name="__codelineno-20-19" href="#__codelineno-20-19"></a>        <span class="n">recipe_collection_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">recipe</span><span class="o">.</span><span class="n">collections</span><span class="o">.</span><span class="n">values_list</span><span class="p">(</span><span class="s2">"id"</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+<a id="__codelineno-20-20" name="__codelineno-20-20" href="#__codelineno-20-20"></a>
+<a id="__codelineno-20-21" name="__codelineno-20-21" href="#__codelineno-20-21"></a>        <span class="k">for</span> <span class="n">ingredient</span> <span class="ow">in</span> <span class="n">recipe</span><span class="o">.</span><span class="n">ingredients</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+<a id="__codelineno-20-22" name="__codelineno-20-22" href="#__codelineno-20-22"></a>            <span class="n">ingredient</span><span class="o">.</span><span class="n">quick_edit_form</span> <span class="o">=</span> <span class="n">IngredientQuickEditForm</span><span class="p">(</span><span class="n">instance</span><span class="o">=</span><span class="n">ingredient</span><span class="p">)</span>
+<a id="__codelineno-20-23" name="__codelineno-20-23" href="#__codelineno-20-23"></a>        <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">recipe</span><span class="o">.</span><span class="n">steps</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+<a id="__codelineno-20-24" name="__codelineno-20-24" href="#__codelineno-20-24"></a>            <span class="n">step</span><span class="o">.</span><span class="n">quick_edit_form</span> <span class="o">=</span> <span class="n">StepQuickEditForm</span><span class="p">(</span><span class="n">instance</span><span class="o">=</span><span class="n">step</span><span class="p">)</span>
+<a id="__codelineno-20-25" name="__codelineno-20-25" href="#__codelineno-20-25"></a>
+<a id="__codelineno-20-26" name="__codelineno-20-26" href="#__codelineno-20-26"></a>        <span class="n">context</span><span class="p">[</span><span class="s2">"all_collections"</span><span class="p">]</span> <span class="o">=</span> <span class="n">all_collections</span>
+<a id="__codelineno-20-27" name="__codelineno-20-27" href="#__codelineno-20-27"></a>        <span class="n">context</span><span class="p">[</span><span class="s2">"recipe_collection_ids"</span><span class="p">]</span> <span class="o">=</span> <span class="n">recipe_collection_ids</span>
+<a id="__codelineno-20-28" name="__codelineno-20-28" href="#__codelineno-20-28"></a>        <span class="k">return</span> <span class="n">context</span>
+</code></pre></div>
+<p>(Only the <code>get_queryset</code> method and the two <code>for</code> loops in <code>get_context_data</code> are new; the rest is
+unchanged from the current implementation.)</p>
+<ul>
+<li>[ ] <strong>Step 4: Run the test to verify it passes</strong></li>
+</ul>
+<p>Run: <code>uv run python src/plated/manage.py test recipes.tests.test_views_recipes.RecipeDetailViewTest.test_detail_view_has_quick_edit_forms_prefilled -v 2</code>
+Expected: <code>OK</code> (1 test)</p>
+<ul>
+<li>[ ] <strong>Step 5: Run the full recipes test suite to check for regressions</strong></li>
+</ul>
+<p>Run: <code>uv run python src/plated/manage.py test recipes -v 1</code>
+Expected: <code>OK</code>, same or higher test count than before this task</p>
+<ul>
+<li>[ ] <strong>Step 6: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>git<span class="w"> </span>add<span class="w"> </span>src/plated/recipes/views/recipes.py<span class="w"> </span>src/plated/recipes/tests/test_views_recipes.py
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"feat(recipes): attach quick-edit forms to detail view ingredients/steps"</span>
+</code></pre></div>
+<hr />
+<h3 id="task-6-ingredient-quick-edit-modal-partial-template-wiring">Task 6: Ingredient quick-edit modal partial + template wiring<a class="headerlink" href="#task-6-ingredient-quick-edit-modal-partial-template-wiring" title="Permanent link">&para;</a></h3>
+<p><strong>Files:</strong>
+- Create: <code>src/plated/templates/recipes/_ingredient_quick_edit_modal.html</code>
+- Modify: <code>src/plated/templates/recipes/recipe_detail.html</code>
+- Test: <code>src/plated/recipes/tests/test_views_recipes.py</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Write the failing test</strong></li>
+</ul>
+<p>Append to <code>RecipeDetailViewTest</code> in <code>src/plated/recipes/tests/test_views_recipes.py</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">test_detail_view_renders_ingredient_quick_edit_modal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="w">        </span><span class="sd">"""Each ingredient gets an edit button and a modal with its current values."""</span>
+<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="s2">"recipe_detail"</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">recipe</span><span class="o">.</span><span class="n">pk</span><span class="p">]))</span>
+<a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>        <span class="n">ingredient</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">recipe</span><span class="o">.</span><span class="n">ingredients</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+<a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertContains</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'data-bs-target="#edit-ingredient-</span><span class="si">{</span><span class="n">ingredient</span><span class="o">.</span><span class="n">pk</span><span class="si">}</span><span class="s1">"'</span><span class="p">)</span>
+<a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertContains</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'id="edit-ingredient-</span><span class="si">{</span><span class="n">ingredient</span><span class="o">.</span><span class="n">pk</span><span class="si">}</span><span class="s1">"'</span><span class="p">)</span>
+<a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertContains</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'value="</span><span class="si">{</span><span class="n">ingredient</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">"'</span><span class="p">)</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 2: Run the test to verify it fails</strong></li>
+</ul>
+<p>Run: <code>uv run python src/plated/manage.py test recipes.tests.test_views_recipes.RecipeDetailViewTest.test_detail_view_renders_ingredient_quick_edit_modal -v 2</code>
+Expected: FAIL — assertion error, the markup doesn't exist yet</p>
+<ul>
+<li>[ ] <strong>Step 3: Create the modal partial</strong></li>
+</ul>
+<p>Create <code>src/plated/templates/recipes/_ingredient_quick_edit_modal.html</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="cp">{%</span> <span class="k">load</span> <span class="nv">i18n</span> <span class="cp">%}</span>
+<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="x">&lt;div class="modal fade"</span>
+<a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="x">     id="edit-ingredient-</span><span class="cp">{{</span> <span class="nv">ingredient.id</span> <span class="cp">}}</span><span class="x">"</span>
+<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="x">     tabindex="-1"</span>
+<a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="x">     aria-labelledby="edit-ingredient-</span><span class="cp">{{</span> <span class="nv">ingredient.id</span> <span class="cp">}}</span><span class="x">-label"</span>
+<a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="x">     aria-hidden="true"&gt;</span>
+<a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a><span class="x">    &lt;div class="modal-dialog modal-dialog-centered"&gt;</span>
+<a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a><span class="x">        &lt;div class="modal-content"&gt;</span>
+<a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a><span class="x">            &lt;form method="post"</span>
+<a id="__codelineno-23-10" name="__codelineno-23-10" href="#__codelineno-23-10"></a><span class="x">                  action="</span><span class="cp">{%</span> <span class="k">url</span> <span class="s1">'ingredient_quick_edit'</span> <span class="nv">recipe.pk</span> <span class="nv">ingredient.pk</span> <span class="cp">%}</span><span class="x">"&gt;</span>
+<a id="__codelineno-23-11" name="__codelineno-23-11" href="#__codelineno-23-11"></a><span class="x">                </span><span class="cp">{%</span> <span class="k">csrf_token</span> <span class="cp">%}</span>
+<a id="__codelineno-23-12" name="__codelineno-23-12" href="#__codelineno-23-12"></a><span class="x">                &lt;div class="modal-header"&gt;</span>
+<a id="__codelineno-23-13" name="__codelineno-23-13" href="#__codelineno-23-13"></a><span class="x">                    &lt;h5 class="modal-title" id="edit-ingredient-</span><span class="cp">{{</span> <span class="nv">ingredient.id</span> <span class="cp">}}</span><span class="x">-label"&gt;</span>
+<a id="__codelineno-23-14" name="__codelineno-23-14" href="#__codelineno-23-14"></a><span class="x">                        &lt;i class="bi bi-pencil"&gt;&lt;/i&gt; </span><span class="cp">{%</span> <span class="k">trans</span> <span class="s2">"Edit Ingredient"</span> <span class="cp">%}</span>
+<a id="__codelineno-23-15" name="__codelineno-23-15" href="#__codelineno-23-15"></a><span class="x">                    &lt;/h5&gt;</span>
+<a id="__codelineno-23-16" name="__codelineno-23-16" href="#__codelineno-23-16"></a><span class="x">                    &lt;button type="button"</span>
+<a id="__codelineno-23-17" name="__codelineno-23-17" href="#__codelineno-23-17"></a><span class="x">                            class="btn-close"</span>
+<a id="__codelineno-23-18" name="__codelineno-23-18" href="#__codelineno-23-18"></a><span class="x">                            data-bs-dismiss="modal"</span>
+<a id="__codelineno-23-19" name="__codelineno-23-19" href="#__codelineno-23-19"></a><span class="x">                            aria-label='</span><span class="cp">{%</span> <span class="k">trans</span> <span class="s2">"Close"</span> <span class="cp">%}</span><span class="x">'&gt;&lt;/button&gt;</span>
+<a id="__codelineno-23-20" name="__codelineno-23-20" href="#__codelineno-23-20"></a><span class="x">                &lt;/div&gt;</span>
+<a id="__codelineno-23-21" name="__codelineno-23-21" href="#__codelineno-23-21"></a><span class="x">                &lt;div class="modal-body"&gt;</span>
+<a id="__codelineno-23-22" name="__codelineno-23-22" href="#__codelineno-23-22"></a><span class="x">                    &lt;div class="row g-2"&gt;</span>
+<a id="__codelineno-23-23" name="__codelineno-23-23" href="#__codelineno-23-23"></a><span class="x">                        &lt;div class="col-4 mb-2"&gt;</span>
+<a id="__codelineno-23-24" name="__codelineno-23-24" href="#__codelineno-23-24"></a><span class="x">                            &lt;label for="</span><span class="cp">{{</span> <span class="nv">ingredient.quick_edit_form.amount.id_for_label</span> <span class="cp">}}</span><span class="x">"</span>
+<a id="__codelineno-23-25" name="__codelineno-23-25" href="#__codelineno-23-25"></a><span class="x">                                   class="form-label"&gt;</span><span class="cp">{%</span> <span class="k">trans</span> <span class="s2">"Amount"</span> <span class="cp">%}</span><span class="x">&lt;/label&gt;</span>
+<a id="__codelineno-23-26" name="__codelineno-23-26" href="#__codelineno-23-26"></a><span class="x">                            </span><span class="cp">{{</span> <span class="nv">ingredient.quick_edit_form.amount</span> <span class="cp">}}</span>
+<a id="__codelineno-23-27" name="__codelineno-23-27" href="#__codelineno-23-27"></a><span class="x">                        &lt;/div&gt;</span>
+<a id="__codelineno-23-28" name="__codelineno-23-28" href="#__codelineno-23-28"></a><span class="x">                        &lt;div class="col-8 mb-2"&gt;</span>
+<a id="__codelineno-23-29" name="__codelineno-23-29" href="#__codelineno-23-29"></a><span class="x">                            &lt;label for="</span><span class="cp">{{</span> <span class="nv">ingredient.quick_edit_form.unit.id_for_label</span> <span class="cp">}}</span><span class="x">"</span>
+<a id="__codelineno-23-30" name="__codelineno-23-30" href="#__codelineno-23-30"></a><span class="x">                                   class="form-label"&gt;</span><span class="cp">{%</span> <span class="k">trans</span> <span class="s2">"Unit"</span> <span class="cp">%}</span><span class="x">&lt;/label&gt;</span>
+<a id="__codelineno-23-31" name="__codelineno-23-31" href="#__codelineno-23-31"></a><span class="x">                            </span><span class="cp">{{</span> <span class="nv">ingredient.quick_edit_form.unit</span> <span class="cp">}}</span>
+<a id="__codelineno-23-32" name="__codelineno-23-32" href="#__codelineno-23-32"></a><span class="x">                        &lt;/div&gt;</span>
+<a id="__codelineno-23-33" name="__codelineno-23-33" href="#__codelineno-23-33"></a><span class="x">                    &lt;/div&gt;</span>
+<a id="__codelineno-23-34" name="__codelineno-23-34" href="#__codelineno-23-34"></a><span class="x">                    &lt;div class="mb-2"&gt;</span>
+<a id="__codelineno-23-35" name="__codelineno-23-35" href="#__codelineno-23-35"></a><span class="x">                        &lt;label for="</span><span class="cp">{{</span> <span class="nv">ingredient.quick_edit_form.name.id_for_label</span> <span class="cp">}}</span><span class="x">"</span>
+<a id="__codelineno-23-36" name="__codelineno-23-36" href="#__codelineno-23-36"></a><span class="x">                               class="form-label"&gt;</span><span class="cp">{%</span> <span class="k">trans</span> <span class="s2">"Name"</span> <span class="cp">%}</span><span class="x">&lt;/label&gt;</span>
+<a id="__codelineno-23-37" name="__codelineno-23-37" href="#__codelineno-23-37"></a><span class="x">                        </span><span class="cp">{{</span> <span class="nv">ingredient.quick_edit_form.name</span> <span class="cp">}}</span>
+<a id="__codelineno-23-38" name="__codelineno-23-38" href="#__codelineno-23-38"></a><span class="x">                    &lt;/div&gt;</span>
+<a id="__codelineno-23-39" name="__codelineno-23-39" href="#__codelineno-23-39"></a><span class="x">                    &lt;div class="mb-2"&gt;</span>
+<a id="__codelineno-23-40" name="__codelineno-23-40" href="#__codelineno-23-40"></a><span class="x">                        &lt;label for="</span><span class="cp">{{</span> <span class="nv">ingredient.quick_edit_form.note.id_for_label</span> <span class="cp">}}</span><span class="x">"</span>
+<a id="__codelineno-23-41" name="__codelineno-23-41" href="#__codelineno-23-41"></a><span class="x">                               class="form-label"&gt;</span><span class="cp">{%</span> <span class="k">trans</span> <span class="s2">"Note"</span> <span class="cp">%}</span><span class="x">&lt;/label&gt;</span>
+<a id="__codelineno-23-42" name="__codelineno-23-42" href="#__codelineno-23-42"></a><span class="x">                        </span><span class="cp">{{</span> <span class="nv">ingredient.quick_edit_form.note</span> <span class="cp">}}</span>
+<a id="__codelineno-23-43" name="__codelineno-23-43" href="#__codelineno-23-43"></a><span class="x">                    &lt;/div&gt;</span>
+<a id="__codelineno-23-44" name="__codelineno-23-44" href="#__codelineno-23-44"></a><span class="x">                &lt;/div&gt;</span>
+<a id="__codelineno-23-45" name="__codelineno-23-45" href="#__codelineno-23-45"></a><span class="x">                &lt;div class="modal-footer"&gt;</span>
+<a id="__codelineno-23-46" name="__codelineno-23-46" href="#__codelineno-23-46"></a><span class="x">                    &lt;button type="button" class="btn btn-secondary" data-bs-dismiss="modal"&gt;</span><span class="cp">{%</span> <span class="k">trans</span> <span class="s2">"Cancel"</span> <span class="cp">%}</span><span class="x">&lt;/button&gt;</span>
+<a id="__codelineno-23-47" name="__codelineno-23-47" href="#__codelineno-23-47"></a><span class="x">                    &lt;button type="submit" class="btn btn-primary"&gt;</span><span class="cp">{%</span> <span class="k">trans</span> <span class="s2">"Save"</span> <span class="cp">%}</span><span class="x">&lt;/button&gt;</span>
+<a id="__codelineno-23-48" name="__codelineno-23-48" href="#__codelineno-23-48"></a><span class="x">                &lt;/div&gt;</span>
+<a id="__codelineno-23-49" name="__codelineno-23-49" href="#__codelineno-23-49"></a><span class="x">            &lt;/form&gt;</span>
+<a id="__codelineno-23-50" name="__codelineno-23-50" href="#__codelineno-23-50"></a><span class="x">        &lt;/div&gt;</span>
+<a id="__codelineno-23-51" name="__codelineno-23-51" href="#__codelineno-23-51"></a><span class="x">    &lt;/div&gt;</span>
+<a id="__codelineno-23-52" name="__codelineno-23-52" href="#__codelineno-23-52"></a><span class="x">&lt;/div&gt;</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 4: Wire it into <code>recipe_detail.html</code></strong></li>
+</ul>
+<p>In <code>src/plated/templates/recipes/recipe_detail.html</code>, replace the ingredient <code>&lt;li&gt;</code> block (the
+one starting <code>&lt;li class="ingredient-item"</code> inside the <code>ingredient-list</code> <code>&lt;ul&gt;</code>) with:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="x">                                &lt;li class="ingredient-item"</span>
+<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="x">                                    id="ingredient-</span><span class="cp">{{</span> <span class="nv">ingredient.id</span> <span class="cp">}}</span><span class="x">"</span>
+<a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="x">                                    data-amount="</span><span class="cp">{{</span> <span class="nv">ingredient.amount</span> <span class="cp">}}</span><span class="x">"</span>
+<a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="x">                                    data-unit="</span><span class="cp">{{</span> <span class="nv">ingredient.unit</span> <span class="cp">}}</span><span class="x">"</span>
+<a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a><span class="x">                                    data-name="</span><span class="cp">{{</span> <span class="nv">ingredient.name</span> <span class="cp">}}</span><span class="x">"&gt;</span>
+<a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a><span class="x">                                    &lt;span class="ingredient-amount"&gt;</span>
+<a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a><span class="x">                                        </span><span class="cp">{%</span> <span class="k">if</span> <span class="nv">ingredient.amount</span> <span class="cp">%}{{</span> <span class="nv">ingredient.amount</span><span class="o">|</span><span class="nf">format_amount</span> <span class="cp">}}{%</span> <span class="k">endif</span> <span class="cp">%}</span>
+<a id="__codelineno-24-8" name="__codelineno-24-8" href="#__codelineno-24-8"></a><span class="x">                                        </span><span class="cp">{%</span> <span class="k">if</span> <span class="nv">ingredient.unit</span> <span class="cp">%}</span><span class="x"> </span><span class="cp">{{</span> <span class="nv">ingredient.unit</span> <span class="cp">}}{%</span> <span class="k">endif</span> <span class="cp">%}</span>
+<a id="__codelineno-24-9" name="__codelineno-24-9" href="#__codelineno-24-9"></a><span class="x">                                    &lt;/span&gt;</span>
+<a id="__codelineno-24-10" name="__codelineno-24-10" href="#__codelineno-24-10"></a><span class="x">                                    &lt;div class="ingredient-content"&gt;</span>
+<a id="__codelineno-24-11" name="__codelineno-24-11" href="#__codelineno-24-11"></a><span class="x">                                        &lt;span class="ingredient-name"&gt;</span><span class="cp">{{</span> <span class="nv">ingredient.name</span> <span class="cp">}}</span><span class="x">&lt;/span&gt;</span>
+<a id="__codelineno-24-12" name="__codelineno-24-12" href="#__codelineno-24-12"></a><span class="x">                                        </span><span class="cp">{%</span> <span class="k">if</span> <span class="nv">ingredient.note</span> <span class="cp">%}</span><span class="x">&lt;span class="ingredient-note"&gt;</span><span class="cp">{{</span> <span class="nv">ingredient.note</span> <span class="cp">}}</span><span class="x">&lt;/span&gt;</span><span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span>
+<a id="__codelineno-24-13" name="__codelineno-24-13" href="#__codelineno-24-13"></a><span class="x">                                    &lt;/div&gt;</span>
+<a id="__codelineno-24-14" name="__codelineno-24-14" href="#__codelineno-24-14"></a><span class="x">                                    &lt;button type="button"</span>
+<a id="__codelineno-24-15" name="__codelineno-24-15" href="#__codelineno-24-15"></a><span class="x">                                            class="btn btn-sm btn-link quick-edit-btn"</span>
+<a id="__codelineno-24-16" name="__codelineno-24-16" href="#__codelineno-24-16"></a><span class="x">                                            data-bs-toggle="modal"</span>
+<a id="__codelineno-24-17" name="__codelineno-24-17" href="#__codelineno-24-17"></a><span class="x">                                            data-bs-target="#edit-ingredient-</span><span class="cp">{{</span> <span class="nv">ingredient.id</span> <span class="cp">}}</span><span class="x">"</span>
+<a id="__codelineno-24-18" name="__codelineno-24-18" href="#__codelineno-24-18"></a><span class="x">                                            aria-label='</span><span class="cp">{%</span> <span class="k">trans</span> <span class="s2">"Edit ingredient"</span> <span class="cp">%}</span><span class="x">'&gt;</span>
+<a id="__codelineno-24-19" name="__codelineno-24-19" href="#__codelineno-24-19"></a><span class="x">                                        &lt;i class="bi bi-pencil"&gt;&lt;/i&gt;</span>
+<a id="__codelineno-24-20" name="__codelineno-24-20" href="#__codelineno-24-20"></a><span class="x">                                    &lt;/button&gt;</span>
+<a id="__codelineno-24-21" name="__codelineno-24-21" href="#__codelineno-24-21"></a><span class="x">                                &lt;/li&gt;</span>
+</code></pre></div>
+<p>Then, directly after the closing <code>&lt;/ul&gt;</code> of the ingredient list (and still inside the
+<code>{% if recipe.ingredients.all %} ... {% else %} ... {% endif %}</code> block's <code>if</code> branch, right after
+<code>&lt;/ul&gt;</code> and before the matching <code>{% else %}</code>), add:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="x">                        </span><span class="cp">{%</span> <span class="k">for</span> <span class="nv">ingredient</span> <span class="k">in</span> <span class="nv">recipe.ingredients.all</span> <span class="cp">%}</span>
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="x">                            </span><span class="cp">{%</span> <span class="k">include</span> <span class="s2">"recipes/_ingredient_quick_edit_modal.html"</span> <span class="k">with</span> <span class="nv">ingredient</span><span class="o">=</span><span class="nv">ingredient</span> <span class="nv">recipe</span><span class="o">=</span><span class="nv">recipe</span> <span class="cp">%}</span>
+<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="x">                        </span><span class="cp">{%</span> <span class="k">endfor</span> <span class="cp">%}</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 5: Run the test to verify it passes</strong></li>
+</ul>
+<p>Run: <code>uv run python src/plated/manage.py test recipes.tests.test_views_recipes.RecipeDetailViewTest.test_detail_view_renders_ingredient_quick_edit_modal -v 2</code>
+Expected: <code>OK</code> (1 test)</p>
+<ul>
+<li>[ ] <strong>Step 6: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>git<span class="w"> </span>add<span class="w"> </span>src/plated/templates/recipes/_ingredient_quick_edit_modal.html<span class="w"> </span>src/plated/templates/recipes/recipe_detail.html<span class="w"> </span>src/plated/recipes/tests/test_views_recipes.py
+<a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"feat(recipes): add ingredient quick-edit button and modal"</span>
+</code></pre></div>
+<hr />
+<h3 id="task-7-step-quick-edit-modal-partial-template-wiring">Task 7: Step quick-edit modal partial + template wiring<a class="headerlink" href="#task-7-step-quick-edit-modal-partial-template-wiring" title="Permanent link">&para;</a></h3>
+<p><strong>Files:</strong>
+- Create: <code>src/plated/templates/recipes/_step_quick_edit_modal.html</code>
+- Modify: <code>src/plated/templates/recipes/recipe_detail.html</code>
+- Test: <code>src/plated/recipes/tests/test_views_recipes.py</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Write the failing test</strong></li>
+</ul>
+<p>Append to <code>RecipeDetailViewTest</code> in <code>src/plated/recipes/tests/test_views_recipes.py</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">test_detail_view_renders_step_quick_edit_modal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="w">        </span><span class="sd">"""Each step gets an edit button and a modal with its current content."""</span>
+<a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>        <span class="n">step</span> <span class="o">=</span> <span class="n">Step</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">recipe</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">recipe</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="s2">"Mix everything"</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a>        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="s2">"recipe_detail"</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">recipe</span><span class="o">.</span><span class="n">pk</span><span class="p">]))</span>
+<a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertContains</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'data-bs-target="#edit-step-</span><span class="si">{</span><span class="n">step</span><span class="o">.</span><span class="n">pk</span><span class="si">}</span><span class="s1">"'</span><span class="p">)</span>
+<a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertContains</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'id="edit-step-</span><span class="si">{</span><span class="n">step</span><span class="o">.</span><span class="n">pk</span><span class="si">}</span><span class="s1">"'</span><span class="p">)</span>
+<a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">assertContains</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="s2">"Mix everything"</span><span class="p">)</span>
+</code></pre></div>
+<p>Note: <code>Step</code> must already be imported at the top of this test file — check the existing
+<code>from ..models import Ingredient, Recipe, Step</code> line; it already covers this.</p>
+<ul>
+<li>[ ] <strong>Step 2: Run the test to verify it fails</strong></li>
+</ul>
+<p>Run: <code>uv run python src/plated/manage.py test recipes.tests.test_views_recipes.RecipeDetailViewTest.test_detail_view_renders_step_quick_edit_modal -v 2</code>
+Expected: FAIL — assertion error, the markup doesn't exist yet</p>
+<ul>
+<li>[ ] <strong>Step 3: Create the modal partial</strong></li>
+</ul>
+<p>Create <code>src/plated/templates/recipes/_step_quick_edit_modal.html</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="cp">{%</span> <span class="k">load</span> <span class="nv">i18n</span> <span class="cp">%}</span>
+<a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="x">&lt;div class="modal fade"</span>
+<a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="x">     id="edit-step-</span><span class="cp">{{</span> <span class="nv">step.id</span> <span class="cp">}}</span><span class="x">"</span>
+<a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="x">     tabindex="-1"</span>
+<a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a><span class="x">     aria-labelledby="edit-step-</span><span class="cp">{{</span> <span class="nv">step.id</span> <span class="cp">}}</span><span class="x">-label"</span>
+<a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a><span class="x">     aria-hidden="true"&gt;</span>
+<a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a><span class="x">    &lt;div class="modal-dialog modal-dialog-centered"&gt;</span>
+<a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a><span class="x">        &lt;div class="modal-content"&gt;</span>
+<a id="__codelineno-28-9" name="__codelineno-28-9" href="#__codelineno-28-9"></a><span class="x">            &lt;form method="post"</span>
+<a id="__codelineno-28-10" name="__codelineno-28-10" href="#__codelineno-28-10"></a><span class="x">                  action="</span><span class="cp">{%</span> <span class="k">url</span> <span class="s1">'step_quick_edit'</span> <span class="nv">recipe.pk</span> <span class="nv">step.pk</span> <span class="cp">%}</span><span class="x">"&gt;</span>
+<a id="__codelineno-28-11" name="__codelineno-28-11" href="#__codelineno-28-11"></a><span class="x">                </span><span class="cp">{%</span> <span class="k">csrf_token</span> <span class="cp">%}</span>
+<a id="__codelineno-28-12" name="__codelineno-28-12" href="#__codelineno-28-12"></a><span class="x">                &lt;div class="modal-header"&gt;</span>
+<a id="__codelineno-28-13" name="__codelineno-28-13" href="#__codelineno-28-13"></a><span class="x">                    &lt;h5 class="modal-title" id="edit-step-</span><span class="cp">{{</span> <span class="nv">step.id</span> <span class="cp">}}</span><span class="x">-label"&gt;</span>
+<a id="__codelineno-28-14" name="__codelineno-28-14" href="#__codelineno-28-14"></a><span class="x">                        &lt;i class="bi bi-pencil"&gt;&lt;/i&gt; </span><span class="cp">{%</span> <span class="k">trans</span> <span class="s2">"Edit Step"</span> <span class="cp">%}</span>
+<a id="__codelineno-28-15" name="__codelineno-28-15" href="#__codelineno-28-15"></a><span class="x">                    &lt;/h5&gt;</span>
+<a id="__codelineno-28-16" name="__codelineno-28-16" href="#__codelineno-28-16"></a><span class="x">                    &lt;button type="button"</span>
+<a id="__codelineno-28-17" name="__codelineno-28-17" href="#__codelineno-28-17"></a><span class="x">                            class="btn-close"</span>
+<a id="__codelineno-28-18" name="__codelineno-28-18" href="#__codelineno-28-18"></a><span class="x">                            data-bs-dismiss="modal"</span>
+<a id="__codelineno-28-19" name="__codelineno-28-19" href="#__codelineno-28-19"></a><span class="x">                            aria-label='</span><span class="cp">{%</span> <span class="k">trans</span> <span class="s2">"Close"</span> <span class="cp">%}</span><span class="x">'&gt;&lt;/button&gt;</span>
+<a id="__codelineno-28-20" name="__codelineno-28-20" href="#__codelineno-28-20"></a><span class="x">                &lt;/div&gt;</span>
+<a id="__codelineno-28-21" name="__codelineno-28-21" href="#__codelineno-28-21"></a><span class="x">                &lt;div class="modal-body"&gt;</span>
+<a id="__codelineno-28-22" name="__codelineno-28-22" href="#__codelineno-28-22"></a><span class="x">                    &lt;div class="mb-2"&gt;</span>
+<a id="__codelineno-28-23" name="__codelineno-28-23" href="#__codelineno-28-23"></a><span class="x">                        &lt;label for="</span><span class="cp">{{</span> <span class="nv">step.quick_edit_form.content.id_for_label</span> <span class="cp">}}</span><span class="x">"</span>
+<a id="__codelineno-28-24" name="__codelineno-28-24" href="#__codelineno-28-24"></a><span class="x">                               class="form-label"&gt;</span><span class="cp">{%</span> <span class="k">trans</span> <span class="s2">"Instructions"</span> <span class="cp">%}</span><span class="x">&lt;/label&gt;</span>
+<a id="__codelineno-28-25" name="__codelineno-28-25" href="#__codelineno-28-25"></a><span class="x">                        </span><span class="cp">{{</span> <span class="nv">step.quick_edit_form.content</span> <span class="cp">}}</span>
+<a id="__codelineno-28-26" name="__codelineno-28-26" href="#__codelineno-28-26"></a><span class="x">                    &lt;/div&gt;</span>
+<a id="__codelineno-28-27" name="__codelineno-28-27" href="#__codelineno-28-27"></a><span class="x">                    &lt;div class="mb-2"&gt;</span>
+<a id="__codelineno-28-28" name="__codelineno-28-28" href="#__codelineno-28-28"></a><span class="x">                        &lt;label for="</span><span class="cp">{{</span> <span class="nv">step.quick_edit_form.timer.id_for_label</span> <span class="cp">}}</span><span class="x">"</span>
+<a id="__codelineno-28-29" name="__codelineno-28-29" href="#__codelineno-28-29"></a><span class="x">                               class="form-label"&gt;</span><span class="cp">{%</span> <span class="k">trans</span> <span class="s2">"Timer (minutes)"</span> <span class="cp">%}</span><span class="x">&lt;/label&gt;</span>
+<a id="__codelineno-28-30" name="__codelineno-28-30" href="#__codelineno-28-30"></a><span class="x">                        </span><span class="cp">{{</span> <span class="nv">step.quick_edit_form.timer</span> <span class="cp">}}</span>
+<a id="__codelineno-28-31" name="__codelineno-28-31" href="#__codelineno-28-31"></a><span class="x">                    &lt;/div&gt;</span>
+<a id="__codelineno-28-32" name="__codelineno-28-32" href="#__codelineno-28-32"></a><span class="x">                &lt;/div&gt;</span>
+<a id="__codelineno-28-33" name="__codelineno-28-33" href="#__codelineno-28-33"></a><span class="x">                &lt;div class="modal-footer"&gt;</span>
+<a id="__codelineno-28-34" name="__codelineno-28-34" href="#__codelineno-28-34"></a><span class="x">                    &lt;button type="button" class="btn btn-secondary" data-bs-dismiss="modal"&gt;</span><span class="cp">{%</span> <span class="k">trans</span> <span class="s2">"Cancel"</span> <span class="cp">%}</span><span class="x">&lt;/button&gt;</span>
+<a id="__codelineno-28-35" name="__codelineno-28-35" href="#__codelineno-28-35"></a><span class="x">                    &lt;button type="submit" class="btn btn-primary"&gt;</span><span class="cp">{%</span> <span class="k">trans</span> <span class="s2">"Save"</span> <span class="cp">%}</span><span class="x">&lt;/button&gt;</span>
+<a id="__codelineno-28-36" name="__codelineno-28-36" href="#__codelineno-28-36"></a><span class="x">                &lt;/div&gt;</span>
+<a id="__codelineno-28-37" name="__codelineno-28-37" href="#__codelineno-28-37"></a><span class="x">            &lt;/form&gt;</span>
+<a id="__codelineno-28-38" name="__codelineno-28-38" href="#__codelineno-28-38"></a><span class="x">        &lt;/div&gt;</span>
+<a id="__codelineno-28-39" name="__codelineno-28-39" href="#__codelineno-28-39"></a><span class="x">    &lt;/div&gt;</span>
+<a id="__codelineno-28-40" name="__codelineno-28-40" href="#__codelineno-28-40"></a><span class="x">&lt;/div&gt;</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 4: Wire it into <code>recipe_detail.html</code></strong></li>
+</ul>
+<p>In <code>src/plated/templates/recipes/recipe_detail.html</code>, replace the step rendering line:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="x">                                </span><span class="cp">{%</span> <span class="k">for</span> <span class="nv">step</span> <span class="k">in</span> <span class="nv">recipe.steps.all</span> <span class="cp">%}</span><span class="x">&lt;li class="instruction-item"&gt;</span><span class="cp">{{</span> <span class="nv">step.content</span><span class="o">|</span><span class="nf">linebreaks</span> <span class="cp">}}</span><span class="x">&lt;/li&gt;</span><span class="cp">{%</span> <span class="k">endfor</span> <span class="cp">%}</span>
+</code></pre></div>
+<p>with:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="x">                                </span><span class="cp">{%</span> <span class="k">for</span> <span class="nv">step</span> <span class="k">in</span> <span class="nv">recipe.steps.all</span> <span class="cp">%}</span>
+<a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a><span class="x">                                    &lt;li class="instruction-item" id="step-</span><span class="cp">{{</span> <span class="nv">step.id</span> <span class="cp">}}</span><span class="x">"&gt;</span>
+<a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a><span class="x">                                        &lt;div class="instruction-content"&gt;</span><span class="cp">{{</span> <span class="nv">step.content</span><span class="o">|</span><span class="nf">linebreaks</span> <span class="cp">}}</span><span class="x">&lt;/div&gt;</span>
+<a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a><span class="x">                                        &lt;button type="button"</span>
+<a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a><span class="x">                                                class="btn btn-sm btn-link quick-edit-btn"</span>
+<a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a><span class="x">                                                data-bs-toggle="modal"</span>
+<a id="__codelineno-30-7" name="__codelineno-30-7" href="#__codelineno-30-7"></a><span class="x">                                                data-bs-target="#edit-step-</span><span class="cp">{{</span> <span class="nv">step.id</span> <span class="cp">}}</span><span class="x">"</span>
+<a id="__codelineno-30-8" name="__codelineno-30-8" href="#__codelineno-30-8"></a><span class="x">                                                aria-label='</span><span class="cp">{%</span> <span class="k">trans</span> <span class="s2">"Edit step"</span> <span class="cp">%}</span><span class="x">'&gt;</span>
+<a id="__codelineno-30-9" name="__codelineno-30-9" href="#__codelineno-30-9"></a><span class="x">                                            &lt;i class="bi bi-pencil"&gt;&lt;/i&gt;</span>
+<a id="__codelineno-30-10" name="__codelineno-30-10" href="#__codelineno-30-10"></a><span class="x">                                        &lt;/button&gt;</span>
+<a id="__codelineno-30-11" name="__codelineno-30-11" href="#__codelineno-30-11"></a><span class="x">                                    &lt;/li&gt;</span>
+<a id="__codelineno-30-12" name="__codelineno-30-12" href="#__codelineno-30-12"></a><span class="x">                                </span><span class="cp">{%</span> <span class="k">endfor</span> <span class="cp">%}</span>
+</code></pre></div>
+<p>Then, directly after the closing <code>&lt;/ol&gt;</code> of the instruction list (still inside the <code>if</code> branch,
+before the matching <code>{% else %}</code>), add:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="x">                        </span><span class="cp">{%</span> <span class="k">for</span> <span class="nv">step</span> <span class="k">in</span> <span class="nv">recipe.steps.all</span> <span class="cp">%}</span>
+<a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a><span class="x">                            </span><span class="cp">{%</span> <span class="k">include</span> <span class="s2">"recipes/_step_quick_edit_modal.html"</span> <span class="k">with</span> <span class="nv">step</span><span class="o">=</span><span class="nv">step</span> <span class="nv">recipe</span><span class="o">=</span><span class="nv">recipe</span> <span class="cp">%}</span>
+<a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a><span class="x">                        </span><span class="cp">{%</span> <span class="k">endfor</span> <span class="cp">%}</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 5: Run the test to verify it passes</strong></li>
+</ul>
+<p>Run: <code>uv run python src/plated/manage.py test recipes.tests.test_views_recipes.RecipeDetailViewTest.test_detail_view_renders_step_quick_edit_modal -v 2</code>
+Expected: <code>OK</code> (1 test)</p>
+<ul>
+<li>[ ] <strong>Step 6: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>git<span class="w"> </span>add<span class="w"> </span>src/plated/templates/recipes/_step_quick_edit_modal.html<span class="w"> </span>src/plated/templates/recipes/recipe_detail.html<span class="w"> </span>src/plated/recipes/tests/test_views_recipes.py
+<a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"feat(recipes): add step quick-edit button and modal"</span>
+</code></pre></div>
+<hr />
+<h3 id="task-8-layout-css-for-the-edit-button">Task 8: Layout CSS for the edit button<a class="headerlink" href="#task-8-layout-css-for-the-edit-button" title="Permanent link">&para;</a></h3>
+<p><strong>Files:</strong>
+- Modify: <code>src/plated/static/styles.css</code></p>
+<p>The ingredient row (<code>.ingredient-item</code>) is already <code>display: flex</code> with its middle child
+(<code>.ingredient-content</code>) set to <code>flex: 1</code>, so the new button naturally lands flush right after it —
+no new ingredient-specific CSS is needed. The instruction row (<code>.instruction-item</code>) is also
+<code>display: flex</code>, but its text was previously a single un-wrapped child; Task 7 wrapped it in
+<code>.instruction-content</code>, which needs <code>flex: 1</code> so it fills the available space and pushes the
+button to the right edge, matching the ingredient row's layout.</p>
+<ul>
+<li>[ ] <strong>Step 1: Add the CSS rules</strong></li>
+</ul>
+<p>In <code>src/plated/static/styles.css</code>, find the <code>.instruction-item</code> rule block (search for
+<code>.instruction-item {</code>) and add a new rule directly after its closing <code>}</code> (and after the adjacent
+<code>.instruction-item:last-child</code> and <code>.instruction-item::before</code> rules, before the
+<code>.instruction-list-wrapper</code> rule):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="p">.</span><span class="nc">instruction-content</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a><span class="w">    </span><span class="k">flex</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a><span class="p">}</span>
+<a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a>
+<a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a><span class="p">.</span><span class="nc">quick-edit-btn</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-33-6" name="__codelineno-33-6" href="#__codelineno-33-6"></a><span class="w">    </span><span class="k">flex-shrink</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-33-7" name="__codelineno-33-7" href="#__codelineno-33-7"></a><span class="w">    </span><span class="k">align-self</span><span class="p">:</span><span class="w"> </span><span class="kc">flex-start</span><span class="p">;</span>
+<a id="__codelineno-33-8" name="__codelineno-33-8" href="#__codelineno-33-8"></a><span class="w">    </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="nf">var</span><span class="p">(</span><span class="nv">--text-tertiary</span><span class="p">);</span>
+<a id="__codelineno-33-9" name="__codelineno-33-9" href="#__codelineno-33-9"></a><span class="p">}</span>
+<a id="__codelineno-33-10" name="__codelineno-33-10" href="#__codelineno-33-10"></a>
+<a id="__codelineno-33-11" name="__codelineno-33-11" href="#__codelineno-33-11"></a><span class="p">.</span><span class="nc">quick-edit-btn</span><span class="p">:</span><span class="nd">hover</span><span class="o">,</span>
+<a id="__codelineno-33-12" name="__codelineno-33-12" href="#__codelineno-33-12"></a><span class="p">.</span><span class="nc">quick-edit-btn</span><span class="p">:</span><span class="nd">focus</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-33-13" name="__codelineno-33-13" href="#__codelineno-33-13"></a><span class="w">    </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="nf">var</span><span class="p">(</span><span class="nv">--primary</span><span class="p">);</span>
+<a id="__codelineno-33-14" name="__codelineno-33-14" href="#__codelineno-33-14"></a><span class="p">}</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 2: Reformat with the project's CSS formatter</strong></li>
+</ul>
+<p>Run: <code>uv run deno fmt src/plated/static/styles.css</code>
+Expected: reformats the file to the project's existing deno-fmt style (indentation/quoting), no
+content change beyond that.</p>
+<ul>
+<li>[ ] <strong>Step 3: Visually verify</strong></li>
+</ul>
+<p>Run the dev server (<code>uv run python src/plated/manage.py runserver</code>) and open a recipe detail page
+in a browser at a mobile width (~375px). Confirm:
+- Each ingredient row shows a pencil icon aligned to the right, vertically aligned with the
+  ingredient's first line.
+- Each step row shows the same, aligned with the first line of that step's text.
+- Tapping a pencil icon opens the correct modal pre-filled with that item's current values.
+- Saving a change updates the value shown on the page and scrolls back to that row.
+- Submitting a blank ingredient name shows an error message and leaves the value unchanged.</p>
+<ul>
+<li>[ ] <strong>Step 4: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>git<span class="w"> </span>add<span class="w"> </span>src/plated/static/styles.css
+<a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"style(recipes): align quick-edit button in ingredient/step rows"</span>
+</code></pre></div>
+<hr />
+<h3 id="task-9-document-the-feature">Task 9: Document the feature<a class="headerlink" href="#task-9-document-the-feature" title="Permanent link">&para;</a></h3>
+<p><strong>Files:</strong>
+- Modify: <code>docs/features.md</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Add the documentation section</strong></li>
+</ul>
+<p>In <code>docs/features.md</code>, directly after the existing <code>### Editing Recipes</code> section (which reads
+<code>Click the **Edit** button on any recipe card or detail page.</code>), add:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a><span class="gu">### Quick-Editing Ingredients and Steps</span>
+<a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a>
+<a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a>For small fixes — a typo, a wrong amount, a quick note — tap the pencil icon next to any
+<a id="__codelineno-35-4" name="__codelineno-35-4" href="#__codelineno-35-4"></a>ingredient or step on the recipe detail page. This opens a small form for just that item, without
+<a id="__codelineno-35-5" name="__codelineno-35-5" href="#__codelineno-35-5"></a>leaving the page or opening the full edit form. Use the full <span class="gs">**Edit**</span> button instead when you
+<a id="__codelineno-35-6" name="__codelineno-35-6" href="#__codelineno-35-6"></a>need to add, delete, or reorder ingredients/steps, or make larger changes; quick-edit only
+<a id="__codelineno-35-7" name="__codelineno-35-7" href="#__codelineno-35-7"></a>changes the values of items that already exist.
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 2: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a>git<span class="w"> </span>add<span class="w"> </span>docs/features.md
+<a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"docs: document ingredient/step quick-edit"</span>
+</code></pre></div>
+<hr />
+<h3 id="task-10-full-verification-pass">Task 10: Full verification pass<a class="headerlink" href="#task-10-full-verification-pass" title="Permanent link">&para;</a></h3>
+<p><strong>Files:</strong> none (verification only)</p>
+<ul>
+<li>[ ] <strong>Step 1: Run the full recipes test suite</strong></li>
+</ul>
+<p>Run: <code>uv run python src/plated/manage.py test recipes</code>
+Expected: <code>OK</code>, test count higher than the pre-feature baseline (145 + the ~17 tests added across
+Tasks 1-7)</p>
+<ul>
+<li>[ ] <strong>Step 2: Run the project's full check</strong></li>
+</ul>
+<p>Run: <code>just check</code>
+Expected: ruff check/format, deno lint/fmt, and mypy all pass with no errors</p>
+<ul>
+<li>[ ] <strong>Step 3: Run the full CI pipeline</strong></li>
+</ul>
+<p>Run: <code>just ci</code>
+Expected: <code>OK</code> — this also runs <code>docs-build</code> and <code>build</code>, confirming the new <code>docs/features.md</code>
+section doesn't break the mkdocs build</p>
+<p>If any step fails, fix the issue and re-run from Step 1 before considering the feature done. No
+new commit is needed for this task unless a fix was required, in which case commit that fix with
+a message describing what was wrong.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/AdrianVollmer/Plated" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
