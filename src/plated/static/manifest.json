@@ -4,8 +4,8 @@
   "description": "Your personal recipe manager for organizing, creating, and sharing recipes",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#f36bb1",
+  "background_color": "#fffefb",
+  "theme_color": "#c45c3a",
   "orientation": "portrait-primary",
   "icons": [
     {

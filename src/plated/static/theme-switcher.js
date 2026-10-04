@@ -6,6 +6,8 @@
     const THEME_KEY = 'plated-theme';
     const DEFAULT_THEME = 'auto';
     const THEMES = ['light', 'dark', 'auto'];
+    // Matches the navbar gradient's start color (--primary) for each theme in styles.css
+    const THEME_COLORS = { light: '#c45c3a', dark: '#d97a57' };
 
     // Detect system theme preference
     function getSystemTheme() {
@@ -40,6 +42,12 @@
         // Apply the resolved theme to the document
         const resolvedTheme = resolveTheme(theme);
         document.documentElement.setAttribute('data-theme', resolvedTheme);
+
+        // Keep the browser/PWA chrome (status bar, nav bar) in sync with the resolved theme
+        const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+        if (metaThemeColor) {
+            metaThemeColor.setAttribute('content', THEME_COLORS[resolvedTheme]);
+        }
 
         // Update active state on theme buttons
         updateThemeButtons(theme);
