@@ -94,13 +94,25 @@ class RecipeDetailViewTest(TestCase):
         self.assertEqual(step.quick_edit_form.initial["content"], step.content)
 
     def test_detail_view_renders_ingredient_quick_edit_modal(self) -> None:
-        """Each ingredient gets an edit button and a modal with its current values."""
+        """Every ingredient gets an edit button and a modal with all its current values."""
+        vanilla = Ingredient.objects.create(
+            recipe=self.recipe,
+            name="vanilla",
+            amount="1",
+            unit="tsp",
+            note="pure extract",
+            order=2,
+        )
         response = self.client.get(reverse("recipe_detail", args=[self.recipe.pk]))
-        ingredient = self.recipe.ingredients.first()
-        assert ingredient is not None  # Type narrowing for mypy
-        self.assertContains(response, f'data-bs-target="#edit-ingredient-{ingredient.pk}"')
-        self.assertContains(response, f'id="edit-ingredient-{ingredient.pk}"')
-        self.assertContains(response, f'value="{ingredient.name}"')
+
+        for ingredient in self.recipe.ingredients.all():
+            self.assertContains(response, f'data-bs-target="#edit-ingredient-{ingredient.pk}"')
+            self.assertContains(response, f'id="edit-ingredient-{ingredient.pk}"')
+
+        self.assertContains(response, f'value="{vanilla.amount}"')
+        self.assertContains(response, f'value="{vanilla.unit}"')
+        self.assertContains(response, f'value="{vanilla.name}"')
+        self.assertContains(response, f'value="{vanilla.note}"')
 
 
 class RecipeCreateViewTest(TestCase):
