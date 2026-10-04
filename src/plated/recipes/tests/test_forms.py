@@ -4,8 +4,14 @@ from __future__ import annotations
 
 from django.test import TestCase
 
-from ..forms import AIRecipeExtractionForm, AISettingsForm, RecipeForm, UserSettingsForm
-from ..models import Recipe
+from ..forms import (
+    AIRecipeExtractionForm,
+    AISettingsForm,
+    IngredientQuickEditForm,
+    RecipeForm,
+    UserSettingsForm,
+)
+from ..models import Ingredient, Recipe
 
 
 class RecipeFormTest(TestCase):
@@ -297,3 +303,42 @@ class StepFormsetTest(TestCase):
         formset.save()
         step = Step.objects.get(recipe=self.recipe)
         self.assertIsNone(step.timer)
+
+
+class IngredientQuickEditFormTest(TestCase):
+    """Test cases for IngredientQuickEditForm validation."""
+
+    def setUp(self) -> None:
+        """Create a recipe with one ingredient."""
+        self.recipe = Recipe.objects.create(title="Soup", servings=4)
+        self.ingredient = Ingredient.objects.create(recipe=self.recipe, name="salt", amount="1", unit="tsp", order=0)
+
+    def test_valid_data_updates_ingredient(self) -> None:
+        """Valid data saves onto the existing ingredient instance."""
+        form = IngredientQuickEditForm(
+            data={"amount": "2", "unit": "tbsp", "name": "salt", "note": "to taste"},
+            instance=self.ingredient,
+        )
+        self.assertTrue(form.is_valid())
+        ingredient = form.save()
+        self.assertEqual(ingredient.pk, self.ingredient.pk)
+        self.assertEqual(ingredient.amount, "2")
+        self.assertEqual(ingredient.unit, "tbsp")
+        self.assertEqual(ingredient.note, "to taste")
+
+    def test_blank_name_is_invalid(self) -> None:
+        """Name is required, so a blank value fails validation."""
+        form = IngredientQuickEditForm(
+            data={"amount": "2", "unit": "tbsp", "name": "", "note": ""},
+            instance=self.ingredient,
+        )
+        self.assertFalse(form.is_valid())
+        self.assertIn("name", form.errors)
+
+    def test_blank_amount_unit_note_are_valid(self) -> None:
+        """Amount, unit, and note are optional."""
+        form = IngredientQuickEditForm(
+            data={"amount": "", "unit": "", "name": "salt", "note": ""},
+            instance=self.ingredient,
+        )
+        self.assertTrue(form.is_valid())
