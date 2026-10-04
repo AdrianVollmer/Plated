@@ -161,6 +161,39 @@ class RecipeCreateViewTest(TestCase):
         self.assertEqual(recipe.ingredients.count(), 2)
         self.assertEqual(recipe.steps.count(), 2)
 
+    def test_recipe_create_with_empty_image_shows_readable_error(self) -> None:
+        """Uploading a zero-byte image should show a clear message, not a raw error dump."""
+        from django.core.files.uploadedfile import SimpleUploadedFile
+
+        response = self.client.post(
+            reverse("recipe_create"),
+            {
+                "title": "Recipe With Bad Image",
+                "servings": 2,
+                "description": "",
+                "ingredients-TOTAL_FORMS": "1",
+                "ingredients-INITIAL_FORMS": "0",
+                "ingredients-0-name": "flour",
+                "ingredients-0-amount": "1",
+                "ingredients-0-unit": "cup",
+                "ingredients-0-order": "0",
+                "steps-TOTAL_FORMS": "1",
+                "steps-INITIAL_FORMS": "0",
+                "steps-0-content": "Mix",
+                "steps-0-order": "0",
+                "images-TOTAL_FORMS": "1",
+                "images-INITIAL_FORMS": "0",
+                "images-0-image": SimpleUploadedFile("empty.jpg", b"", content_type="image/jpeg"),
+                "images-0-caption": "",
+                "images-0-order": "0",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Recipe.objects.filter(title="Recipe With Bad Image").exists())
+        self.assertContains(response, "The submitted file is empty.")
+        # The raw formset error list must never be dumped onto the page.
+        self.assertNotContains(response, "[{")
+
 
 class RecipeUpdateViewTest(TestCase):
     """Test cases for the recipe update view."""
