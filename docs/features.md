@@ -29,6 +29,14 @@ Comprehensive guide to Plated's features.
 
 Click the **Edit** button on any recipe card or detail page.
 
+### Quick-Editing Ingredients and Steps
+
+For small fixes — a typo, a wrong amount, a quick note — tap the pencil icon next to any
+ingredient or step on the recipe detail page. This opens a small form for just that item, without
+leaving the page or opening the full edit form. Use the full **Edit** button instead when you
+need to add, delete, or reorder ingredients/steps, or make larger changes; quick-edit only
+changes the values of items that already exist.
+
 ### Smart Ingredient Input
 
 As you type ingredient names and units, autocomplete suggestions appear
