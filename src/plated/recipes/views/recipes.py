@@ -20,8 +20,8 @@ from django.views.generic import (
     UpdateView,
 )
 
-from ..forms import IngredientQuickEditForm, RecipeForm
-from ..models import AISettings, Ingredient, Recipe
+from ..forms import IngredientQuickEditForm, RecipeForm, StepQuickEditForm
+from ..models import AISettings, Ingredient, Recipe, Step
 from ..schemas import deserialize_recipe
 from ..services import (
     PDFGenerationError,
@@ -399,6 +399,26 @@ def ingredient_quick_edit(request: HttpRequest, recipe_pk: int, pk: int) -> Http
             )
 
     return redirect(f"{reverse('recipe_detail', args=[recipe_pk])}#ingredient-{pk}")
+
+
+def step_quick_edit(request: HttpRequest, recipe_pk: int, pk: int) -> HttpResponse:
+    """Quick-edit a single step's content/timer from the recipe detail page."""
+    step = get_object_or_404(Step, pk=pk, recipe_id=recipe_pk)
+
+    if request.method == "POST":
+        form = StepQuickEditForm(request.POST, instance=step)
+        if form.is_valid():
+            form.save()
+            logger.info(f"Step quick-edited: ID {step.pk} (Recipe ID: {recipe_pk})")
+            messages.success(request, _("Step updated successfully!"))
+        else:
+            logger.warning(f"Step quick-edit failed (ID: {step.pk}): {form.errors.as_text()}")
+            messages.error(
+                request,
+                _("Couldn't save step: %(errors)s") % {"errors": form.errors.as_text()},
+            )
+
+    return redirect(f"{reverse('recipe_detail', args=[recipe_pk])}#step-{pk}")
 
 
 def export_recipe(request: HttpRequest, pk: int) -> HttpResponse:

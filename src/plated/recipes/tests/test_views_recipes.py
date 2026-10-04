@@ -467,3 +467,59 @@ class IngredientQuickEditViewTest(TestCase):
             {"amount": "2", "unit": "tbsp", "name": "salt", "note": ""},
         )
         self.assertEqual(response.status_code, 404)
+
+
+class StepQuickEditViewTest(TestCase):
+    """Test cases for the step quick-edit view."""
+
+    def setUp(self) -> None:
+        """Create a recipe with one step."""
+        self.recipe = Recipe.objects.create(title="Soup", servings=4)
+        self.step = Step.objects.create(recipe=self.recipe, content="Boil water", order=0)
+
+    def test_get_redirects_without_saving(self) -> None:
+        """GET requests redirect back to the detail page without changing anything."""
+        response = self.client.get(reverse("step_quick_edit", args=[self.recipe.pk, self.step.pk]))
+        self.assertRedirects(
+            response,
+            f"{reverse('recipe_detail', args=[self.recipe.pk])}#step-{self.step.pk}",
+        )
+        self.step.refresh_from_db()
+        self.assertEqual(self.step.content, "Boil water")
+
+    def test_valid_post_updates_step(self) -> None:
+        """A valid POST updates the step and redirects to the anchored detail page."""
+        response = self.client.post(
+            reverse("step_quick_edit", args=[self.recipe.pk, self.step.pk]),
+            {"content": "Boil the water for 5 minutes", "timer": "5"},
+        )
+        self.assertRedirects(
+            response,
+            f"{reverse('recipe_detail', args=[self.recipe.pk])}#step-{self.step.pk}",
+        )
+        self.step.refresh_from_db()
+        self.assertEqual(self.step.content, "Boil the water for 5 minutes")
+        self.assertEqual(self.step.timer, 5)
+
+    def test_invalid_post_does_not_save_and_shows_message(self) -> None:
+        """An invalid POST (blank content) leaves the step unchanged and flashes a message."""
+        response = self.client.post(
+            reverse("step_quick_edit", args=[self.recipe.pk, self.step.pk]),
+            {"content": "", "timer": ""},
+            follow=True,
+        )
+        self.step.refresh_from_db()
+        self.assertEqual(self.step.content, "Boil water")
+        self.assertIsNone(self.step.timer)
+        messages = list(response.context["messages"])
+        self.assertEqual(len(messages), 1)
+        self.assertIn("Couldn't save step", str(messages[0]))
+
+    def test_post_for_step_of_different_recipe_404s(self) -> None:
+        """A step that doesn't belong to the given recipe 404s."""
+        other_recipe = Recipe.objects.create(title="Other", servings=2)
+        response = self.client.post(
+            reverse("step_quick_edit", args=[other_recipe.pk, self.step.pk]),
+            {"content": "Boil water", "timer": ""},
+        )
+        self.assertEqual(response.status_code, 404)

@@ -19,6 +19,11 @@ urlpatterns = [
         views.recipes.ingredient_quick_edit,
         name="ingredient_quick_edit",
     ),
+    path(
+        "recipe/<int:recipe_pk>/step/<int:pk>/quick-edit/",
+        views.recipes.step_quick_edit,
+        name="step_quick_edit",
+    ),
     # Import/Export
     path("recipe/<int:pk>/export/", views.recipes.export_recipe, name="recipe_export"),
     path("recipe/import/", views.recipes.import_recipe, name="recipe_import"),
