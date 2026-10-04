@@ -1,5 +1,8 @@
 set shell := ["bash", "-euo", "pipefail", "-c"]
 
+# Static JS/CSS files, excluding collectstatic output
+js_css := "src/plated/static/*.js src/plated/static/*.css"
+
 default:
     @just --list
 
@@ -10,21 +13,27 @@ sync:
 # Format code
 fmt:
     uv run ruff format .
+    uv run deno fmt {{js_css}}
 
 # Check formatting without modifying files
 fmt-check:
     uv run ruff format --check .
+    uv run deno fmt --check {{js_css}}
 
 # Lint with ruff (pass --fix to auto-fix; used by the pre-commit hook)
 lint *args:
     uv run ruff check {{args}}
+
+# Lint static JS with deno (pass --fix to auto-fix)
+js-lint *args:
+    uv run deno lint {{args}} src/plated/static/*.js
 
 # Type-check with mypy
 typecheck:
     uv run mypy src
 
 # Lint, type-check, and verify formatting (no modifications)
-check: lint typecheck fmt-check
+check: lint js-lint typecheck fmt-check
 
 # Install git hooks so checks run automatically on commit
 hooks-install:

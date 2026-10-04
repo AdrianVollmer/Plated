@@ -31,6 +31,7 @@ version-file = "src/plated/_version.py"
 
 [dependency-groups]
 dev = [
+    "deno>=2.9.7",
     "django-stubs>=5.2.7",
     "djlint>=1.39.2",
     "hatch>=1.15.1",
