@@ -93,6 +93,15 @@ class RecipeDetailViewTest(TestCase):
         self.assertEqual(ingredient.quick_edit_form.initial["name"], ingredient.name)
         self.assertEqual(step.quick_edit_form.initial["content"], step.content)
 
+    def test_detail_view_renders_ingredient_quick_edit_modal(self) -> None:
+        """Each ingredient gets an edit button and a modal with its current values."""
+        response = self.client.get(reverse("recipe_detail", args=[self.recipe.pk]))
+        ingredient = self.recipe.ingredients.first()
+        assert ingredient is not None  # Type narrowing for mypy
+        self.assertContains(response, f'data-bs-target="#edit-ingredient-{ingredient.pk}"')
+        self.assertContains(response, f'id="edit-ingredient-{ingredient.pk}"')
+        self.assertContains(response, f'value="{ingredient.name}"')
+
 
 class RecipeCreateViewTest(TestCase):
     """Test cases for the recipe create view."""

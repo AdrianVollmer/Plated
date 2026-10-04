@@ -188,6 +188,7 @@
                         <ul class="ingredient-list">
                             {% for ingredient in recipe.ingredients.all %}
                                 <li class="ingredient-item"
+                                    id="ingredient-{{ ingredient.id }}"
                                     data-amount="{{ ingredient.amount }}"
                                     data-unit="{{ ingredient.unit }}"
                                     data-name="{{ ingredient.name }}">
@@ -199,9 +200,19 @@
                                         <span class="ingredient-name">{{ ingredient.name }}</span>
                                         {% if ingredient.note %}<span class="ingredient-note">{{ ingredient.note }}</span>{% endif %}
                                     </div>
+                                    <button type="button"
+                                            class="btn btn-sm btn-link quick-edit-btn"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#edit-ingredient-{{ ingredient.id }}"
+                                            aria-label='{% trans "Edit ingredient" %}'>
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
                                 </li>
                             {% endfor %}
                         </ul>
+                        {% for ingredient in recipe.ingredients.all %}
+                            {% include "recipes/_ingredient_quick_edit_modal.html" with ingredient=ingredient recipe=recipe %}
+                        {% endfor %}
                     {% else %}
                         <p class="text-muted">{% trans "No ingredients listed." %}</p>
                     {% endif %}
