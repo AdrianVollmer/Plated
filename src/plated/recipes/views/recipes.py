@@ -122,14 +122,27 @@ class RecipeDetailView(DetailView):
     template_name = "recipes/recipe_detail.html"
     context_object_name = "recipe"
 
+    def get_queryset(self):
+        """Prefetch ingredients and steps so quick-edit forms stay attached across template lookups."""
+        return Recipe.objects.prefetch_related("ingredients", "steps")
+
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        """Add all collections and recipe's current collections to context."""
+        """Add all collections, recipe's current collections, and per-item quick-edit forms."""
         context = super().get_context_data(**kwargs)
         from ..models import RecipeCollection
 
-        recipe = self.get_object()
+        # Reuse the same instance already placed in context (self.object) rather than
+        # calling self.get_object() again, which would re-query and return a fresh
+        # instance whose prefetched ingredients/steps are distinct Python objects from
+        # the ones the template actually renders.
+        recipe = context["recipe"]
         all_collections = RecipeCollection.objects.all()
         recipe_collection_ids = set(recipe.collections.values_list("id", flat=True))
+
+        for ingredient in recipe.ingredients.all():
+            ingredient.quick_edit_form = IngredientQuickEditForm(instance=ingredient)
+        for step in recipe.steps.all():
+            step.quick_edit_form = StepQuickEditForm(instance=step)
 
         context["all_collections"] = all_collections
         context["recipe_collection_ids"] = recipe_collection_ids

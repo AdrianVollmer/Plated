@@ -83,6 +83,16 @@ class RecipeDetailViewTest(TestCase):
         response = self.client.get(reverse("recipe_detail", args=[9999]))
         self.assertEqual(response.status_code, 404)
 
+    def test_detail_view_has_quick_edit_forms_prefilled(self) -> None:
+        """Ingredients and steps carry a pre-filled quick-edit form for the template to render."""
+        Step.objects.create(recipe=self.recipe, content="Mix everything", order=0)
+        response = self.client.get(reverse("recipe_detail", args=[self.recipe.pk]))
+        self.assertEqual(response.status_code, 200)
+        ingredient = response.context["recipe"].ingredients.all()[0]
+        step = response.context["recipe"].steps.all()[0]
+        self.assertEqual(ingredient.quick_edit_form.initial["name"], ingredient.name)
+        self.assertEqual(step.quick_edit_form.initial["content"], step.content)
+
 
 class RecipeCreateViewTest(TestCase):
     """Test cases for the recipe create view."""
