@@ -684,6 +684,21 @@ div.recipe-card-img {
   flex-shrink: 0;
 }
 
+.instruction-content {
+  flex: 1;
+}
+
+.quick-edit-btn {
+  flex-shrink: 0;
+  align-self: flex-start;
+  color: var(--text-tertiary);
+}
+
+.quick-edit-btn:hover,
+.quick-edit-btn:focus {
+  color: var(--primary);
+}
+
 .instruction-list-wrapper {
   padding-left: 0;
 }
