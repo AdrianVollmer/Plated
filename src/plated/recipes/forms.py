@@ -5,7 +5,7 @@ from typing import Any
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from .models import AISettings, Ingredient, Recipe, Step, UserSettings  # noqa: F401
+from .models import AISettings, Ingredient, Recipe, Step, UserSettings
 
 
 class RecipeForm(forms.ModelForm):
@@ -71,6 +71,18 @@ class IngredientQuickEditForm(forms.ModelForm):
             "unit": forms.TextInput(attrs={"class": "form-control"}),
             "name": forms.TextInput(attrs={"class": "form-control"}),
             "note": forms.TextInput(attrs={"class": "form-control"}),
+        }
+
+
+class StepQuickEditForm(forms.ModelForm):
+    """Quick-edit form for a single step's content/timer."""
+
+    class Meta:
+        model = Step
+        fields = ["content", "timer"]
+        widgets = {
+            "content": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
+            "timer": forms.NumberInput(attrs={"class": "form-control", "min": 1}),
         }
 
 

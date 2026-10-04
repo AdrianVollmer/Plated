@@ -9,9 +9,10 @@ from ..forms import (
     AISettingsForm,
     IngredientQuickEditForm,
     RecipeForm,
+    StepQuickEditForm,
     UserSettingsForm,
 )
-from ..models import Ingredient, Recipe
+from ..models import Ingredient, Recipe, Step
 
 
 class RecipeFormTest(TestCase):
@@ -341,4 +342,36 @@ class IngredientQuickEditFormTest(TestCase):
             data={"amount": "", "unit": "", "name": "salt", "note": ""},
             instance=self.ingredient,
         )
+        self.assertTrue(form.is_valid())
+
+
+class StepQuickEditFormTest(TestCase):
+    """Test cases for StepQuickEditForm validation."""
+
+    def setUp(self) -> None:
+        """Create a recipe with one step."""
+        self.recipe = Recipe.objects.create(title="Soup", servings=4)
+        self.step = Step.objects.create(recipe=self.recipe, content="Boil water", order=0)
+
+    def test_valid_data_updates_step(self) -> None:
+        """Valid data saves onto the existing step instance."""
+        form = StepQuickEditForm(
+            data={"content": "Boil the water for 5 minutes", "timer": "5"},
+            instance=self.step,
+        )
+        self.assertTrue(form.is_valid())
+        step = form.save()
+        self.assertEqual(step.pk, self.step.pk)
+        self.assertEqual(step.content, "Boil the water for 5 minutes")
+        self.assertEqual(step.timer, 5)
+
+    def test_blank_content_is_invalid(self) -> None:
+        """Content is required, so a blank value fails validation."""
+        form = StepQuickEditForm(data={"content": "", "timer": ""}, instance=self.step)
+        self.assertFalse(form.is_valid())
+        self.assertIn("content", form.errors)
+
+    def test_blank_timer_is_valid(self) -> None:
+        """Timer is optional."""
+        form = StepQuickEditForm(data={"content": "Boil water", "timer": ""}, instance=self.step)
         self.assertTrue(form.is_valid())
