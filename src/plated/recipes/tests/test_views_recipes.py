@@ -114,6 +114,18 @@ class RecipeDetailViewTest(TestCase):
         self.assertContains(response, f'value="{vanilla.name}"')
         self.assertContains(response, f'value="{vanilla.note}"')
 
+    def test_detail_view_renders_step_quick_edit_modal(self) -> None:
+        """Every step gets an edit button and a modal with its current content/timer."""
+        Step.objects.create(recipe=self.recipe, content="Preheat the oven", order=0)
+        Step.objects.create(recipe=self.recipe, content="Mix everything together thoroughly", order=1, timer=10)
+        response = self.client.get(reverse("recipe_detail", args=[self.recipe.pk]))
+        for step in self.recipe.steps.all():
+            self.assertContains(response, f'data-bs-target="#edit-step-{step.pk}"')
+            self.assertContains(response, f'id="edit-step-{step.pk}"')
+
+        self.assertContains(response, "Mix everything together thoroughly")
+        self.assertContains(response, 'value="10"')
+
 
 class RecipeCreateViewTest(TestCase):
     """Test cases for the recipe create view."""

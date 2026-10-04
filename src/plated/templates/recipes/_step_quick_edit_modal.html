@@ -1,0 +1,39 @@
+{% load i18n %}
+<div class="modal fade"
+     id="edit-step-{{ step.id }}"
+     tabindex="-1"
+     aria-labelledby="edit-step-{{ step.id }}-label"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post" action="{% url 'step_quick_edit' recipe.pk step.pk %}">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="edit-step-{{ step.id }}-label">
+                        <i class="bi bi-pencil"></i> {% trans "Edit Step" %}
+                    </h5>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label='{% trans "Close" %}'></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2">
+                        <label for="{{ step.quick_edit_form.content.id_for_label }}"
+                               class="form-label">{% trans "Instructions" %}</label>
+                        {{ step.quick_edit_form.content }}
+                    </div>
+                    <div class="mb-2">
+                        <label for="{{ step.quick_edit_form.timer.id_for_label }}"
+                               class="form-label">{% trans "Timer (minutes)" %}</label>
+                        {{ step.quick_edit_form.timer }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+                    <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

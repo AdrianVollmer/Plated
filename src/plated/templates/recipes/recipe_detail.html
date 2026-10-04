@@ -226,9 +226,23 @@
                     {% if recipe.steps.all %}
                         <div class="instruction-list-wrapper">
                             <ol class="instruction-list">
-                                {% for step in recipe.steps.all %}<li class="instruction-item">{{ step.content|linebreaks }}</li>{% endfor %}
+                                {% for step in recipe.steps.all %}
+                                    <li class="instruction-item" id="step-{{ step.id }}">
+                                        <div class="instruction-content">{{ step.content|linebreaks }}</div>
+                                        <button type="button"
+                                                class="btn btn-sm btn-link quick-edit-btn"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#edit-step-{{ step.id }}"
+                                                aria-label='{% trans "Edit step" %}'>
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                    </li>
+                                {% endfor %}
                             </ol>
                         </div>
+                        {% for step in recipe.steps.all %}
+                            {% include "recipes/_step_quick_edit_modal.html" with step=step recipe=recipe %}
+                        {% endfor %}
                     {% else %}
                         <p class="text-muted">{% trans "No instructions provided." %}</p>
                     {% endif %}
