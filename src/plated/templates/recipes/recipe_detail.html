@@ -201,7 +201,7 @@
                                         {% if ingredient.note %}<span class="ingredient-note">{{ ingredient.note }}</span>{% endif %}
                                     </div>
                                     <button type="button"
-                                            class="btn btn-sm btn-link quick-edit-btn"
+                                            class="quick-edit-btn"
                                             data-bs-toggle="modal"
                                             data-bs-target="#edit-ingredient-{{ ingredient.id }}"
                                             aria-label='{% trans "Edit ingredient" %}'>
@@ -230,7 +230,7 @@
                                     <li class="instruction-item" id="step-{{ step.id }}">
                                         <div class="instruction-content">{{ step.content|linebreaks }}</div>
                                         <button type="button"
-                                                class="btn btn-sm btn-link quick-edit-btn"
+                                                class="quick-edit-btn"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#edit-step-{{ step.id }}"
                                                 aria-label='{% trans "Edit step" %}'>
@@ -437,6 +437,7 @@
 {% block extra_js %}
     {% load static %}
     <script src="{% static 'recipe-scaler.js' %}"></script>
+    <script src="{% static 'quick-edit-select.js' %}"></script>
     <style>
 /* Recipe Scaling Styles - Theme-aware */
 .ingredient-amount.scaled {

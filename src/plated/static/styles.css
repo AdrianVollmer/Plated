@@ -691,12 +691,35 @@ div.recipe-card-img {
 .quick-edit-btn {
   flex-shrink: 0;
   align-self: flex-start;
+  margin-left: auto;
+  background: none;
+  border: none;
+  padding: 0.25rem;
+  line-height: 1;
   color: var(--text-tertiary);
+  opacity: 0;
+  transition: opacity 0.15s ease, color 0.15s ease;
 }
 
 .quick-edit-btn:hover,
 .quick-edit-btn:focus {
   color: var(--primary);
+}
+
+/* On touch devices there's no hover, so a tap on the row "selects" it
+   (see quick-edit-select.js) to reveal the edit button instead. */
+.ingredient-item.selected .quick-edit-btn,
+.instruction-item.selected .quick-edit-btn,
+.ingredient-item:focus-within .quick-edit-btn,
+.instruction-item:focus-within .quick-edit-btn {
+  opacity: 1;
+}
+
+@media (hover: hover) {
+  .ingredient-item:hover .quick-edit-btn,
+  .instruction-item:hover .quick-edit-btn {
+    opacity: 1;
+  }
 }
 
 .instruction-list-wrapper {
