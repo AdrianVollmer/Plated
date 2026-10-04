@@ -453,6 +453,8 @@ class IngredientQuickEditViewTest(TestCase):
         )
         self.ingredient.refresh_from_db()
         self.assertEqual(self.ingredient.amount, "1")
+        self.assertEqual(self.ingredient.unit, "tsp")
+        self.assertEqual(self.ingredient.note, "")
         messages = list(response.context["messages"])
         self.assertEqual(len(messages), 1)
         self.assertIn("Couldn't save ingredient", str(messages[0]))

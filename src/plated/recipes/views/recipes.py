@@ -390,6 +390,7 @@ def ingredient_quick_edit(request: HttpRequest, recipe_pk: int, pk: int) -> Http
         if form.is_valid():
             form.save()
             logger.info(f"Ingredient quick-edited: '{ingredient.name}' (ID: {ingredient.pk}, Recipe ID: {recipe_pk})")
+            messages.success(request, _("Ingredient '%(name)s' updated successfully!") % {"name": ingredient.name})
         else:
             logger.warning(f"Ingredient quick-edit failed (ID: {ingredient.pk}): {form.errors.as_text()}")
             messages.error(
